@@ -17,6 +17,40 @@ class SettingsPage extends StatelessWidget {
         title: Text("Paramètres"),
         backgroundColor: PrimaryColor,
       ),
+      body: ListView(
+          children: <Widget>[
+            ListTile(
+              leading: Icon(Icons.timer),
+              title: Text('Activité'),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: Icon(Icons.notifications),
+              title: Text('Notifications'),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: Icon(Icons.lock),
+              title: Text('Confidentialité'),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: Icon(Icons.help),
+              title: Text('Aide'),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: Icon(Icons.info),
+              title: Text('À propos'),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: Icon(Icons.arrow_back),
+              title: Text('Déconnexion'),
+              onTap: () {},
+            ),
+          ],
+        ),
     );
   }
 }

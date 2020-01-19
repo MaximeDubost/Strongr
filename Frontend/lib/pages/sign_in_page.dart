@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'interface_selection_page.dart';
+import 'homepage.dart';
 
 class SignInPage extends StatefulWidget {
   @override
@@ -18,11 +18,11 @@ class SignInPageState extends State<SignInPage> {
       _passwordController,
       _confirmPasswordController;
   String email, password, confirmPassword, conditionsTitle;
-  String firstCondition = "🔴 8 caractères";
-  String secondCondition = "🔴 Une lettre minuscule";
-  String thirdCondition = "🔴 Une lettre majuscule";
-  String fourthCondition = "🔴 Un chiffre";
-  String fifthCondition = "🔴 Un caractère spécial parmis @\$!%*?&";
+  String firstCondition = "❌ 8 caractères";
+  String secondCondition = "❌ Une lettre minuscule";
+  String thirdCondition = "❌ Une lettre majuscule";
+  String fourthCondition = "❌ Un chiffre";
+  String fifthCondition = "❌ Un caractère spécial parmis @\$!%*?&";
   Text conditionsTitleText,
       firstConditionText,
       secondConditionText,
@@ -102,43 +102,43 @@ class SignInPageState extends State<SignInPage> {
   void _onChanged() {
     if (_passwordController.text.length >= 8)
       setState(() {
-        firstCondition = "🟢 8 caractères";
+        firstCondition = "✔️ 8 caractères";
       });
     else
       setState(() {
-        firstCondition = "🔴 8 caractères";
+        firstCondition = "❌ 8 caractères";
       });
     if (_passwordController.text.contains(RegExp(r'[a-z]')))
       setState(() {
-        secondCondition = "🟢 Une lettre minuscule";
+        secondCondition = "✔️ Une lettre minuscule";
       });
     else
       setState(() {
-        secondCondition = "🔴 Une lettre minuscule";
+        secondCondition = "❌ Une lettre minuscule";
       });
     if (_passwordController.text.contains(RegExp(r'[A-Z]')))
       setState(() {
-        thirdCondition = "🟢 Une lettre majuscule";
+        thirdCondition = "✔️ Une lettre majuscule";
       });
     else
       setState(() {
-        thirdCondition = "🔴 Une lettre majuscule";
+        thirdCondition = "❌ Une lettre majuscule";
       });
     if (_passwordController.text.contains(RegExp(r'[1-9]')))
       setState(() {
-        fourthCondition = "🟢 Un chiffre";
+        fourthCondition = "✔️ Un chiffre";
       });
     else
       setState(() {
-        fourthCondition = "🔴 Un chiffre";
+        fourthCondition = "❌ Un chiffre";
       });
     if (_passwordController.text.contains(RegExp(r'(?=.*[@$!%*?&])')))
       setState(() {
-        fifthCondition = "🟢 Un caractère spécial parmis @\$!%*?&";
+        fifthCondition = "✔️ Un caractère spécial parmis @\$!%*?&";
       });
     else
       setState(() {
-        fifthCondition = "🔴 Un caractère spécial parmis @\$!%*?&";
+        fifthCondition = "❌ Un caractère spécial parmis @\$!%*?&";
       });
   }
 
@@ -158,7 +158,7 @@ class SignInPageState extends State<SignInPage> {
       });
 
       Navigator.of(context).push(CupertinoPageRoute(
-          builder: (BuildContext context) => InterfaceSelectionPage()));
+          builder: (BuildContext context) => Homepage()));
     } else
       setState(() {
         _validate = true;
