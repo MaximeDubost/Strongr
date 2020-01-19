@@ -1,2 +1,5 @@
+# VS Code
+.vscode\
 
-.vscode/launch.json
+# Node modules
+Backend\node_modules
