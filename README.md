@@ -1,1 +1,3 @@
 # Strongr
+
+Aurélien Guillemot
