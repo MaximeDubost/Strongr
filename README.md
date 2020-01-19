@@ -1,4 +1,5 @@
-# Strongr
+﻿# Strongr
+DUBOST Maxime
 ULCE Christ
-#TSI
-Test Aurélien Guillemot
+TSI Kevin
+GUILLEMOT Aurélien
