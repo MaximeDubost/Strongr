@@ -1,5 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app_test/UI/dashboard_view.dart';
+import 'package:flutter_app_test/UI/goals_view.dart';
+import 'package:flutter_app_test/UI/programs_view.dart';
+import 'package:flutter_app_test/UI/sessions_view.dart';
+import 'package:flutter_app_test/UI/statistics_view.dart';
 
 import '../main.dart';
 import 'profile_pages/profile_page.dart';
@@ -57,89 +62,11 @@ class HomepageState extends State<Homepage>
           });
         },
         children: <Widget>[
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Icon(Icons.fitness_center),
-                Text("Programmes")
-              ],
-            ),
-          ),
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Icon(Icons.date_range),
-                Text("Séances")
-              ],
-            ),
-          ),
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  "Bienvenue, Maxime ! ",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 28, fontFamily: 'Calibri', fontWeight: FontWeight.bold, color: PrimaryColor),
-                ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(0, 30, 0, 0),
-                  child: Text(
-                    "C'est bien vide par ici... 🤔",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 18, fontFamily: 'Calibri', color: Colors.grey),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(50, 30, 50, 0),
-                  child: Text(
-                    "Que diriez-vous de nous en dire un peu plus sur vous ?",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 18, fontFamily: 'Calibri', fontWeight: FontWeight.bold, color: Colors.grey),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                  child: RaisedButton(
-                    color: Color.fromRGBO(40, 140, 100, 1.0),
-                    disabledColor: Colors.grey,
-                    onPressed:  () {},
-                    child: Text(
-                      "Allons-y !",
-                      style: TextStyle(
-                          fontSize: 14,
-                          fontFamily: 'Calibri',
-                          color: Colors.white),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Icon(Icons.multiline_chart),
-                Text("Statistiques")
-              ],
-            ),
-          ),
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Icon(Icons.star),
-                Text("Objectifs")
-              ],
-            ),
-          ),
+          ProgramsView(),
+          SessionsView(),
+          DashboardView(),
+          StatisticsView(),
+          GoalsView(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -193,7 +120,6 @@ class HomepageState extends State<Homepage>
             title: Text(
               'Objectifs',
               style: TextStyle(color: Colors.white),
-              
             ),
           ),
         ],

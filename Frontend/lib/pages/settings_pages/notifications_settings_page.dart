@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../../main.dart';
-import '../../main.dart';
 
 class NotificationsSettingsPage extends StatefulWidget {
   @override
-  State createState() => new NotificationsSettingsPageState();
+  State createState() => NotificationsSettingsPageState();
 }
 
 class NotificationsSettingsPageState extends State<NotificationsSettingsPage> {
