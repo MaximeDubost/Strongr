@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../main.dart';
-import 'profile_page.dart';
-import 'settings_page.dart';
+import 'profile_pages/profile_page.dart';
+import 'settings_pages/settings_page.dart';
 
 class Homepage extends StatefulWidget {
   @override

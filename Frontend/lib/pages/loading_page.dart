@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import '../main.dart';
-import 'connection_page.dart';
+import 'connection_pages/connection_page.dart';
 
 class LoadingPage extends StatefulWidget {
   @override

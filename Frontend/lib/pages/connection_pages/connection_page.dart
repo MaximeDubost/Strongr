@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_test/utils/no_animation_material_page_route.dart';
 
-import '../main.dart';
+import '../../main.dart';
 import 'log_in_page.dart';
 import 'sign_in_page.dart';
 

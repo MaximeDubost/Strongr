@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../main.dart';
-import '../main.dart';
-import '../main.dart';
-import '../main.dart';
-import '../utils/no_animation_material_page_route.dart';
+import '../../main.dart';
+import '../../utils/no_animation_material_page_route.dart';
 import 'edit_profile_page.dart';
 
 class ProfilePage extends StatelessWidget {
