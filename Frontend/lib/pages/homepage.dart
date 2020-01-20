@@ -2,6 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../main.dart';
+import '../main.dart';
+import '../main.dart';
+import '../main.dart';
 import 'profile_page.dart';
 import 'settings_page.dart';
 
@@ -152,9 +155,12 @@ class HomepageState extends State<Homepage>
               duration: const Duration(milliseconds: 200),
               curve: Curves.easeInOut);
         },
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.fitness_center, color: Colors.white),
+            activeIcon: Icon(Icons.fitness_center, color: DarkColor),
             title: Text(
               'Programmes',
               style: TextStyle(color: Colors.white),
@@ -162,6 +168,7 @@ class HomepageState extends State<Homepage>
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.date_range, color: Colors.white),
+            activeIcon: Icon(Icons.date_range, color: DarkColor),
             title: Text(
               'Séances',
               style: TextStyle(color: Colors.white),
@@ -169,23 +176,27 @@ class HomepageState extends State<Homepage>
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.home, color: Colors.white),
+            activeIcon: Icon(Icons.home, color: DarkColor),
             title: Text(
-              'Accueil',
+              'Dashboard',
               style: TextStyle(color: Colors.white),
             ),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.multiline_chart, color: Colors.white),
+            activeIcon: Icon(Icons.multiline_chart, color: DarkColor),
             title: Text(
-              'Statistiques',
+              'Stats',
               style: TextStyle(color: Colors.white),
             ),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.star, color: Colors.white),
+            activeIcon: Icon(Icons.star, color: DarkColor),
             title: Text(
               'Objectifs',
               style: TextStyle(color: Colors.white),
+              
             ),
           ),
         ],
