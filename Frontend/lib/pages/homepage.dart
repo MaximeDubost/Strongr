@@ -83,40 +83,40 @@ class HomepageState extends State<Homepage>
         showUnselectedLabels: false,
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.fitness_center, color: Colors.white),
-            activeIcon: Icon(Icons.fitness_center, color: DarkColor),
+            icon: Icon(Icons.date_range, color: Colors.white70, size: 22.0),
+            activeIcon: Icon(Icons.date_range, color: Colors.white, size: 26.0),
             title: Text(
               'Programmes',
               style: TextStyle(color: Colors.white),
             ),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.date_range, color: Colors.white),
-            activeIcon: Icon(Icons.date_range, color: DarkColor),
+            icon: Icon(Icons.fitness_center, color: Colors.white70, size: 22.0),
+            activeIcon: Icon(Icons.fitness_center, color: Colors.white, size: 26.0),
             title: Text(
               'Séances',
               style: TextStyle(color: Colors.white),
             ),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.home, color: Colors.white),
-            activeIcon: Icon(Icons.home, color: DarkColor),
+            icon: Icon(Icons.home, color: Colors.white70, size: 22.0),
+            activeIcon: Icon(Icons.home, color: Colors.white, size: 26.0),
             title: Text(
               'Dashboard',
               style: TextStyle(color: Colors.white),
             ),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.multiline_chart, color: Colors.white),
-            activeIcon: Icon(Icons.multiline_chart, color: DarkColor),
+            icon: Icon(Icons.multiline_chart, color: Colors.white70, size: 22.0),
+            activeIcon: Icon(Icons.multiline_chart, color: Colors.white, size: 26.0),
             title: Text(
               'Stats',
               style: TextStyle(color: Colors.white),
             ),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.star, color: Colors.white),
-            activeIcon: Icon(Icons.star, color: DarkColor),
+            icon: Icon(Icons.star, color: Colors.white70, size: 22.0),
+            activeIcon: Icon(Icons.star, color: Colors.white, size: 26.0),
             title: Text(
               'Objectifs',
               style: TextStyle(color: Colors.white),
