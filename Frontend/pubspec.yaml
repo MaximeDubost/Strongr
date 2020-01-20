@@ -36,6 +36,7 @@ dev_dependencies:
 flutter:
   assets:     
     - assets/images/strongr_logo.png
+    - assets/images/default_user_img.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

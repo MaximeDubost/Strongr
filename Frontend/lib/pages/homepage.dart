@@ -2,9 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../main.dart';
-import '../main.dart';
-import '../main.dart';
-import '../main.dart';
 import 'profile_page.dart';
 import 'settings_page.dart';
 
