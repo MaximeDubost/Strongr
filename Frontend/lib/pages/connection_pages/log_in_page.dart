@@ -6,7 +6,7 @@ import 'reset_password_page.dart';
 
 class LogInPage extends StatefulWidget {
   @override
-  State createState() => new LogInPageState();
+  State createState() => LogInPageState();
 }
 
 class LogInPageState extends State<LogInPage> {

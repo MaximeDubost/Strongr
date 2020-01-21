@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class StatisticsView extends StatefulWidget {
+class PerformancesView extends StatefulWidget {
   @override
-  State createState() => StatisticsViewState();
+  State createState() => PerformancesViewState();
 }
 
-class StatisticsViewState extends State<StatisticsView> {
+class PerformancesViewState extends State<PerformancesView> {
   @override
   void initState() {
     super.initState();
@@ -17,10 +17,7 @@ class StatisticsViewState extends State<StatisticsView> {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Icon(Icons.multiline_chart),
-            Text("Statistiques")
-          ],
+          children: <Widget>[Icon(Icons.multiline_chart), Text("Performances")],
         ),
       ),
     );

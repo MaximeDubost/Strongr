@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class GoalsView extends StatefulWidget {
+class ExercisesView extends StatefulWidget {
   @override
-  State createState() => GoalsViewState();
+  State createState() => ExercisesViewState();
 }
 
-class GoalsViewState extends State<GoalsView> {
+class ExercisesViewState extends State<ExercisesView> {
   @override
   void initState() {
     super.initState();
@@ -17,7 +17,10 @@ class GoalsViewState extends State<GoalsView> {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[Icon(Icons.star), Text("Objectifs")],
+          children: <Widget>[
+            Icon(Icons.fitness_center),
+            Text("Exercices")
+          ],
         ),
       ),
     );

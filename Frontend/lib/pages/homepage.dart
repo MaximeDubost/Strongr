@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_test/UI/dashboard_view.dart';
-import 'package:flutter_app_test/UI/goals_view.dart';
+import 'package:flutter_app_test/UI/exercises_view.dart';
+import 'package:flutter_app_test/UI/performances_view.dart';
 import 'package:flutter_app_test/UI/programs_view.dart';
 import 'package:flutter_app_test/UI/sessions_view.dart';
-import 'package:flutter_app_test/UI/statistics_view.dart';
 
 import '../main.dart';
 import 'profile_pages/profile_page.dart';
@@ -65,8 +65,8 @@ class HomepageState extends State<Homepage>
           ProgramsView(),
           SessionsView(),
           DashboardView(),
-          StatisticsView(),
-          GoalsView(),
+          ExercisesView(),
+          PerformancesView(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -91,8 +91,8 @@ class HomepageState extends State<Homepage>
             ),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.fitness_center, color: Colors.white70, size: 22.0),
-            activeIcon: Icon(Icons.fitness_center, color: Colors.white, size: 26.0),
+            icon: Icon(Icons.calendar_today, color: Colors.white70, size: 22.0),
+            activeIcon: Icon(Icons.calendar_today, color: Colors.white, size: 26.0),
             title: Text(
               'Séances',
               style: TextStyle(color: Colors.white),
@@ -107,18 +107,18 @@ class HomepageState extends State<Homepage>
             ),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.multiline_chart, color: Colors.white70, size: 22.0),
-            activeIcon: Icon(Icons.multiline_chart, color: Colors.white, size: 26.0),
+            icon: Icon(Icons.fitness_center, color: Colors.white70, size: 22.0),
+            activeIcon: Icon(Icons.fitness_center, color: Colors.white, size: 26.0),
             title: Text(
-              'Stats',
+              'Exercices',
               style: TextStyle(color: Colors.white),
             ),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.star, color: Colors.white70, size: 22.0),
-            activeIcon: Icon(Icons.star, color: Colors.white, size: 26.0),
+            icon: Icon(Icons.multiline_chart, color: Colors.white70, size: 22.0),
+            activeIcon: Icon(Icons.multiline_chart, color: Colors.white, size: 26.0),
             title: Text(
-              'Objectifs',
+              'Performances',
               style: TextStyle(color: Colors.white),
             ),
           ),

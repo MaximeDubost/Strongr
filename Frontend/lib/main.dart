@@ -10,7 +10,11 @@ const DarkColor = Color.fromRGBO(0, 100, 60, 1.0);
 void main() {
   runApp(new MaterialApp(
     debugShowCheckedModeBanner: false,
-    //home: new LoadingPage(),
+    theme: ThemeData(
+        primaryColor: PrimaryColor,
+        accentColor: SecondaryColor,
+      ),
+    // home: new LoadingPage(),
     home: new Homepage(),
   ));
 }
