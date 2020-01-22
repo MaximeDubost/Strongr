@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../main.dart';
+import 'add_exercise_page.dart';
 
 class AddSessionPage extends StatefulWidget {
   @override
@@ -66,9 +67,12 @@ class AddSessionPageState extends State<AddSessionPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          setState(() {
-            _isEmptyList = !_isEmptyList;
-          });
+          // setState(() {
+          //   _isEmptyList = !_isEmptyList;
+          // });
+          globalKey.currentState.hideCurrentSnackBar();
+          Navigator.of(context).push(CupertinoPageRoute(
+                builder: (BuildContext context) => AddExercisePage()));
         },
         // onPressed: () => Navigator.of(context).push(CupertinoPageRoute(
         //     builder: (BuildContext context) => AddSessionPage())),
@@ -112,8 +116,8 @@ class AddSessionPageState extends State<AddSessionPage> {
                             cursorColor: Colors.grey,
                             //controller: _emailController,
                             decoration: InputDecoration(
-                              labelText: 'Libellé',
-                              labelStyle: TextStyle(color: Colors.grey),
+                              hintText: "Libellé",
+                              hintStyle: TextStyle(fontSize: 16, fontFamily: 'Calibri', color: Colors.grey),
                               focusedBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(
                                       color:
@@ -148,19 +152,17 @@ class AddSessionPageState extends State<AddSessionPage> {
                           //color: Colors.indigo,
                           child: ReorderableListView(
                             onReorder: (oldIndex, newIndex) {
-                              setState(() {
-                              });
+                              setState(() {});
                             },
                             children: <Widget>[
                               for (final item in _exercisesList)
                                 ListTile(
                                   key: ValueKey(item),
                                   title: Text(item),
-                                  subtitle: Text("Méthode de travail personnalisée"),
+                                  subtitle:
+                                      Text("Méthode de travail personnalisée"),
                                   trailing: Icon(Icons.reorder),
-                                  onTap: () {
-
-                                  },
+                                  onTap: () {},
                                 ),
                             ],
                           ),

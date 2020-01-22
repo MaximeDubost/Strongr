@@ -20,7 +20,7 @@ class AddProgramPageState extends State<AddProgramPage> {
 
   void showSnackbar(BuildContext context) {
     final snackBar = SnackBar(
-      content: Text('Vous ne pouvez pas créer un programme vide'),
+      content: Text('Vous ne pouvez pas créer un programme vide.'),
       backgroundColor: Colors.red,
     );
     globalKey.currentState.showSnackBar(snackBar);
@@ -58,7 +58,9 @@ class AddProgramPageState extends State<AddProgramPage> {
         backgroundColor: PrimaryColor,
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          globalKey.currentState.hideCurrentSnackBar();
+        },
         // onPressed: () => Navigator.of(context).push(CupertinoPageRoute(
         //     builder: (BuildContext context) => AddSessionPage())),
         child: Icon(Icons.add),
@@ -92,7 +94,7 @@ class AddProgramPageState extends State<AddProgramPage> {
                           padding: EdgeInsets.fromLTRB(50, 0, 50, 0),
                           child: TextFormField(
                             //autofocus: true,
-                            maxLength: 30,
+                            //maxLength: 30,
                             //validator: validateEmail,
                             onSaved: (String value) {
                               //email = value;
