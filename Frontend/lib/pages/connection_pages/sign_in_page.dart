@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'homepage.dart';
+import '../homepage.dart';
 
 class SignInPage extends StatefulWidget {
   @override

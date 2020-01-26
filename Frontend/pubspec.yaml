@@ -14,7 +14,7 @@ description: A new Flutter project.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.2.2 <3.0.0"
 
 dependencies:
   flutter:
@@ -36,6 +36,7 @@ dev_dependencies:
 flutter:
   assets:     
     - assets/images/strongr_logo.png
+    - assets/images/default_user_img.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

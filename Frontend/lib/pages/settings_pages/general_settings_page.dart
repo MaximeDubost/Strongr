@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../main.dart';
+import '../../main.dart';
 
-class ProfilePage extends StatelessWidget {
+class GeneralSettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
@@ -14,9 +14,13 @@ class ProfilePage extends StatelessWidget {
           color: Colors.white,
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: Text("Profil"),
+        title: Text("Général"),
         backgroundColor: PrimaryColor,
       ),
+      body: ListView(
+          children: <Widget>[
+          ],
+        ),
     );
   }
 }
