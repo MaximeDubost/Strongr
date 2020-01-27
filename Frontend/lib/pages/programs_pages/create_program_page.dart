@@ -1,25 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../main.dart';
-import 'add_exercise_page.dart';
+import '../../main.dart';
 
-class AddSessionPage extends StatefulWidget {
+class CreateProgramPage extends StatefulWidget {
   @override
-  State createState() => AddSessionPageState();
+  State createState() => CreateProgramPageState();
 }
 
-class AddSessionPageState extends State<AddSessionPage> {
+class CreateProgramPageState extends State<CreateProgramPage> {
   final globalKey = GlobalKey<ScaffoldState>();
   bool _isEmptyList = true;
-  List<String> _exercisesList = [
-    "Exercice 1",
-    "Exercice 2",
-    "Exercice 3",
-    "Exercice 4",
-    "Exercice 5",
-    "Exercice 6"
-  ];
+  List<String> _sessionsList = [];
 
   @override
   void initState() {
@@ -28,7 +20,7 @@ class AddSessionPageState extends State<AddSessionPage> {
 
   void showSnackbar(BuildContext context) {
     final snackBar = SnackBar(
-      content: Text('Vous ne pouvez pas créer une séance vide.'),
+      content: Text('Vous ne pouvez pas créer un programme vide.'),
       backgroundColor: Colors.red,
     );
     globalKey.currentState.showSnackBar(snackBar);
@@ -47,7 +39,7 @@ class AddSessionPageState extends State<AddSessionPage> {
           color: Colors.white,
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: Text("Nouvelle séance"),
+        title: Text("Nouveau programme"),
         actions: <Widget>[
           Builder(
             builder: (ctx) => IconButton(
@@ -67,12 +59,7 @@ class AddSessionPageState extends State<AddSessionPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // setState(() {
-          //   _isEmptyList = !_isEmptyList;
-          // });
           globalKey.currentState.hideCurrentSnackBar();
-          Navigator.of(context).push(CupertinoPageRoute(
-                builder: (BuildContext context) => AddExercisePage()));
         },
         // onPressed: () => Navigator.of(context).push(CupertinoPageRoute(
         //     builder: (BuildContext context) => AddSessionPage())),
@@ -87,7 +74,7 @@ class AddSessionPageState extends State<AddSessionPage> {
               child: Visibility(
                 visible: _isEmptyList,
                 child: Text(
-                  "Aucun exercice.",
+                  "Aucune séance.",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontSize: 18, fontFamily: 'Calibri', color: Colors.grey),
@@ -116,8 +103,8 @@ class AddSessionPageState extends State<AddSessionPage> {
                             cursorColor: Colors.grey,
                             //controller: _emailController,
                             decoration: InputDecoration(
-                              hintText: "Libellé",
-                              hintStyle: TextStyle(fontSize: 16, fontFamily: 'Calibri', color: Colors.grey),
+                              labelText: 'Libellé',
+                              labelStyle: TextStyle(color: Colors.grey),
                               focusedBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(
                                       color:
@@ -134,7 +121,7 @@ class AddSessionPageState extends State<AddSessionPage> {
                         height: height / 16,
                         child: Center(
                           child: Text(
-                            "Exercices",
+                            "Programmes",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                                 fontSize: 18,
@@ -150,34 +137,17 @@ class AddSessionPageState extends State<AddSessionPage> {
                       child: Expanded(
                         child: Container(
                           //color: Colors.indigo,
-                          child: ReorderableListView(
-                            onReorder: (oldIndex, newIndex) {
-                              setState(() {});
+                          child: ListView.separated(
+                            itemCount: _sessionsList.length,
+                            itemBuilder: (context, index) {
+                              return ListTile(
+                                title: Text(_sessionsList[index]),
+                              );
                             },
-                            children: <Widget>[
-                              for (final item in _exercisesList)
-                                ListTile(
-                                  key: ValueKey(item),
-                                  title: Text(item),
-                                  subtitle:
-                                      Text("Méthode de travail personnalisée"),
-                                  trailing: Icon(Icons.reorder),
-                                  onTap: () {},
-                                ),
-                            ],
+                            separatorBuilder: (context, index) {
+                              return Divider();
+                            },
                           ),
-                          // child: ListView.separated(
-                          //   itemCount: _exercisesList.length,
-                          //   itemBuilder: (context, index) {
-                          //     return ListTile(
-                          //       title: Text(_exercisesList[index]),
-                          //       subtitle: Text(_methodsList[index]),
-                          //     );
-                          //   },
-                          //   separatorBuilder: (context, index) {
-                          //     return Divider();
-                          //   },
-                          // ),
                         ),
                       ),
                     ),

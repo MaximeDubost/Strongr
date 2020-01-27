@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app_test/pages/add_program_page.dart';
+import 'package:flutter_app_test/pages/programs_pages/create_program_page.dart';
 
 import '../main.dart';
 
@@ -29,7 +29,7 @@ class ProgramsViewState extends State<ProgramsView> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.of(context).push(CupertinoPageRoute(
-                builder: (BuildContext context) => AddProgramPage())),
+                builder: (BuildContext context) => CreateProgramPage())),
         child: Icon(Icons.add),
         backgroundColor: PrimaryColor,
       ),

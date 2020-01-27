@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app_test/pages/add_session_page.dart';
+import 'package:flutter_app_test/pages/sessions_pages/create_session_page.dart';
 
 import '../main.dart';
 
@@ -29,7 +29,7 @@ class SessionsViewState extends State<SessionsView> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.of(context).push(CupertinoPageRoute(
-                builder: (BuildContext context) => AddSessionPage())),
+                builder: (BuildContext context) => CreateSessionPage())),
         child: Icon(Icons.add),
         backgroundColor: PrimaryColor,
       ),
