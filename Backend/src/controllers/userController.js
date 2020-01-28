@@ -1,13 +1,14 @@
-import sqlite3 from 'sqlite3';
+const sqlite3 = require('sqlite3').verbose();
 
 const controller = {};
+
 
 let db = new sqlite3.Database('../Database/strongrDB.db', sqlite3.OPEN_READWRITE, (err) => {
     if (err) {
         return console.error(err.message);
     }
     console.log('Connected to the Strongr SQlite database.');
-});
+}); 
 
 
 controller.addUser = async (req, res) => {
@@ -15,13 +16,15 @@ controller.addUser = async (req, res) => {
     let status = 200;
 
     try {
-        sqlLogin = "INSERT INTO user VALUES( ?, ?, ?, ? );";
-        const res = await db.query(sqlLogin, [req.body.name, req.body.surname, req.body.email,req.body.password]);
 
+        let sqlLogin = "INSERT INTO 'user' ('name', 'surname', 'email', 'password') VALUES( ?, ?, ?, ? );";
+        const res = await db.run(sqlLogin, [req.body.name, req.body.surname, req.body.email,req.body.password]);
+
+        body = res;
 
     } catch (err) {
         status = 500;
-        console.log(err.message);
+        console.log(err);
         body = { message: 'Une erreur est survenue...' };
     }
     res.status(status).json(body);
@@ -34,7 +37,7 @@ controller.updateUser = async (req, res) => {
 
     } catch (err) {
         status = 500;
-        console.log(err.message);
+        console.log(err);
         body = { message: 'Une erreur est survenue...' };
     }
     res.status(status).json(body);
