@@ -12,30 +12,7 @@ class AddExercisePage extends StatefulWidget {
 class AddExercisePageState extends State<AddExercisePage> {
   bool _isEmptyList = false;
   bool _isSearching = false;
-  List<String> _exercisesList = [
-    "Soulevé de Terre",
-    "Squat",
-    "Tractions",
-    "Développé couché",
-    "Rowing",
-    "Dips",
-    "Développé épaule",
-    "Tirage vertical",
-    "Tirage horizontal",
-    "Extension lombaire",
-    "Pullover",
-    "Développés incliné",
-    "Développés décliné",
-    "Crunch",
-    "Gainage",
-    "Élévation latérale",
-    "Élévation frontale",
-    "Leg extension",
-    "Hack squat",
-    "Presse à cuisse",
-    "Curls à la barre",
-    "Pompes",
-  ];
+  List<String> _exercisesList = ExercisesList;
 
   @override
   void initState() {
@@ -44,50 +21,46 @@ class AddExercisePageState extends State<AddExercisePage> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       //key: globalKey,
       appBar: AppBar(
-          centerTitle: true,
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            color: Colors.white,
-            onPressed: _isSearching
-                ? () => setState(() {
-                      _isSearching = false;
-                    })
-                : () => Navigator.of(context).pop(),
-          ),
-          title: _isSearching
-              ? TextField(
-                  autofocus: true,
-                  cursorColor: DarkColor,
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: "Rechercher un exercice...",
-                    hintStyle: TextStyle(
-                        fontSize: 18,
-                        fontFamily: 'Calibri',
-                        color: Colors.white70),
-                  ),
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18
-                  ),
-                )
-              : Text("Nouvel exercice"),
-          actions: <Widget>[
-            IconButton(
-                icon: Icon(Icons.search),
-                color: Colors.white,
-                onPressed: () {
-                  setState(() {
-                    _isSearching = true;
-                  });
-                }),
-          ],
-          backgroundColor: PrimaryColor,
+        centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          color: Colors.white,
+          onPressed: _isSearching
+              ? () => setState(() {
+                    _isSearching = false;
+                  })
+              : () => Navigator.of(context).pop(),
         ),
+        title: _isSearching
+            ? TextField(
+                autofocus: true,
+                cursorColor: DarkColor,
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: "Rechercher un exercice...",
+                  hintStyle: TextStyle(
+                      fontSize: 18,
+                      fontFamily: 'Calibri',
+                      color: Colors.white70),
+                ),
+                style: TextStyle(color: Colors.white, fontSize: 18),
+              )
+            : Text("Ajouter un exercice"),
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(Icons.search),
+              color: Colors.white,
+              onPressed: () {
+                setState(() {
+                  _isSearching = true;
+                });
+              }),
+        ],
+        backgroundColor: PrimaryColor,
+      ),
       body: Container(
         //color: Colors.green,
         child: Stack(
@@ -119,7 +92,15 @@ class AddExercisePageState extends State<AddExercisePage> {
                                 ListTile(
                                   key: ValueKey(item),
                                   leading: Icon(Icons.add),
-                                  title: Text(item),
+                                  title: Text(
+                                    item,
+                                    //textAlign: TextAlign.left,
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontFamily: 'Calibri',
+                                        fontWeight: FontWeight.w400,
+                                        ),
+                                  ),
                                   onTap: () => Navigator.of(context).push(
                                       CupertinoPageRoute(
                                           builder: (BuildContext context) =>

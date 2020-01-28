@@ -15,8 +15,18 @@ class ProgramsViewState extends State<ProgramsView> {
     super.initState();
   }
 
+  Widget _buildSeparator(Size screenSize) {
+    return Container(
+      width: screenSize.width / 2,
+      height: 1.0,
+      color: SecondaryColor,
+      //margin: EdgeInsets.only(top: 4.0),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    Size screenSize = MediaQuery.of(context).size;
     double height = MediaQuery.of(context).size.height;
 
     Visibility programList = Visibility(
@@ -29,7 +39,7 @@ class ProgramsViewState extends State<ProgramsView> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.of(context).push(CupertinoPageRoute(
-                builder: (BuildContext context) => CreateProgramPage())),
+            builder: (BuildContext context) => CreateProgramPage())),
         child: Icon(Icons.add),
         backgroundColor: PrimaryColor,
       ),
@@ -54,21 +64,26 @@ class ProgramsViewState extends State<ProgramsView> {
               ),
             ),
           ),
-          Container(
-            //color: Colors.blue,
-            height: height / 8,
-            child: Center(
-              child: Text(
-                "Programmes",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontSize: 24,
-                    fontFamily: 'Calibri',
-                    fontWeight: FontWeight.bold,
-                    color: PrimaryColor),
+          Column(
+            children: <Widget>[
+              Container(
+                //color: Colors.blue,
+                height: height / 12,
+                child: Center(
+                  child: Text(
+                    "Programmes",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontFamily: 'Calibri',
+                        fontWeight: FontWeight.bold,
+                        color: PrimaryColor),
+                  ),
+                ),
               ),
-            ),
-          ),
+              _buildSeparator(screenSize),
+            ],
+          )
         ],
       ),
     );

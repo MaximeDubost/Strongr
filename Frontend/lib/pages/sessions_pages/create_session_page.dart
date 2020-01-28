@@ -87,7 +87,7 @@ class CreateSessionPageState extends State<CreateSessionPage> {
               child: Visibility(
                 visible: _isEmptyList,
                 child: Text(
-                  "Aucun exercice.",
+                  "Ajoutez votre premier exercice.",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontSize: 18, fontFamily: 'Calibri', color: Colors.grey),
@@ -104,7 +104,7 @@ class CreateSessionPageState extends State<CreateSessionPage> {
                       height: height / 8,
                       child: Center(
                         child: Padding(
-                          padding: EdgeInsets.fromLTRB(50, 0, 50, 0),
+                          padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
                           child: TextFormField(
                             //autofocus: true,
                             //maxLength: 30,
@@ -116,7 +116,7 @@ class CreateSessionPageState extends State<CreateSessionPage> {
                             cursorColor: Colors.grey,
                             //controller: _emailController,
                             decoration: InputDecoration(
-                              hintText: "Libellé",
+                              hintText: "Nom de la séance",
                               hintStyle: TextStyle(fontSize: 16, fontFamily: 'Calibri', color: Colors.grey),
                               focusedBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(

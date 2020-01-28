@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../main.dart';
+import 'add_session_page.dart';
 
 class CreateProgramPage extends StatefulWidget {
   @override
@@ -26,8 +27,18 @@ class CreateProgramPageState extends State<CreateProgramPage> {
     globalKey.currentState.showSnackBar(snackBar);
   }
 
+  // Widget _buildSeparator(Size screenSize) {
+  //   return Container(
+  //     width: screenSize.width / 2,
+  //     height: 1.0,
+  //     color: SecondaryColor,
+  //     //margin: EdgeInsets.only(top: 4.0),
+  //   );
+  // }
+
   @override
   Widget build(BuildContext context) {
+    // Size screenSize = MediaQuery.of(context).size;
     double height = MediaQuery.of(context).size.height;
 
     return Scaffold(
@@ -60,6 +71,8 @@ class CreateProgramPageState extends State<CreateProgramPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           globalKey.currentState.hideCurrentSnackBar();
+          Navigator.of(context).push(CupertinoPageRoute(
+              builder: (BuildContext context) => AddSessionPage()));
         },
         // onPressed: () => Navigator.of(context).push(CupertinoPageRoute(
         //     builder: (BuildContext context) => AddSessionPage())),
@@ -74,7 +87,7 @@ class CreateProgramPageState extends State<CreateProgramPage> {
               child: Visibility(
                 visible: _isEmptyList,
                 child: Text(
-                  "Aucune séance.",
+                  "Ajoutez votre première séance.",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontSize: 18, fontFamily: 'Calibri', color: Colors.grey),
@@ -91,7 +104,7 @@ class CreateProgramPageState extends State<CreateProgramPage> {
                       height: height / 8,
                       child: Center(
                         child: Padding(
-                          padding: EdgeInsets.fromLTRB(50, 0, 50, 0),
+                          padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
                           child: TextFormField(
                             //autofocus: true,
                             //maxLength: 30,
@@ -103,7 +116,7 @@ class CreateProgramPageState extends State<CreateProgramPage> {
                             cursorColor: Colors.grey,
                             //controller: _emailController,
                             decoration: InputDecoration(
-                              labelText: 'Libellé',
+                              labelText: 'Nom du programme',
                               labelStyle: TextStyle(color: Colors.grey),
                               focusedBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(
@@ -114,6 +127,22 @@ class CreateProgramPageState extends State<CreateProgramPage> {
                         ),
                       ),
                     ),
+                    // Container(
+                    //   //color: Colors.yellow,
+                    //   height: height / 16,
+                    //   child: Padding(
+                    //     padding: EdgeInsets.fromLTRB(30, 10, 30, 0),
+                    //     child: Text(
+                    //       "Exercices",
+                    //       textAlign: TextAlign.center,
+                    //       style: TextStyle(
+                    //           fontSize: 18,
+                    //           fontFamily: 'Calibri',
+                    //           color: PrimaryColor),
+                    //     ),
+                    //   ),
+                    // ),
+                    // _buildSeparator(screenSize),
                     Visibility(
                       visible: !_isEmptyList,
                       child: Container(

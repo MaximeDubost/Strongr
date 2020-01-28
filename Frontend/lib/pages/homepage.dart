@@ -51,6 +51,7 @@ class HomepageState extends State<Homepage>
             onPressed: () => Navigator.of(context).push(CupertinoPageRoute(
                 builder: (BuildContext context) => ProfilePage())),
           ),
+          
         ],
         backgroundColor: PrimaryColor,
       ),

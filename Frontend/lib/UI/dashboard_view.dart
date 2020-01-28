@@ -59,7 +59,7 @@ class DashboardViewState extends State<DashboardView> {
                 child: Text(
                   "Allons-y !",
                   style: TextStyle(
-                      fontSize: 14, fontFamily: 'Calibri', color: Colors.white),
+                      fontSize: 16, fontFamily: 'Calibri', color: Colors.white),
                 ),
               ),
             ),
