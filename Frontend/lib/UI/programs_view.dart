@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app_test/pages/programs_pages/create_program_page.dart';
+import 'package:strongr/pages/programs_pages/create_program_page.dart';
 
 import '../main.dart';
 

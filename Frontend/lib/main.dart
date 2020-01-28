@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'pages/homepage.dart';
+import 'package:strongr/pages/others_pages/loading_page.dart';
 
 const LightGrey = Color.fromRGBO(201, 201, 201, 1.0);
 const LightLightGrey = Color.fromRGBO(222, 222, 222, 1.0);
@@ -40,7 +39,7 @@ void main() {
         primaryColor: PrimaryColor,
         accentColor: SecondaryColor,
       ),
-    // home: new LoadingPage(),
-    home: new Homepage(),
+    home: new LoadingPage(),
+    //home: new Homepage(),
   ));
 }

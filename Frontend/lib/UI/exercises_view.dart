@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app_test/pages/exercises_pages/exercise_page.dart';
-import 'package:flutter_app_test/pages/exercises_pages/search_exercise.dart';
+import 'package:strongr/pages/exercises_pages/exercise_page.dart';
+import 'package:strongr/pages/exercises_pages/search_exercise.dart';
 
 import '../main.dart';
 

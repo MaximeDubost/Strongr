@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import '../homepage.dart';
+import 'package:strongr/pages/others_pages/welcome_page.dart';
 
 class SignInPage extends StatefulWidget {
   @override
@@ -158,7 +157,7 @@ class SignInPageState extends State<SignInPage> {
       });
 
       Navigator.of(context).push(CupertinoPageRoute(
-          builder: (BuildContext context) => Homepage()));
+          builder: (BuildContext context) => WelcomePage()));
     } else
       setState(() {
         _validate = true;
