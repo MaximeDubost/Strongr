@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:strongr/pages/others_pages/welcome_page.dart';
+import 'package:strongr/pages/connection_pages/sign_in_second_page.dart';
 
 class SignInPage extends StatefulWidget {
   @override
@@ -16,12 +16,15 @@ class SignInPageState extends State<SignInPage> {
   TextEditingController _emailController,
       _passwordController,
       _confirmPasswordController;
-  String email, password, confirmPassword, conditionsTitle;
-  String firstCondition = "❌ 8 caractères";
-  String secondCondition = "❌ Une lettre minuscule";
-  String thirdCondition = "❌ Une lettre majuscule";
-  String fourthCondition = "❌ Un chiffre";
-  String fifthCondition = "❌ Un caractère spécial parmis @\$!%*?&";
+  String email,
+      password,
+      confirmPassword,
+      conditionsTitle,
+      firstCondition = "❌ 8 caractères",
+      secondCondition = "❌ Une lettre minuscule",
+      thirdCondition = "❌ Une lettre majuscule",
+      fourthCondition = "❌ Un chiffre",
+      fifthCondition = "❌ Un caractère spécial parmis @\$!%*?&";
   Text conditionsTitleText,
       firstConditionText,
       secondConditionText,
@@ -156,8 +159,10 @@ class SignInPageState extends State<SignInPage> {
         _isButtonEnabled = false;
       });
 
-      Navigator.of(context).push(CupertinoPageRoute(
-          builder: (BuildContext context) => WelcomePage()));
+      // Navigator.of(context).push(
+      //     CupertinoPageRoute(builder: (BuildContext context) => WelcomePage()));
+      Navigator.of(context).push(
+          CupertinoPageRoute(builder: (BuildContext context) => SignInSecondPage()));
     } else
       setState(() {
         _validate = true;
@@ -354,7 +359,7 @@ class SignInPageState extends State<SignInPage> {
                             }
                           : null,
                       child: Text(
-                        "S'inscrire",
+                        "Suivant",
                         style: TextStyle(
                             fontSize: 14,
                             fontFamily: 'Calibri',

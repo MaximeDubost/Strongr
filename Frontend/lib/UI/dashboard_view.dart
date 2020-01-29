@@ -21,7 +21,7 @@ class DashboardViewState extends State<DashboardView> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              "Bonjour, maxime.dbst ! ",
+              "Bonjour Maxime ! ",
               textAlign: TextAlign.center,
               style: TextStyle(
                   fontSize: 28,
