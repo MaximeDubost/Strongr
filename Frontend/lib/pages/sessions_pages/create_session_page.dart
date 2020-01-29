@@ -27,6 +27,7 @@ class CreateSessionPageState extends State<CreateSessionPage> {
   }
 
   void showSnackbar(BuildContext context) {
+    globalKey.currentState.removeCurrentSnackBar();
     final snackBar = SnackBar(
       content: Text('Vous ne pouvez pas créer une séance vide.'),
       backgroundColor: Colors.red,
@@ -70,7 +71,7 @@ class CreateSessionPageState extends State<CreateSessionPage> {
           // setState(() {
           //   _isEmptyList = !_isEmptyList;
           // });
-          globalKey.currentState.hideCurrentSnackBar();
+          globalKey.currentState.removeCurrentSnackBar();
           Navigator.of(context).push(CupertinoPageRoute(
                 builder: (BuildContext context) => AddExercisePage()));
         },

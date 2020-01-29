@@ -20,6 +20,7 @@ class CreateProgramPageState extends State<CreateProgramPage> {
   }
 
   void showSnackbar(BuildContext context) {
+    globalKey.currentState.removeCurrentSnackBar();
     final snackBar = SnackBar(
       content: Text('Vous ne pouvez pas créer un programme vide.'),
       backgroundColor: Colors.red,
@@ -70,7 +71,7 @@ class CreateProgramPageState extends State<CreateProgramPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          globalKey.currentState.hideCurrentSnackBar();
+          globalKey.currentState.removeCurrentSnackBar();
           Navigator.of(context).push(CupertinoPageRoute(
               builder: (BuildContext context) => AddSessionPage()));
         },
@@ -116,8 +117,8 @@ class CreateProgramPageState extends State<CreateProgramPage> {
                             cursorColor: Colors.grey,
                             //controller: _emailController,
                             decoration: InputDecoration(
-                              labelText: 'Nom du programme',
-                              labelStyle: TextStyle(color: Colors.grey),
+                              hintText: "Nom du programme",
+                              hintStyle: TextStyle(fontSize: 16, fontFamily: 'Calibri', color: Colors.grey),
                               focusedBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(
                                       color:

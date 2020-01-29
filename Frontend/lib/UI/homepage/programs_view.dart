@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:strongr/UI/order_by_dialog.dart';
 import 'package:strongr/pages/programs_pages/create_program_page.dart';
 
-import '../main.dart';
+import '../../main.dart';
 
 class ProgramsView extends StatefulWidget {
   @override
@@ -10,6 +11,8 @@ class ProgramsView extends StatefulWidget {
 }
 
 class ProgramsViewState extends State<ProgramsView> {
+  int _groupValue = 1;
+
   @override
   void initState() {
     super.initState();
@@ -69,16 +72,36 @@ class ProgramsViewState extends State<ProgramsView> {
               Container(
                 //color: Colors.blue,
                 height: height / 12,
-                child: Center(
-                  child: Text(
-                    "Programmes",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: 20,
-                        fontFamily: 'Calibri',
-                        fontWeight: FontWeight.bold,
-                        color: PrimaryColor),
-                  ),
+                child: Stack(
+                  children: <Widget>[
+                    Center(
+                      child: Text(
+                        "Programmes",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontFamily: 'Calibri',
+                            fontWeight: FontWeight.bold,
+                            color: PrimaryColor),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: IconButton(
+                        icon: Icon(Icons.list),
+                        color: DarkColor,
+                        iconSize: 28,
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return OrderByDialog();
+                            },
+                          );
+                        },
+                      ),
+                    )
+                  ],
                 ),
               ),
               _buildSeparator(screenSize),

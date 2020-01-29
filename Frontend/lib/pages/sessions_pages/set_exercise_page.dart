@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:strongr/pages/exercises_pages/exercise_page.dart';
 
 import '../../main.dart';
 
@@ -22,7 +23,6 @@ class SetExercisePageState extends State<SetExercisePage> {
     "Équipement 4",
     "Équipement 5",
   ];
-
   var _workMethodsList = [
     "Méthode de travail",
     "Méthode de travail 1",
@@ -54,7 +54,12 @@ class SetExercisePageState extends State<SetExercisePage> {
         ),
         actions: <Widget>[
           IconButton(
-              icon: Icon(Icons.check), color: Colors.white, onPressed: () {}),
+              icon: Icon(Icons.info_outline),
+              color: Colors.white,
+              onPressed: () {
+                Navigator.of(context).push(CupertinoPageRoute(
+              builder: (BuildContext context) => ExercisePage(widget._exerciseName)));
+              }),
         ],
         title: Text(widget._exerciseName),
         backgroundColor: PrimaryColor,
@@ -147,6 +152,11 @@ class SetExercisePageState extends State<SetExercisePage> {
             ),
           ),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: Icon(Icons.check),
+        backgroundColor: PrimaryColor,
       ),
     );
   }

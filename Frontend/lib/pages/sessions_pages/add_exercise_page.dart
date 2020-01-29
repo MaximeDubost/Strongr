@@ -50,14 +50,16 @@ class AddExercisePageState extends State<AddExercisePage> {
               )
             : Text("Ajouter un exercice"),
         actions: <Widget>[
-          IconButton(
-              icon: Icon(Icons.search),
-              color: Colors.white,
-              onPressed: () {
-                setState(() {
-                  _isSearching = true;
-                });
-              }),
+          !_isSearching
+              ? IconButton(
+                  icon: Icon(Icons.search),
+                  color: Colors.white,
+                  onPressed: () {
+                    setState(() {
+                      _isSearching = true;
+                    });
+                  })
+              : Container() //IconButton(icon: null, onPressed: () {},)
         ],
         backgroundColor: PrimaryColor,
       ),
@@ -96,15 +98,22 @@ class AddExercisePageState extends State<AddExercisePage> {
                                     item,
                                     //textAlign: TextAlign.left,
                                     style: TextStyle(
-                                        fontSize: 16,
-                                        fontFamily: 'Calibri',
-                                        fontWeight: FontWeight.w400,
-                                        ),
+                                      fontSize: 16,
+                                      fontFamily: 'Calibri',
+                                      fontWeight: FontWeight.w400,
+                                    ),
                                   ),
-                                  onTap: () => Navigator.of(context).push(
+                                  onTap: () {
+                                    Navigator.of(context).push(
                                       CupertinoPageRoute(
-                                          builder: (BuildContext context) =>
-                                              SetExercisePage(item))),
+                                        builder: (BuildContext context) =>
+                                            SetExercisePage(item),
+                                      ),
+                                    );
+                                    setState(() {
+                                      _isSearching = false;
+                                    });
+                                  },
                                 ),
                             ],
                           ),

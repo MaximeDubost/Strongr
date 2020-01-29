@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:strongr/pages/exercises_pages/exercise_page.dart';
 import 'package:strongr/pages/exercises_pages/search_exercise.dart';
 
-import '../main.dart';
+import '../../main.dart';
 
 class ExercisesView extends StatefulWidget {
   @override

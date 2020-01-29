@@ -2,7 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:strongr/pages/sessions_pages/create_session_page.dart';
 
-import '../main.dart';
+import '../../main.dart';
+import '../order_by_dialog.dart';
 
 class SessionsView extends StatefulWidget {
   @override
@@ -69,16 +70,36 @@ class SessionsViewState extends State<SessionsView> {
               Container(
                 //color: Colors.blue,
                 height: height / 12,
-                child: Center(
-                  child: Text(
-                    "Séances",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: 20,
-                        fontFamily: 'Calibri',
-                        fontWeight: FontWeight.bold,
-                        color: PrimaryColor),
-                  ),
+                child: Stack(
+                  children: <Widget>[
+                    Center(
+                      child: Text(
+                        "Séances",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontFamily: 'Calibri',
+                            fontWeight: FontWeight.bold,
+                            color: PrimaryColor),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: IconButton(
+                        icon: Icon(Icons.list),
+                        color: DarkColor,
+                        iconSize: 28,
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return OrderByDialog();
+                            },
+                          );
+                        },
+                      ),
+                    )
+                  ],
                 ),
               ),
               _buildSeparator(screenSize),

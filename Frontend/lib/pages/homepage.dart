@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:strongr/UI/dashboard_view.dart';
-import 'package:strongr/UI/exercises_view.dart';
-import 'package:strongr/UI/performances_view.dart';
-import 'package:strongr/UI/programs_view.dart';
-import 'package:strongr/UI/sessions_view.dart';
+import 'package:strongr/UI/homepage/dashboard_view.dart';
+import 'package:strongr/UI/homepage/exercises_view.dart';
+import 'package:strongr/UI/homepage/performances_view.dart';
+import 'package:strongr/UI/homepage/programs_view.dart';
+import 'package:strongr/UI/homepage/sessions_view.dart';
 
 import '../main.dart';
 import 'profile_pages/profile_page.dart';
