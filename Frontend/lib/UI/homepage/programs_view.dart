@@ -11,7 +11,6 @@ class ProgramsView extends StatefulWidget {
 }
 
 class ProgramsViewState extends State<ProgramsView> {
-  int _groupValue = 1;
 
   @override
   void initState() {

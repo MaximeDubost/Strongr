@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:strongr/pages/exercises_pages/exercise_page.dart';
+import 'package:flutter/services.dart';
 
 import '../../main.dart';
 
@@ -14,7 +14,12 @@ class SetExercisePage extends StatefulWidget {
 }
 
 class SetExercisePageState extends State<SetExercisePage> {
-  var _equipmentList = [
+  GlobalKey<FormState> _key = GlobalKey();
+  bool _unique = false, _validate = false, _visibility = false;
+  TextEditingController _seriesCountController;
+  int seriesCount, linesCount = 1;
+  String errorText = "";
+  List<String> _equipmentList = [
     "Équipement",
     "Aucun équipement",
     "Équipement 1",
@@ -23,7 +28,7 @@ class SetExercisePageState extends State<SetExercisePage> {
     "Équipement 4",
     "Équipement 5",
   ];
-  var _workMethodsList = [
+  List<String> _workMethodsList = [
     "Méthode de travail",
     "Méthode de travail 1",
     "Méthode de travail 2",
@@ -36,15 +41,60 @@ class SetExercisePageState extends State<SetExercisePage> {
   @override
   void initState() {
     super.initState();
+    _seriesCountController = TextEditingController(text: "");
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _seriesCountController.dispose();
+  }
+
+  String validateSeriesCount(String value) {
+    // if (value.length == 0)
+    //   return "Vous devez renseigner un nombre de séries";
+    // if (value.startsWith("0"))
+    //   return "Format incorrect";
+    // if (int.parse(value) < 1)
+    //   return "Vous ne pouvez pas effectuer moins d'une série";
+    // if (int.parse(value) > 10)
+    //   return "Vous ne pouvez pas effectuer plus de 10 séries";
+    
+    if(value.length == 0 || value.startsWith("0") || int.parse(value) < 1 || int.parse(value) > 10)
+      return "";
+    else
+      return null;
+  }
+
+  void sendToServer() {
+    if (_key.currentState.validate() && _seriesCountController.text != "") {
+      _key.currentState.save();
+      setState(() {
+        seriesCount = int.parse(_seriesCountController.text);
+      });
+    } else {
+      setState(() {
+        _validate = true;
+      });
+    }
+  }
+
+  Widget _buildSeparator(Size screenSize) {
+    return Container(
+      width: screenSize.width,
+      height: 0.2,
+      color: Colors.grey,
+      margin: EdgeInsets.only(top: 4.0),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     //double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
+    Size screenSize = MediaQuery.of(context).size;
 
     return Scaffold(
-      //key: globalKey,
       appBar: AppBar(
         centerTitle: true,
         leading: IconButton(
@@ -54,11 +104,10 @@ class SetExercisePageState extends State<SetExercisePage> {
         ),
         actions: <Widget>[
           IconButton(
-              icon: Icon(Icons.info_outline),
+              icon: Icon(Icons.check),
               color: Colors.white,
               onPressed: () {
-                Navigator.of(context).push(CupertinoPageRoute(
-              builder: (BuildContext context) => ExercisePage(widget._exerciseName)));
+                sendToServer();
               }),
         ],
         title: Text(widget._exerciseName),
@@ -67,96 +116,246 @@ class SetExercisePageState extends State<SetExercisePage> {
       body: Container(
         child: Center(
           child: Form(
+            key: _key,
+            autovalidate: _validate,
             child: Column(
               children: <Widget>[
                 Container(
-                  width: width,
-                  child: Padding(
-                    padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                    child: DropdownButtonFormField(
-                      onChanged: (newValue) {},
-                      items: <DropdownMenuItem>[
-                        for (var item in _equipmentList)
-                          DropdownMenuItem(
-                            child: Text(item),
+                  //color: Colors.blue,
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        width: width,
+                        child: Padding(
+                          padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                          child: DropdownButtonFormField(
+                            onChanged: (newValue) {},
+                            items: <DropdownMenuItem>[
+                              for (var item in _equipmentList)
+                                DropdownMenuItem(
+                                  child: Text(item),
+                                ),
+                            ],
+                            hint: Text("Équipement"),
                           ),
-                      ],
-                      hint: Text("Équipement"),
-                    ),
+                        ),
+                      ),
+                      Container(
+                        width: width,
+                        child: Padding(
+                          padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                          child: DropdownButtonFormField(
+                            onChanged: (newValue) {},
+                            items: <DropdownMenuItem>[
+                              for (var item in _workMethodsList)
+                                DropdownMenuItem(
+                                  child: Text(item),
+                                ),
+                            ],
+                            hint: Text("Méthode de travail"),
+                          ),
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Flexible(
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(20, 20, 5, 20),
+                              child: TextFormField(
+                                  maxLength: 2,
+                                  validator: validateSeriesCount,
+                                  onSaved: (String value) {
+                                    seriesCount = int.parse(value);
+                                  },
+                                  keyboardType: TextInputType.number,
+                                  inputFormatters: <TextInputFormatter>[
+                                    WhitelistingTextInputFormatter.digitsOnly
+                                  ],
+                                  cursorColor: Colors.grey,
+                                  controller: _seriesCountController,
+                                  decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.all(10),
+                                    labelText: 'Séries',
+                                    labelStyle: TextStyle(color: Colors.grey),
+                                    counterText: "",
+                                  ),
+                                  onChanged: (newValue) {
+                                    if (_seriesCountController.text == "" ||
+                                        _seriesCountController.text
+                                            .startsWith("0") ||
+                                        int.parse(_seriesCountController.text) <
+                                            1 ||
+                                        int.parse(_seriesCountController.text) >
+                                            10) {
+                                      setState(() {
+                                        _visibility = false;
+                                        linesCount = 0;
+                                        print(linesCount);
+                                      });
+                                    } else {
+                                      setState(() {
+                                        _visibility = true;
+                                      });
+                                      if (_unique) {
+                                        linesCount = int.parse(newValue);
+                                        print(linesCount);
+                                      } else {
+                                        linesCount = 1;
+                                        print(linesCount);
+                                      }
+                                    }
+                                  }),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
+                            child: Text(
+                              "Rendre chaque série unique",
+                              style:
+                                  TextStyle(color: Colors.grey, fontSize: 16),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
+                            child: Switch(
+                                value: _unique,
+                                onChanged: !(_seriesCountController.text ==
+                                            "" ||
+                                        _seriesCountController.text
+                                            .startsWith("0") ||
+                                        int.parse(
+                                                _seriesCountController.text) <=
+                                            1 ||
+                                        int.parse(_seriesCountController.text) >
+                                            10)
+                                    ? (newValue) {
+                                        FocusScope.of(context).unfocus();
+                                        setState(() {
+                                          _unique = !_unique;
+                                        });
+                                        if (_unique == false) {
+                                          linesCount = 1;
+                                          print(linesCount);
+                                        } else if (_seriesCountController.text ==
+                                                "" ||
+                                            _seriesCountController.text
+                                                .startsWith("0") ||
+                                            int.parse(_seriesCountController
+                                                    .text) <
+                                                1 ||
+                                            int.parse(_seriesCountController
+                                                    .text) >
+                                                10) {
+                                          linesCount = 0;
+                                          print(linesCount);
+                                        } else {
+                                          linesCount = int.parse(
+                                              _seriesCountController.text);
+                                          print(linesCount);
+                                        }
+                                      }
+                                    : null),
+                          ),
+                        ],
+                      ),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                        child: Text(_validate ? errorText : ""),
+                      ),
+                    ],
                   ),
                 ),
-                Container(
-                  width: width,
-                  child: Padding(
-                    padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                    child: DropdownButtonFormField(
-                      onChanged: (newValue) {},
-                      items: <DropdownMenuItem>[
-                        for (var item in _workMethodsList)
-                          DropdownMenuItem(
-                            child: Text(item),
-                          ),
-                      ],
-                      hint: Text("Méthode de travail"),
+                Visibility(
+                  visible: _visibility,
+                  child: _buildSeparator(screenSize),
+                ),
+                Expanded(
+                  child: Visibility(
+                    visible: _visibility,
+                    child: Container(
+                      //color: Colors.cyan,
+                      child: ListView(
+                        children: <Widget>[
+                          for (int i = 0; i < linesCount; i++)
+                            Row(
+                              children: <Widget>[
+                                Padding(
+                                  padding: EdgeInsets.only(left: 20),
+                                  child: Text(
+                                    _unique ? (i + 1).toString() : "-",
+                                    style: TextStyle(
+                                        color: SecondaryColor,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                Flexible(
+                                  child: Row(
+                                    children: <Widget>[
+                                      Flexible(
+                                        child: Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              20, 10, 5, 10),
+                                          child: TextFormField(
+                                            maxLength: 3,
+                                            keyboardType: TextInputType.number,
+                                            cursorColor: Colors.grey,
+                                            decoration: InputDecoration(
+                                              contentPadding:
+                                                  EdgeInsets.all(10),
+                                              labelText: 'Répétitions',
+                                              labelStyle:
+                                                  TextStyle(color: Colors.grey),
+                                              counterText: "",
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Flexible(
+                                        child: Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              5, 10, 5, 10),
+                                          child: TextFormField(
+                                            maxLength: 5,
+                                            keyboardType:
+                                                TextInputType.datetime,
+                                            cursorColor: Colors.grey,
+                                            decoration: InputDecoration(
+                                              contentPadding:
+                                                  EdgeInsets.all(10),
+                                              labelText: 'Repos',
+                                              labelStyle:
+                                                  TextStyle(color: Colors.grey),
+                                              counterText: "",
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 10),
+                                  child: IconButton(
+                                    icon: Icon(
+                                      Icons.tune,
+                                      color: Colors.grey,
+                                    ),
+                                    onPressed: () {},
+                                  ),
+                                ),
+                              ],
+                            ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Flexible(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 20, 5, 20),
-                        child: TextFormField(
-                          keyboardType: TextInputType.number,
-                          cursorColor: Colors.grey,
-                          decoration: InputDecoration(
-                            contentPadding: EdgeInsets.all(10),
-                            labelText: 'Séries',
-                            labelStyle: TextStyle(color: Colors.grey),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Flexible(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(5, 20, 5, 20),
-                        child: TextFormField(
-                          keyboardType: TextInputType.number,
-                          cursorColor: Colors.grey,
-                          decoration: InputDecoration(
-                            contentPadding: EdgeInsets.all(10),
-                            labelText: 'Répétitions',
-                            labelStyle: TextStyle(color: Colors.grey),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Flexible(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(5, 20, 20, 20),
-                        child: TextFormField(
-                          keyboardType: TextInputType.datetime,
-                          cursorColor: Colors.grey,
-                          decoration: InputDecoration(
-                            contentPadding: EdgeInsets.all(10),
-                            labelText: 'Repos',
-                            labelStyle: TextStyle(color: Colors.grey),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
                 ),
               ],
             ),
           ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: Icon(Icons.check),
-        backgroundColor: PrimaryColor,
       ),
     );
   }
