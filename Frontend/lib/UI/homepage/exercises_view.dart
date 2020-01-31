@@ -59,14 +59,14 @@ class ExercisesViewState extends State<ExercisesView> {
       body: Stack(
         children: <Widget>[
           Container(
-            //color: Colors.red,
+            // color: Colors.red,
             height: height,
             child: Center(child: exerciseList),
           ),
           Column(
             children: <Widget>[
               Container(
-                //color: Colors.blue,
+                // color: Colors.blue,
                 height: height / 12,
                 child: Center(
                   child: Text(
@@ -108,7 +108,7 @@ class ExercisesViewState extends State<ExercisesView> {
                     ],
                   ),
                 ),
-              )
+              ),
             ],
           )
         ],

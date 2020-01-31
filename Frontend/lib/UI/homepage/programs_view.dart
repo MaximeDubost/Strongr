@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:strongr/UI/order_by_dialog.dart';
 import 'package:strongr/pages/programs_pages/create_program_page.dart';
+import 'package:strongr/pages/programs_pages/program_page.dart';
 
 import '../../main.dart';
+import '../order_by_dialog.dart';
 
 class ProgramsView extends StatefulWidget {
   @override
@@ -11,6 +12,8 @@ class ProgramsView extends StatefulWidget {
 }
 
 class ProgramsViewState extends State<ProgramsView> {
+  List<String> _programsList = ["Programme 1","Programme 2", "Programme 3"];
+  bool _isEmptyList;
 
   @override
   void initState() {
@@ -30,9 +33,10 @@ class ProgramsViewState extends State<ProgramsView> {
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
     double height = MediaQuery.of(context).size.height;
+    _isEmptyList = _programsList.length == 0 ? true : false;
 
-    Visibility programList = Visibility(
-      visible: false,
+    Visibility programsList = Visibility(
+      visible: !_isEmptyList,
       child: Container(
         color: Colors.green,
       ),
@@ -47,22 +51,25 @@ class ProgramsViewState extends State<ProgramsView> {
       ),
       body: Stack(
         children: <Widget>[
-          Container(
-            //color: Colors.red,
-            height: height,
-            child: Center(
-              child: Stack(
-                children: <Widget>[
-                  Text(
-                    "Aucun programme.",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontFamily: 'Calibri',
-                        color: Colors.grey),
-                  ),
-                  programList
-                ],
+          Visibility(
+            visible: _isEmptyList,
+            child: Container(
+              //color: Colors.red,
+              height: height,
+              child: Center(
+                child: Stack(
+                  children: <Widget>[
+                    Text(
+                      "Aucun programme.",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontFamily: 'Calibri',
+                          color: Colors.grey),
+                    ),
+                    programsList
+                  ],
+                ),
               ),
             ),
           ),
@@ -104,6 +111,34 @@ class ProgramsViewState extends State<ProgramsView> {
                 ),
               ),
               _buildSeparator(screenSize),
+              Expanded(
+                child: Container(
+                  //color: Colors.indigo,
+                  child: ListView(
+                    children: <Widget>[
+                      for (final item in _programsList)
+                        ListTile(
+                          key: ValueKey(item),
+                          // leading: Icon(Icons.add),
+                          title: Text(
+                            item,
+                            //textAlign: TextAlign.left,
+                            style: TextStyle(
+                                fontSize: 18,
+                                fontFamily: 'Calibri',
+                                fontWeight: FontWeight.w400,
+                                color: Colors.grey),
+                          ),
+                          // trailing: Icon(Icons.help_outline),
+                          onTap: () => Navigator.of(context).push(
+                              CupertinoPageRoute(
+                                  builder: (BuildContext context) =>
+                                      ProgramPage(item))),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
             ],
           )
         ],

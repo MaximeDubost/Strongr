@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:strongr/pages/sessions_pages/create_session_page.dart';
+import 'package:strongr/pages/sessions_pages/session_page.dart';
 
 import '../../main.dart';
 import '../order_by_dialog.dart';
@@ -11,6 +12,9 @@ class SessionsView extends StatefulWidget {
 }
 
 class SessionsViewState extends State<SessionsView> {
+  List<String> _sessionsList = ["Séance 1", "Séance 2", "Séance 3"];
+  bool _isEmptyList;
+
   @override
   void initState() {
     super.initState();
@@ -29,9 +33,10 @@ class SessionsViewState extends State<SessionsView> {
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
     double height = MediaQuery.of(context).size.height;
+    _isEmptyList = _sessionsList.length == 0 ? true : false;
 
     Visibility sessionsList = Visibility(
-      visible: false,
+      visible: !_isEmptyList,
       child: Container(
         color: Colors.green,
       ),
@@ -46,22 +51,25 @@ class SessionsViewState extends State<SessionsView> {
       ),
       body: Stack(
         children: <Widget>[
-          Container(
-            //color: Colors.red,
-            height: height,
-            child: Center(
-              child: Stack(
-                children: <Widget>[
-                  Text(
-                    "Aucune séance.",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontFamily: 'Calibri',
-                        color: Colors.grey),
-                  ),
-                  sessionsList
-                ],
+          Visibility(
+            visible: _isEmptyList,
+            child: Container(
+              //color: Colors.red,
+              height: height,
+              child: Center(
+                child: Stack(
+                  children: <Widget>[
+                    Text(
+                      "Aucune séance.",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontFamily: 'Calibri',
+                          color: Colors.grey),
+                    ),
+                    sessionsList
+                  ],
+                ),
               ),
             ),
           ),
@@ -103,6 +111,34 @@ class SessionsViewState extends State<SessionsView> {
                 ),
               ),
               _buildSeparator(screenSize),
+              Expanded(
+                child: Container(
+                  //color: Colors.indigo,
+                  child: ListView(
+                    children: <Widget>[
+                      for (final item in _sessionsList)
+                        ListTile(
+                          key: ValueKey(item),
+                          // leading: Icon(Icons.add),
+                          title: Text(
+                            item,
+                            //textAlign: TextAlign.left,
+                            style: TextStyle(
+                                fontSize: 18,
+                                fontFamily: 'Calibri',
+                                fontWeight: FontWeight.w400,
+                                color: Colors.grey),
+                          ),
+                          // trailing: Icon(Icons.help_outline),
+                          onTap: () => Navigator.of(context).push(
+                              CupertinoPageRoute(
+                                  builder: (BuildContext context) =>
+                                      SessionPage(item))),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
             ],
           )
         ],

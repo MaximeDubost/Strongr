@@ -37,10 +37,27 @@ class PerformancesViewState extends State<PerformancesView> {
     return Scaffold(
       body: Stack(
         children: <Widget>[
-          Container(
-            //color: Colors.red,
-            height: height,
-            child: Center(child: exerciseList),
+          Visibility(
+            visible: true,
+            child: Container(
+              //color: Colors.red,
+              height: height,
+              child: Center(
+                child: Stack(
+                  children: <Widget>[
+                    Text(
+                      "Bientôt disponible...",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontFamily: 'Calibri',
+                          color: Colors.grey),
+                    ),
+                    // performancesList
+                  ],
+                ),
+              ),
+            ),
           ),
           Column(
             children: <Widget>[

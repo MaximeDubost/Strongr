@@ -84,7 +84,6 @@ class SetExercisePageState extends State<SetExercisePage> {
       width: screenSize.width,
       height: 0.2,
       color: Colors.grey,
-      margin: EdgeInsets.only(top: 4.0),
     );
   }
 
