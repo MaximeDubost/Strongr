@@ -14,7 +14,6 @@ class ExercisePage extends StatefulWidget {
 class ExercisePageState extends State<ExercisePage> {
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -25,6 +24,14 @@ class ExercisePageState extends State<ExercisePage> {
         ),
         title: Text(widget._exerciseName),
         backgroundColor: PrimaryColor,
+      ),
+      body: Center(
+        child: Text(
+          "Bientôt disponible.",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              fontSize: 18, fontFamily: 'Calibri', color: Colors.grey),
+        ),
       ),
     );
   }

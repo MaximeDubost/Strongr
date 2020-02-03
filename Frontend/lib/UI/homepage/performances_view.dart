@@ -27,12 +27,12 @@ class PerformancesViewState extends State<PerformancesView> {
     Size screenSize = MediaQuery.of(context).size;
     double height = MediaQuery.of(context).size.height;
 
-    Visibility exerciseList = Visibility(
-      visible: false,
-      child: Container(
-        color: Colors.green,
-      ),
-    );
+    // Visibility performancesList = Visibility(
+    //   visible: false,
+    //   child: Container(
+    //     color: Colors.green,
+    //   ),
+    // );
 
     return Scaffold(
       body: Stack(
@@ -46,7 +46,7 @@ class PerformancesViewState extends State<PerformancesView> {
                 child: Stack(
                   children: <Widget>[
                     Text(
-                      "Bientôt disponible...",
+                      "Bientôt disponible.",
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontSize: 18,

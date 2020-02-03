@@ -4,7 +4,7 @@ import 'package:strongr/pages/sessions_pages/create_session_page.dart';
 import 'package:strongr/pages/sessions_pages/session_page.dart';
 
 import '../../main.dart';
-import '../order_by_dialog.dart';
+import '../dialogs/order_by_dialog.dart';
 
 class SessionsView extends StatefulWidget {
   @override
@@ -12,7 +12,7 @@ class SessionsView extends StatefulWidget {
 }
 
 class SessionsViewState extends State<SessionsView> {
-  List<String> _sessionsList = ["Séance 1", "Séance 2", "Séance 3"];
+  List<String> _sessionsList = SessionsList;
   bool _isEmptyList;
 
   @override
@@ -101,12 +101,12 @@ class SessionsViewState extends State<SessionsView> {
                           showDialog(
                             context: context,
                             builder: (context) {
-                              return OrderByDialog();
+                              return OrderByDialog(["Date de création", "Ordre alphabétique"]);
                             },
                           );
                         },
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -126,9 +126,14 @@ class SessionsViewState extends State<SessionsView> {
                             style: TextStyle(
                                 fontSize: 18,
                                 fontFamily: 'Calibri',
-                                fontWeight: FontWeight.w400,
+                                fontWeight: FontWeight.w500,
                                 color: Colors.grey),
                           ),
+                          subtitle: Text("4 exercices", style: TextStyle(
+                                fontSize: 16,
+                                fontFamily: 'Calibri',
+                                fontWeight: FontWeight.w400,
+                                color: Colors.grey)),
                           // trailing: Icon(Icons.help_outline),
                           onTap: () => Navigator.of(context).push(
                               CupertinoPageRoute(
@@ -140,7 +145,7 @@ class SessionsViewState extends State<SessionsView> {
                 ),
               ),
             ],
-          )
+          ),
         ],
       ),
     );

@@ -36,29 +36,29 @@ class SearchExercisePageState extends State<SearchExercisePage> {
         backgroundColor: PrimaryColor,
       ),
       body: Container(
-          //color: Colors.indigo,
-          child: ListView(
-            children: <Widget>[
-              for (final item in _exercisesList)
-                ListTile(
-                  key: ValueKey(item),
-                  // leading: Icon(Icons.add),
-                  title: Text(
-                    item,
-                    //textAlign: TextAlign.left,
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontFamily: 'Calibri',
-                        fontWeight: FontWeight.w400,
-                        color: Colors.grey),
-                  ),
-                  trailing: Icon(Icons.help_outline),
-                  onTap: () => Navigator.of(context).push(CupertinoPageRoute(
-                      builder: (BuildContext context) => ExercisePage(item))),
+        //color: Colors.indigo,
+        child: ListView(
+          children: <Widget>[
+            for (final item in _exercisesList)
+              ListTile(
+                key: ValueKey(item),
+                // leading: Icon(Icons.add),
+                title: Text(
+                  item,
+                  //textAlign: TextAlign.left,
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontFamily: 'Calibri',
+                      fontWeight: FontWeight.w500,
+                      color: Colors.grey),
                 ),
-            ],
-          ),
+                // trailing: Icon(Icons.help_outline),
+                onTap: () => Navigator.of(context).push(CupertinoPageRoute(
+                    builder: (BuildContext context) => ExercisePage(item))),
+              ),
+          ],
         ),
+      ),
     );
   }
 }

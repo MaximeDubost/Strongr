@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 
-class OrderByDialog extends StatefulWidget {
-  const OrderByDialog({this.onValueChange, this.initialValue});
+import '../../main.dart';
 
+class OrderByDialog extends StatefulWidget {
+  const OrderByDialog(this.orderByList, {this.onValueChange, this.initialValue});
+
+  final List<String> orderByList;
   final int initialValue;
   final void Function(int) onValueChange;
 
@@ -21,12 +24,18 @@ class OrderByDialogState extends State<OrderByDialog> {
 
   Widget build(BuildContext context) {
     return SimpleDialog(
-      title: Text("Trier par"),
+      title: Text(
+        "Trier par",
+        style: TextStyle(
+            color: PrimaryColor, fontSize: 20, fontWeight: FontWeight.bold),
+      ),
+      
       children: <Widget>[
+        for(String item in widget.orderByList)
         Row(
           children: <Widget>[
             Radio(
-              value: 1,
+              value: widget.orderByList.indexOf(item) + 1,
               groupValue: _groupValue,
               onChanged: (newValue) {
                 setState(
@@ -34,45 +43,22 @@ class OrderByDialogState extends State<OrderByDialog> {
                     _groupValue = newValue;
                   },
                 );
+                Navigator.of(context).pop();
               },
             ),
             FlatButton(
+              splashColor: VeryLightGrey,
               onPressed: () {
                 setState(
                   () {
-                    _groupValue = 1;
+                    _groupValue = widget.orderByList.indexOf(item) + 1;
                   },
                 );
+                Navigator.of(context).pop();
               },
               child: Text(
-                "Date de création",
-              ),
-            ),
-          ],
-        ),
-        Row(
-          children: <Widget>[
-            Radio(
-              value: 2,
-              groupValue: _groupValue,
-              onChanged: (newValue) {
-                setState(
-                  () {
-                    _groupValue = newValue;
-                  },
-                );
-              },
-            ),
-            FlatButton(
-              onPressed: () {
-                setState(
-                  () {
-                    _groupValue = 2;
-                  },
-                );
-              },
-              child: Text(
-                "Ordre alphabétique",
+                item,
+                style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 16),
               ),
             ),
           ],

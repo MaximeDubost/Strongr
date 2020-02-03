@@ -8,6 +8,8 @@ class DashboardView extends StatefulWidget {
 }
 
 class DashboardViewState extends State<DashboardView> {
+  List<String> _currentSessionsList = SessionsList;
+
   @override
   void initState() {
     super.initState();
@@ -15,7 +17,6 @@ class DashboardViewState extends State<DashboardView> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: Container(
@@ -48,12 +49,16 @@ class DashboardViewState extends State<DashboardView> {
               Padding(
                 padding: EdgeInsets.only(top: 10),
                 child: DropdownButton(
-                  
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontFamily: 'Calibri',
+                      fontWeight: FontWeight.w400,
+                      color: Colors.grey),
                   onChanged: (newValue) {},
                   items: <DropdownMenuItem>[
-                    //for (var item in _currentSessionsList)
+                    for (var item in _currentSessionsList)
                     DropdownMenuItem(
-                      child: Text("Ma séance de force" /*item*/),
+                      child: Text(item),
                     ),
                   ],
                   hint: Text("Équipement"),
@@ -78,6 +83,10 @@ class DashboardViewState extends State<DashboardView> {
                   "C'est parti !",
                   style: TextStyle(
                       fontSize: 16, fontFamily: 'Calibri', color: Colors.white),
+                ),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18.0),
+                    // side: BorderSide(color: SecondaryColor)
                 ),
               ),
             ],

@@ -59,8 +59,11 @@ class SetExercisePageState extends State<SetExercisePage> {
     //   return "Vous ne pouvez pas effectuer moins d'une série";
     // if (int.parse(value) > 10)
     //   return "Vous ne pouvez pas effectuer plus de 10 séries";
-    
-    if(value.length == 0 || value.startsWith("0") || int.parse(value) < 1 || int.parse(value) > 10)
+
+    if (value.length == 0 ||
+        value.startsWith("0") ||
+        int.parse(value) < 1 ||
+        int.parse(value) > 10)
       return "";
     else
       return null;
@@ -89,7 +92,7 @@ class SetExercisePageState extends State<SetExercisePage> {
 
   @override
   Widget build(BuildContext context) {
-    //double height = MediaQuery.of(context).size.height;
+    double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     Size screenSize = MediaQuery.of(context).size;
 
@@ -128,6 +131,11 @@ class SetExercisePageState extends State<SetExercisePage> {
                         child: Padding(
                           padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
                           child: DropdownButtonFormField(
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontFamily: 'Calibri',
+                                fontWeight: FontWeight.w400,
+                                color: Colors.grey),
                             onChanged: (newValue) {},
                             items: <DropdownMenuItem>[
                               for (var item in _equipmentList)
@@ -140,10 +148,16 @@ class SetExercisePageState extends State<SetExercisePage> {
                         ),
                       ),
                       Container(
+                        // color: Colors.red,
                         width: width,
                         child: Padding(
                           padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
                           child: DropdownButtonFormField(
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontFamily: 'Calibri',
+                                fontWeight: FontWeight.w400,
+                                color: Colors.grey),
                             onChanged: (newValue) {},
                             items: <DropdownMenuItem>[
                               for (var item in _workMethodsList)
@@ -155,113 +169,143 @@ class SetExercisePageState extends State<SetExercisePage> {
                           ),
                         ),
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Flexible(
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(20, 20, 5, 20),
-                              child: TextFormField(
-                                  maxLength: 2,
-                                  validator: validateSeriesCount,
-                                  onSaved: (String value) {
-                                    seriesCount = int.parse(value);
-                                  },
-                                  keyboardType: TextInputType.number,
-                                  inputFormatters: <TextInputFormatter>[
-                                    WhitelistingTextInputFormatter.digitsOnly
-                                  ],
-                                  cursorColor: Colors.grey,
-                                  controller: _seriesCountController,
-                                  decoration: InputDecoration(
-                                    contentPadding: EdgeInsets.all(10),
-                                    labelText: 'Séries',
-                                    labelStyle: TextStyle(color: Colors.grey),
-                                    counterText: "",
+                      Container(
+                        // color: Colors.blue,
+                        child: Column(
+                          children: <Widget>[
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Flexible(
+                                  child: Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                        20, 20, 5, 20),
+                                    child: Container(
+                                      // color: Colors.red,
+                                      height: height / 8,
+                                      child: TextFormField(
+                                        maxLength: 2,
+                                        validator: validateSeriesCount,
+                                        onSaved: (String value) {
+                                          seriesCount = int.parse(value);
+                                        },
+                                        keyboardType: TextInputType.number,
+                                        inputFormatters: <TextInputFormatter>[
+                                          WhitelistingTextInputFormatter
+                                              .digitsOnly
+                                        ],
+                                        cursorColor: Colors.grey,
+                                        controller: _seriesCountController,
+                                        decoration: InputDecoration(
+                                          contentPadding: EdgeInsets.all(10),
+                                          labelText: 'Séries',
+                                          labelStyle:
+                                              TextStyle(color: Colors.grey),
+                                          counterText: "",
+                                        ),
+                                        onChanged: (newValue) {
+                                          if (_seriesCountController.text ==
+                                                  "" ||
+                                              _seriesCountController.text
+                                                  .startsWith("0") ||
+                                              int.parse(_seriesCountController
+                                                      .text) <
+                                                  1 ||
+                                              int.parse(_seriesCountController
+                                                      .text) >
+                                                  10) {
+                                            setState(() {
+                                              _visibility = false;
+                                              linesCount = 0;
+                                              print(linesCount);
+                                            });
+                                          } else {
+                                            setState(() {
+                                              _visibility = true;
+                                            });
+                                            if (_unique) {
+                                              linesCount = int.parse(newValue);
+                                              print(linesCount);
+                                            } else {
+                                              linesCount = 1;
+                                              print(linesCount);
+                                            }
+                                          }
+                                        }),
+                                    )
                                   ),
-                                  onChanged: (newValue) {
-                                    if (_seriesCountController.text == "" ||
-                                        _seriesCountController.text
-                                            .startsWith("0") ||
-                                        int.parse(_seriesCountController.text) <
-                                            1 ||
-                                        int.parse(_seriesCountController.text) >
-                                            10) {
-                                      setState(() {
-                                        _visibility = false;
-                                        linesCount = 0;
-                                        print(linesCount);
-                                      });
-                                    } else {
-                                      setState(() {
-                                        _visibility = true;
-                                      });
-                                      if (_unique) {
-                                        linesCount = int.parse(newValue);
-                                        print(linesCount);
-                                      } else {
-                                        linesCount = 1;
-                                        print(linesCount);
-                                      }
-                                    }
-                                  }),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
+                                  child: Text(
+                                    "Rendre chaque série unique",
+                                    style: TextStyle(
+                                        color: Colors.grey, fontSize: 16, fontFamily: 'Calibri', fontWeight: FontWeight.w400),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
+                                  child: Switch(
+                                      value: _unique,
+                                      onChanged:
+                                          !(_seriesCountController.text == "" ||
+                                                  _seriesCountController.text
+                                                      .startsWith("0") ||
+                                                  int.parse(
+                                                          _seriesCountController
+                                                              .text) <=
+                                                      1 ||
+                                                  int.parse(
+                                                          _seriesCountController
+                                                              .text) >
+                                                      10)
+                                              ? (newValue) {
+                                                  FocusScope.of(context)
+                                                      .unfocus();
+                                                  setState(() {
+                                                    _unique = !_unique;
+                                                  });
+                                                  if (_unique == false) {
+                                                    linesCount = 1;
+                                                    print(linesCount);
+                                                  } else if (_seriesCountController
+                                                              .text ==
+                                                          "" ||
+                                                      _seriesCountController
+                                                          .text
+                                                          .startsWith("0") ||
+                                                      int.parse(
+                                                              _seriesCountController
+                                                                  .text) <
+                                                          1 ||
+                                                      int.parse(
+                                                              _seriesCountController
+                                                                  .text) >
+                                                          10) {
+                                                    linesCount = 0;
+                                                    print(linesCount);
+                                                  } else {
+                                                    linesCount = int.parse(
+                                                        _seriesCountController
+                                                            .text);
+                                                    print(linesCount);
+                                                  }
+                                                }
+                                              : null),
+                                ),
+                              ],
                             ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
-                            child: Text(
-                              "Rendre chaque série unique",
-                              style:
-                                  TextStyle(color: Colors.grey, fontSize: 16),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
-                            child: Switch(
-                                value: _unique,
-                                onChanged: !(_seriesCountController.text ==
-                                            "" ||
-                                        _seriesCountController.text
-                                            .startsWith("0") ||
-                                        int.parse(
-                                                _seriesCountController.text) <=
-                                            1 ||
-                                        int.parse(_seriesCountController.text) >
-                                            10)
-                                    ? (newValue) {
-                                        FocusScope.of(context).unfocus();
-                                        setState(() {
-                                          _unique = !_unique;
-                                        });
-                                        if (_unique == false) {
-                                          linesCount = 1;
-                                          print(linesCount);
-                                        } else if (_seriesCountController.text ==
-                                                "" ||
-                                            _seriesCountController.text
-                                                .startsWith("0") ||
-                                            int.parse(_seriesCountController
-                                                    .text) <
-                                                1 ||
-                                            int.parse(_seriesCountController
-                                                    .text) >
-                                                10) {
-                                          linesCount = 0;
-                                          print(linesCount);
-                                        } else {
-                                          linesCount = int.parse(
-                                              _seriesCountController.text);
-                                          print(linesCount);
-                                        }
-                                      }
-                                    : null),
-                          ),
-                        ],
+                            // Padding(
+                            //   padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
+                            //   child: Text(_validate ? errorText : ""),
+                            // ),
+                          ],
+                        ),
                       ),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                        child: Text(_validate ? errorText : ""),
-                      ),
+                      // Padding(
+                      //   padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                      //   child: Text(_validate ? errorText : ""),
+                      // ),
                     ],
                   ),
                 ),

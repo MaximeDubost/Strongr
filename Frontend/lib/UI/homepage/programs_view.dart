@@ -4,7 +4,7 @@ import 'package:strongr/pages/programs_pages/create_program_page.dart';
 import 'package:strongr/pages/programs_pages/program_page.dart';
 
 import '../../main.dart';
-import '../order_by_dialog.dart';
+import '../dialogs/order_by_dialog.dart';
 
 class ProgramsView extends StatefulWidget {
   @override
@@ -12,7 +12,7 @@ class ProgramsView extends StatefulWidget {
 }
 
 class ProgramsViewState extends State<ProgramsView> {
-  List<String> _programsList = ["Programme 1","Programme 2", "Programme 3"];
+  List<String> _programsList = ProgramsList;
   bool _isEmptyList;
 
   @override
@@ -101,7 +101,7 @@ class ProgramsViewState extends State<ProgramsView> {
                           showDialog(
                             context: context,
                             builder: (context) {
-                              return OrderByDialog();
+                              return OrderByDialog(["Date de création", "Ordre alphabétique"]);
                             },
                           );
                         },
@@ -126,9 +126,14 @@ class ProgramsViewState extends State<ProgramsView> {
                             style: TextStyle(
                                 fontSize: 18,
                                 fontFamily: 'Calibri',
-                                fontWeight: FontWeight.w400,
+                                fontWeight: FontWeight.w500,
                                 color: Colors.grey),
                           ),
+                          subtitle: Text("5 séances, 20 exercices", style: TextStyle(
+                                fontSize: 16,
+                                fontFamily: 'Calibri',
+                                fontWeight: FontWeight.w400,
+                                color: Colors.grey)),
                           // trailing: Icon(Icons.help_outline),
                           onTap: () => Navigator.of(context).push(
                               CupertinoPageRoute(
@@ -140,7 +145,7 @@ class ProgramsViewState extends State<ProgramsView> {
                 ),
               ),
             ],
-          )
+          ),
         ],
       ),
     );

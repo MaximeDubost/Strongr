@@ -31,6 +31,8 @@ const List<String> ExercisesList = [
     "Curls à la barre",
     "Pompes",
   ];
+const List<String> SessionsList = ["Séance pectoraux", "Séance dos/épaules", "Séance bras", "Séance jambes", "Séance abdominaux"];
+const List<String> ProgramsList = ["Programme de force", "Programme de volume", "Programme de cardio"];
 
 void main() {
   runApp(new MaterialApp(
@@ -38,6 +40,7 @@ void main() {
     theme: ThemeData(
         primaryColor: PrimaryColor,
         accentColor: SecondaryColor,
+        fontFamily: "Calibri"
       ),
     home: Homepage(),
   ));

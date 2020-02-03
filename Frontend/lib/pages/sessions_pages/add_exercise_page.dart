@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:strongr/pages/exercises_pages/exercise_page.dart';
 
 import '../../main.dart';
 import 'set_exercise_page.dart';
@@ -93,15 +94,24 @@ class AddExercisePageState extends State<AddExercisePage> {
                               for (final item in _exercisesList)
                                 ListTile(
                                   key: ValueKey(item),
-                                  leading: Icon(Icons.add),
+                                  trailing: IconButton(
+                                    icon: Icon(Icons.help_outline,
+                                        color: SecondaryColor),
+                                    onPressed: () {
+                                      Navigator.of(context).push(
+                                          CupertinoPageRoute(
+                                              builder: (BuildContext context) =>
+                                                  ExercisePage(item)));
+                                    },
+                                  ),
                                   title: Text(
                                     item,
                                     //textAlign: TextAlign.left,
                                     style: TextStyle(
-                                      fontSize: 16,
-                                      fontFamily: 'Calibri',
-                                      fontWeight: FontWeight.w400,
-                                    ),
+                                        fontSize: 18,
+                                        fontFamily: 'Calibri',
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.grey),
                                   ),
                                   onTap: () {
                                     Navigator.of(context).push(
