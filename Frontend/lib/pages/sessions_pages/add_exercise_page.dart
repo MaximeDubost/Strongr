@@ -94,6 +94,7 @@ class AddExercisePageState extends State<AddExercisePage> {
                               for (final item in _exercisesList)
                                 ListTile(
                                   key: ValueKey(item),
+                                  leading: Icon(Icons.add, color: Colors.grey),
                                   trailing: IconButton(
                                     icon: Icon(Icons.help_outline,
                                         color: SecondaryColor),
@@ -101,7 +102,7 @@ class AddExercisePageState extends State<AddExercisePage> {
                                       Navigator.of(context).push(
                                           CupertinoPageRoute(
                                               builder: (BuildContext context) =>
-                                                  ExercisePage(item)));
+                                                  ExercisePage(exerciseName: item)));
                                     },
                                   ),
                                   title: Text(

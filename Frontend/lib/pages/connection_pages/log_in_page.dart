@@ -80,7 +80,6 @@ class LogInPageState extends State<LogInPage> {
         password = _passwordController.text = "";
         _isButtonEnabled = false;
       });
-
       Navigator.of(context).push(
           CupertinoPageRoute(builder: (BuildContext context) => Homepage()));
     } else

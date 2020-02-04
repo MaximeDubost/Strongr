@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import '../../main.dart';
 
 class ExercisePage extends StatefulWidget {
-  final String _exerciseName;
+  final String exerciseName;
 
-  ExercisePage(this._exerciseName);
+  ExercisePage({Key key, this.exerciseName}) : super(key: key);
 
   @override
   State createState() => ExercisePageState();
@@ -22,7 +22,7 @@ class ExercisePageState extends State<ExercisePage> {
           color: Colors.white,
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: Text(widget._exerciseName),
+        title: Text(widget.exerciseName),
         backgroundColor: PrimaryColor,
       ),
       body: Center(

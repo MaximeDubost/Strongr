@@ -197,7 +197,9 @@ class ProgramPageState extends State<ProgramPage> {
                                         "Supprimer le programme ?",
                                         "Les séances ne seront pas supprimées.",
                                         "Supprimer le programme",
-                                        "Annuler");
+                                        "Annuler",
+                                        validateAction: () {},
+                                        cancelAction: () => Navigator.of(context).pop());
                                   },
                                 );
                               }

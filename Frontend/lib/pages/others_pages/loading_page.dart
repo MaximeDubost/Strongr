@@ -38,6 +38,11 @@ class LoadingPageState extends State<LoadingPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
+                      Image.asset(
+                        'assets/images/strongr_logo.png',
+                        width: 100,
+                        height: 100,
+                      ),
                       Text(
                         "Strongr",
                         style: TextStyle(

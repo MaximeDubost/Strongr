@@ -160,7 +160,7 @@ class SessionPageState extends State<SessionPage> {
                               : () => Navigator.of(context).push(
                                   CupertinoPageRoute(
                                       builder: (BuildContext context) =>
-                                          ExercisePage(item))),
+                                          ExercisePage(exerciseName: item))),
                         ),
                         onTap: () {},
                         onLongPress: _isEditMode ? null : () {},
@@ -204,7 +204,9 @@ class SessionPageState extends State<SessionPage> {
                                         "Supprimer la séance ?",
                                         "Les programmes comprenant cette séance ne seront pas supprimés.",
                                         "Supprimer la séance",
-                                        "Annuler");
+                                        "Annuler",
+                                        validateAction: () {},
+                                        cancelAction: () => Navigator.of(context).pop());
                                   },
                                 );
                               }

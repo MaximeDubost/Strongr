@@ -95,6 +95,10 @@ class SetExercisePageState extends State<SetExercisePage> {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     Size screenSize = MediaQuery.of(context).size;
+    bool _enabled = !(_seriesCountController.text == "" ||
+        _seriesCountController.text.startsWith("0") ||
+        int.parse(_seriesCountController.text) <= 1 ||
+        int.parse(_seriesCountController.text) > 10);
 
     return Scaffold(
       appBar: AppBar(
@@ -178,69 +182,76 @@ class SetExercisePageState extends State<SetExercisePage> {
                               children: <Widget>[
                                 Flexible(
                                   child: Padding(
-                                    padding: const EdgeInsets.fromLTRB(
-                                        20, 20, 5, 20),
-                                    child: Container(
-                                      // color: Colors.red,
-                                      height: height / 8,
-                                      child: TextFormField(
-                                        maxLength: 2,
-                                        validator: validateSeriesCount,
-                                        onSaved: (String value) {
-                                          seriesCount = int.parse(value);
-                                        },
-                                        keyboardType: TextInputType.number,
-                                        inputFormatters: <TextInputFormatter>[
-                                          WhitelistingTextInputFormatter
-                                              .digitsOnly
-                                        ],
-                                        cursorColor: Colors.grey,
-                                        controller: _seriesCountController,
-                                        decoration: InputDecoration(
-                                          contentPadding: EdgeInsets.all(10),
-                                          labelText: 'Séries',
-                                          labelStyle:
-                                              TextStyle(color: Colors.grey),
-                                          counterText: "",
-                                        ),
-                                        onChanged: (newValue) {
-                                          if (_seriesCountController.text ==
-                                                  "" ||
-                                              _seriesCountController.text
-                                                  .startsWith("0") ||
-                                              int.parse(_seriesCountController
-                                                      .text) <
-                                                  1 ||
-                                              int.parse(_seriesCountController
-                                                      .text) >
-                                                  10) {
-                                            setState(() {
-                                              _visibility = false;
-                                              linesCount = 0;
-                                              print(linesCount);
-                                            });
-                                          } else {
-                                            setState(() {
-                                              _visibility = true;
-                                            });
-                                            if (_unique) {
-                                              linesCount = int.parse(newValue);
-                                              print(linesCount);
-                                            } else {
-                                              linesCount = 1;
-                                              print(linesCount);
-                                            }
-                                          }
-                                        }),
-                                    )
-                                  ),
+                                      padding: const EdgeInsets.fromLTRB(
+                                          20, 20, 5, 20),
+                                      child: Container(
+                                        // color: Colors.red,
+                                        height: height / 8,
+                                        child: TextFormField(
+                                            maxLength: 2,
+                                            validator: validateSeriesCount,
+                                            onSaved: (String value) {
+                                              seriesCount = int.parse(value);
+                                            },
+                                            keyboardType: TextInputType.number,
+                                            inputFormatters: <
+                                                TextInputFormatter>[
+                                              WhitelistingTextInputFormatter
+                                                  .digitsOnly
+                                            ],
+                                            cursorColor: Colors.grey,
+                                            controller: _seriesCountController,
+                                            decoration: InputDecoration(
+                                              contentPadding:
+                                                  EdgeInsets.all(10),
+                                              labelText: 'Séries',
+                                              labelStyle:
+                                                  TextStyle(color: Colors.grey),
+                                              counterText: "",
+                                            ),
+                                            onChanged: (newValue) {
+                                              if (_seriesCountController.text ==
+                                                      "" ||
+                                                  _seriesCountController.text
+                                                      .startsWith("0") ||
+                                                  int.parse(
+                                                          _seriesCountController
+                                                              .text) <
+                                                      1 ||
+                                                  int.parse(
+                                                          _seriesCountController
+                                                              .text) >
+                                                      10) {
+                                                setState(() {
+                                                  _visibility = false;
+                                                  linesCount = 0;
+                                                  // print(linesCount);
+                                                });
+                                              } else {
+                                                setState(() {
+                                                  _visibility = true;
+                                                });
+                                                if (_unique) {
+                                                  linesCount =
+                                                      int.parse(newValue);
+                                                  // print(linesCount);
+                                                } else {
+                                                  linesCount = 1;
+                                                  // print(linesCount);
+                                                }
+                                              }
+                                            }),
+                                      )),
                                 ),
                                 Padding(
                                   padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
                                   child: Text(
                                     "Rendre chaque série unique",
                                     style: TextStyle(
-                                        color: Colors.grey, fontSize: 16, fontFamily: 'Calibri', fontWeight: FontWeight.w400),
+                                        color: _enabled ? Colors.grey : LightGrey,
+                                        fontSize: 16,
+                                        fontFamily: 'Calibri',
+                                        fontWeight: FontWeight.w400),
                                   ),
                                 ),
                                 Padding(
@@ -267,7 +278,7 @@ class SetExercisePageState extends State<SetExercisePage> {
                                                   });
                                                   if (_unique == false) {
                                                     linesCount = 1;
-                                                    print(linesCount);
+                                                    // print(linesCount);
                                                   } else if (_seriesCountController
                                                               .text ==
                                                           "" ||
@@ -283,12 +294,12 @@ class SetExercisePageState extends State<SetExercisePage> {
                                                                   .text) >
                                                           10) {
                                                     linesCount = 0;
-                                                    print(linesCount);
+                                                    // print(linesCount);
                                                   } else {
                                                     linesCount = int.parse(
                                                         _seriesCountController
                                                             .text);
-                                                    print(linesCount);
+                                                    // print(linesCount);
                                                   }
                                                 }
                                               : null),

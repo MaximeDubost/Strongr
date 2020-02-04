@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:strongr/UI/dialogs/custom_dialog.dart';
-import 'package:strongr/pages/exercises_pages/exercise_page.dart';
 import 'package:strongr/pages/exercises_pages/search_exercise.dart';
 
 import '../../main.dart';
+import '../../routing_constants.dart';
 
 class ExercisesView extends StatefulWidget {
   @override
@@ -142,10 +142,11 @@ class ExercisesViewState extends State<ExercisesView> {
                                 color: Colors.grey),
                           ),
                           // trailing: Icon(Icons.help_outline),
-                          onTap: () => Navigator.of(context).push(
-                              CupertinoPageRoute(
-                                  builder: (BuildContext context) =>
-                                      ExercisePage(item))),
+                          onTap: () => Navigator.pushNamed(context, ExerciseViewRoute, arguments: item),
+                          // onTap: () => Navigator.of(context).push(
+                          //     CupertinoPageRoute(
+                          //         builder: (BuildContext context) =>
+                          //             ExercisePage(item))),
                         ),
                     ],
                   ),

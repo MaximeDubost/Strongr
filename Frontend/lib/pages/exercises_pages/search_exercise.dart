@@ -54,7 +54,7 @@ class SearchExercisePageState extends State<SearchExercisePage> {
                 ),
                 // trailing: Icon(Icons.help_outline),
                 onTap: () => Navigator.of(context).push(CupertinoPageRoute(
-                    builder: (BuildContext context) => ExercisePage(item))),
+                    builder: (BuildContext context) => ExercisePage(exerciseName: item))),
               ),
           ],
         ),

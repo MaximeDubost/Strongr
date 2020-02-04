@@ -134,7 +134,9 @@ class SettingsPage extends StatelessWidget {
                       "Se déconnecter ?",
                       "Vous allez être redirigé vers la page de connexion.",
                       "Se déconnecter",
-                      "Annuler");
+                      "Annuler",
+                      validateAction: () {},
+                      cancelAction: () => Navigator.of(context).pop());
                 },
               );
             },

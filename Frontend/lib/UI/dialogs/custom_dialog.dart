@@ -5,11 +5,12 @@ import '../../main.dart';
 class CustomDialog extends StatefulWidget {
   final String title;
   final String content;
-  final String validateAction;
-  final String cancelAction;
-
-  const CustomDialog(
-      this.title, this.content, this.validateAction, this.cancelAction);
+  final String validateButton;
+  final String cancelButton;
+  final void Function() validateAction;
+  final void Function() cancelAction;
+ 
+  CustomDialog(this.title, this.content, this.validateButton, this.cancelButton, {this.validateAction, this.cancelAction});
 
   @override
   State createState() => new CustomDialogState();
@@ -36,18 +37,18 @@ class CustomDialogState extends State<CustomDialog> {
       actions: <Widget>[
         FlatButton(
           splashColor: VeryLightGrey,
-          onPressed: () {},
+          onPressed: widget.validateAction,
           child: Text(
-            widget.validateAction,
+            widget.validateButton,
             style: TextStyle(
                 color: Colors.red, fontWeight: FontWeight.bold, fontSize: 16),
           ),
         ),
         FlatButton(
           splashColor: VeryLightGrey,
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: widget.cancelAction,
           child: Text(
-            widget.cancelAction,
+            widget.cancelButton,
             style: TextStyle(
                 color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 16),
           ),
