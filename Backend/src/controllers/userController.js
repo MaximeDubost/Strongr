@@ -16,10 +16,8 @@ controller.addUser = async (req, res) => {
     let status = 200;
 
     try {
-
         let sqlLogin = "INSERT INTO 'user' ('name', 'surname', 'email', 'password') VALUES( ?, ?, ?, ? );";
         const res = await db.run(sqlLogin, [req.body.name, req.body.surname, req.body.email,req.body.password]);
-
         body = res;
 
     } catch (err) {
@@ -66,33 +64,7 @@ controller.login = async (req, res) => {
     } else {
         sqlLogin = "SELECT * FROM user u WHERE u.username = ? AND u.password = ? GROUP BY u.id";
     }
-
-
-    /**CALLBACKS VERSION */
-/*     db.get(sqlLogin,
-        [req.body.connectId, req.body.password],
-        (err, row) => {
-            //console.log(row);
-            if (err) {
-                console.log(err.message);
-            } else if (row != undefined) {
-                req.session.idUser = row.id;
-                console.log(req.session);
-                res.send({ messageSuccess: 'Authentificate with success' });
-            } else {
-                res.send({ messageFailure: 'Your email or/and password is/are wrong' });
-            }
-        }
-    );
-    db.close((err) => {
-        if (err) {
-            return console.error(err.message);
-        }
-        console.log('Connection Strongr database closed');
-    });
- */
-
-    /** ASYNC */
+    
     try {
         const res = await db.query(sqlLogin, [req.body.connectId, req.body.password]);
         if (res  !=  undefined) {
