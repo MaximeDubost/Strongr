@@ -1,27 +1,28 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:strongr/pages/others_pages/welcome_page.dart';
 
-import '../homepage.dart';
-import 'reset_password_page.dart';
-
-class LogInPage extends StatefulWidget {
+class SignInSecondPage extends StatefulWidget {
   @override
-  State createState() => LogInPageState();
+  State createState() => new SignInSecondPageState();
 }
 
-class LogInPageState extends State<LogInPage> {
+class SignInSecondPageState extends State<SignInSecondPage> {
   GlobalKey<FormState> _key = GlobalKey();
-  bool _validate = false, _isButtonEnabled = false, _buttonPressSuccess = false;
-  TextEditingController _emailController, _passwordController;
-  String email, password;
+  bool _validate = false,
+      _isButtonEnabled = false,
+      _isVisible = false,
+      _buttonPressSuccess = false;
+  TextEditingController _nameController, _usernameController;
+  String name, username, conditionsTitle;
 
   @override
   void initState() {
     super.initState();
-    _emailController = TextEditingController(text: "");
-    _passwordController = TextEditingController(text: "");
-    _isButtonEnabled = _emailController.text.trim() != "" &&
-            _passwordController.text.trim() != ""
+    _nameController = TextEditingController(text: "");
+    _usernameController = TextEditingController(text: "");
+    _isButtonEnabled = _nameController.text.trim() != "" &&
+            _usernameController.text.trim() != ""
         ? true
         : false;
   }
@@ -29,37 +30,35 @@ class LogInPageState extends State<LogInPage> {
   @override
   void dispose() {
     super.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
+    _nameController.dispose();
+    _usernameController.dispose();
   }
 
   bool isEmpty() {
     setState(() {
-      _isButtonEnabled = _emailController.text.trim() != "" &&
-              _passwordController.text.trim() != ""
+      _isButtonEnabled = _nameController.text.trim() != "" &&
+              _usernameController.text.trim() != ""
           ? true
           : false;
     });
     return _isButtonEnabled;
   }
 
-  String validateEmail(String value) {
-    String pattern =
-        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+  String validateName(String value) {
+    String pattern = "^[a-zA-Z]+(([ -][a-zA-Z ])?[a-zA-Z]*)*\$";
     RegExp regExp = new RegExp(pattern);
     if (value.length == 0 || !regExp.hasMatch(value))
-      return "L'adresse e-mail est invalide";
+      return "Le nom est invalide";
     else
       return null;
   }
 
-  String validatePassword(String value) {
+  String validateUsername(String value) {
     if (!_buttonPressSuccess) {
-      String pattern =
-          r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$';
+      String pattern = "^(?=.{5,20}\$)(?![_.])(?!.*[_.]{2})[a-z0-9._]+(?<![_.])\$";
       RegExp regExp = new RegExp(pattern);
       if (value.length == 0 || !regExp.hasMatch(value))
-        return "Le mot de passe est incorrect";
+        return "Le nom d'utilisateur est invalide";
       else
         return null;
     } else {
@@ -68,20 +67,22 @@ class LogInPageState extends State<LogInPage> {
     }
   }
 
+  void _onChanged() {}
+
   void sendToServer() {
     if (_key.currentState.validate()) {
       _key.currentState.save();
       _buttonPressSuccess = true;
 
-      // print("email: $email");
-      // print("password: $password");
+      // print("name: $name");
+      // print("username: $username");
 
       setState(() {
-        password = _passwordController.text = "";
         _isButtonEnabled = false;
       });
+
       Navigator.of(context).push(
-          CupertinoPageRoute(builder: (BuildContext context) => Homepage()));
+          CupertinoPageRoute(builder: (BuildContext context) => WelcomePage()));
     } else
       setState(() {
         _validate = true;
@@ -112,7 +113,7 @@ class LogInPageState extends State<LogInPage> {
               child: Column(
                 children: <Widget>[
                   Text(
-                    "Connexion",
+                    "Création du compte",
                     style: TextStyle(
                         fontSize: 28,
                         fontFamily: 'Calibri',
@@ -122,16 +123,22 @@ class LogInPageState extends State<LogInPage> {
                     padding: EdgeInsets.fromLTRB(50, 0, 50, 0),
                     child: TextFormField(
                       autofocus: true,
-                      maxLength: 50,
-                      validator: validateEmail,
-                      onSaved: (String value) {
-                        email = value;
+                      maxLength: 20,
+                      validator: validateName,
+                      onTap: () {
+                        setState(() {
+                          _isVisible = false;
+                        });
                       },
-                      keyboardType: TextInputType.emailAddress,
+                      onSaved: (String value) {
+                        name = value;
+                      },
+                      keyboardType: TextInputType.text,
+                      textCapitalization: TextCapitalization.sentences,
                       cursorColor: Colors.grey,
-                      controller: _emailController,
+                      controller: _nameController,
                       decoration: InputDecoration(
-                        labelText: 'Adresse e-mail',
+                        labelText: 'Nom',
                         labelStyle: TextStyle(color: Colors.grey),
                         focusedBorder: UnderlineInputBorder(
                             borderSide: BorderSide(
@@ -139,23 +146,28 @@ class LogInPageState extends State<LogInPage> {
                       ),
                       onChanged: (value) {
                         isEmpty();
+                        _onChanged();
                       },
                     ),
                   ),
                   Padding(
                     padding: EdgeInsets.fromLTRB(50, 0, 50, 0),
                     child: TextFormField(
-                      obscureText: true,
-                      maxLength: 30,
-                      validator: validatePassword,
+                      maxLength: 20,
+                      validator: validateUsername,
+                      onTap: () {
+                        setState(() {
+                          _isVisible = true;
+                        });
+                      },
                       onSaved: (String value) {
-                        password = value;
+                        username = value;
                       },
                       keyboardType: TextInputType.text,
                       cursorColor: Colors.grey,
-                      controller: _passwordController,
+                      controller: _usernameController,
                       decoration: InputDecoration(
-                        labelText: 'Mot de passe',
+                        labelText: 'Nom d\'utilisateur',
                         labelStyle: TextStyle(color: Colors.grey),
                         focusedBorder: UnderlineInputBorder(
                             borderSide: BorderSide(
@@ -163,24 +175,28 @@ class LogInPageState extends State<LogInPage> {
                       ),
                       onChanged: (value) {
                         isEmpty();
+                        value = value.toLowerCase();
                       },
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(50, 5, 50, 0),
-                    child: FlatButton(
-                      onPressed: () {
-                        Navigator.of(context).push(CupertinoPageRoute(
-                            builder: (BuildContext context) =>
-                                ResetPasswordPage()));
-                      },
-                      child: Text(
-                        "Mot de passe oublié ?",
-                        style: TextStyle(
-                            fontSize: 14,
-                            fontFamily: 'Calibri',
-                            color: Colors.grey),
-                      ),
+                  Visibility(
+                    visible: _isVisible,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                          child: Text(
+                            _usernameController.text.length == 0
+                                ? ""
+                                : "✔️ Ce nom d'utilisateur est disponible",
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontFamily: 'Calibri',
+                                color: Colors.grey),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   Padding(
@@ -190,11 +206,14 @@ class LogInPageState extends State<LogInPage> {
                       disabledColor: Colors.grey,
                       onPressed: _isButtonEnabled
                           ? () {
+                              setState(() {
+                                _isVisible = false;
+                              });
                               sendToServer();
                             }
                           : null,
                       child: Text(
-                        "Se connecter",
+                        "S'inscrire",
                         style: TextStyle(
                             fontSize: 14,
                             fontFamily: 'Calibri',

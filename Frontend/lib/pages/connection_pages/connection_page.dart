@@ -1,11 +1,11 @@
-import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app_test/utils/no_animation_material_page_route.dart';
+import 'package:flutter/services.dart';
+import 'package:strongr/utils/no_animation_material_page_route.dart';
 
 import '../../main.dart';
-import 'log_in_page.dart';
+import '../../routing_constants.dart';
 import 'sign_in_page.dart';
 
 class ConnectionPage extends StatefulWidget {
@@ -24,23 +24,28 @@ class ConnectionPageState extends State<ConnectionPage> {
     double height = MediaQuery.of(context).size.height;
 
     return WillPopScope(
-      onWillPop: () async => showDialog<bool>(
-        context: context,
-        builder: (c) => AlertDialog(
-          title: Text('Se déconnecter ?'),
-          content: Text('Vous allez être redirigé vers la page de connexion'),
-          actions: [
-            FlatButton(
-              child: Text('Ok'),
-              onPressed: () => exit(0), //Navigator.pop(c, true),
-            ),
-            FlatButton(
-              child: Text('Annuler'),
-              onPressed: () => Navigator.pop(c, false),
-            ),
-          ],
-        ),
-      ),
+      onWillPop: () async {
+        SystemNavigator.pop();
+        // exit(0);
+        return false;
+      },
+      // onWillPop: () async => showDialog<bool>(
+      //   context: context,
+      //   builder: (c) => AlertDialog(
+      //     title: Text('Se déconnecter ?'),
+      //     content: Text('Vous allez être redirigé vers la page de connexion'),
+      //     actions: [
+      //       FlatButton(
+      //         child: Text('Ok'),
+      //         onPressed: () => exit(0), //Navigator.pop(c, true),
+      //       ),
+      //       FlatButton(
+      //         child: Text('Annuler'),
+      //         onPressed: () => Navigator.pop(c, false),
+      //       ),
+      //     ],
+      //   ),
+      // ),
       child: Stack(
         fit: StackFit.expand,
         children: <Widget>[
@@ -73,8 +78,9 @@ class ConnectionPageState extends State<ConnectionPage> {
               ),
               MaterialButton(
                 color: Color.fromRGBO(20, 120, 80, 1.0),
-                onPressed: () => Navigator.of(context).push(NoAnimationMaterialPageRoute(
-                    builder: (BuildContext context) => LogInPage())),
+                onPressed: () => Navigator.pushNamed(context, LoginViewRoute),
+                // onPressed: () => Navigator.of(context).push(NoAnimationMaterialPageRoute(
+                //     builder: (BuildContext context) => LogInPage())),
                 child: Padding(
                   padding: EdgeInsets.fromLTRB(0, height / 20, 0, height / 20),
                   child: Center(

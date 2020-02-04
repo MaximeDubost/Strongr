@@ -17,7 +17,6 @@ class NotificationsSettingsPageState extends State<NotificationsSettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -30,19 +29,26 @@ class NotificationsSettingsPageState extends State<NotificationsSettingsPage> {
         backgroundColor: PrimaryColor,
       ),
       body: ListView(
-          children: <Widget>[
-            SwitchListTile(
-              title: Text('Activer les notifications'),  
-              value: _value,
-              activeColor: PrimaryColor,
-              onChanged: (bool value) {
-                setState(() {
-                  _value = !_value;
-                });
-              },
+        children: <Widget>[
+          SwitchListTile(
+            title: Text(
+              'Toutes les notifications',
+              style: TextStyle(
+                  fontSize: 18,
+                  fontFamily: 'Calibri',
+                  fontWeight: FontWeight.w500,
+                  color: Colors.grey),
             ),
-          ],
-        ),
+            value: _value,
+            activeColor: PrimaryColor,
+            onChanged: (bool value) {
+              setState(() {
+                _value = !_value;
+              });
+            },
+          ),
+        ],
+      ),
     );
   }
 }

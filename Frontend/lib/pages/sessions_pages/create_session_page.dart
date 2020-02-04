@@ -1,17 +1,25 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../main.dart';
+import '../../main.dart';
+import 'add_exercise_page.dart';
 
-class AddProgramPage extends StatefulWidget {
+class CreateSessionPage extends StatefulWidget {
   @override
-  State createState() => AddProgramPageState();
+  State createState() => CreateSessionPageState();
 }
 
-class AddProgramPageState extends State<AddProgramPage> {
+class CreateSessionPageState extends State<CreateSessionPage> {
   final globalKey = GlobalKey<ScaffoldState>();
   bool _isEmptyList = true;
-  List<String> _sessionsList = [];
+  List<String> _exercisesList = [
+    "Exercice 1",
+    "Exercice 2",
+    "Exercice 3",
+    "Exercice 4",
+    "Exercice 5",
+    "Exercice 6"
+  ];
 
   @override
   void initState() {
@@ -19,8 +27,9 @@ class AddProgramPageState extends State<AddProgramPage> {
   }
 
   void showSnackbar(BuildContext context) {
+    globalKey.currentState.removeCurrentSnackBar();
     final snackBar = SnackBar(
-      content: Text('Vous ne pouvez pas créer un programme vide.'),
+      content: Text('Vous ne pouvez pas créer une séance vide.'),
       backgroundColor: Colors.red,
     );
     globalKey.currentState.showSnackBar(snackBar);
@@ -39,7 +48,7 @@ class AddProgramPageState extends State<AddProgramPage> {
           color: Colors.white,
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: Text("Nouveau programme"),
+        title: Text("Nouvelle séance"),
         actions: <Widget>[
           Builder(
             builder: (ctx) => IconButton(
@@ -59,10 +68,15 @@ class AddProgramPageState extends State<AddProgramPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          globalKey.currentState.hideCurrentSnackBar();
+          // setState(() {
+          //   _isEmptyList = !_isEmptyList;
+          // });
+          globalKey.currentState.removeCurrentSnackBar();
+          Navigator.of(context).push(CupertinoPageRoute(
+                builder: (BuildContext context) => AddExercisePage()));
         },
         // onPressed: () => Navigator.of(context).push(CupertinoPageRoute(
-        //     builder: (BuildContext context) => AddSessionPage())),
+        //     builder: (BuildContext context) => CreateSessionPage())),
         child: Icon(Icons.add),
         backgroundColor: PrimaryColor,
       ),
@@ -74,7 +88,7 @@ class AddProgramPageState extends State<AddProgramPage> {
               child: Visibility(
                 visible: _isEmptyList,
                 child: Text(
-                  "Aucune séance.",
+                  "Ajoutez votre premier exercice.",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontSize: 18, fontFamily: 'Calibri', color: Colors.grey),
@@ -91,7 +105,7 @@ class AddProgramPageState extends State<AddProgramPage> {
                       height: height / 8,
                       child: Center(
                         child: Padding(
-                          padding: EdgeInsets.fromLTRB(50, 0, 50, 0),
+                          padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
                           child: TextFormField(
                             //autofocus: true,
                             //maxLength: 30,
@@ -103,8 +117,8 @@ class AddProgramPageState extends State<AddProgramPage> {
                             cursorColor: Colors.grey,
                             //controller: _emailController,
                             decoration: InputDecoration(
-                              labelText: 'Libellé',
-                              labelStyle: TextStyle(color: Colors.grey),
+                              hintText: "Nom de la séance",
+                              hintStyle: TextStyle(fontSize: 16, fontFamily: 'Calibri', color: Colors.grey),
                               focusedBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(
                                       color:
@@ -121,7 +135,7 @@ class AddProgramPageState extends State<AddProgramPage> {
                         height: height / 16,
                         child: Center(
                           child: Text(
-                            "Séances",
+                            "Exercices",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                                 fontSize: 18,
@@ -137,17 +151,34 @@ class AddProgramPageState extends State<AddProgramPage> {
                       child: Expanded(
                         child: Container(
                           //color: Colors.indigo,
-                          child: ListView.separated(
-                            itemCount: _sessionsList.length,
-                            itemBuilder: (context, index) {
-                              return ListTile(
-                                title: Text(_sessionsList[index]),
-                              );
+                          child: ReorderableListView(
+                            onReorder: (oldIndex, newIndex) {
+                              setState(() {});
                             },
-                            separatorBuilder: (context, index) {
-                              return Divider();
-                            },
+                            children: <Widget>[
+                              for (final item in _exercisesList)
+                                ListTile(
+                                  key: ValueKey(item),
+                                  title: Text(item),
+                                  subtitle:
+                                      Text("Méthode de travail personnalisée"),
+                                  trailing: Icon(Icons.reorder),
+                                  onTap: () {},
+                                ),
+                            ],
                           ),
+                          // child: ListView.separated(
+                          //   itemCount: _exercisesList.length,
+                          //   itemBuilder: (context, index) {
+                          //     return ListTile(
+                          //       title: Text(_exercisesList[index]),
+                          //       subtitle: Text(_methodsList[index]),
+                          //     );
+                          //   },
+                          //   separatorBuilder: (context, index) {
+                          //     return Divider();
+                          //   },
+                          // ),
                         ),
                       ),
                     ),

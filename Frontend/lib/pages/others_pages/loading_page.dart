@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import '../main.dart';
-import 'connection_pages/connection_page.dart';
+import '../../main.dart';
+import '../connection_pages/connection_page.dart';
 
 class LoadingPage extends StatefulWidget {
   @override
@@ -38,6 +38,11 @@ class LoadingPageState extends State<LoadingPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
+                      Image.asset(
+                        'assets/images/strongr_logo.png',
+                        width: 100,
+                        height: 100,
+                      ),
                       Text(
                         "Strongr",
                         style: TextStyle(

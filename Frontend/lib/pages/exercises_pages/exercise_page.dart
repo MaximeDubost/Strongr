@@ -2,7 +2,16 @@ import 'package:flutter/material.dart';
 
 import '../../main.dart';
 
-class EditProfilePage extends StatelessWidget {
+class ExercisePage extends StatefulWidget {
+  final String exerciseName;
+
+  ExercisePage({Key key, this.exerciseName}) : super(key: key);
+
+  @override
+  State createState() => ExercisePageState();
+}
+
+class ExercisePageState extends State<ExercisePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -13,7 +22,7 @@ class EditProfilePage extends StatelessWidget {
           color: Colors.white,
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: Text("Modifier le profil"),
+        title: Text(widget.exerciseName),
         backgroundColor: PrimaryColor,
       ),
       body: Center(

@@ -5,7 +5,6 @@ import '../../main.dart';
 class HelpSettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -18,17 +17,31 @@ class HelpSettingsPage extends StatelessWidget {
         backgroundColor: PrimaryColor,
       ),
       body: ListView(
-          children: <Widget>[
-            ListTile(
-              title: Text('Signaler un problème'),
-              onTap: () {},
+        children: <Widget>[
+          ListTile(
+            title: Text(
+              'Signaler un problème',
+              style: TextStyle(
+                  fontSize: 18,
+                  fontFamily: 'Calibri',
+                  fontWeight: FontWeight.w500,
+                  color: Colors.grey),
             ),
-            ListTile(
-              title: Text('FAQ'),
-              onTap: () {},
+            onTap: () {},
+          ),
+          ListTile(
+            title: Text(
+              'FAQ',
+              style: TextStyle(
+                  fontSize: 18,
+                  fontFamily: 'Calibri',
+                  fontWeight: FontWeight.w500,
+                  color: Colors.grey),
             ),
-          ],
-        ),
+            onTap: () {},
+          ),
+        ],
+      ),
     );
   }
 }

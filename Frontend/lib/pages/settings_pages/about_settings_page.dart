@@ -5,7 +5,6 @@ import '../../main.dart';
 class AboutSettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -18,17 +17,31 @@ class AboutSettingsPage extends StatelessWidget {
         backgroundColor: PrimaryColor,
       ),
       body: ListView(
-          children: <Widget>[
-            ListTile(
-              title: Text('Politique d\'utilisation des données'),
-              onTap: () {},
+        children: <Widget>[
+          ListTile(
+            title: Text(
+              'Politique d\'utilisation des données',
+              style: TextStyle(
+                  fontSize: 18,
+                  fontFamily: 'Calibri',
+                  fontWeight: FontWeight.w500,
+                  color: Colors.grey),
             ),
-            ListTile(
-              title: Text('Conditions générales d\'utilisation'),
-              onTap: () {},
+            onTap: () {},
+          ),
+          ListTile(
+            title: Text(
+              'Conditions générales d\'utilisation',
+              style: TextStyle(
+                  fontSize: 18,
+                  fontFamily: 'Calibri',
+                  fontWeight: FontWeight.w500,
+                  color: Colors.grey),
             ),
-          ],
-        ),
+            onTap: () {},
+          ),
+        ],
+      ),
     );
   }
 }
