@@ -8,82 +8,91 @@ let db = new sqlite3.Database('../Database/strongrDB.db', sqlite3.OPEN_READWRITE
         return console.error(err.message);
     }
     console.log('Connected to the Strongr SQlite database.');
-}); 
+});
 
+controller.getUser = async (req, res) => {
+    let body = {};
+    let status = 200;
+
+    let sqlGetUser = "SELECT * FROM _User as u WHERE u.id_user = ?";
+    db.get(sqlGetUser, [req.params.id_user], (err, rows) => {
+        if (err) throw err;
+        if (rows) {
+            console.log(rows);
+            body = {
+                message: 'User found',
+                user_info: rows
+            };
+        } else {
+            body = { message: 'User not found' };
+        }
+        res.status(status).json(body);
+    });
+}
 
 controller.addUser = async (req, res) => {
     let body = {};
     let status = 200;
-
-    try {
-        let sqlLogin = "INSERT INTO 'user' ('name', 'surname', 'email', 'password') VALUES( ?, ?, ?, ? );";
-        const res = await db.run(sqlLogin, [req.body.name, req.body.surname, req.body.email,req.body.password]);
-        body = res;
-
-    } catch (err) {
-        status = 500;
-        console.log(err);
-        body = { message: 'Une erreur est survenue...' };
-    }
-    res.status(status).json(body);
+    let sqlExist = "SELECT * FROM _User u WHERE u.username = ? OR u.email = ?";
+    db.get(sqlExist, [req.body.username, req.body.email], (err, rows) => {
+        if (err) throw err;
+        if (rows) {
+            body = { message: "A user with this email or username already exists" };
+            res.status(status).json(body);
+        } else {
+            let sqlRegister = "INSERT INTO _User ('firstname', 'lastname', 'username', 'email', 'password') VALUES( ?, ?, ?, ?, ? )";
+            db.get
+            db.run(sqlRegister, [req.body.firstname, req.body.lastname, req.body.username, req.body.email, req.body.password], (err, result) => {
+                if (err) throw err;
+                body = { message: "User added with success" };
+                res.status(status).json(body);
+            });
+        }
+    });
 }
 controller.updateUser = async (req, res) => {
     let body = {};
     let status = 200;
-
-    try {
-
-    } catch (err) {
-        status = 500;
-        console.log(err);
-        body = { message: 'Une erreur est survenue...' };
-    }
-    res.status(status).json(body);
+    let id_user = req.params.id_user;
+    let sqlUpdate = "UPDATE _User SET firstname = ?, lastname = ?, username = ?, email = ?, password = ? WHERE id_user = ?";
+    db.run(sqlUpdate, [req.body.firstname, req.body.lastname, req.body.username, req.body.email, req.body.password, id_user], (err, result) => {
+        if (err) throw err;
+        body = { message: "User updated with success" };
+        res.status(status).json(body);
+    });
 }
+
 controller.deleteUser = async (req, res) => {
     let body = {};
     let status = 200;
 
-    try {
+    let sqlDelete = "DELETE FROM _User as u WHERE u.id_user = ?";
+    db.run(sqlDelete, [req.params.id_user], (err, result) => {
+        if (err) throw err;
+        body = { message: "User deleted with success" };
+        res.status(status).json(body);
+    });
 
-    } catch (err) {
-        status = 500;
-        console.log(err.message);
-        body = { message: 'Une erreur est survenue...' };
-    }
-    res.status(status).json(body);
 }
 controller.login = async (req, res) => {
     let body = {};
     let status = 200;
 
-
     let sqlLogin;
     if (req.body.connectId.indexOf('@') != -1) {
-        sqlLogin = "SELECT * FROM user u WHERE u.email = ? AND u.password = ? GROUP BY u.id";
+        sqlLogin = "SELECT * FROM _User as u WHERE u.email = ? AND u.password = ?";
     } else {
-        sqlLogin = "SELECT * FROM user u WHERE u.username = ? AND u.password = ? GROUP BY u.id";
+        sqlLogin = "SELECT * FROM _User as u WHERE u.username = ? AND u.password = ?";
     }
-    
-    try {
-        const res = await db.query(sqlLogin, [req.body.connectId, req.body.password]);
-        if (res  !=  undefined) {
-            req.session.idUser = res.id;
-            body = {messageSuccess: 'Authentificate with success'}; 
-        }else{
-            body = {messageFailure: 'Your email or/and password is/are wrong'};
-            status = 401;
+    db.get(sqlLogin, [req.body.connectId, req.body.password], (err, rows) => {
+        if (err) throw err;
+        if (rows) {
+            body = { message: 'Authentificate with success' };
+        } else {
+            body = { message: 'Your email or/and password is/are wrong' };
         }
-        await db.close();
-        console.log('Connection Strongr database closed');
-    } catch (err) {
-        body = { message: 'Une erreur est survenue...' };
-        console.log(err.message);
-        body = err.message;
-        status = 501;
-    }
-
-
-    res.status(status).json(body);
+        res.status(status).json(body);
+    });
 }
+
 export default controller;
