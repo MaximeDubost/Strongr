@@ -1,4 +1,6 @@
+import bcrypt from 'bcrypt';
 const sqlite3 = require('sqlite3').verbose();
+
 
 const controller = {};
 
@@ -42,7 +44,7 @@ controller.addUser = async (req, res) => {
         } else {
             let sqlRegister = "INSERT INTO _User ('firstname', 'lastname', 'username', 'email', 'password') VALUES( ?, ?, ?, ?, ? )";
             db.get
-            db.run(sqlRegister, [req.body.firstname, req.body.lastname, req.body.username, req.body.email, req.body.password], (err, result) => {
+            db.run(sqlRegister, [req.body.firstname, req.body.lastname, req.body.username, req.body.email, bcrypt.hashSync(req.body.password, 10)], (err, result) => {
                 if (err) throw err;
                 body = { message: "User added with success" };
                 res.status(status).json(body);
@@ -55,7 +57,7 @@ controller.updateUser = async (req, res) => {
     let status = 200;
     let id_user = req.params.id_user;
     let sqlUpdate = "UPDATE _User SET firstname = ?, lastname = ?, username = ?, email = ?, password = ? WHERE id_user = ?";
-    db.run(sqlUpdate, [req.body.firstname, req.body.lastname, req.body.username, req.body.email, req.body.password, id_user], (err, result) => {
+    db.run(sqlUpdate, [req.body.firstname, req.body.lastname, req.body.username, req.body.email, bcrypt.hashSync(req.body.password, 10), id_user], (err, result) => {
         if (err) throw err;
         body = { message: "User updated with success" };
         res.status(status).json(body);
@@ -80,16 +82,21 @@ controller.login = async (req, res) => {
 
     let sqlLogin;
     if (req.body.connectId.indexOf('@') != -1) {
-        sqlLogin = "SELECT * FROM _User as u WHERE u.email = ? AND u.password = ?";
+        sqlLogin = "SELECT * FROM _User as u WHERE u.email = ? ";
     } else {
-        sqlLogin = "SELECT * FROM _User as u WHERE u.username = ? AND u.password = ?";
+        sqlLogin = "SELECT * FROM _User as u WHERE u.username = ? ";
     }
-    db.get(sqlLogin, [req.body.connectId, req.body.password], (err, rows) => {
+    db.get(sqlLogin, [req.body.connectId], (err, rows) => {
         if (err) throw err;
         if (rows) {
-            body = { message: 'Authentificate with success' };
+            if (bcrypt.compareSync(req.body.password, rows.password)) {
+                body = { message: "Authentificate with success" };
+            } else {
+                body = { message: "Authentification failed" };
+                status = 401;
+            }
         } else {
-            body = { message: 'Your email or/and password is/are wrong' };
+            body = { message: "Your identificator (user or email) isn\'t in our DB so register please" };
         }
         res.status(status).json(body);
     });
