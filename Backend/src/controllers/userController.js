@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 import jwt from "jsonwebtoken";
+import UserError from "../errors/UserError"
 //const sqlite3 = require('sqlite3').verbose();
 const { Pool } = require('pg')
 var clt = null;
@@ -23,10 +24,8 @@ pool.connect((err, client, release) => {
     }
 });
 
-controller.getUser = async (req, res) => {
+controller.getUser = async (req, res, next) => {
     let body = {};
-    let status = 200;
-
     let sqlGetUser = "SELECT * FROM _user as u WHERE u.id_user = $1::int";
     try {
         var result = await clt.query(sqlGetUser, [req.params.id_user])
@@ -36,51 +35,46 @@ controller.getUser = async (req, res) => {
                 message: 'User found',
                 user_info: result.rows[0]
             };
+            res.status(200).json(body);
         } else {
-            body = { message: 'User not found' };
+            throw new UserError(404, 'User not found');
         }
     } catch (error) {
-        console.error(error)
+        next(error)
     }
-    res.status(status).json(body);
 }
 
-controller.addUser = async (req, res) => {
+controller.addUser = async (req, res, next) => {
     let body = {};
-    let status = 200;
     let sqlExist = "SELECT * FROM _user u WHERE u.username = $1::varchar OR u.email = $2::varchar";
     try {
         var result = await clt.query(sqlExist, [req.body.username, req.body.email])
         if (result.rows.length > 0) {
-            status = 409
-            body = { message: "A user with this email or username already exists" };
-
+            throw new UserError(409, "A user with this email or username already exists");
         } else {
             let sqlRegister = "INSERT INTO _user (firstname, lastname, username, email, password) VALUES($1::varchar, $2::varchar, $3::varchar, $4::varchar, $5::varchar )";
             var result = await clt.query(sqlRegister, [req.body.firstname, req.body.lastname, req.body.username, req.body.email, bcrypt.hashSync(req.body.password, 10)])
-            status = 201;
-            body = { message: "User added with success" };
+            body = { message: "User added with success" }
+            res.status(201).json(body)
         }
     } catch (error) {
-        console.error(error)
+        next(error)
     }
-    res.status(status).json(body);
 }
-controller.updateUser = async (req, res) => {
+controller.updateUser = async (req, res, next) => {
     let body = {};
-    let status = 200;
     let id_user = req.params.id_user;
     let sqlUpdate = "UPDATE _user SET firstname = $1::varchar, lastname = $2::varchar, username = $3::varchar, email = $4::varchar, password = $5::varchar WHERE id_user = $6::int";
     try {
         await clt.query(sqlUpdate, [req.body.firstname, req.body.lastname, req.body.username, req.body.email, bcrypt.hashSync(req.body.password, 10), id_user]);
         body = { message: "User updated with success" };
+        res.status(200).json(body);
     } catch (error) {
-        console.error(error)
+        next(error)
     }
-    res.status(status).json(body);
 }
 
-controller.deleteUser = async (req, res) => {
+controller.deleteUser = async (req, res, next) => {
     let body = {};
     let status = 200;
 
@@ -88,12 +82,12 @@ controller.deleteUser = async (req, res) => {
     try {
         await clt.query(sqlDelete, [req.params.id_user])
         body = { message: "User deleted with success" };
+        res.status(200).json(body);
     } catch (error) {
-        console.error(error)
+        next(error)
     }
-    res.status(status).json(body);
 }
-controller.login = async (req, res) => {
+controller.login = async (req, res, next) => {
     let body = {};
     let status = 200;
 
@@ -113,20 +107,18 @@ controller.login = async (req, res) => {
                     username: result.rows[0].username
                 }, "SECRET")
                 body = {
-                    message: "Authentificate with success",
-                    token: token
+                    message: "Authentificate with success"
                 };
+                res.set("authorization", "Bearer " + token).status(status).json(body);
             } else {
-                body = { message: "Authentification failed" };
-                status = 401;
+                throw new UserError(401, "Authentification failed");
             }
         } else {
-            body = { message: "Your identificator (user or email) isn\'t in our DB so register please" };
+            throw new UserError(404, "Your identificator (user or email) isn\'t in our DB so register please");
         }
     } catch (error) {
-        console.error(error)
+        next(error)
     }
-    res.set("authorization", "Bearer " + body.token).status(status).json(body);
 }
 
 controller.logout = async (req, res) => {
@@ -135,8 +127,7 @@ controller.logout = async (req, res) => {
     body = {
         message: "Disconnected"
     }
-    let status = 200;
-    res.status(status).json(body)
+    res.status(200).json(body)
 }
 
 
