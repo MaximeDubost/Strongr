@@ -29,7 +29,8 @@ class _LogInViewState extends State<LogInView> {
             _passwordController.text.trim() != ""
         ? true
         : false;
-        futureLogIn = ConnectionService.postLogIn(connectId: "maxime.dubost.75@gmail.com", password: "Aaaaaa1@");
+    futureLogIn = ConnectionService.postLogIn(
+        connectId: "maxime.dubost.75@gmail.com", password: "Aaaaaa1@");
     super.initState();
   }
 
@@ -89,9 +90,9 @@ class _LogInViewState extends State<LogInView> {
         _isLoading = true;
       });
 
-      dynamic result = await ConnectionService.postLogIn(connectId: email, password: password);
-      if(result == 200)
-      {
+      dynamic result = await ConnectionService.postLogIn(
+          connectId: email, password: password);
+      if (result == 200) {
         print(global.token);
         setState(() {
           _isLoading = false;
@@ -99,12 +100,8 @@ class _LogInViewState extends State<LogInView> {
           _isButtonEnabled = false;
         });
         Navigator.pushNamed(context, HOMEPAGE_ROUTE);
-      }
-      else if (result == 401)
-      {
-
-      }
-      else // 503
+      } else if (result == 401 || result == 404) {
+      } else // 503
         setState(() {
           _isLoading = false;
         });
@@ -117,6 +114,7 @@ class _LogInViewState extends State<LogInView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       body: Stack(
         children: <Widget>[
           Container(
@@ -170,6 +168,22 @@ class _LogInViewState extends State<LogInView> {
                       textInputType: TextInputType.visiblePassword,
                     ),
                     SizedBox(height: 20),
+                    // TODO : Afficher le message d'erreur correspondant au code HTTP.
+                    Visibility(
+                      visible: false,
+                      child: StrongrText(
+                        "ERROR",
+                        size: 16,
+                        color: Colors.red,
+                      ),
+                    ),
+                    FlatButton(
+                      onPressed: () {},
+                      child: StrongrText(
+                        "Mot de passe oublié ?",
+                        size: 16,
+                      ),
+                    ),
                     StrongrRaisedButton(
                       "Connexion",
                       onPressed: _isButtonEnabled
