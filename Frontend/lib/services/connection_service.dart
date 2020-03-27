@@ -6,17 +6,14 @@ import 'package:strongr/utils/global.dart' as global;
 
 class ConnectionService {
 
-  /// [POST]
+  /// [POST] /user/add
   ///
   /// Description
   Future<dynamic> postSignIn({String email, String username, String password, String firstName, String lastName, String birthDate, String signDate}) async {
     Response response = await http.post(
       Uri.encodeFull(
-        global.SERVER_URL + '',
+        global.SERVER_URL + '/user/add',
       ),
-      headers: {
-        '' : '',
-      },
       body: {
         '' : '',
       }
@@ -28,24 +25,24 @@ class ConnectionService {
     else throw HttpException('');
   }
 
-  /// [POST]
+  /// [POST] /login
   ///
   /// Description
   Future<dynamic> postLogIn({String email, String username, String password}) async {
     Response response = await http.post(
       Uri.encodeFull(
-        global.SERVER_URL + '',
+        global.SERVER_URL + '/login',
       ),
-      headers: {
-        '' : '',
-      },
       body: {
-        '' : '',
+        'connectId' : '',
+        'password' : '',
       }
     );
     if(response.statusCode == 200)
     {
-      return '';
+      print(response.headers);
+      print(response.body);
+      return 'OK';
     }
     else throw HttpException('');
   }

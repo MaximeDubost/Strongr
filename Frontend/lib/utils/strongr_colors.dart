@@ -8,4 +8,5 @@ class StrongrColors {
   static final Color greyC = Color.fromRGBO(204, 204, 204, 1);
   static final Color greyD = Color.fromRGBO(221, 221, 221, 1);
   static final Color greyE = Color.fromRGBO(238, 238, 238, 1);
+  static final Color canvas = Color.fromRGBO(247, 247, 247, 1);
 }
