@@ -126,7 +126,18 @@ controller.login = async (req, res) => {
     } catch (error) {
         console.error(error)
     }
-    res.status(status).json(body);
+    res.set("authorization", "Bearer " + body.token).status(status).json(body);
 }
+
+controller.logout = async (req, res) => {
+    let body = {};
+    res.removeHeader("authorization")
+    body = {
+        message: "Disconnected"
+    }
+    let status = 200;
+    res.status(status).json(body)
+}
+
 
 export default controller;
