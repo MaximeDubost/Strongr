@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
 import 'package:strongr/utils/global.dart' as global;
@@ -9,7 +10,7 @@ class ConnectionService {
   /// [POST] /user/add
   ///
   /// Description
-  Future<dynamic> postSignIn({String email, String username, String password, String firstName, String lastName, String birthDate, String signDate}) async {
+  static Future<dynamic> postSignIn({String email, String username, String password, String firstName, String lastName, String birthDate, String signDate}) async {
     Response response = await http.post(
       Uri.encodeFull(
         global.SERVER_URL + '/user/add',
@@ -27,24 +28,27 @@ class ConnectionService {
 
   /// [POST] /login
   ///
-  /// Description
-  Future<dynamic> postLogIn({String email, String username, String password}) async {
-    Response response = await http.post(
-      Uri.encodeFull(
-        global.SERVER_URL + '/login',
-      ),
-      body: {
-        'connectId' : '',
-        'password' : '',
-      }
-    );
-    if(response.statusCode == 200)
-    {
-      print(response.headers);
-      print(response.body);
-      return 'OK';
+  /// Demande la connexion de l'utilisateur [connectId] avec le mot de passe [password].
+  static Future<int> postLogIn({@required String connectId, @required String password}) async {
+    try {
+      Response response = await http.post(
+        Uri.encodeFull(
+          global.SERVER_URL + '/login',
+        ),
+        body: {
+          'connectId' : connectId,
+          'password' : password,
+        }
+      );
+      if(response.statusCode == 200)
+        global.token = response.headers['authorization'];
+      return response.statusCode;
     }
-    else throw HttpException('');
+    catch (e)
+    {
+      return 503;
+    }
+    
   }
 
 }
