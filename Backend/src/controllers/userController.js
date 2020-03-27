@@ -1,11 +1,12 @@
 import bcrypt from 'bcrypt';
+import jwt from "jsonwebtoken";
 //const sqlite3 = require('sqlite3').verbose();
-const { Pool, Client } = require('pg')
-
+const { Pool } = require('pg')
+var clt = null;
 
 const controller = {};
 
-const client = new Client({
+const pool = new Pool({
     host: 'localhost',
     port: 5432,
     user: 'postgres',
@@ -13,12 +14,12 @@ const client = new Client({
     database: 'StrongrDB'
 });
 
-client.connect(err => {
+pool.connect((err, client, release) => {
+    console.log("In pool connect");
     if (err) {
-        console.log(err);
-        throw err
+        return console.error("Error acquiring client", err.stack);
     } else {
-        console.log('Connected to client')
+        clt = client;
     }
 });
 
@@ -28,7 +29,7 @@ controller.getUser = async (req, res) => {
 
     let sqlGetUser = "SELECT * FROM _user as u WHERE u.id_user = $1::int";
     try {
-        var result = await client.query(sqlGetUser, [req.params.id_user])
+        var result = await clt.query(sqlGetUser, [req.params.id_user])
         if (result.rows[0]) {
             console.log(result.rows[0]);
             body = {
@@ -49,14 +50,14 @@ controller.addUser = async (req, res) => {
     let status = 200;
     let sqlExist = "SELECT * FROM _user u WHERE u.username = $1::varchar OR u.email = $2::varchar";
     try {
-        var result = await client.query(sqlExist, [req.body.username, req.body.email])
+        var result = await clt.query(sqlExist, [req.body.username, req.body.email])
         if (result.rows.length > 0) {
             status = 409
             body = { message: "A user with this email or username already exists" };
 
         } else {
             let sqlRegister = "INSERT INTO _user (firstname, lastname, username, email, password) VALUES($1::varchar, $2::varchar, $3::varchar, $4::varchar, $5::varchar )";
-            var result = await client.query(sqlRegister, [req.body.firstname, req.body.lastname, req.body.username, req.body.email, bcrypt.hashSync(req.body.password, 10)])
+            var result = await clt.query(sqlRegister, [req.body.firstname, req.body.lastname, req.body.username, req.body.email, bcrypt.hashSync(req.body.password, 10)])
             status = 201;
             body = { message: "User added with success" };
         }
@@ -71,7 +72,7 @@ controller.updateUser = async (req, res) => {
     let id_user = req.params.id_user;
     let sqlUpdate = "UPDATE _user SET firstname = $1::varchar, lastname = $2::varchar, username = $3::varchar, email = $4::varchar, password = $5::varchar WHERE id_user = $6::int";
     try {
-        await client.query(sqlUpdate, [req.body.firstname, req.body.lastname, req.body.username, req.body.email, bcrypt.hashSync(req.body.password, 10), id_user]);
+        await clt.query(sqlUpdate, [req.body.firstname, req.body.lastname, req.body.username, req.body.email, bcrypt.hashSync(req.body.password, 10), id_user]);
         body = { message: "User updated with success" };
     } catch (error) {
         console.error(error)
@@ -85,7 +86,7 @@ controller.deleteUser = async (req, res) => {
 
     let sqlDelete = "DELETE FROM _user as u WHERE u.id_user = $1::int";
     try {
-        await client.query(sqlDelete, [req.params.id_user])
+        await clt.query(sqlDelete, [req.params.id_user])
         body = { message: "User deleted with success" };
     } catch (error) {
         console.error(error)
@@ -103,10 +104,18 @@ controller.login = async (req, res) => {
         sqlLogin = "SELECT * FROM _user as u WHERE u.username = $1::varchar ";
     }
     try {
-        var result = await client.query(sqlLogin, [req.body.connectId])
+        var result = await clt.query(sqlLogin, [req.body.connectId])
         if (result.rows.length > 0) {
             if (bcrypt.compareSync(req.body.password, result.rows[0].password)) {
-                body = { message: "Authentificate with success" };
+                var token = jwt.sign({
+                    id: result.rows[0].id_user,
+                    email: result.rows[0].email,
+                    username: result.rows[0].username
+                }, "SECRET")
+                body = {
+                    message: "Authentificate with success",
+                    token: token
+                };
             } else {
                 body = { message: "Authentification failed" };
                 status = 401;
