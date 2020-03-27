@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:strongr/services/connection_service.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
@@ -27,6 +28,15 @@ class _HomepageViewState extends State<HomepageView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      /**
+       * DEBUG
+       */
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => ConnectionService.postLogIn(connectId: 'kevtsi@gmail.com', password: 'motdepasse'),
+      ),
+      /**
+       * END DEBUG
+       */
       appBar: AppBar(
         centerTitle: true,
         leading: IconButton(

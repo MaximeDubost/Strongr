@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Futura',
       ),
       onGenerateRoute: router.generateRoute,
-      initialRoute: HOMEPAGE_ROUTE,
+      initialRoute: LOG_IN_ROUTE
     );
   }
 }
