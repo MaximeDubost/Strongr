@@ -10,8 +10,8 @@ class StrongrRoundedContainer extends StatelessWidget {
       width: ScreenSize.width(context) / 1.2,
       margin: EdgeInsets.only(left: 10, right: 10),
       decoration: BoxDecoration(
-        color: StrongrColors.greyE,
-        border: Border.all(color: StrongrColors.greyC),
+        color: Colors.white,
+        border: Border.all(color: StrongrColors.greyD),
         borderRadius: BorderRadius.all(
           Radius.circular(25.0),
         ),
