@@ -1,12 +1,22 @@
 import bcrypt from 'bcrypt';
 import jwt from "jsonwebtoken";
+import nodemailer from "nodemailer"
+
 import UserError from "../errors/UserError"
-//const sqlite3 = require('sqlite3').verbose();
+
 const { Pool } = require('pg')
 var clt = null;
-
 const controller = {};
 
+let transport = nodemailer.createTransport({
+    service: 'gmail',
+    secure: false,
+    port: 25,
+    auth: {
+        user: 'team.strongr',
+        pass: '#5tr0n63R'
+    }
+});
 const pool = new Pool({
     host: 'localhost',
     port: 5432,
@@ -23,7 +33,9 @@ pool.connect((err, client, release) => {
         clt = client;
     }
 });
-
+/**
+ * @param id_user int
+ */
 controller.getUser = async (req, res, next) => {
     let body = {};
     let sqlGetUser = "SELECT * FROM _user as u WHERE u.id_user = $1::int";
@@ -35,62 +47,71 @@ controller.getUser = async (req, res, next) => {
                 message: 'User found',
                 user_info: result.rows[0]
             };
-            res.status(200).json(body);
+            res.status(200).json(body)
         } else {
-            throw new UserError(404, 'User not found');
+            res.sendStatus(404)
         }
     } catch (error) {
-        next(error)
+        console.error(error)
     }
 }
-
+/**
+ * @param username varchar,
+ * @param email varchar,
+ * @param firstname varchar,
+ * @param lastname varchar,
+ * @param password varchar
+ */
 controller.addUser = async (req, res, next) => {
-    let body = {};
     let sqlExist = "SELECT * FROM _user u WHERE u.username = $1::varchar OR u.email = $2::varchar";
     try {
         var result = await clt.query(sqlExist, [req.body.username, req.body.email])
         if (result.rows.length > 0) {
-            throw new UserError(409, "A user with this email or username already exists");
+            res.sendStatus(409)
         } else {
-            let sqlRegister = "INSERT INTO _user (firstname, lastname, username, email, password) VALUES($1::varchar, $2::varchar, $3::varchar, $4::varchar, $5::varchar )";
-            var result = await clt.query(sqlRegister, [req.body.firstname, req.body.lastname, req.body.username, req.body.email, bcrypt.hashSync(req.body.password, 10)])
-            body = { message: "User added with success" }
-            res.status(201).json(body)
+            let sqlRegister = "INSERT INTO _user (firstname, lastname, username, email, password, signeddate) VALUES($1, $2, $3, $4, $5, $6)";
+            await clt.query(sqlRegister, [req.body.firstname, req.body.lastname, req.body.username, req.body.email, bcrypt.hashSync(req.body.password, 10), new Date()])
+            res.sendStatus(201)
         }
     } catch (error) {
-        next(error)
+        console.error(error)
     }
 }
+/**
+ * @param id_user int
+ * @param firstname varchar,
+ * @param lastname varchar,
+ * @param username varchar,
+ * @param email varchar,
+ * @param password varchar
+ */
 controller.updateUser = async (req, res, next) => {
-    let body = {};
     let id_user = req.params.id_user;
     let sqlUpdate = "UPDATE _user SET firstname = $1::varchar, lastname = $2::varchar, username = $3::varchar, email = $4::varchar, password = $5::varchar WHERE id_user = $6::int";
     try {
         await clt.query(sqlUpdate, [req.body.firstname, req.body.lastname, req.body.username, req.body.email, bcrypt.hashSync(req.body.password, 10), id_user]);
-        body = { message: "User updated with success" };
-        res.status(200).json(body);
+        res.sendStatus(200)
     } catch (error) {
-        next(error)
+        console.error(error)
     }
 }
-
+/**
+ * @param id_user int
+ */
 controller.deleteUser = async (req, res, next) => {
-    let body = {};
-    let status = 200;
-
     let sqlDelete = "DELETE FROM _user as u WHERE u.id_user = $1::int";
     try {
         await clt.query(sqlDelete, [req.params.id_user])
-        body = { message: "User deleted with success" };
-        res.status(200).json(body);
+        res.sendStatus(200)
     } catch (error) {
-        next(error)
+        console.error(error)
     }
 }
+/**
+ * @param email varchar,
+ * @param password varchar
+ */
 controller.login = async (req, res, next) => {
-    let body = {};
-    let status = 200;
-
     let sqlLogin;
     if (req.body.connectId.indexOf('@') != -1) {
         sqlLogin = "SELECT * FROM _user as u WHERE u.email = $1::varchar ";
@@ -106,29 +127,83 @@ controller.login = async (req, res, next) => {
                     email: result.rows[0].email,
                     username: result.rows[0].username
                 }, "SECRET")
-                body = {
-                    message: "Authentificate with success"
-                };
-                res.set("authorization", "Bearer " + token).status(status).json(body);
+                res.set("authorization", "Bearer " + token).sendStatus(200)
             } else {
-                throw new UserError(401, "Authentification failed");
+                res.sendStatus(401)
             }
         } else {
-            throw new UserError(404, "Your identificator (user or email) isn\'t in our DB so register please");
+            res.sendStatus(404)
         }
     } catch (error) {
-        next(error)
+        console.error(error)
     }
 }
 
-controller.logout = async (req, res) => {
-    let body = {};
+controller.logout = (req, res) => {
     res.removeHeader("authorization")
-    body = {
-        message: "Disconnected"
-    }
-    res.status(200).json(body)
+    res.sendStatus(200)
 }
+/**
+ * @param email
+ */
+controller.sendCode = async (req, res, next) => {
+    var sqlEmailUser = "SELECT * FROM _user as u WHERE u.email = $1::varchar "
+    try {
+        var result = await clt.query(sqlEmailUser, [req.body.email])
+        if (result.rows.length != 0) {
+            var code = "";
+            while (code.length < 8) {
+                code += Math.floor(Math.random() * 9 + 1).toString()
+            }
+            var sqlChangeCode = "UPDATE _user SET recoverycode = $1::varchar WHERE id_user = $2::int"
+            await clt.query(sqlChangeCode, [code, result.rows[0].id_user]);
+            const message = {
+                from: 'team.strongr@gmail.com', // Sender address
+                to: req.body.email,         // List of recipients
+                subject: 'Code de réinitialisation de mot de passe', // Subject line
+                text: "Bonjour, \n\n Votre code est le suivant : " + code + ".\n\n Si vous n’avez pas fait de demande pour un code, merci de contacter le service client pour vous assurer qu’il ne s’agit pas d’une tentative de fraude.\n\n\n - Strongr Team" // Plain text body
+            };
+            var info = await transport.sendMail(message)
+            res.sendStatus(200)
+        } else {
+            res.sendStatus(404)
+        }
+    } catch (error) {
+        console.error(error)
+    }
+}
+/**
+ * @param recoverycode varchar
+ */
+controller.checkCode = async (req, res, next) => {
+    var sqlCheckCode = "SELECT * FROM _user WHERE recoverycode = $1::varchar"
+    try {
+        var result = await clt.query(sqlCheckCode, [req.body.code])
+        console.log(result.rows)
+        if (result.rows.length != 0) {
+            res.sendStatus(200)
+        } else {
+            res.sendStatus(401)
+        }
+    } catch (error) {
+        console.error(error)
+    }
+}
+/**
+ * @param email varchar,
+ * @param password  varchar
+ */
+controller.resetPassword = async (req, res, next) => {
+    let body = {};
+    var sqlResetPassword = "UPDATE _user SET password = $1::varchar WHERE email = $2::varchar"
+    try {
+        await clt.query(sqlResetPassword, [bcrypt.hashSync(req.body.password, 10), req.body.email])
+        res.sendStatus(200)
+    } catch (error) {
+        console.error(error)
+    }
+}
+
 
 
 export default controller;
