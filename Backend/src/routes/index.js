@@ -12,6 +12,9 @@ router.put('/user/update/:id_user', userController.updateUser);
 router.delete('/user/delete/:id_user', userController.deleteUser);
 router.post('/login', userController.login);
 router.post('/logout', middleware.checkAuth, userController.logout);
+router.post('/sendCode', userController.sendCode);
+router.post('/checkCode', userController.checkCode);
+router.put('/resetPassword', userController.resetPassword);
 //router.get()
 
 export default router;
