@@ -12,6 +12,10 @@ class StrongrRoundedTextFormField extends StatefulWidget {
   final Function onChanged;
   final bool obscureText;
   final int maxLength;
+  final IconData suffixIcon;
+  final IconData suffixIconAlt;
+  final Color suffixIconColor;
+  final Function onPressedSuffixIcon;
 
   StrongrRoundedTextFormField({
     this.hint,
@@ -24,6 +28,10 @@ class StrongrRoundedTextFormField extends StatefulWidget {
     this.onChanged,
     this.obscureText = false,
     this.maxLength = 30,
+    this.suffixIcon,
+    this.suffixIconAlt,
+    this.suffixIconColor,
+    this.onPressedSuffixIcon,
   });
 
   @override
@@ -47,6 +55,12 @@ class _StrongrRoundedTextFormFieldState
       cursorColor: StrongrColors.black,
       keyboardType: widget.textInputType,
       decoration: InputDecoration(
+        suffixIcon: widget.suffixIcon != null ? IconButton(
+          icon: Icon(widget.obscureText ? widget.suffixIcon : (widget.suffixIconAlt == null ? widget.suffixIcon : widget.suffixIconAlt), color: widget.suffixIconColor == null ? StrongrColors.black : widget.suffixIconColor,),
+          onPressed: widget.onPressedSuffixIcon,
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+        ) : null,
         hintText: widget.hint,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
