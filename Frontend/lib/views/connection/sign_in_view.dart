@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:strongr/services/user_service.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
-import 'package:strongr/utils/global.dart' as global;
 import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/widgets/strongr_raised_button.dart';
 import 'package:strongr/widgets/strongr_rounded_textformfield.dart';
@@ -10,6 +9,11 @@ import 'package:strongr/widgets/strongr_text.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 
 class SignInView extends StatefulWidget {
+  final String email;
+  final String password;
+
+  SignInView({this.email, this.password});
+
   @override
   _SignInViewState createState() => _SignInViewState();
 }
@@ -118,36 +122,37 @@ class _SignInViewState extends State<SignInView> {
         _isLoading = true;
       });
 
-      // dynamic result = await UserService.postLogIn(
-      //     email: email.toLowerCase(), password: password);
-      // if (result == 200) {
-      // print(global.token);
+      dynamic result =
+          await UserService.postCheckEmail(email: email.toLowerCase());
+      if (result == 200) {
+        setState(() {
+          _validate = _isLoading = _isButtonEnabled =
+              passwordVisibility = confirmPasswordVisibility = false;
+          warning = null;
+          password = _passwordController.text = "";
+          confirmPassword = _confirmPasswordController.text = "";
+        });
+        Navigator.pushNamed(
+          context,
+          SIGN_IN_NEXT_ROUTE,
+          arguments: SignInView(
+            email: email,
+            password: password,
+          ),
+        );
+      } else if (result == 409) {
+        setState(() {
+          warning = "Cette adresse e-mail est déjà utilisée.";
+        });
+      } else // 503
+      {
+        setState(() {
+          warning = "Service indisponible. Veuillez réessayer ultérieurement.";
+        });
+      }
       setState(() {
-        _validate = false;
-        warning = null;
-        _isLoading = false;
-        password = _passwordController.text = "";
-        confirmPassword = _confirmPasswordController.text = "";
-        _isButtonEnabled = false;
-        passwordVisibility = false;
-        confirmPasswordVisibility = false;
-      });
-      // Navigator.pushNamed(context, HOMEPAGE_ROUTE);
-      // } else if (result == 401 || result == 404) {
-      //   setState(() {
-      //     warning = "Identifiant ou mot de passe incorrect.";
-      //   });
-      // } else // 503
-      // {
-      //   setState(() {
-      //     warning = "Service indisponible. Veuillez réessayer ultérieurement.";
-      //   });
-      // }
-      setState(() {
         _isLoading = false;
       });
-
-      Navigator.pushNamed(context, SIGN_IN_NEXT_ROUTE);
     } else
       setState(() {
         _validate = true;
@@ -265,6 +270,7 @@ class _SignInViewState extends State<SignInView> {
                                   color: Colors.red,
                                 ),
                               ),
+                              SizedBox(height: 10),
                               StrongrRaisedButton(
                                 "S'inscrire",
                                 onPressed: _isButtonEnabled
@@ -276,7 +282,8 @@ class _SignInViewState extends State<SignInView> {
                               ),
                               SizedBox(height: 15),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
                                 children: <Widget>[
                                   Container(
                                     height: 2,
@@ -296,7 +303,8 @@ class _SignInViewState extends State<SignInView> {
                               ),
                               SizedBox(height: 10),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
                                 children: <Widget>[
                                   GoogleSignInButton(
                                     text: "S'inscrire",

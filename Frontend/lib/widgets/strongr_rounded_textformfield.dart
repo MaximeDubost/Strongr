@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
 
@@ -18,6 +19,7 @@ class StrongrRoundedTextFormField extends StatefulWidget {
   final IconData suffixIconAlt;
   final Color suffixIconColor;
   final Function onPressedSuffixIcon;
+  final List<TextInputFormatter> inputFormatters;
 
   StrongrRoundedTextFormField({
     this.width,
@@ -35,6 +37,7 @@ class StrongrRoundedTextFormField extends StatefulWidget {
     this.suffixIconAlt,
     this.suffixIconColor,
     this.onPressedSuffixIcon,
+    this.inputFormatters,
   });
 
   @override
@@ -49,6 +52,7 @@ class _StrongrRoundedTextFormFieldState
     return Container(
       width: widget.width == null ? ScreenSize.width(context) : widget.width,
       child: TextFormField(
+        inputFormatters: widget.inputFormatters,
         controller: widget.controller,
         validator: widget.validator,
         autofocus: widget.autofocus,

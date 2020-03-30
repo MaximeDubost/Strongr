@@ -61,7 +61,7 @@ class _LogInViewState extends State<LogInView> {
           r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
       result = "L'adresse e-mail est invalide";
     } else {
-      pattern = r'^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29}$';
+      pattern = r'^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{4,15}$';
       result = "Le nom d'utilisateur est invalide";
     }
 

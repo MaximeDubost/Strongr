@@ -8,23 +8,26 @@ import 'package:strongr/utils/global.dart' as global;
 
 class UserService {
 
-  /// [POST] /checkEmail - TODO
+  /// [POST] /checkEmail
   /// 
   /// Vérifie la disponibilité de l'e-mail [email].
-  static Future<dynamic> postCheckEmail({@required String email}) async {
-    Response response = await http.post(
-      Uri.encodeFull(
-        global.SERVER_URL + '/checkEmail',
-      ),
-      body: {
-        '' : '',
-      }
-    );
-    if(response.statusCode == 200)
+  static Future<int> postCheckEmail({@required String email}) async {
+    try {
+      Response response = await http.post(
+        Uri.encodeFull(
+          global.SERVER_URL + '/checkEmail',
+        ),
+        body: {
+          'email' : email,
+        }
+      );
+      return response.statusCode;
+    } 
+    catch (e) 
     {
-      return '';
+      return 503;
     }
-    else throw HttpException('');
+    
   }
 
   /// [POST] /user/add - TODO

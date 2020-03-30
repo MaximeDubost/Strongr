@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:strongr/services/user_service.dart';
-import 'package:strongr/utils/routing_constants.dart';
+import 'package:flutter/services.dart';
 import 'package:strongr/utils/screen_size.dart';
-import 'package:strongr/utils/global.dart' as global;
 import 'package:strongr/widgets/strongr_raised_button.dart';
 import 'package:strongr/widgets/strongr_rounded_textformfield.dart';
 import 'package:strongr/widgets/strongr_text.dart';
-import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 
 class SignInNextView extends StatefulWidget {
+  final String email;
+  final String password;
+
+  SignInNextView({@required this.email, @required this.password});
+
   @override
   _SignInNextViewState createState() => _SignInNextViewState();
 }
@@ -21,95 +23,80 @@ class _SignInNextViewState extends State<SignInNextView> {
       _isLoading,
       passwordVisibility,
       confirmPasswordVisibility;
-  TextEditingController _emailController,
-      _passwordController,
-      _confirmPasswordController;
+  TextEditingController firstNameController,
+      lastNameController,
+      birthdateController,
+      phoneNumberController,
+      usernameController;
   String firstName, lastName, birthdate, phoneNumber, username, warning;
+  RegExp nameRegExp,
+      birthdateRegExp,
+      phoneNumberRegExp,
+      usernameRegExp;
+  String textInputWarning, usernameWarning;
 
   @override
   void initState() {
     _key = GlobalKey();
     _validate = _isButtonEnabled = _buttonPressSuccess =
         _isLoading = passwordVisibility = confirmPasswordVisibility = false;
-    _emailController = TextEditingController(text: "");
-    _passwordController = TextEditingController(text: "");
-    _confirmPasswordController = TextEditingController(text: "");
-    _isButtonEnabled = _emailController.text.trim() != "" &&
-            _passwordController.text.trim() != "" &&
-            _confirmPasswordController.text.trim() != ""
+    firstNameController = TextEditingController(text: "");
+    lastNameController = TextEditingController(text: "");
+    birthdateController = TextEditingController(text: "");
+    phoneNumberController = TextEditingController(text: "");
+    usernameController = TextEditingController(text: "");
+    _isButtonEnabled = firstNameController.text.trim() != "" &&
+            lastNameController.text.trim() != "" &&
+            birthdateController.text.trim() != "" &&
+            phoneNumberController.text.trim() != "" &&
+            usernameController.text.trim() != ""
         ? true
         : false;
+    nameRegExp = RegExp(r'^[a-zA-ZÀ-ÿ- ]*$');
+    birthdateRegExp = RegExp(r'');
+    phoneNumberRegExp = RegExp(r'^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$');
+    usernameRegExp = RegExp(r'^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{4,15}$');
+    textInputWarning = "Format invalide";
+    usernameWarning = "Nom d'utilisateur invalide";
     super.initState();
   }
 
   @override
   void dispose() {
+    firstNameController.dispose();
+    lastNameController.dispose();
+    birthdateController.dispose();
+    phoneNumberController.dispose();
+    usernameController.dispose();
     super.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
   }
 
   bool isEmpty() {
-    setState(() {
-      _isButtonEnabled = _emailController.text.trim() != "" &&
-              _passwordController.text.trim() != "" &&
-              _confirmPasswordController.text.trim() != ""
-          ? true
-          : false;
-    });
-    return _isButtonEnabled;
+    // try {
+      setState(() {
+        _isButtonEnabled = firstNameController.text.trim() != "" &&
+                lastNameController.text.trim() != "" &&
+                birthdateController.text.trim() != "" &&
+                phoneNumberController.text.trim() != "" &&
+                usernameController.text.trim() != ""
+            ? true
+            : false;
+      });
+      return _isButtonEnabled;
+    // } catch (e) {
+    //   return false;
+    // }
   }
 
-  String validateEmail(String value) {
-    String pattern;
-    String result;
-    if (value.contains('@')) {
-      pattern =
-          r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-      result = "L'adresse e-mail est invalide";
-    } else {
-      pattern = r'^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29}$';
-      result = "Le nom d'utilisateur est invalide";
-    }
-
-    RegExp regExp = new RegExp(pattern);
-    if (value.length == 0 || !regExp.hasMatch(value)) {
-      return result;
-    } else
+  String validator(String value, RegExp regExp, String warning,
+      {bool optional = false}) {
+    bool condition = optional
+        ? !regExp.hasMatch(value)
+        : value.length == 0 || !regExp.hasMatch(value);
+    if (condition)
+      return warning;
+    else
       return null;
-  }
-
-  String validatePassword(String value) {
-    if (!_buttonPressSuccess) {
-      String pattern =
-          r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$';
-      RegExp regExp = new RegExp(pattern);
-      if (value.length == 0 || !regExp.hasMatch(value))
-        return "Le mot de passe est invalide";
-      else
-        return null;
-    } else {
-      _buttonPressSuccess = false;
-      return null;
-    }
-  }
-
-  String validateConfirmPassword(String value) {
-    if (!_buttonPressSuccess) {
-      String pattern =
-          r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$';
-      RegExp regExp = new RegExp(pattern);
-      if (value.length == 0 ||
-          !regExp.hasMatch(value) ||
-          value != _passwordController.text)
-        return "Les mots de passe ne sont pas identiques";
-      else
-        return null;
-    } else {
-      _buttonPressSuccess = false;
-      return null;
-    }
   }
 
   void sendToServer() async {
@@ -219,8 +206,12 @@ class _SignInNextViewState extends State<SignInNextView> {
                                         textCapitalization:
                                             TextCapitalization.words,
                                         width: ScreenSize.width(context) / 2.5,
-                                        controller: null,
-                                        validator: null,
+                                        controller: firstNameController,
+                                        validator: (String value) => validator(
+                                          value,
+                                          nameRegExp,
+                                          textInputWarning,
+                                        ),
                                         autofocus: true,
                                         onSaved: (String value) =>
                                             setState(() => firstName = value),
@@ -250,8 +241,12 @@ class _SignInNextViewState extends State<SignInNextView> {
                                         textCapitalization:
                                             TextCapitalization.words,
                                         width: ScreenSize.width(context) / 2.5,
-                                        controller: null,
-                                        validator: null,
+                                        controller: lastNameController,
+                                        validator: (String value) => validator(
+                                          value,
+                                          nameRegExp,
+                                          textInputWarning,
+                                        ),
                                         onSaved: (String value) =>
                                             setState(() => lastName = value),
                                         onChanged: (String value) {
@@ -284,11 +279,19 @@ class _SignInNextViewState extends State<SignInNextView> {
                                       ),
                                       SizedBox(height: 10),
                                       StrongrRoundedTextFormField(
+                                          inputFormatters: [
+                                            WhitelistingTextInputFormatter
+                                                .digitsOnly
+                                          ],
                                           width:
                                               ScreenSize.width(context) / 2.5,
-                                          controller: null,
-                                          validator: null,
-                                          autofocus: true,
+                                          controller: birthdateController,
+                                          validator: (String value) =>
+                                              validator(
+                                                value,
+                                                birthdateRegExp,
+                                                textInputWarning,
+                                              ),
                                           onSaved: (String value) =>
                                               setState(() => birthdate = value),
                                           onChanged: (String value) {
@@ -314,11 +317,20 @@ class _SignInNextViewState extends State<SignInNextView> {
                                       ),
                                       SizedBox(height: 10),
                                       StrongrRoundedTextFormField(
+                                        inputFormatters: [
+                                          WhitelistingTextInputFormatter
+                                              .digitsOnly
+                                        ],
                                         width: ScreenSize.width(context) / 2.5,
-                                        controller: null,
-                                        validator: null,
+                                        controller: phoneNumberController,
+                                        validator: (String value) => validator(
+                                          value,
+                                          phoneNumberRegExp,
+                                          textInputWarning,
+                                          optional: true,
+                                        ),
                                         onSaved: (String value) =>
-                                            setState(() => lastName = value),
+                                            setState(() => phoneNumber = value),
                                         onChanged: (String value) {
                                           setState(() => warning = null);
                                           isEmpty();
@@ -341,18 +353,21 @@ class _SignInNextViewState extends State<SignInNextView> {
                               ),
                               SizedBox(height: 10),
                               StrongrRoundedTextFormField(
-                                textCapitalization: TextCapitalization.words,
-                                controller: null,
-                                validator: null,
+                                controller: usernameController,
+                                validator: (String value) => validator(
+                                  value,
+                                  usernameRegExp,
+                                  textInputWarning,
+                                ),
                                 onSaved: (String value) =>
-                                    setState(() => lastName = value),
+                                    setState(() => username = value),
                                 onChanged: (String value) {
                                   setState(() => warning = null);
                                   isEmpty();
                                 },
                                 maxLength: 30,
                                 hint: 'Caractères autorisés : ( . ) et ( _ )',
-                                textInputType: TextInputType.number,
+                                textInputType: TextInputType.text,
                               ),
                               SizedBox(height: 10),
                               Visibility(
@@ -363,6 +378,7 @@ class _SignInNextViewState extends State<SignInNextView> {
                                   color: Colors.red,
                                 ),
                               ),
+                              SizedBox(height: 10),
                               StrongrRaisedButton(
                                 "Finaliser l'inscription",
                                 width: ScreenSize.width(context) / 1.5,
