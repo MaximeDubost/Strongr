@@ -19,17 +19,17 @@ class _LogInViewState extends State<LogInView> {
       _buttonPressSuccess,
       _isLoading,
       passwordVisibility;
-  TextEditingController _emailController, _passwordController;
-  String email, password, warning;
+  TextEditingController _connectIdController, _passwordController;
+  String connectId, password, warning;
 
   @override
   void initState() {
     _key = GlobalKey();
     _validate = _isButtonEnabled =
         _buttonPressSuccess = _isLoading = passwordVisibility = false;
-    _emailController = TextEditingController(text: "");
+    _connectIdController = TextEditingController(text: "");
     _passwordController = TextEditingController(text: "");
-    _isButtonEnabled = _emailController.text.trim() != "" &&
+    _isButtonEnabled = _connectIdController.text.trim() != "" &&
             _passwordController.text.trim() != ""
         ? true
         : false;
@@ -39,13 +39,13 @@ class _LogInViewState extends State<LogInView> {
   @override
   void dispose() {
     super.dispose();
-    _emailController.dispose();
+    _connectIdController.dispose();
     _passwordController.dispose();
   }
 
   bool isEmpty() {
     setState(() {
-      _isButtonEnabled = _emailController.text.trim() != "" &&
+      _isButtonEnabled = _connectIdController.text.trim() != "" &&
               _passwordController.text.trim() != ""
           ? true
           : false;
@@ -54,11 +54,23 @@ class _LogInViewState extends State<LogInView> {
   }
 
   String validateEmail(String value) {
-    String pattern =
-        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+    String pattern;
+    String result;
+    if(value.contains('@'))
+    {
+      pattern = r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+      result = "L'adresse e-mail est invalide";
+    }
+    else{
+      pattern = r'^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29}$';
+      result = "Le nom d'utilisateur est invalide";
+    }
+    
     RegExp regExp = new RegExp(pattern);
     if (value.length == 0 || !regExp.hasMatch(value))
-      return "L'identifiant est invalide";
+    {
+      return result;
+    }
     else
       return null;
   }
@@ -83,7 +95,7 @@ class _LogInViewState extends State<LogInView> {
       _key.currentState.save();
       _buttonPressSuccess = true;
 
-      // print("email: $email");
+      // print("connectId: $connectId");
       // print("password: $password");
 
       setState(() {
@@ -93,7 +105,7 @@ class _LogInViewState extends State<LogInView> {
       });
 
       dynamic result = await UserService.postLogIn(
-          connectId: email.toLowerCase(), password: password);
+          connectId: connectId.toLowerCase(), password: password);
       if (result == 200) {
         print(global.token);
         setState(() {
@@ -112,8 +124,7 @@ class _LogInViewState extends State<LogInView> {
       } else // 503
       {
         setState(() {
-          warning =
-              "Service indisponible. Veuillez réessayer ultérieurement.";
+          warning = "Service indisponible. Veuillez réessayer ultérieurement.";
         });
       }
       setState(() {
@@ -157,19 +168,20 @@ class _LogInViewState extends State<LogInView> {
                           )),
                       SizedBox(height: 10),
                       StrongrRoundedTextFormField(
-                        controller: _emailController,
+                        controller: _connectIdController,
                         validator: validateEmail,
                         autofocus: true,
                         onSaved: (String value) =>
-                            setState(() => email = value.toLowerCase()),
+                            setState(() => connectId = value.toLowerCase()),
                         onChanged: (String value) {
                           setState(() => warning = null);
                           isEmpty();
                         },
                         maxLength: 50,
-                        hint: "Votre email ou nom d'utilisateur...",
+                        hint: "Nom d'utilisateur ou adresse e-mail",
                         textInputType: TextInputType.emailAddress,
                       ),
+                      SizedBox(height: 5),
                       Container(
                         alignment: Alignment.centerLeft,
                         child: StrongrText(
@@ -188,11 +200,12 @@ class _LogInViewState extends State<LogInView> {
                           setState(() => warning = null);
                           isEmpty();
                         },
-                        hint: "Votre mot de passe...",
+                        hint: "Mot de passe",
                         textInputType: TextInputType.visiblePassword,
                         suffixIcon: Icons.visibility_off,
                         suffixIconAlt: Icons.visibility,
-                        onPressedSuffixIcon: () => setState(() => passwordVisibility = !passwordVisibility),
+                        onPressedSuffixIcon: () => setState(
+                            () => passwordVisibility = !passwordVisibility),
                       ),
                       SizedBox(height: 10),
                       Visibility(
