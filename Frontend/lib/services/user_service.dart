@@ -8,6 +8,25 @@ import 'package:strongr/utils/global.dart' as global;
 
 class UserService {
 
+  /// [POST] /checkEmail - TODO
+  /// 
+  /// Vérifie la disponibilité de l'e-mail [email].
+  static Future<dynamic> postCheckEmail({@required String email}) async {
+    Response response = await http.post(
+      Uri.encodeFull(
+        global.SERVER_URL + '/checkEmail',
+      ),
+      body: {
+        '' : '',
+      }
+    );
+    if(response.statusCode == 200)
+    {
+      return '';
+    }
+    else throw HttpException('');
+  }
+
   /// [POST] /user/add - TODO
   ///
   /// Crée l'utilisateur avec les attributs [email], [username], [password], [firstName], [lastName], [birthDate] et [signDate].

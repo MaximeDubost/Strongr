@@ -4,6 +4,7 @@ import 'package:strongr/utils/strongr_colors.dart';
 
 class StrongrRaisedButton extends StatefulWidget {
   final String content;
+  final double width;
   final Color color;
   final Color textColor;
   final Color disabledColor;
@@ -11,6 +12,7 @@ class StrongrRaisedButton extends StatefulWidget {
 
   StrongrRaisedButton(
     this.content, {
+    this.width,
     this.color,
     this.textColor,
     this.disabledColor,
@@ -26,7 +28,7 @@ class _StrongrRaisedButtonState extends State<StrongrRaisedButton> {
   Widget build(BuildContext context) {
     return Container(
       height: 45,
-      width: ScreenSize.width(context) / 2,
+      width: widget.width == null ? ScreenSize.width(context) / 2 : widget.width,
       child: RaisedButton(
         color: widget.color == null ? StrongrColors.black : widget.color,
         disabledColor: widget.disabledColor == null ? Colors.grey : widget.disabledColor,

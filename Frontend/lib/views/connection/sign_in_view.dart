@@ -3,34 +3,41 @@ import 'package:strongr/services/user_service.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/global.dart' as global;
+import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/widgets/strongr_raised_button.dart';
 import 'package:strongr/widgets/strongr_rounded_textformfield.dart';
 import 'package:strongr/widgets/strongr_text.dart';
+import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 
-class LogInView extends StatefulWidget {
+class SignInView extends StatefulWidget {
   @override
-  _LogInViewState createState() => _LogInViewState();
+  _SignInViewState createState() => _SignInViewState();
 }
 
-class _LogInViewState extends State<LogInView> {
+class _SignInViewState extends State<SignInView> {
   GlobalKey<FormState> _key;
   bool _validate,
       _isButtonEnabled,
       _buttonPressSuccess,
       _isLoading,
-      passwordVisibility;
-  TextEditingController _connectIdController, _passwordController;
-  String connectId, password, warning;
+      passwordVisibility,
+      confirmPasswordVisibility;
+  TextEditingController _emailController,
+      _passwordController,
+      _confirmPasswordController;
+  String email, password, confirmPassword, warning;
 
   @override
   void initState() {
     _key = GlobalKey();
-    _validate = _isButtonEnabled =
-        _buttonPressSuccess = _isLoading = passwordVisibility = false;
-    _connectIdController = TextEditingController(text: "");
+    _validate = _isButtonEnabled = _buttonPressSuccess =
+        _isLoading = passwordVisibility = confirmPasswordVisibility = false;
+    _emailController = TextEditingController(text: "");
     _passwordController = TextEditingController(text: "");
-    _isButtonEnabled = _connectIdController.text.trim() != "" &&
-            _passwordController.text.trim() != ""
+    _confirmPasswordController = TextEditingController(text: "");
+    _isButtonEnabled = _emailController.text.trim() != "" &&
+            _passwordController.text.trim() != "" &&
+            _confirmPasswordController.text.trim() != ""
         ? true
         : false;
     super.initState();
@@ -39,35 +46,28 @@ class _LogInViewState extends State<LogInView> {
   @override
   void dispose() {
     super.dispose();
-    _connectIdController.dispose();
+    _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
   }
 
   bool isEmpty() {
     setState(() {
-      _isButtonEnabled = _connectIdController.text.trim() != "" &&
-              _passwordController.text.trim() != ""
+      _isButtonEnabled = _emailController.text.trim() != "" &&
+              _passwordController.text.trim() != "" &&
+              _confirmPasswordController.text.trim() != ""
           ? true
           : false;
     });
     return _isButtonEnabled;
   }
 
-  String validateConnectId(String value) {
-    String pattern;
-    String result;
-    if (value.contains('@')) {
-      pattern =
-          r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-      result = "L'adresse e-mail est invalide";
-    } else {
-      pattern = r'^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29}$';
-      result = "Le nom d'utilisateur est invalide";
-    }
-
+  String validateEmail(String value) {
+    String pattern =
+        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
     RegExp regExp = new RegExp(pattern);
     if (value.length == 0 || !regExp.hasMatch(value)) {
-      return result;
+      return "L'adresse e-mail est invalide";
     } else
       return null;
   }
@@ -87,12 +87,29 @@ class _LogInViewState extends State<LogInView> {
     }
   }
 
+  String validateConfirmPassword(String value) {
+    if (!_buttonPressSuccess) {
+      String pattern =
+          r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$';
+      RegExp regExp = new RegExp(pattern);
+      if (value.length == 0 ||
+          !regExp.hasMatch(value) ||
+          value != _passwordController.text)
+        return "Les mots de passe ne sont pas identiques";
+      else
+        return null;
+    } else {
+      _buttonPressSuccess = false;
+      return null;
+    }
+  }
+
   void sendToServer() async {
     if (_key.currentState.validate()) {
       _key.currentState.save();
       _buttonPressSuccess = true;
 
-      // print("connectId: $connectId");
+      // print("email: $email");
       // print("password: $password");
 
       setState(() {
@@ -101,32 +118,36 @@ class _LogInViewState extends State<LogInView> {
         _isLoading = true;
       });
 
-      dynamic result = await UserService.postLogIn(
-          connectId: connectId.toLowerCase(), password: password);
-      if (result == 200) {
-        print(global.token);
-        setState(() {
-          _validate = false;
-          warning = null;
-          _isLoading = false;
-          password = _passwordController.text = "";
-          _isButtonEnabled = false;
-          passwordVisibility = false;
-        });
-        Navigator.pushNamed(context, HOMEPAGE_ROUTE);
-      } else if (result == 401 || result == 404) {
-        setState(() {
-          warning = "Identifiant ou mot de passe incorrect.";
-        });
-      } else // 503
-      {
-        setState(() {
-          warning = "Service indisponible. Veuillez réessayer ultérieurement.";
-        });
-      }
+      // dynamic result = await UserService.postLogIn(
+      //     email: email.toLowerCase(), password: password);
+      // if (result == 200) {
+      // print(global.token);
+      setState(() {
+        _validate = false;
+        warning = null;
+        _isLoading = false;
+        password = _passwordController.text = "";
+        confirmPassword = _confirmPasswordController.text = "";
+        _isButtonEnabled = false;
+        passwordVisibility = false;
+        confirmPasswordVisibility = false;
+      });
+      // Navigator.pushNamed(context, HOMEPAGE_ROUTE);
+      // } else if (result == 401 || result == 404) {
+      //   setState(() {
+      //     warning = "Identifiant ou mot de passe incorrect.";
+      //   });
+      // } else // 503
+      // {
+      //   setState(() {
+      //     warning = "Service indisponible. Veuillez réessayer ultérieurement.";
+      //   });
+      // }
       setState(() {
         _isLoading = false;
       });
+
+      Navigator.pushNamed(context, SIGN_IN_NEXT_ROUTE);
     } else
       setState(() {
         _validate = true;
@@ -158,28 +179,28 @@ class _LogInViewState extends State<LogInView> {
                             children: <Widget>[
                               Container(
                                 alignment: Alignment.center,
-                                child: StrongrText("Connexion", size: 30),
+                                child: StrongrText("Inscription", size: 30),
                               ),
                               SizedBox(height: 30),
                               Container(
                                   alignment: Alignment.centerLeft,
                                   child: StrongrText(
-                                    "Identifiant",
+                                    "Adresse e-mail",
                                     size: 16,
                                   )),
                               SizedBox(height: 10),
                               StrongrRoundedTextFormField(
-                                controller: _connectIdController,
-                                validator: validateConnectId,
-                                autofocus: true,
-                                onSaved: (String value) => setState(
-                                    () => connectId = value.toLowerCase()),
+                                controller: _emailController,
+                                validator: validateEmail,
+                                // autofocus: true,
+                                onSaved: (String value) =>
+                                    setState(() => email = value.toLowerCase()),
                                 onChanged: (String value) {
                                   setState(() => warning = null);
                                   isEmpty();
                                 },
                                 maxLength: 50,
-                                hint: "Nom d'utilisateur ou adresse e-mail",
+                                hint: "Adresse e-mail",
                                 textInputType: TextInputType.emailAddress,
                               ),
                               SizedBox(height: 5),
@@ -208,6 +229,33 @@ class _LogInViewState extends State<LogInView> {
                                 onPressedSuffixIcon: () => setState(() =>
                                     passwordVisibility = !passwordVisibility),
                               ),
+                              SizedBox(height: 5),
+                              Container(
+                                alignment: Alignment.centerLeft,
+                                child: StrongrText(
+                                  "Confirmation mot de passe",
+                                  size: 16,
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              StrongrRoundedTextFormField(
+                                controller: _confirmPasswordController,
+                                validator: validateConfirmPassword,
+                                obscureText: !confirmPasswordVisibility,
+                                onSaved: (String value) =>
+                                    setState(() => password = value),
+                                onChanged: (String value) {
+                                  setState(() => warning = null);
+                                  isEmpty();
+                                },
+                                hint: "Confirmation mot de passe",
+                                textInputType: TextInputType.visiblePassword,
+                                suffixIcon: Icons.visibility_off,
+                                suffixIconAlt: Icons.visibility,
+                                onPressedSuffixIcon: () => setState(() =>
+                                    confirmPasswordVisibility =
+                                        !confirmPasswordVisibility),
+                              ),
                               SizedBox(height: 10),
                               Visibility(
                                 visible: _isLoading == false && warning != null,
@@ -217,23 +265,48 @@ class _LogInViewState extends State<LogInView> {
                                   color: Colors.red,
                                 ),
                               ),
-                              FlatButton(
-                                onPressed: () {
-                                  FocusScope.of(context).unfocus();
-                                },
-                                child: StrongrText(
-                                  "Mot de passe oublié ?",
-                                  size: 16,
-                                ),
-                              ),
                               StrongrRaisedButton(
-                                "Connexion",
+                                "S'inscrire",
                                 onPressed: _isButtonEnabled
                                     ? () async {
                                         FocusScope.of(context).unfocus();
                                         sendToServer();
                                       }
                                     : null,
+                              ),
+                              SizedBox(height: 15),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                children: <Widget>[
+                                  Container(
+                                    height: 2,
+                                    width: ScreenSize.width(context) / 3,
+                                    color: StrongrColors.greyA,
+                                  ),
+                                  StrongrText(
+                                    "OU",
+                                    size: 16,
+                                  ),
+                                  Container(
+                                    height: 2,
+                                    width: ScreenSize.width(context) / 3,
+                                    color: StrongrColors.greyA,
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 10),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: <Widget>[
+                                  GoogleSignInButton(
+                                    text: "S'inscrire",
+                                    onPressed: () {},
+                                  ),
+                                  FacebookSignInButton(
+                                    text: "S'inscrire",
+                                    onPressed: () {},
+                                  ),
+                                ],
                               ),
                             ],
                           ),
@@ -245,10 +318,10 @@ class _LogInViewState extends State<LogInView> {
                     child: FlatButton(
                       onPressed: () {
                         FocusScope.of(context).unfocus();
-                        Navigator.pushNamed(context, SIGN_IN_ROUTE);
+                        Navigator.pop(context);
                       },
                       child: StrongrText(
-                        "Pas de compte ? Inscription",
+                        "Déjà un compte ? Connexion",
                         size: 16,
                       ),
                     ),
