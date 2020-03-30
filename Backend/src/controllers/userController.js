@@ -57,21 +57,38 @@ controller.getUser = async (req, res, next) => {
 }
 /**
  * @param username varchar,
- * @param email varchar,
  * @param firstname varchar,
  * @param lastname varchar,
- * @param password varchar
+ * @param password varchar,
+ * @param email varchar,
  */
-controller.addUser = async (req, res, next) => {
-    let sqlExist = "SELECT * FROM _user u WHERE u.username = $1::varchar OR u.email = $2::varchar";
+controller.register = async (req, res, next) => {
+    let sqlExist = "SELECT * FROM _user u WHERE u.username = $1::varchar";
     try {
-        var result = await clt.query(sqlExist, [req.body.username, req.body.email])
+        var result = await clt.query(sqlExist, [req.body.username])
         if (result.rows.length > 0) {
             res.sendStatus(409)
         } else {
             let sqlRegister = "INSERT INTO _user (firstname, lastname, username, email, password, signeddate) VALUES($1, $2, $3, $4, $5, $6)";
             await clt.query(sqlRegister, [req.body.firstname, req.body.lastname, req.body.username, req.body.email, bcrypt.hashSync(req.body.password, 10), new Date()])
             res.sendStatus(201)
+        }
+    } catch (error) {
+        console.error(error)
+    }
+}
+/**
+ * @param email varchar
+ */
+controller.checkEmail = async (req, res, next) => {
+    let sqlExistEmail = "SELECT * FROM _user u WHERE u.email = $1"
+    try {
+        var result = await clt.query(sqlExistEmail, [req.body.email])
+        console.log(result.rows.length)
+        if (result.rows.length > 0) {
+            res.sendStatus(409)
+        } else {
+            res.sendStatus(200)
         }
     } catch (error) {
         console.error(error)
