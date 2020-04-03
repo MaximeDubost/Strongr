@@ -3,3 +3,5 @@
 
 # Node modules
 Backend/node_modules/
+
+*.rest
