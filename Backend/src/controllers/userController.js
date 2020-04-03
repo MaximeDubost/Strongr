@@ -147,7 +147,7 @@ controller.login = async (req, res, next) => {
                     email: result.rows[0].email,
                     username: result.rows[0].username
                 }, "SECRET")
-                res.set("authorization", "Bearer " + token).sendStatus(200)
+                res.json({ token })
             } else {
                 res.sendStatus(401)
             }
@@ -160,7 +160,6 @@ controller.login = async (req, res, next) => {
 }
 
 controller.logout = (req, res) => {
-    res.removeHeader("authorization")
     res.sendStatus(200)
 }
 /**
