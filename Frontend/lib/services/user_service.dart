@@ -8,23 +8,53 @@ import 'package:strongr/utils/global.dart' as global;
 
 class UserService {
 
-  /// [POST] /user/add - TODO
-  ///
-  /// Crée l'utilisateur avec les attributs [email], [username], [password], [firstName], [lastName], [birthDate] et [signDate].
-  static Future<dynamic> postSignIn({@required String email, @required String username, @required String password, @required String firstName, @required String lastName, @required String birthDate, @required String signDate}) async {
-    Response response = await http.post(
-      Uri.encodeFull(
-        global.SERVER_URL + '/user/add',
-      ),
-      body: {
-        '' : '',
-      }
-    );
-    if(response.statusCode == 200)
+  /// [POST] /checkEmail
+  /// 
+  /// Vérifie la disponibilité de l'e-mail [email].
+  static Future<int> postCheckEmail({@required String email}) async {
+    try {
+      Response response = await http.post(
+        Uri.encodeFull(
+          global.SERVER_URL + '/checkEmail',
+        ),
+        body: {
+          'email' : email,
+        }
+      );
+      return response.statusCode;
+    } 
+    catch (e) 
     {
-      return '';
+      return 503;
     }
-    else throw HttpException('');
+  }
+
+  /// [POST] /user/add
+  ///
+  /// Crée l'utilisateur avec les attributs [email], [password], [firstname], [lastname], [birthdate], [phonenumber] et [username].
+  static Future<int> postSignIn({@required String email, @required String password, @required String firstname, @required String lastname, @required String birthdate, @required String phonenumber, @required String username}) async {
+    try
+    {
+      Response response = await http.post(
+        Uri.encodeFull(
+          global.SERVER_URL + '/user/add',
+        ),
+        body: {
+          'email' : email,
+          'password' : password,
+          'firstname' : firstname,
+          'lastname' : lastname,
+          'birthdate' : birthdate,
+          'phonenumber' : phonenumber,
+          'username' : username,
+        }
+      );
+      return response.statusCode;
+    }
+    catch(e)
+    {
+      return 503;
+    }
   }
 
   /// [GET] /user/[id] - TODO
@@ -93,7 +123,8 @@ class UserService {
         }
       );
       if(response.statusCode == 200)
-        global.token = response.headers['authorization'];
+        // global.token = response.headers['authorization'];
+        global.token = response.body;
       return response.statusCode;
     }
     catch (e)

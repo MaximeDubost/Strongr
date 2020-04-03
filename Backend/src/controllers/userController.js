@@ -57,21 +57,41 @@ controller.getUser = async (req, res, next) => {
 }
 /**
  * @param username varchar,
- * @param email varchar,
  * @param firstname varchar,
  * @param lastname varchar,
- * @param password varchar
+ * @param password varchar,
+ * @param email varchar,
  */
-controller.addUser = async (req, res, next) => {
-    let sqlExist = "SELECT * FROM _user u WHERE u.username = $1::varchar OR u.email = $2::varchar";
+controller.register = async (req, res, next) => {
+    let sqlExist = "SELECT * FROM _user u WHERE u.username = $1::varchar";
     try {
-        var result = await clt.query(sqlExist, [req.body.username, req.body.email])
+        var result = await clt.query(sqlExist, [req.body.username])
         if (result.rows.length > 0) {
             res.sendStatus(409)
         } else {
-            let sqlRegister = "INSERT INTO _user (firstname, lastname, username, email, password, signeddate) VALUES($1, $2, $3, $4, $5, $6)";
-            await clt.query(sqlRegister, [req.body.firstname, req.body.lastname, req.body.username, req.body.email, bcrypt.hashSync(req.body.password, 10), new Date()])
+            console.log(req.body.birthdate)
+            var birth_to_datetime = new Date(req.body.birthdate)
+            console.log(birth_to_datetime)
+            let sqlRegister = "INSERT INTO _user (firstname, lastname, username, birthdate, phonenumber, email, password, signeddate) VALUES($1, $2, $3, $4, $5, $6, $7, $8)";
+            await clt.query(sqlRegister, [req.body.firstname, req.body.lastname, req.body.username, birth_to_datetime, req.body.phonenumber, req.body.email, bcrypt.hashSync(req.body.password, 10), new Date()])
             res.sendStatus(201)
+        }
+    } catch (error) {
+        console.error(error)
+    }
+}
+/**
+ * @param email varchar
+ */
+controller.checkEmail = async (req, res, next) => {
+    let sqlExistEmail = "SELECT * FROM _user u WHERE u.email = $1"
+    try {
+        var result = await clt.query(sqlExistEmail, [req.body.email])
+        console.log(result.rows.length)
+        if (result.rows.length > 0) {
+            res.sendStatus(409)
+        } else {
+            res.sendStatus(200)
         }
     } catch (error) {
         console.error(error)
@@ -121,13 +141,17 @@ controller.login = async (req, res, next) => {
     try {
         var result = await clt.query(sqlLogin, [req.body.connectId])
         if (result.rows.length > 0) {
+            console.log(result.rows);
+            console.log(bcrypt.compareSync(req.body.password, result.rows[0].password))
+            console.log(req.body.password)
+            console.log(result.rows[0].password)
             if (bcrypt.compareSync(req.body.password, result.rows[0].password)) {
                 var token = jwt.sign({
                     id: result.rows[0].id_user,
                     email: result.rows[0].email,
                     username: result.rows[0].username
                 }, "SECRET")
-                res.set("authorization", "Bearer " + token).sendStatus(200)
+                res.status(200).json({ token })
             } else {
                 res.sendStatus(401)
             }
@@ -140,7 +164,6 @@ controller.login = async (req, res, next) => {
 }
 
 controller.logout = (req, res) => {
-    res.removeHeader("authorization")
     res.sendStatus(200)
 }
 /**

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
 
 class StrongrRoundedTextFormField extends StatefulWidget {
+  final double width;
   final String hint;
   final TextInputType textInputType;
   final TextCapitalization textCapitalization;
@@ -16,8 +19,10 @@ class StrongrRoundedTextFormField extends StatefulWidget {
   final IconData suffixIconAlt;
   final Color suffixIconColor;
   final Function onPressedSuffixIcon;
+  final List<TextInputFormatter> inputFormatters;
 
   StrongrRoundedTextFormField({
+    this.width,
     this.hint,
     this.textInputType = TextInputType.text,
     this.textCapitalization = TextCapitalization.none,
@@ -32,6 +37,7 @@ class StrongrRoundedTextFormField extends StatefulWidget {
     this.suffixIconAlt,
     this.suffixIconColor,
     this.onPressedSuffixIcon,
+    this.inputFormatters,
   });
 
   @override
@@ -43,30 +49,34 @@ class _StrongrRoundedTextFormFieldState
     extends State<StrongrRoundedTextFormField> {
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      controller: widget.controller,
-      validator: widget.validator,
-      autofocus: widget.autofocus,
-      onSaved: widget.onSaved,
-      onChanged: widget.onChanged,
-      obscureText: widget.obscureText,
-      maxLength: widget.maxLength,
-      textCapitalization: widget.textCapitalization,
-      cursorColor: StrongrColors.black,
-      keyboardType: widget.textInputType,
-      decoration: InputDecoration(
-        suffixIcon: widget.suffixIcon != null ? IconButton(
-          icon: Icon(widget.obscureText ? widget.suffixIcon : (widget.suffixIconAlt == null ? widget.suffixIcon : widget.suffixIconAlt), color: widget.suffixIconColor == null ? StrongrColors.black : widget.suffixIconColor,),
-          onPressed: widget.onPressedSuffixIcon,
-          splashColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-        ) : null,
-        hintText: widget.hint,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+    return Container(
+      width: widget.width == null ? ScreenSize.width(context) : widget.width,
+      child: TextFormField(
+        inputFormatters: widget.inputFormatters,
+        controller: widget.controller,
+        validator: widget.validator,
+        autofocus: widget.autofocus,
+        onSaved: widget.onSaved,
+        onChanged: widget.onChanged,
+        obscureText: widget.obscureText,
+        maxLength: widget.maxLength,
+        textCapitalization: widget.textCapitalization,
+        cursorColor: StrongrColors.black,
+        keyboardType: widget.textInputType,
+        decoration: InputDecoration(
+          suffixIcon: widget.suffixIcon != null ? IconButton(
+            icon: Icon(widget.obscureText ? widget.suffixIcon : (widget.suffixIconAlt == null ? widget.suffixIcon : widget.suffixIconAlt), color: widget.suffixIconColor == null ? StrongrColors.black : widget.suffixIconColor,),
+            onPressed: widget.onPressedSuffixIcon,
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+          ) : null,
+          hintText: widget.hint,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          fillColor: Colors.white,
+          filled: true,
         ),
-        fillColor: Colors.white,
-        filled: true,
       ),
     );
   }
