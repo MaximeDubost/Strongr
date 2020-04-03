@@ -74,8 +74,8 @@ class _LogInViewState extends State<LogInView> {
 
   String validatePassword(String value) {
     if (!_buttonPressSuccess) {
-      String pattern =
-          r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$';
+      String pattern = r'';
+      //r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$';
       RegExp regExp = new RegExp(pattern);
       if (value.length == 0 || !regExp.hasMatch(value))
         return "Le mot de passe est invalide";

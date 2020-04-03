@@ -7,24 +7,20 @@ import 'package:http/http.dart' as http;
 import 'package:strongr/utils/global.dart' as global;
 
 class UserService {
-
   /// [POST] /checkEmail
-  /// 
+  ///
   /// Vérifie la disponibilité de l'e-mail [email].
   static Future<int> postCheckEmail({@required String email}) async {
     try {
       Response response = await http.post(
-        Uri.encodeFull(
-          global.SERVER_URL + '/checkEmail',
-        ),
-        body: {
-          'email' : email,
-        }
-      );
+          Uri.encodeFull(
+            global.SERVER_URL + '/checkEmail',
+          ),
+          body: {
+            'email': email,
+          });
       return response.statusCode;
-    } 
-    catch (e) 
-    {
+    } catch (e) {
       return 503;
     }
   }
@@ -32,27 +28,30 @@ class UserService {
   /// [POST] /user/add
   ///
   /// Crée l'utilisateur avec les attributs [email], [password], [firstname], [lastname], [birthdate], [phonenumber] et [username].
-  static Future<int> postSignIn({@required String email, @required String password, @required String firstname, @required String lastname, @required String birthdate, @required String phonenumber, @required String username}) async {
-    try
-    {
+  static Future<int> postSignIn(
+      {@required String email,
+      @required String password,
+      @required String firstname,
+      @required String lastname,
+      @required String birthdate,
+      @required String phonenumber,
+      @required String username}) async {
+    try {
       Response response = await http.post(
-        Uri.encodeFull(
-          global.SERVER_URL + '/user/add',
-        ),
-        body: {
-          'email' : email,
-          'password' : password,
-          'firstname' : firstname,
-          'lastname' : lastname,
-          'birthdate' : birthdate,
-          'phonenumber' : phonenumber,
-          'username' : username,
-        }
-      );
+          Uri.encodeFull(
+            global.SERVER_URL + '/user/add',
+          ),
+          body: {
+            'email': email,
+            'password': password,
+            'firstname': firstname,
+            'lastname': lastname,
+            'birthdate': birthdate,
+            'phonenumber': phonenumber,
+            'username': username,
+          });
       return response.statusCode;
-    }
-    catch(e)
-    {
+    } catch (e) {
       return 503;
     }
   }
@@ -66,11 +65,10 @@ class UserService {
         global.SERVER_URL + '/user/' + id.toString(),
       ),
     );
-    if(response.statusCode == 200)
-    {
+    if (response.statusCode == 200) {
       return '';
-    }
-    else throw HttpException('');
+    } else
+      throw HttpException('');
   }
 
   /// [PUT] /user/update/[id] - TODO
@@ -78,18 +76,16 @@ class UserService {
   /// Modifie l'utilisateur [id].
   static Future<dynamic> putUser({@required int id}) async {
     Response response = await http.put(
-      Uri.encodeFull(
-        global.SERVER_URL + '/user/update/' + id.toString(),
-      ),
-      body: {
-        '' : '',
-      }
-    );
-    if(response.statusCode == 200)
-    {
+        Uri.encodeFull(
+          global.SERVER_URL + '/user/update/' + id.toString(),
+        ),
+        body: {
+          '': '',
+        });
+    if (response.statusCode == 200) {
       return '';
-    }
-    else throw HttpException('');
+    } else
+      throw HttpException('');
   }
 
   /// [DELETE] /user/delete/[id] - TODO
@@ -101,37 +97,33 @@ class UserService {
         global.SERVER_URL + '/user/delete/' + id.toString(),
       ),
     );
-    if(response.statusCode == 200)
-    {
+    if (response.statusCode == 200) {
       return '';
-    }
-    else throw HttpException('');
+    } else
+      throw HttpException('');
   }
 
   /// [POST] /login
   ///
   /// Demande la connexion de l'utilisateur [connectId] avec le mot de passe [password].
-  static Future<int> postLogIn({@required String connectId, @required String password}) async {
+  static Future<int> postLogIn(
+      {@required String connectId, @required String password}) async {
     try {
       Response response = await http.post(
-        Uri.encodeFull(
-          global.SERVER_URL + '/login',
-        ),
-        body: {
-          'connectId' : connectId,
-          'password' : password,
-        }
-      );
-      if(response.statusCode == 200)
+          Uri.encodeFull(
+            global.SERVER_URL + '/login',
+          ),
+          body: {
+            'connectId': connectId,
+            'password': password,
+          });
+      if (response.statusCode == 200)
         // global.token = response.headers['authorization'];
         global.token = response.body;
       return response.statusCode;
-    }
-    catch (e)
-    {
+    } catch (e) {
       return 503;
     }
-    
   }
 
   /// [POST] /logout - TODO
@@ -139,18 +131,16 @@ class UserService {
   /// Demande la déconnexion d'un utilisateur.
   static Future<dynamic> postLogOut() async {
     Response response = await http.post(
-      Uri.encodeFull(
-        global.SERVER_URL + '/logout',
-      ),
-      body: {
-        '' : '',
-      }
-    );
-    if(response.statusCode == 200)
-    {
+        Uri.encodeFull(
+          global.SERVER_URL + '/logout',
+        ),
+        body: {
+          '': '',
+        });
+    if (response.statusCode == 200) {
       return '';
-    }
-    else throw HttpException('');
+    } else
+      throw HttpException('');
   }
 
   /// [POST] /sendCode - TODO
@@ -158,18 +148,16 @@ class UserService {
   /// Envoie le code à l'adresse [email].
   static Future<dynamic> postSendCode({@required String email}) async {
     Response response = await http.post(
-      Uri.encodeFull(
-        global.SERVER_URL + '/sendCode',
-      ),
-      body: {
-        '' : '',
-      }
-    );
-    if(response.statusCode == 200)
-    {
+        Uri.encodeFull(
+          global.SERVER_URL + '/sendCode',
+        ),
+        body: {
+          '': '',
+        });
+    if (response.statusCode == 200) {
       return '';
-    }
-    else throw HttpException('');
+    } else
+      throw HttpException('');
   }
 
   /// [POST] /checkCode - TODO
@@ -177,37 +165,33 @@ class UserService {
   /// Envoie le code [code].
   static Future<dynamic> postCheckCode({@required String code}) async {
     Response response = await http.post(
-      Uri.encodeFull(
-        global.SERVER_URL + '/checkCode',
-      ),
-      body: {
-        '' : '',
-      }
-    );
-    if(response.statusCode == 200)
-    {
+        Uri.encodeFull(
+          global.SERVER_URL + '/checkCode',
+        ),
+        body: {
+          '': '',
+        });
+    if (response.statusCode == 200) {
       return '';
-    }
-    else throw HttpException('');
+    } else
+      throw HttpException('');
   }
 
   /// [PUT] /resetPassword - TODO
   ///
   /// Modifie le mot de passe de l'utilisateur [email] avec le nouveau mot de passe [password].
-  static Future<dynamic> putResetPassword({@required String email, String password}) async {
+  static Future<dynamic> putResetPassword(
+      {@required String email, String password}) async {
     Response response = await http.put(
-      Uri.encodeFull(
-        global.SERVER_URL + '/resetPassword',
-      ),
-      body: {
-        '' : '',
-      }
-    );
-    if(response.statusCode == 200)
-    {
+        Uri.encodeFull(
+          global.SERVER_URL + '/resetPassword',
+        ),
+        body: {
+          '': '',
+        });
+    if (response.statusCode == 200) {
       return '';
-    }
-    else throw HttpException('');
+    } else
+      throw HttpException('');
   }
-
 }

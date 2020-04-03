@@ -73,7 +73,7 @@ controller.register = async (req, res, next) => {
             var birth_to_datetime = new Date(req.body.birthdate)
             console.log(birth_to_datetime)
             let sqlRegister = "INSERT INTO _user (firstname, lastname, username, birthdate, phonenumber, email, password, signeddate) VALUES($1, $2, $3, $4, $5, $6, $7, $8)";
-            await clt.query(sqlRegister, [req.body.firstname, req.body.lastname, req.body.username, birth_to_datetime, req.body.phonenumber, req.body.email, bcrypt.hashSync(req.body.password, 10), new Date()])
+            await clt.query(sqlRegister, [req.body.firstname, req.body.lastname, req.body.username, birth_to_datetime, req.body.phonenumber, req.body.email, bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10)), new Date()])
             res.sendStatus(201)
         }
     } catch (error) {
