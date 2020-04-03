@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:strongr/services/user_service.dart';
+import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
+import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/widgets/strongr_raised_button.dart';
+import 'package:strongr/widgets/strongr_rounded_datepicker.dart';
 import 'package:strongr/widgets/strongr_rounded_textformfield.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
@@ -19,43 +23,36 @@ class _SignInNextViewState extends State<SignInNextView> {
   GlobalKey<FormState> _key;
   bool _validate,
       _isButtonEnabled,
-      _buttonPressSuccess,
       _isLoading,
       passwordVisibility,
       confirmPasswordVisibility;
-  TextEditingController firstNameController,
-      lastNameController,
-      birthdateController,
-      phoneNumberController,
+  TextEditingController firstnameController,
+      lastnameController,
+      phonenumberController,
       usernameController;
-  String firstName, lastName, birthdate, phoneNumber, username, warning;
-  RegExp nameRegExp,
-      birthdateRegExp,
-      phoneNumberRegExp,
-      usernameRegExp;
+  String firstname, lastname, birthdate, phonenumber, username, warning;
+  RegExp nameRegExp, phonenumberRegExp, usernameRegExp;
   String textInputWarning, usernameWarning;
 
   @override
   void initState() {
     _key = GlobalKey();
-    _validate = _isButtonEnabled = _buttonPressSuccess =
+    _validate = _isButtonEnabled =
         _isLoading = passwordVisibility = confirmPasswordVisibility = false;
-    firstNameController = TextEditingController(text: "");
-    lastNameController = TextEditingController(text: "");
-    birthdateController = TextEditingController(text: "");
-    phoneNumberController = TextEditingController(text: "");
+    firstnameController = TextEditingController(text: "");
+    lastnameController = TextEditingController(text: "");
+    phonenumberController = TextEditingController(text: "");
     usernameController = TextEditingController(text: "");
-    _isButtonEnabled = firstNameController.text.trim() != "" &&
-            lastNameController.text.trim() != "" &&
-            birthdateController.text.trim() != "" &&
-            phoneNumberController.text.trim() != "" &&
+    _isButtonEnabled = firstnameController.text.trim() != "" &&
+            lastnameController.text.trim() != "" &&
+            (birthdate != "" || birthdate != null) &&
+            // phonenumberController.text.trim() != "" &&
             usernameController.text.trim() != ""
         ? true
         : false;
     nameRegExp = RegExp(r'^[a-zA-ZÀ-ÿ- ]*$');
-    birthdateRegExp = RegExp(r'');
-    phoneNumberRegExp = RegExp(r'^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$');
-    usernameRegExp = RegExp(r'^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{4,15}$');
+    phonenumberRegExp = RegExp(r'^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$');
+    usernameRegExp = RegExp(r'^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{3,29}$');
     textInputWarning = "Format invalide";
     usernameWarning = "Nom d'utilisateur invalide";
     super.initState();
@@ -63,36 +60,40 @@ class _SignInNextViewState extends State<SignInNextView> {
 
   @override
   void dispose() {
-    firstNameController.dispose();
-    lastNameController.dispose();
-    birthdateController.dispose();
-    phoneNumberController.dispose();
+    firstnameController.dispose();
+    lastnameController.dispose();
+    phonenumberController.dispose();
     usernameController.dispose();
     super.dispose();
   }
 
   bool isEmpty() {
     // try {
-      setState(() {
-        _isButtonEnabled = firstNameController.text.trim() != "" &&
-                lastNameController.text.trim() != "" &&
-                birthdateController.text.trim() != "" &&
-                phoneNumberController.text.trim() != "" &&
-                usernameController.text.trim() != ""
-            ? true
-            : false;
-      });
-      return _isButtonEnabled;
+    setState(() {
+      _isButtonEnabled = firstnameController.text.trim() != "" &&
+              lastnameController.text.trim() != "" &&
+              birthdate != null &&
+              // phonenumberController.text.trim() != "" &&
+              usernameController.text.trim() != ""
+          ? true
+          : false;
+    });
+    return _isButtonEnabled;
     // } catch (e) {
     //   return false;
     // }
   }
 
-  String validator(String value, RegExp regExp, String warning,
-      {bool optional = false}) {
-    bool condition = optional
-        ? !regExp.hasMatch(value)
-        : value.length == 0 || !regExp.hasMatch(value);
+  String validator(String value, RegExp regExp, String warning, {bool optional = false}) {
+    bool condition;
+    if(optional)
+    {
+      condition = value.length == 0 ? false : !regExp.hasMatch(value);
+    }
+    else
+    {
+      condition = value.length == 0 || !regExp.hasMatch(value);
+    }
     if (condition)
       return warning;
     else
@@ -102,7 +103,7 @@ class _SignInNextViewState extends State<SignInNextView> {
   void sendToServer() async {
     if (_key.currentState.validate()) {
       _key.currentState.save();
-      _buttonPressSuccess = true;
+      // _buttonPressSuccess = true;
 
       // print("email: $email");
       // print("password: $password");
@@ -113,33 +114,38 @@ class _SignInNextViewState extends State<SignInNextView> {
         _isLoading = true;
       });
 
-      // dynamic result = await UserService.postLogIn(
-      //     email: email.toLowerCase(), password: password);
-      // if (result == 200) {
-      //   print(global.token);
-      //   setState(() {
-      //     _validate = false;
-      //     warning = null;
-      //     _isLoading = false;
-      //     password = _passwordController.text = "";
-      //     _isButtonEnabled = false;
-      //     passwordVisibility = false;
-      //     confirmPasswordVisibility = false;
-      //   });
-      //   Navigator.pushNamed(context, HOMEPAGE_ROUTE);
-      // } else if (result == 401 || result == 404) {
-      //   setState(() {
-      //     warning = "Identifiant ou mot de passe incorrect.";
-      //   });
-      // } else // 503
-      // {
-      //   setState(() {
-      //     warning = "Service indisponible. Veuillez réessayer ultérieurement.";
-      //   });
-      // }
-      // setState(() {
-      //   _isLoading = false;
-      // });
+      dynamic result = await UserService.postSignIn(
+        email: widget.email,
+        password: widget.password,
+        firstname: firstname,
+        lastname: lastname,
+        birthdate: birthdate,
+        phonenumber: phonenumber,
+        username: username,
+      );
+      if (result == 201) {
+        setState(() {
+          _validate = false;
+          warning = null;
+          _isLoading = false;
+          _isButtonEnabled = false;
+          passwordVisibility = false;
+          confirmPasswordVisibility = false;
+        });
+        Navigator.pushNamedAndRemoveUntil(context, HOMEPAGE_ROUTE, (Route<dynamic> route) => false);
+      } else if (result == 409) {
+        setState(() {
+          warning = "Ce nom d'utilisateur n'est pas disponible.";
+        });
+      } else // 503
+      {
+        setState(() {
+          warning = "Service indisponible. Veuillez réessayer ultérieurement.";
+        });
+      }
+      setState(() {
+        _isLoading = false;
+      });
     } else
       setState(() {
         _validate = true;
@@ -206,7 +212,7 @@ class _SignInNextViewState extends State<SignInNextView> {
                                         textCapitalization:
                                             TextCapitalization.words,
                                         width: ScreenSize.width(context) / 2.5,
-                                        controller: firstNameController,
+                                        controller: firstnameController,
                                         validator: (String value) => validator(
                                           value,
                                           nameRegExp,
@@ -214,7 +220,7 @@ class _SignInNextViewState extends State<SignInNextView> {
                                         ),
                                         autofocus: true,
                                         onSaved: (String value) =>
-                                            setState(() => firstName = value),
+                                            setState(() => firstname = value),
                                         onChanged: (String value) {
                                           setState(() => warning = null);
                                           isEmpty();
@@ -241,14 +247,14 @@ class _SignInNextViewState extends State<SignInNextView> {
                                         textCapitalization:
                                             TextCapitalization.words,
                                         width: ScreenSize.width(context) / 2.5,
-                                        controller: lastNameController,
+                                        controller: lastnameController,
                                         validator: (String value) => validator(
                                           value,
                                           nameRegExp,
                                           textInputWarning,
                                         ),
                                         onSaved: (String value) =>
-                                            setState(() => lastName = value),
+                                            setState(() => lastname = value),
                                         onChanged: (String value) {
                                           setState(() => warning = null);
                                           isEmpty();
@@ -265,6 +271,7 @@ class _SignInNextViewState extends State<SignInNextView> {
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Column(
                                     crossAxisAlignment:
@@ -278,30 +285,57 @@ class _SignInNextViewState extends State<SignInNextView> {
                                         ),
                                       ),
                                       SizedBox(height: 10),
-                                      StrongrRoundedTextFormField(
-                                          inputFormatters: [
-                                            WhitelistingTextInputFormatter
-                                                .digitsOnly
-                                          ],
-                                          width:
-                                              ScreenSize.width(context) / 2.5,
-                                          controller: birthdateController,
-                                          validator: (String value) =>
-                                              validator(
-                                                value,
-                                                birthdateRegExp,
-                                                textInputWarning,
-                                              ),
-                                          onSaved: (String value) =>
-                                              setState(() => birthdate = value),
-                                          onChanged: (String value) {
-                                            setState(() => warning = null);
-                                            isEmpty();
-                                          },
-                                          maxLength: 10,
-                                          hint: "jj/mm/aaaa",
-                                          textInputType:
-                                              TextInputType.datetime),
+                                      StrongrRoundedDatePicker(
+                                        width: ScreenSize.width(context) / 2.5,
+                                        text: birthdate,
+                                        textColor: birthdate != null
+                                            ? StrongrColors.black
+                                            : null,
+                                        onPressed: () {
+                                          FocusScope.of(context).unfocus();
+                                          showDatePicker(
+                                            context: context,
+                                            initialDate: birthdate == null ||
+                                                    birthdate == ""
+                                                ? DateTime.now()
+                                                : DateTime.parse(birthdate),
+                                            firstDate: DateTime.now().subtract(
+                                                Duration(days: 36500)),
+                                            lastDate: DateTime.now(),
+                                            locale: Locale('fr'),
+                                          ).then((date) {
+                                            if (date != null) {
+                                              setState(() {
+                                                birthdate = date.toString();
+                                                warning = null;
+                                              });
+                                              isEmpty();
+                                            }
+                                          });
+                                        },
+                                      )
+                                      // StrongrRoundedTextFormField(
+                                      //   inputFormatters: [
+                                      //     WhitelistingTextInputFormatter
+                                      //         .digitsOnly
+                                      //   ],
+                                      //   width: ScreenSize.width(context) / 2.5,
+                                      //   controller: birthdateController,
+                                      //   validator: (String value) => validator(
+                                      //     value,
+                                      //     birthdateRegExp,
+                                      //     textInputWarning,
+                                      //   ),
+                                      //   onSaved: (String value) =>
+                                      //       setState(() => birthdate = value),
+                                      //   onChanged: (String value) {
+                                      //     setState(() => warning = null);
+                                      //     isEmpty();
+                                      //   },
+                                      //   maxLength: 10,
+                                      //   hint: "jj/mm/aaaa",
+                                      //   textInputType: TextInputType.datetime,
+                                      // ),
                                     ],
                                   ),
                                   Column(
@@ -322,15 +356,15 @@ class _SignInNextViewState extends State<SignInNextView> {
                                               .digitsOnly
                                         ],
                                         width: ScreenSize.width(context) / 2.5,
-                                        controller: phoneNumberController,
+                                        controller: phonenumberController,
                                         validator: (String value) => validator(
                                           value,
-                                          phoneNumberRegExp,
+                                          phonenumberRegExp,
                                           textInputWarning,
                                           optional: true,
                                         ),
                                         onSaved: (String value) =>
-                                            setState(() => phoneNumber = value),
+                                            setState(() => phonenumber = value),
                                         onChanged: (String value) {
                                           setState(() => warning = null);
                                           isEmpty();
@@ -357,7 +391,7 @@ class _SignInNextViewState extends State<SignInNextView> {
                                 validator: (String value) => validator(
                                   value,
                                   usernameRegExp,
-                                  textInputWarning,
+                                  usernameWarning,
                                 ),
                                 onSaved: (String value) =>
                                     setState(() => username = value),

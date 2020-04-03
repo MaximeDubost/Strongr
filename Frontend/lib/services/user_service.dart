@@ -27,26 +27,34 @@ class UserService {
     {
       return 503;
     }
-    
   }
 
-  /// [POST] /user/add - TODO
+  /// [POST] /user/add
   ///
-  /// Crée l'utilisateur avec les attributs [email], [username], [password], [firstName], [lastName], [birthDate] et [signDate].
-  static Future<dynamic> postSignIn({@required String email, @required String username, @required String password, @required String firstName, @required String lastName, @required String birthDate, @required String signDate}) async {
-    Response response = await http.post(
-      Uri.encodeFull(
-        global.SERVER_URL + '/user/add',
-      ),
-      body: {
-        '' : '',
-      }
-    );
-    if(response.statusCode == 200)
+  /// Crée l'utilisateur avec les attributs [email], [password], [firstname], [lastname], [birthdate], [phonenumber] et [username].
+  static Future<int> postSignIn({@required String email, @required String password, @required String firstname, @required String lastname, @required String birthdate, @required String phonenumber, @required String username}) async {
+    try
     {
-      return '';
+      Response response = await http.post(
+        Uri.encodeFull(
+          global.SERVER_URL + '/user/add',
+        ),
+        body: {
+          'email' : email,
+          'password' : password,
+          'firstname' : firstname,
+          'lastname' : lastname,
+          'birthdate' : birthdate,
+          'phonenumber' : phonenumber,
+          'username' : username,
+        }
+      );
+      return response.statusCode;
     }
-    else throw HttpException('');
+    catch(e)
+    {
+      return 503;
+    }
   }
 
   /// [GET] /user/[id] - TODO
@@ -115,7 +123,8 @@ class UserService {
         }
       );
       if(response.statusCode == 200)
-        global.token = response.headers['authorization'];
+        // global.token = response.headers['authorization'];
+        global.token = response.body;
       return response.statusCode;
     }
     catch (e)

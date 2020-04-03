@@ -141,6 +141,10 @@ controller.login = async (req, res, next) => {
     try {
         var result = await clt.query(sqlLogin, [req.body.connectId])
         if (result.rows.length > 0) {
+            console.log(result.rows);
+            console.log(bcrypt.compareSync(req.body.password, result.rows[0].password))
+            console.log(req.body.password)
+            console.log(result.rows[0].password)
             if (bcrypt.compareSync(req.body.password, result.rows[0].password)) {
                 var token = jwt.sign({
                     id: result.rows[0].id_user,

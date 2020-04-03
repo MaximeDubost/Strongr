@@ -171,7 +171,8 @@ class _LogInViewState extends State<LogInView> {
                               StrongrRoundedTextFormField(
                                 controller: _connectIdController,
                                 validator: validateConnectId,
-                                autofocus: true,
+                                // EXCEPTION CAUGHT BY FOUNDATION LIBRARY
+                                // autofocus: true,
                                 onSaved: (String value) => setState(
                                     () => connectId = value.toLowerCase()),
                                 onChanged: (String value) {
