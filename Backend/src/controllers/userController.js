@@ -147,7 +147,7 @@ controller.login = async (req, res, next) => {
                     email: result.rows[0].email,
                     username: result.rows[0].username
                 }, "SECRET")
-                res.json({ token })
+                res.status(200).json({ token })
             } else {
                 res.sendStatus(401)
             }
