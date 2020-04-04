@@ -221,6 +221,7 @@ class _LogInViewState extends State<LogInView> {
                               FlatButton(
                                 onPressed: () {
                                   FocusScope.of(context).unfocus();
+                                  Navigator.pushNamed(context, RESET_PASSWORD_ROUTE);
                                 },
                                 child: StrongrText(
                                   "Mot de passe oublié ?",

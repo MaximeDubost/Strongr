@@ -28,14 +28,15 @@ class UserService {
   /// [POST] /user/add
   ///
   /// Crée l'utilisateur avec les attributs [email], [password], [firstname], [lastname], [birthdate], [phonenumber] et [username].
-  static Future<int> postSignIn(
-      {@required String email,
-      @required String password,
-      @required String firstname,
-      @required String lastname,
-      @required String birthdate,
-      @required String phonenumber,
-      @required String username}) async {
+  static Future<int> postSignIn({
+    @required String email,
+    @required String password,
+    @required String firstname,
+    @required String lastname,
+    @required String birthdate,
+    @required String phonenumber,
+    @required String username,
+  }) async {
     try {
       Response response = await http.post(
           Uri.encodeFull(
@@ -74,7 +75,7 @@ class UserService {
   /// [PUT] /user/update/[id] - TODO
   ///
   /// Modifie l'utilisateur [id].
-  static Future<dynamic> putUser({@required int id}) async {
+  static Future<int> putUser({@required int id}) async {
     Response response = await http.put(
         Uri.encodeFull(
           global.SERVER_URL + '/user/update/' + id.toString(),
@@ -83,7 +84,7 @@ class UserService {
           '': '',
         });
     if (response.statusCode == 200) {
-      return '';
+      return 0;
     } else
       throw HttpException('');
   }
@@ -91,14 +92,14 @@ class UserService {
   /// [DELETE] /user/delete/[id] - TODO
   ///
   /// Supprime l'utilisateur [id].
-  static Future<dynamic> deleteUser({@required int id}) async {
+  static Future<int> deleteUser({@required int id}) async {
     Response response = await http.delete(
       Uri.encodeFull(
         global.SERVER_URL + '/user/delete/' + id.toString(),
       ),
     );
     if (response.statusCode == 200) {
-      return '';
+      return 0;
     } else
       throw HttpException('');
   }
@@ -106,8 +107,10 @@ class UserService {
   /// [POST] /login
   ///
   /// Demande la connexion de l'utilisateur [connectId] avec le mot de passe [password].
-  static Future<int> postLogIn(
-      {@required String connectId, @required String password}) async {
+  static Future<int> postLogIn({
+    @required String connectId,
+    @required String password,
+  }) async {
     try {
       Response response = await http.post(
           Uri.encodeFull(
@@ -129,7 +132,7 @@ class UserService {
   /// [POST] /logout - TODO
   ///
   /// Demande la déconnexion d'un utilisateur.
-  static Future<dynamic> postLogOut() async {
+  static Future<int> postLogOut() async {
     Response response = await http.post(
         Uri.encodeFull(
           global.SERVER_URL + '/logout',
@@ -138,7 +141,7 @@ class UserService {
           '': '',
         });
     if (response.statusCode == 200) {
-      return '';
+      return 0;
     } else
       throw HttpException('');
   }
@@ -146,7 +149,7 @@ class UserService {
   /// [POST] /sendCode - TODO
   ///
   /// Envoie le code à l'adresse [email].
-  static Future<dynamic> postSendCode({@required String email}) async {
+  static Future<int> postSendCode({@required String email}) async {
     Response response = await http.post(
         Uri.encodeFull(
           global.SERVER_URL + '/sendCode',
@@ -155,7 +158,7 @@ class UserService {
           '': '',
         });
     if (response.statusCode == 200) {
-      return '';
+      return 0;
     } else
       throw HttpException('');
   }
@@ -163,7 +166,7 @@ class UserService {
   /// [POST] /checkCode - TODO
   ///
   /// Envoie le code [code].
-  static Future<dynamic> postCheckCode({@required String code}) async {
+  static Future<int> postCheckCode({@required String code}) async {
     Response response = await http.post(
         Uri.encodeFull(
           global.SERVER_URL + '/checkCode',
@@ -172,7 +175,7 @@ class UserService {
           '': '',
         });
     if (response.statusCode == 200) {
-      return '';
+      return 0;
     } else
       throw HttpException('');
   }
@@ -180,7 +183,7 @@ class UserService {
   /// [PUT] /resetPassword - TODO
   ///
   /// Modifie le mot de passe de l'utilisateur [email] avec le nouveau mot de passe [password].
-  static Future<dynamic> putResetPassword(
+  static Future<int> putResetPassword(
       {@required String email, String password}) async {
     Response response = await http.put(
         Uri.encodeFull(
@@ -190,7 +193,7 @@ class UserService {
           '': '',
         });
     if (response.statusCode == 200) {
-      return '';
+      return 0;
     } else
       throw HttpException('');
   }

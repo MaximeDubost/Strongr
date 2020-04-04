@@ -176,17 +176,23 @@ class _SignInNextViewState extends State<SignInNextView> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: <Widget>[
                               Container(
+                                width: ScreenSize.width(context),
                                 child: Stack(
                                   children: <Widget>[
-                                    Container(
-                                      alignment: Alignment.center,
-                                      child: StrongrText(
-                                        "Finalisation de l'inscription",
-                                        size: 30,
+                                    Center(
+                                      child: Container(
+                                        width: ScreenSize.width(context) / 1.7,
+                                        alignment: Alignment.center,
+                                        child: StrongrText(
+                                          "Finalisation de l'inscription",
+                                          size: 30,
+                                        ),
                                       ),
                                     ),
-                                    BackButton(
-                                      onPressed: () => Navigator.pop(context),
+                                    Container(
+                                      child: BackButton(
+                                        onPressed: () => Navigator.pop(context),
+                                      ),
                                     ),
                                   ],
                                 ),
