@@ -27,3 +27,54 @@ Content-Type: application/json
 	"connectId" : "kevin.tsi@gmail.com", 
 	"password" : "Azerty1&"
 }
+
+###
+POST http://localhost:3000/api/login
+Content-Type: application/json
+
+{
+	"connectId" : "christ.ulce@gmail.com", 
+	"password" : "P@ssw0rd"
+}
+
+###
+GET http://localhost:3000/api/user/2
+
+###
+POST http://localhost:3000/api/checkEmail
+Content-Type: application/json
+
+{
+	"email" : "christ.ulce@gmail.com" 
+}
+
+###
+PUT http://localhost:3000/api/user/update/2
+Content-Type: application/json
+
+{
+	"firstname" : "Christ", 
+	"lastname" : "ULCE", 
+	"username" : "ulce31",
+    "birthdate" : "1999-12-31 00:00:00Z",
+    "phonenumber" : "0629506187",
+	"email" : "christ.ulce@gmail.com", 
+	"password" : "P@ssword"
+}
+
+###
+DELETE http://localhost:3000/api/user/delete/2
+
+###
+POST  http://localhost:3000/api/user/add
+Content-Type: application/json
+
+{
+	"firstname" : "Christ", 
+	"lastname" : "ULCE", 
+	"username" : "ulce31",
+    "birthdate" : "1999-12-31 00:00:00Z",
+    "phonenumber" : "0629506187",
+	"email" : "christ.ulce@gmail.com", 
+	"password" : "P@ssword"
+}

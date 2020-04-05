@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer"
 
+import userRepository from "../repository/userRepository"
 import UserError from "../errors/UserError"
 
 const { Pool } = require('pg')
@@ -36,23 +37,17 @@ pool.connect((err, client, release) => {
 /**
  * @param id_user int
  */
-controller.getUser = async (req, res, next) => {
+controller.getUser = async (req, res) => {
     let body = {};
-    let sqlGetUser = "SELECT * FROM _user as u WHERE u.id_user = $1::int";
-    try {
-        var result = await clt.query(sqlGetUser, [req.params.id_user])
-        if (result.rows[0]) {
-            console.log(result.rows[0]);
-            body = {
-                message: 'User found',
-                user_info: result.rows[0]
-            };
-            res.status(200).json(body)
-        } else {
-            res.sendStatus(404)
-        }
-    } catch (error) {
-        console.error(error)
+    let user = await userRepository.getUser(req.params.id_user);
+    if (user) {
+        body = {
+            message: 'User found',
+            user_info: user
+        };
+        res.status(200).json(body)
+    } else {
+        res.sendStatus(404)
     }
 }
 /**
@@ -63,19 +58,9 @@ controller.getUser = async (req, res, next) => {
  * @param email varchar,
  */
 controller.register = async (req, res, next) => {
-    let sqlExist = "SELECT * FROM _user u WHERE u.username = $1::varchar";
     try {
-        var result = await clt.query(sqlExist, [req.body.username])
-        if (result.rows.length > 0) {
-            res.sendStatus(409)
-        } else {
-            console.log(req.body.birthdate)
-            var birth_to_datetime = new Date(req.body.birthdate)
-            console.log(birth_to_datetime)
-            let sqlRegister = "INSERT INTO _user (firstname, lastname, username, birthdate, phonenumber, email, password, signeddate) VALUES($1, $2, $3, $4, $5, $6, $7, $8)";
-            await clt.query(sqlRegister, [req.body.firstname, req.body.lastname, req.body.username, birth_to_datetime, req.body.phonenumber, req.body.email, bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10)), new Date()])
-            res.sendStatus(201)
-        }
+        let userRegistered = await userRepository.regiter(req.body);
+        res.sendStatus(userRegistered);
     } catch (error) {
         console.error(error)
     }
@@ -83,16 +68,10 @@ controller.register = async (req, res, next) => {
 /**
  * @param email varchar
  */
-controller.checkEmail = async (req, res, next) => {
-    let sqlExistEmail = "SELECT * FROM _user u WHERE u.email = $1"
+controller.checkEmail = async (req, res) => {
     try {
-        var result = await clt.query(sqlExistEmail, [req.body.email])
-        console.log(result.rows.length)
-        if (result.rows.length > 0) {
-            res.sendStatus(409)
-        } else {
-            res.sendStatus(200)
-        }
+        let emailChecked = await userRepository.checkEmail(req.body.email);
+        res.sendStatus(emailChecked);
     } catch (error) {
         console.error(error)
     }
@@ -105,26 +84,23 @@ controller.checkEmail = async (req, res, next) => {
  * @param email varchar,
  * @param password varchar
  */
-controller.updateUser = async (req, res, next) => {
-    let id_user = req.params.id_user;
-    let sqlUpdate = "UPDATE _user SET firstname = $1::varchar, lastname = $2::varchar, username = $3::varchar, email = $4::varchar, password = $5::varchar WHERE id_user = $6::int";
+controller.updateUser = async (req, res) => {
     try {
-        await clt.query(sqlUpdate, [req.body.firstname, req.body.lastname, req.body.username, req.body.email, bcrypt.hashSync(req.body.password, 10), id_user]);
-        res.sendStatus(200)
+        let userUpdated = await userRepository.updateUser(req.params.id_user, req.body);
+        res.sendStatus(userUpdated);
     } catch (error) {
-        console.error(error)
+        console.error(error);
     }
 }
 /**
  * @param id_user int
  */
-controller.deleteUser = async (req, res, next) => {
-    let sqlDelete = "DELETE FROM _user as u WHERE u.id_user = $1::int";
+controller.deleteUser = async (req, res) => {
     try {
-        await clt.query(sqlDelete, [req.params.id_user])
-        res.sendStatus(200)
+        let userDeleted = await userRepository.deleteUser(req.params.id_user);
+        res.sendStatus(userDeleted);
     } catch (error) {
-        console.error(error)
+        console.error(error);
     }
 }
 /**
@@ -132,32 +108,10 @@ controller.deleteUser = async (req, res, next) => {
  * @param password varchar
  */
 controller.login = async (req, res, next) => {
-    let sqlLogin;
-    if (req.body.connectId.indexOf('@') != -1) {
-        sqlLogin = "SELECT * FROM _user as u WHERE u.email = $1::varchar ";
-    } else {
-        sqlLogin = "SELECT * FROM _user as u WHERE u.username = $1::varchar ";
-    }
+
     try {
-        var result = await clt.query(sqlLogin, [req.body.connectId])
-        if (result.rows.length > 0) {
-            console.log(result.rows);
-            console.log(bcrypt.compareSync(req.body.password, result.rows[0].password))
-            console.log(req.body.password)
-            console.log(result.rows[0].password)
-            if (bcrypt.compareSync(req.body.password, result.rows[0].password)) {
-                var token = jwt.sign({
-                    id: result.rows[0].id_user,
-                    email: result.rows[0].email,
-                    username: result.rows[0].username
-                }, "SECRET")
-                res.status(200).json({ token })
-            } else {
-                res.sendStatus(401)
-            }
-        } else {
-            res.sendStatus(404)
-        }
+        let userLogged = await userRepository.login(req.body);
+        console.log(userLogged);
     } catch (error) {
         console.error(error)
     }
