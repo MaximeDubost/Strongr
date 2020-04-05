@@ -103,14 +103,9 @@ class _SignInNextViewState extends State<SignInNextView> {
   void sendToServer() async {
     if (_key.currentState.validate()) {
       _key.currentState.save();
-      // _buttonPressSuccess = true;
-
-      // print("email: $email");
-      // print("password: $password");
 
       setState(() {
-        // password = _passwordController.text = "";
-        // _isButtonEnabled = false;
+        _isButtonEnabled = false;
         _isLoading = true;
       });
 
@@ -144,6 +139,7 @@ class _SignInNextViewState extends State<SignInNextView> {
         });
       }
       setState(() {
+        _isButtonEnabled = true;
         _isLoading = false;
       });
     } else
@@ -176,17 +172,23 @@ class _SignInNextViewState extends State<SignInNextView> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: <Widget>[
                               Container(
+                                width: ScreenSize.width(context),
                                 child: Stack(
                                   children: <Widget>[
-                                    Container(
-                                      alignment: Alignment.center,
-                                      child: StrongrText(
-                                        "Finalisation de l'inscription",
-                                        size: 30,
+                                    Center(
+                                      child: Container(
+                                        width: ScreenSize.width(context) / 1.7,
+                                        alignment: Alignment.center,
+                                        child: StrongrText(
+                                          "Finalisation de l'inscription",
+                                          size: 30,
+                                        ),
                                       ),
                                     ),
-                                    BackButton(
-                                      onPressed: () => Navigator.pop(context),
+                                    Container(
+                                      child: BackButton(
+                                        onPressed: () => Navigator.pop(context),
+                                      ),
                                     ),
                                   ],
                                 ),

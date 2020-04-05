@@ -74,8 +74,7 @@ class _LogInViewState extends State<LogInView> {
 
   String validatePassword(String value) {
     if (!_buttonPressSuccess) {
-      String pattern = r'';
-      //r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$';
+      String pattern = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$';
       RegExp regExp = new RegExp(pattern);
       if (value.length == 0 || !regExp.hasMatch(value))
         return "Le mot de passe est invalide";
@@ -92,17 +91,16 @@ class _LogInViewState extends State<LogInView> {
       _key.currentState.save();
       _buttonPressSuccess = true;
 
-      // print("connectId: $connectId");
-      // print("password: $password");
-
       setState(() {
         // password = _passwordController.text = "";
-        // _isButtonEnabled = false;
+        _isButtonEnabled = false;
         _isLoading = true;
       });
 
       dynamic result = await UserService.postLogIn(
-          connectId: connectId.toLowerCase(), password: password);
+        connectId: connectId.toLowerCase(),
+        password: password,
+      );
       if (result == 200) {
         print(global.token);
         setState(() {
@@ -125,6 +123,8 @@ class _LogInViewState extends State<LogInView> {
         });
       }
       setState(() {
+        password = _passwordController.text = "";
+        _isButtonEnabled = true;
         _isLoading = false;
       });
     } else
@@ -221,6 +221,8 @@ class _LogInViewState extends State<LogInView> {
                               FlatButton(
                                 onPressed: () {
                                   FocusScope.of(context).unfocus();
+                                  Navigator.pushNamed(
+                                      context, RESET_PASSWORD_ROUTE);
                                 },
                                 child: StrongrText(
                                   "Mot de passe oublié ?",
