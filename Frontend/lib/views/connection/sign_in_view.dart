@@ -113,24 +113,19 @@ class _SignInViewState extends State<SignInView> {
       _key.currentState.save();
       _buttonPressSuccess = true;
 
-      // print("email: $email");
-      // print("password: $password");
-
       setState(() {
-        // password = _passwordController.text = "";
-        // _isButtonEnabled = false;
+        _isButtonEnabled = false;
         _isLoading = true;
       });
 
-      dynamic result =
-          await UserService.postCheckEmail(email: email.toLowerCase());
+      dynamic result = await UserService.postCheckEmail(email: email.toLowerCase());
       if (result == 200) {
         setState(() {
           _validate = _isLoading = _isButtonEnabled =
               passwordVisibility = confirmPasswordVisibility = false;
           warning = null;
-          password = _passwordController.text = "";
-          confirmPassword = _confirmPasswordController.text = "";
+          _passwordController.text = "";
+          _confirmPasswordController.text = "";
         });
         Navigator.pushNamed(
           context,
@@ -151,6 +146,7 @@ class _SignInViewState extends State<SignInView> {
         });
       }
       setState(() {
+        _isButtonEnabled = true;
         _isLoading = false;
       });
     } else
@@ -222,9 +218,13 @@ class _SignInViewState extends State<SignInView> {
                                 validator: validatePassword,
                                 obscureText: !passwordVisibility,
                                 onSaved: (String value) =>
-                                    setState(() => password = value),
+                                    setState(() => password = value,
+                                ),
                                 onChanged: (String value) {
-                                  setState(() => warning = null);
+                                  setState(() {
+                                    password = value;
+                                    warning = null;
+                                  });
                                   isEmpty();
                                 },
                                 hint: "Mot de passe",
@@ -247,8 +247,8 @@ class _SignInViewState extends State<SignInView> {
                                 controller: _confirmPasswordController,
                                 validator: validateConfirmPassword,
                                 obscureText: !confirmPasswordVisibility,
-                                onSaved: (String value) =>
-                                    setState(() => password = value),
+                                // onSaved: (String value) =>
+                                //     setState(() => password = value),
                                 onChanged: (String value) {
                                   setState(() => warning = null);
                                   isEmpty();

@@ -20,16 +20,17 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
       _isButtonEnabled,
       _isSendCodeButtonEnabled,
       _buttonPressSuccess,
-      _isLoading,
-      codeVisibility;
+      _isLoading;
   TextEditingController _emailController, _codeController;
-  String email, code, warning;
+  String email, code, emailWarning, codeWarning;
 
   @override
   void initState() {
     _key = GlobalKey();
     _validate = _isButtonEnabled = _isSendCodeButtonEnabled = isCodeSended =
-        _buttonPressSuccess = _isLoading = codeVisibility = false;
+        _buttonPressSuccess = _isLoading = false;
+    // isCodeSended = true;
+    email = "";
     _emailController = TextEditingController(text: "");
     _codeController = TextEditingController(text: "");
     _isButtonEnabled =
@@ -99,33 +100,36 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
         _isLoading = true;
       });
 
-      // dynamic result = await UserService.postLogIn(
-      //     email: email.toLowerCase(), code: code);
-      // if (result == 200) {
-      //   print(global.token);
-      //   setState(() {
-      //     _validate = false;
-      //     warning = null;
-      //     _isLoading = false;
-      //     code = _codeController.text = "";
-      //     _isButtonEnabled = false;
-      //     codeVisibility = false;
-      //   });
-      //   Navigator.pushNamed(context, HOMEPAGE_ROUTE);
-      // } else if (result == 401 || result == 404) {
-      //   setState(() {
-      //     warning = "Identifiant ou mot de passe incorrect.";
-      //   });
-      // } else // 503
-      // {
-      //   setState(() {
-      //     warning = "Service indisponible. Veuillez réessayer ultérieurement.";
-      //   });
-      // }
+      dynamic result = await UserService.postSendCode(email: email.toLowerCase());
+      if (result == 200)
+      {
+        setState(() {
+          _validate = false;
+          emailWarning = null;
+          _isLoading = false;
+          code = _codeController.text = "";
+          _isButtonEnabled = false;
+          _isSendCodeButtonEnabled = false;
+          isCodeSended = true;
+        });
+      }
+      else if (result == 404)
+      {
+        setState(() {
+          emailWarning = "Cette adresse e-mail ne correspond à aucun compte.";
+        });
+      }
+      else // 503
+      {
+        setState(() {
+          emailWarning = "Service indisponible. Veuillez réessayer ultérieurement.";
+        });
+      }
       setState(() {
         _isLoading = false;
       });
-    } else
+    } 
+    else
       setState(() {
         _validate = true;
       });
@@ -192,7 +196,7 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                                 onSaved: (String value) => setState(
                                     () => email = value.toLowerCase()),
                                 onChanged: (String value) {
-                                  setState(() => warning = null);
+                                  setState(() => emailWarning = null);
                                   isEmailInputEmpty();
                                 },
                                 maxLength: 50,
@@ -220,50 +224,60 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                                       Container(
                                         // color: Colors.red,
                                         alignment: Alignment.centerLeft,
-                                        width: ScreenSize.width(context) / 2,
+                                        // width: ScreenSize.width(context) / 2,
                                         child: Column(
                                           children: <Widget>[
+                                            SizedBox(height: 5),
+                                            StrongrText("Vous avez reçu un code de vérification à l'adresse \""+ email +"\".", size: 16,),
+                                            SizedBox(height: 15),
                                             Container(
-                                              alignment: Alignment.centerLeft,
-                                              child: StrongrText(
-                                                "Code",
-                                                size: 16,
+                                              width: ScreenSize.width(context) / 2,
+                                              child: Column(
+                                                children: <Widget>[
+                                                  Container(
+                                                    alignment: Alignment.centerLeft,
+                                                    child: StrongrText(
+                                                      "Code",
+                                                      size: 16,
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 10),
+                                                  StrongrRoundedTextFormField(
+                                                    inputFormatters: [
+                                                      WhitelistingTextInputFormatter
+                                                          .digitsOnly
+                                                    ],
+                                                    controller: _codeController,
+                                                    validator: validateCode,
+                                                    // obscureText: !codeVisibility,
+                                                    onSaved: (String value) =>
+                                                        setState(() => code = value),
+                                                    onChanged: (String value) {
+                                                      setState(() => emailWarning = null);
+                                                      isEmailInputEmpty();
+                                                    },
+                                                    hint: "XXXXXXXX",
+                                                    textInputType:
+                                                        TextInputType.number,
+                                                    maxLength: 8,
+                                                    // suffixIcon: Icons.visibility_off,
+                                                    // suffixIconAlt: Icons.visibility,
+                                                    // onPressedSuffixIcon: () => setState(() =>
+                                                    //     codeVisibility = !codeVisibility,
+                                                    // ),
+                                                  ),
+                                                ],
                                               ),
-                                            ),
-                                            SizedBox(height: 10),
-                                            StrongrRoundedTextFormField(
-                                              inputFormatters: [
-                                                WhitelistingTextInputFormatter
-                                                    .digitsOnly
-                                              ],
-                                              controller: _codeController,
-                                              validator: validateCode,
-                                              // obscureText: !codeVisibility,
-                                              onSaved: (String value) =>
-                                                  setState(() => code = value),
-                                              onChanged: (String value) {
-                                                setState(() => warning = null);
-                                                isEmailInputEmpty();
-                                              },
-                                              hint: "XXXXXXXX",
-                                              textInputType:
-                                                  TextInputType.number,
-                                              maxLength: 8,
-                                              // suffixIcon: Icons.visibility_off,
-                                              // suffixIconAlt: Icons.visibility,
-                                              // onPressedSuffixIcon: () => setState(() =>
-                                              //     codeVisibility = !codeVisibility,
-                                              // ),
                                             ),
                                           ],
                                         ),
                                       ),
-                                      SizedBox(height: 10),
+                                      SizedBox(height: 5),
                                       Visibility(
                                         visible: _isLoading == false &&
-                                            warning != null,
+                                            emailWarning != null,
                                         child: StrongrText(
-                                          warning,
+                                          emailWarning,
                                           size: 16,
                                           color: Colors.red,
                                         ),
