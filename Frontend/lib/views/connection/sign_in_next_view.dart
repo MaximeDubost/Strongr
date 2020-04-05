@@ -116,7 +116,7 @@ class _SignInNextViewState extends State<SignInNextView> {
         lastname: lastname,
         birthdate: birthdate,
         phonenumber: phonenumber,
-        username: username,
+        username: username.toLowerCase(),
       );
       if (result == 201) {
         setState(() {
