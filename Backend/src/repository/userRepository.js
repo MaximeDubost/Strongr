@@ -61,8 +61,9 @@ repository.regiter = async (body) => {
             res = 409;
         } else {
             let birth_to_datetime = new Date(body.birthdate);
+
             let sqlRegister = "INSERT INTO _user (firstname, lastname, username, birthdate, phonenumber, email, password, signeddate) VALUES($1, $2, $3, $4, $5, $6, $7, $8)";
-            await clt.query(sqlRegister, [body.firstname, body.lastname, body.username, birth_to_datetime, body.phonenumber, body.email, bcrypt.hashSync(body.password, bcrypt.genSaltSync(10)), new Date()])
+            await clt.query(sqlRegister, [body.firstname, body.lastname, body.username, birth_to_datetime, body.phonenumber, body.email, bcrypt.hashSync(body.password, 10), new Date()])
             res = 201;
         }
         return res;
@@ -105,7 +106,7 @@ repository.deleteUser = async (id_user) => {
     let res;
     let sqlDelete = "DELETE FROM _user as u WHERE u.id_user = $1::int";
     try {
-        await clt.query(sqlDelete, [req.params.id_user])
+        await clt.query(sqlDelete, [id_user])
         res = 200;
     } catch (error) {
         console.log(error);
@@ -115,7 +116,6 @@ repository.deleteUser = async (id_user) => {
 }
 
 repository.login = async (body) => {
-    let resReturned;
     let sqlLogin;
 
     if (body.connectId.indexOf('@') != -1) {
@@ -124,29 +124,49 @@ repository.login = async (body) => {
         sqlLogin = "SELECT * FROM _user as u WHERE u.username = $1::varchar ";
     }
     try {
-        let result = await clt.query(sqlLogin, [body.connectId])
-        console.log(bcrypt.compareSync(body.password, result.rows[0].password));
-        if (result.rows.length > 0) {
-            console.log("body.password => ", body.password)
-            if (bcrypt.compareSync(body.password, result.rows[0].password)) {
-                token = jwt.sign({
-                    id: result.rows[0].id_user,
-                    email: result.rows[0].email,
-                    username: result.rows[0].username
-                }, "SECRET")
-                resReturned.status = 200
-                resReturned.token = token;
-            } else {
-                resReturned.status = 401;
+        return (await clt.query(sqlLogin, [body.connectId]));
+    } catch (error) {
+        console.log(error);
+    }
+
+}
+
+repository.sendCode = async (email) => {
+    try {
+        let sqlEmailUser = "SELECT * FROM _user as u WHERE u.email = $1::varchar ";
+        let result = await clt.query(sqlEmailUser, [email])
+        if (result.rows.length != 0) {
+            let code = "";
+            while (code.length < 8) {
+                code += Math.floor(Math.random() * 9 + 1).toString();
             }
+            let sqlChangeCode = "UPDATE _user SET recoverycode = $1::varchar WHERE id_user = $2::int"
+            await clt.query(sqlChangeCode, [code, result.rows[0].id_user]);
+            return "ok";
         } else {
-            resReturned.status = 404;
+            return 404;
         }
     } catch (error) {
-
+        console.log(error);
     }
-    return resReturned;
 }
+
+repository.checkCode = async (code) => {
+    var sqlCheckCode = "SELECT * FROM _user WHERE recoverycode = $1::varchar";
+    return await clt.query(sqlCheckCode, [code]);
+}
+
+repository.resetPassword = async (body) => {
+    let sqlResetPassword = "UPDATE _user SET password = $1::varchar WHERE email = $2::varchar";
+    try {
+        return await clt.query(sqlResetPassword, [bcrypt.hashSync(body.password, 10), body.email]);
+    } catch (error) {
+        console.log(error);
+    }
+
+}
+
+
 
 
 

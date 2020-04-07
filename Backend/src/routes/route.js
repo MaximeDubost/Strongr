@@ -9,7 +9,7 @@ let router = express.Router();
 router.post('/user/add', userController.register);
 router.get('/user/:id_user', userController.getUser)
 router.put('/user/update/:id_user', userController.updateUser);
-router.delete('/user/delete/:id_user', userController.deleteUser);
+router.delete('/user/delete/:id_user', middleware.checkAuth, userController.deleteUser);
 router.post('/login', userController.login);
 router.post('/logout', middleware.checkAuth, userController.logout);
 router.post('/sendCode', userController.sendCode);

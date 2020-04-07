@@ -1,51 +1,28 @@
 ###
+GET http://localhost:3000/api/user/7
+
+
+###
+POST  http://localhost:3000/api/user/add
+Content-Type: application/json
+
+{
+	"firstname" : "Christ", 
+	"lastname" : "ULCE", 
+	"username" : "ulce31",
+    "birthdate" : "1999-12-31 00:00:00Z",
+    "phonenumber" : "0629506187",
+	"email" : "christ.ulce@gmail.com", 
+	"password" : "P@ssw0rd"
+}
+
+
+###
 POST http://localhost:3000/api/checkEmail
 Content-Type: application/json
 
 {
     "email" : "maxime.dubost.75@gmail.com"
-}
-###
-POST http://localhost:3000/api/user/add
-Content-Type: application/json
-
-{
-	"firstname" : "Chiara", 
-	"lastname" : "Berardi", 
-	"username" : "cberardi",
-    "birthdate" : "2000-05-28 20:18:04Z",
-    "phonenumber" : "0145696330",
-	"email" : "chiara.berardi@gmail.com", 
-	"password" : "motdepasse"
-}
-
-###
-POST http://localhost:3000/api/login
-Content-Type: application/json
-
-{
-	"connectId" : "kevin.tsi@gmail.com", 
-	"password" : "Azerty1&"
-}
-
-###
-POST http://localhost:3000/api/login
-Content-Type: application/json
-
-{
-	"connectId" : "christ.ulce@gmail.com", 
-	"password" : "P@ssw0rd"
-}
-
-###
-GET http://localhost:3000/api/user/2
-
-###
-POST http://localhost:3000/api/checkEmail
-Content-Type: application/json
-
-{
-	"email" : "christ.ulce@gmail.com" 
 }
 
 ###
@@ -62,19 +39,42 @@ Content-Type: application/json
 	"password" : "P@ssword"
 }
 
-###
-DELETE http://localhost:3000/api/user/delete/2
 
 ###
-POST  http://localhost:3000/api/user/add
+POST http://localhost:3000/api/login
 Content-Type: application/json
 
 {
-	"firstname" : "Christ", 
-	"lastname" : "ULCE", 
-	"username" : "ulce31",
-    "birthdate" : "1999-12-31 00:00:00Z",
-    "phonenumber" : "0629506187",
+	"connectId" : "christ.ulce@gmail.com", 
+	"password" : "P@ssword"
+}
+
+
+
+###
+DELETE http://localhost:3000/api/user/delete/7
+
+###
+POST http://localhost:3000/api/sendCode
+Content-Type: application/json
+
+{
+	"email": "christ.ulce@gmail.com"
+}
+
+###
+POST http://localhost:3000/api/checkCode
+Content-Type: application/json
+
+{
+	"code": ""
+}
+
+###
+PUT http://localhost:3000/api/resetPassword
+Content-Type: application/json
+
+{
 	"email" : "christ.ulce@gmail.com", 
 	"password" : "P@ssword"
 }

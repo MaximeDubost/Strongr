@@ -107,44 +107,50 @@ controller.deleteUser = async (req, res) => {
  * @param email varchar,
  * @param password varchar
  */
-controller.login = async (req, res, next) => {
+controller.login = async (req, res) => {
 
     try {
-        let userLogged = await userRepository.login(req.body);
-        console.log(userLogged);
+        let result = await userRepository.login(req.body);
+        if (result.rows.length > 0) {
+            if (bcrypt.compareSync(req.body.password, result.rows[0].password)) {
+                var token = jwt.sign({
+                    id: result.rows[0].id_user,
+                    email: result.rows[0].email,
+                    username: result.rows[0].username
+                }, "SECRET")
+                res.status(200).json({ token });
+            } else {
+                res.sendStatus(401);
+            }
+        } else {
+            res.sendStatus(404);
+        }
     } catch (error) {
-        console.error(error)
+        console.error(error);
     }
 }
 
 controller.logout = (req, res) => {
-    res.sendStatus(200)
+    res.sendStatus(200);
 }
 /**
  * @param email
  */
-controller.sendCode = async (req, res, next) => {
-    var sqlEmailUser = "SELECT * FROM _user as u WHERE u.email = $1::varchar "
+controller.sendCode = async (req, res) => {
     try {
-        var result = await clt.query(sqlEmailUser, [req.body.email])
-        if (result.rows.length != 0) {
-            var code = "";
-            while (code.length < 8) {
-                code += Math.floor(Math.random() * 9 + 1).toString()
-            }
-            var sqlChangeCode = "UPDATE _user SET recoverycode = $1::varchar WHERE id_user = $2::int"
-            await clt.query(sqlChangeCode, [code, result.rows[0].id_user]);
+        let repositoryProcess = await userRepository.sendCode(req.body.email);
+        if (repositoryProcess === "ok") {
             const message = {
                 from: 'team.strongr@gmail.com', // Sender address
                 to: req.body.email,         // List of recipients
                 subject: 'Code de réinitialisation de mot de passe', // Subject line
                 text: "Bonjour, \n\n Votre code est le suivant : " + code + ".\n\n Si vous n’avez pas fait de demande pour un code, merci de contacter le service client pour vous assurer qu’il ne s’agit pas d’une tentative de fraude.\n\n\n - Strongr Team" // Plain text body
             };
-            var info = await transport.sendMail(message)
-            res.sendStatus(200)
-        } else {
-            res.sendStatus(404)
+            await transport.sendMail(message);
+            res.sendStatus(200);
         }
+        res.sendStatus(404);
+
     } catch (error) {
         console.error(error)
     }
@@ -152,11 +158,9 @@ controller.sendCode = async (req, res, next) => {
 /**
  * @param recoverycode varchar
  */
-controller.checkCode = async (req, res, next) => {
-    var sqlCheckCode = "SELECT * FROM _user WHERE recoverycode = $1::varchar"
+controller.checkCode = async (req, res) => {
     try {
-        var result = await clt.query(sqlCheckCode, [req.body.code])
-        console.log(result.rows)
+        let result = await userRepository.checkCode(req.body.code);
         if (result.rows.length != 0) {
             res.sendStatus(200)
         } else {
@@ -170,11 +174,9 @@ controller.checkCode = async (req, res, next) => {
  * @param email varchar,
  * @param password  varchar
  */
-controller.resetPassword = async (req, res, next) => {
-    let body = {};
-    var sqlResetPassword = "UPDATE _user SET password = $1::varchar WHERE email = $2::varchar"
+controller.resetPassword = async (req, res) => {
     try {
-        await clt.query(sqlResetPassword, [bcrypt.hashSync(req.body.password, 10), req.body.email])
+        await userRepository.resetPassword(req)
         res.sendStatus(200)
     } catch (error) {
         console.error(error)
