@@ -52,7 +52,7 @@ repository.getUser = async (id_user) => {
     }
 }
 
-repository.regiter = async (body) => {
+repository.register = async (body) => {
     let res;
     let sqlExist = "SELECT * FROM _user u WHERE u.username = $1::varchar";
     try {

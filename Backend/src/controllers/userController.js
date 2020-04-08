@@ -59,7 +59,7 @@ controller.getUser = async (req, res) => {
  */
 controller.register = async (req, res, next) => {
     try {
-        let userRegistered = await userRepository.regiter(req.body);
+        let userRegistered = await userRepository.register(req.body);
         res.sendStatus(userRegistered);
     } catch (error) {
         console.error(error)
