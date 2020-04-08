@@ -52,7 +52,7 @@ repository.getUser = async (id_user) => {
     }
 }
 
-repository.regiter = async (body) => {
+repository.register = async (body) => {
     let res;
     let sqlExist = "SELECT * FROM _user u WHERE u.username = $1::varchar";
     try {
@@ -103,16 +103,15 @@ repository.updateUser = async (id_user, body) => {
 }
 
 repository.deleteUser = async (id_user) => {
-    let res;
+
     let sqlDelete = "DELETE FROM _user as u WHERE u.id_user = $1::int";
     try {
         await clt.query(sqlDelete, [id_user])
-        res = 200;
+        return 200;
     } catch (error) {
         console.log(error);
-        res = 501;
+        return 501;
     }
-    return res;
 }
 
 repository.login = async (body) => {
@@ -142,7 +141,7 @@ repository.sendCode = async (email) => {
             }
             let sqlChangeCode = "UPDATE _user SET recoverycode = $1::varchar WHERE id_user = $2::int"
             await clt.query(sqlChangeCode, [code, result.rows[0].id_user]);
-            return "ok";
+            return code;
         } else {
             return 404;
         }
@@ -151,9 +150,20 @@ repository.sendCode = async (email) => {
     }
 }
 
-repository.checkCode = async (code) => {
-    var sqlCheckCode = "SELECT * FROM _user WHERE recoverycode = $1::varchar";
-    return await clt.query(sqlCheckCode, [code]);
+repository.checkCode = async (body) => {
+    let sqlCheckCode = "SELECT * FROM _user WHERE email = $1::varchar AND recoverycode = $2::varchar";
+    return await clt.query(sqlCheckCode, [body.email, body.code]);
+}
+
+repository.deleteCode = async (body) => {
+    let sqlDeleteCode = "UPDATE _user SET recoverycode = NULL WHERE email = $1::varchar";
+    try {
+        await clt.query(sqlDeleteCode, [body.email]);
+        return 200;
+    } catch (error) {
+        console.log(error);
+        return error;
+    }
 }
 
 repository.resetPassword = async (body) => {

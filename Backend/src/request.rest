@@ -26,7 +26,7 @@ Content-Type: application/json
 }
 
 ###
-PUT http://localhost:3000/api/user/update/2
+PUT http://localhost:3000/api/user/update/8
 Content-Type: application/json
 
 {
@@ -35,7 +35,7 @@ Content-Type: application/json
 	"username" : "ulce31",
     "birthdate" : "1999-12-31 00:00:00Z",
     "phonenumber" : "0629506187",
-	"email" : "christ.ulce@gmail.com", 
+	"email" : "christu.cu75@gmail.com", 
 	"password" : "P@ssword"
 }
 
@@ -78,3 +78,13 @@ Content-Type: application/json
 	"email" : "christ.ulce@gmail.com", 
 	"password" : "P@ssword"
 }
+
+###
+POST http://localhost:3000/api/sendCode
+Content-Type: application/json
+
+{
+	"email" : "christu.cu75@gmail.com"
+}
+
+

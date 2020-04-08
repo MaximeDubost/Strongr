@@ -59,7 +59,7 @@ controller.getUser = async (req, res) => {
  */
 controller.register = async (req, res, next) => {
     try {
-        let userRegistered = await userRepository.regiter(req.body);
+        let userRegistered = await userRepository.register(req.body);
         res.sendStatus(userRegistered);
     } catch (error) {
         console.error(error)
@@ -139,18 +139,18 @@ controller.logout = (req, res) => {
 controller.sendCode = async (req, res) => {
     try {
         let repositoryProcess = await userRepository.sendCode(req.body.email);
-        if (repositoryProcess === "ok") {
+        if (repositoryProcess != 404) {
             const message = {
                 from: 'team.strongr@gmail.com', // Sender address
                 to: req.body.email,         // List of recipients
                 subject: 'Code de réinitialisation de mot de passe', // Subject line
-                text: "Bonjour, \n\n Votre code est le suivant : " + code + ".\n\n Si vous n’avez pas fait de demande pour un code, merci de contacter le service client pour vous assurer qu’il ne s’agit pas d’une tentative de fraude.\n\n\n - Strongr Team" // Plain text body
+                text: "Bonjour, \n\n Votre code est le suivant : " + repositoryProcess + ".\n\n Si vous n’avez pas fait de demande pour un code, merci de contacter le service client pour vous assurer qu’il ne s’agit pas d’une tentative de fraude.\n\n\n - Strongr Team" // Plain text body
             };
             await transport.sendMail(message);
             res.sendStatus(200);
+        } else {
+            res.sendStatus(repositoryProcess);
         }
-        res.sendStatus(404);
-
     } catch (error) {
         console.error(error)
     }
@@ -160,14 +160,16 @@ controller.sendCode = async (req, res) => {
  */
 controller.checkCode = async (req, res) => {
     try {
-        let result = await userRepository.checkCode(req.body.code);
+        let result = await userRepository.checkCode(req.body);
+        console.log(result);
         if (result.rows.length != 0) {
-            res.sendStatus(200)
+            let deleteCodeRepo = await userRepository.deleteCode(req.body);
+            res.sendStatus(deleteCodeRepo);
         } else {
-            res.sendStatus(401)
+            res.sendStatus(401);
         }
     } catch (error) {
-        console.error(error)
+        console.error(error);
     }
 }
 /**
