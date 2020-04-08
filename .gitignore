@@ -5,3 +5,4 @@
 Backend/node_modules/
 
 *.rest
+Frontend/lib/utils/global.dart
