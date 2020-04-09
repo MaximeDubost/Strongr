@@ -21,31 +21,38 @@ class _RecoveryCodeViewState extends State<RecoveryCodeView> {
   GlobalKey<ScaffoldState> _scaffoldKey;
   GlobalKey<FormState> _key;
   bool _validate, _isButtonEnabled, _isLoading;
-  TextEditingController _emailController;
-  String email, warning;
+  TextEditingController _codeController;
+  String code, warning;
 
   @override
   void initState() {
     _scaffoldKey = GlobalKey<ScaffoldState>();
     _key = GlobalKey<FormState>();
     _validate = _isLoading = false;
-    _emailController = TextEditingController(text: "");
-    _isButtonEnabled = _emailController.text.trim() != "" ? true : false;
+    _codeController = TextEditingController(text: "");
+    _isButtonEnabled = _codeController.text.trim() != "" ? true : false;
     super.initState();
   }
 
   @override
   void dispose() {
-    _emailController.dispose();
+    _codeController.dispose();
     super.dispose();
   }
 
-  bool isEmpty() {
+  bool isInvalid() {
     setState(() {
-      _isButtonEnabled = _emailController.text.trim() != "" ? true : false;
+      _isButtonEnabled = _codeController.text.trim().length != 8 ? false : true;
     });
     return _isButtonEnabled;
   }
+
+  // bool isInvalid() {
+  //   setState(() {
+  //     _isButtonEnabled = _codeController.text.trim().length < 8 ? true : false;
+  //   });
+  //   return _isButtonEnabled;
+  // }
 
   String validateCode(String value) {
     String pattern = r'^[0-9]{8,8}$';
@@ -54,6 +61,61 @@ class _RecoveryCodeViewState extends State<RecoveryCodeView> {
       return "Le code est invalide";
     } else
       return null;
+  }
+
+  void resendCode() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    dynamic result = 200;
+    // await UserService.postSendCode(email: widget.email.toLowerCase());
+    if (result == 200) {
+      setState(() {
+        _validate = false;
+        warning = null;
+        _isLoading = false;
+      });
+
+      _scaffoldKey.currentState.showSnackBar(
+        SnackBar(
+          duration: Duration(seconds: 1),
+          backgroundColor: StrongrColors.blue,
+          content: StrongrText(
+            "Code renvoyé",
+            size: 18,
+            color: Colors.white,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(5),
+              topRight: Radius.circular(5),
+            ),
+          ),
+        ),
+      );
+    } else {
+      _scaffoldKey.currentState.showSnackBar(
+        SnackBar(
+          duration: Duration(seconds: 3),
+          backgroundColor: Colors.red,
+          content: StrongrText(
+            "Le code n'a pas pu être renvoyé",
+            size: 18,
+            color: Colors.white,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(5),
+              topRight: Radius.circular(5),
+            ),
+          ),
+        ),
+      );
+    }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   void sendToServer() async {
@@ -65,20 +127,31 @@ class _RecoveryCodeViewState extends State<RecoveryCodeView> {
         _isLoading = true;
       });
 
+      // TODO
       dynamic result = 200;
-      // await UserService.postSendCode(email: email.toLowerCase());
+      // await UserService.postCheckCode(email: widget.email.toLowerCase(), code: code);
+
+      setState(() {
+        code = _codeController.text = "";
+      });
+
       if (result == 200) {
         setState(() {
           _validate = false;
           warning = null;
           _isLoading = false;
-          _isButtonEnabled = true;
         });
 
-        // Navigator.pushNamed(context, RECOVERY_CODE_ROUTE);
-      } else if (result == 404) {
+        Navigator.pushNamed(
+          context,
+          NEW_PASSWORD_ROUTE,
+          arguments: RecoveryCodeView(
+            email: widget.email,
+          ),
+        );
+      } else if (result == 401 || result == 404) {
         setState(() {
-          warning = "Cette adresse e-mail ne correspond à aucun compte.";
+          warning = "Le code saisi est incorrect.";
         });
       } else // 503
       {
@@ -87,7 +160,6 @@ class _RecoveryCodeViewState extends State<RecoveryCodeView> {
         });
       }
       setState(() {
-        _isButtonEnabled = true;
         _isLoading = false;
       });
     } else
@@ -142,10 +214,7 @@ class _RecoveryCodeViewState extends State<RecoveryCodeView> {
                                             ),
                                           ),
                                           Container(
-                                            child: BackButton(
-                                              onPressed: () =>
-                                                  Navigator.pop(context),
-                                            ),
+                                            child: BackButton(),
                                           ),
                                         ],
                                       ),
@@ -176,15 +245,15 @@ class _RecoveryCodeViewState extends State<RecoveryCodeView> {
                                               WhitelistingTextInputFormatter
                                                   .digitsOnly
                                             ],
-                                            controller: null,
-                                            validator: null,
+                                            controller: _codeController,
+                                            validator: validateCode,
                                             // obscureText: !codeVisibility,
-                                            onSaved: (String value) {},
-                                            // setState(() => code = value),
-                                            onChanged: (String value) {},
-                                            //   setState(() => warning = null);
-                                            //   isEmailInputEmpty();
-                                            // },
+                                            onSaved: (String value) =>
+                                                setState(() => code = value),
+                                            onChanged: (String value) {
+                                              setState(() => warning = null);
+                                              isInvalid();
+                                            },
                                             hint: "XXXXXXXX",
                                             textInputType: TextInputType.number,
                                             maxLength: 8,
@@ -211,25 +280,8 @@ class _RecoveryCodeViewState extends State<RecoveryCodeView> {
                               ),
                               FlatButton(
                                 onPressed: () {
-                                  // FocusScope.of(context).unfocus();
-                                  // Navigator.pushNamed(
-                                  //     context, NEW_PASSWORD_ROUTE);
-                                  _scaffoldKey.currentState.showSnackBar(
-                                    SnackBar(
-                                      backgroundColor: StrongrColors.blue,
-                                      content: StrongrText(
-                                        "Code renvoyé",
-                                        size: 18,
-                                        color: Colors.white,
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(5),
-                                          topRight: Radius.circular(5),
-                                        ),
-                                      ),
-                                    ),
-                                  );
+                                  FocusScope.of(context).unfocus();
+                                  resendCode();
                                 },
                                 child: StrongrText(
                                   "Renvoyer un code",
@@ -238,14 +290,12 @@ class _RecoveryCodeViewState extends State<RecoveryCodeView> {
                               ),
                               StrongrRaisedButton(
                                 "Valider",
-                                // onPressed: _isButtonEnabled
-                                //     ? () async {
-                                //         FocusScope.of(context)
-                                //             .unfocus();
-                                //         sendToServer();
-                                //       }
-                                //     : null,
-                                onPressed: () {},
+                                onPressed: _isButtonEnabled
+                                    ? () async {
+                                        FocusScope.of(context).unfocus();
+                                        sendToServer();
+                                      }
+                                    : null,
                               ),
                             ],
                           ),

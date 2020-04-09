@@ -63,8 +63,9 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
         _isLoading = true;
       });
 
+      // TODO
       dynamic result = 200;
-      // await UserService.postSendCode(email: email.toLowerCase());
+          // await UserService.postSendCode(email: email.toLowerCase());
       if (result == 200) {
         setState(() {
           _validate = false;
@@ -138,9 +139,7 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                                       ),
                                     ),
                                     Container(
-                                      child: BackButton(
-                                        onPressed: () => Navigator.pop(context),
-                                      ),
+                                      child: BackButton(),
                                     ),
                                   ],
                                 ),
