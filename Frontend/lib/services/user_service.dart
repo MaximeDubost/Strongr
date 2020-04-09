@@ -150,34 +150,40 @@ class UserService {
   ///
   /// Envoie le code à l'adresse [email].
   static Future<int> postSendCode({@required String email}) async {
-    Response response = await http.post(
-        Uri.encodeFull(
-          global.SERVER_URL + '/sendCode',
-        ),
-        body: {
-          '': '',
-        });
-    if (response.statusCode == 200) {
-      return 0;
-    } else
-      throw HttpException('');
+    try {
+      Response response = await http.post(
+          Uri.encodeFull(
+            global.SERVER_URL + '/sendCode',
+          ),
+          body: {
+            'email': email,
+          });
+      return response.statusCode;
+    } catch (e) {
+      return 503;
+    }
   }
 
   /// [POST] /checkCode - TODO
   ///
   /// Envoie le code [code].
-  static Future<int> postCheckCode({@required String code}) async {
-    Response response = await http.post(
-        Uri.encodeFull(
-          global.SERVER_URL + '/checkCode',
-        ),
-        body: {
-          '': '',
-        });
-    if (response.statusCode == 200) {
-      return 0;
-    } else
-      throw HttpException('');
+  static Future<int> postCheckCode({
+    @required String email,
+    @required String code,
+  }) async {
+    try {
+      Response response = await http.post(
+          Uri.encodeFull(
+            global.SERVER_URL + '/checkCode',
+          ),
+          body: {
+            'email': email,
+            'code' : code,
+          });
+      return response.statusCode;
+    } catch (e) {
+      return 503;
+    }
   }
 
   /// [PUT] /resetPassword - TODO
