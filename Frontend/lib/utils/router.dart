@@ -41,8 +41,9 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       );
 
     case RECOVERY_CODE_ROUTE:
+      ResetPasswordView args = settings.arguments;
       return CupertinoPageRoute(
-        builder: (context) => RecoveryCodeView(),
+        builder: (context) => RecoveryCodeView(email: args.email),
       );
 
     case NEW_PASSWORD_ROUTE:

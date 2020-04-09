@@ -8,6 +8,10 @@ import 'package:strongr/widgets/strongr_rounded_textformfield.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
 class ResetPasswordView extends StatefulWidget {
+  final String email;
+
+  ResetPasswordView({this.email});
+
   @override
   _ResetPasswordViewState createState() => _ResetPasswordViewState();
 }
@@ -16,13 +20,12 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
   GlobalKey<FormState> _key;
   bool _validate, _isButtonEnabled, _isLoading;
   TextEditingController _emailController;
-  String email, warning = "";
+  String email, warning;
 
   @override
   void initState() {
     _key = GlobalKey();
     _validate = _isLoading = false;
-    email = "";
     _emailController = TextEditingController(text: "");
     _isButtonEnabled = _emailController.text.trim() != "" ? true : false;
     super.initState();
@@ -51,15 +54,6 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
       return null;
   }
 
-  String validateCode(String value) {
-    String pattern = r'^[0-9]{8,8}$';
-    RegExp regExp = new RegExp(pattern);
-    if (value.length == 0 || !regExp.hasMatch(value)) {
-      return "Le code est invalide";
-    } else
-      return null;
-  }
-
   void sendToServer() async {
     if (_key.currentState.validate()) {
       _key.currentState.save();
@@ -70,7 +64,7 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
       });
 
       dynamic result = 200;
-          // await UserService.postSendCode(email: email.toLowerCase());
+      // await UserService.postSendCode(email: email.toLowerCase());
       if (result == 200) {
         setState(() {
           _validate = false;
@@ -79,7 +73,13 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
           _isButtonEnabled = true;
         });
 
-        Navigator.pushNamed(context, RECOVERY_CODE_ROUTE);
+        Navigator.pushNamed(
+          context,
+          RECOVERY_CODE_ROUTE,
+          arguments: ResetPasswordView(
+            email: email,
+          ),
+        );
       } else if (result == 404) {
         setState(() {
           warning = "Cette adresse e-mail ne correspond à aucun compte.";

@@ -3,26 +3,32 @@ import 'package:flutter/services.dart';
 import 'package:strongr/services/user_service.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
+import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/widgets/strongr_raised_button.dart';
 import 'package:strongr/widgets/strongr_rounded_textformfield.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
 class RecoveryCodeView extends StatefulWidget {
+  final String email;
+
+  RecoveryCodeView({@required this.email});
+
   @override
   _RecoveryCodeViewState createState() => _RecoveryCodeViewState();
 }
 
 class _RecoveryCodeViewState extends State<RecoveryCodeView> {
+  GlobalKey<ScaffoldState> _scaffoldKey;
   GlobalKey<FormState> _key;
   bool _validate, _isButtonEnabled, _isLoading;
   TextEditingController _emailController;
-  String email, warning = "";
+  String email, warning;
 
   @override
   void initState() {
-    _key = GlobalKey();
+    _scaffoldKey = GlobalKey<ScaffoldState>();
+    _key = GlobalKey<FormState>();
     _validate = _isLoading = false;
-    email = "";
     _emailController = TextEditingController(text: "");
     _isButtonEnabled = _emailController.text.trim() != "" ? true : false;
     super.initState();
@@ -39,16 +45,6 @@ class _RecoveryCodeViewState extends State<RecoveryCodeView> {
       _isButtonEnabled = _emailController.text.trim() != "" ? true : false;
     });
     return _isButtonEnabled;
-  }
-
-  String validateEmail(String value) {
-    String pattern =
-        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-    RegExp regExp = new RegExp(pattern);
-    if (value.length == 0 || !regExp.hasMatch(value)) {
-      return "L'adresse e-mail est invalide";
-    } else
-      return null;
   }
 
   String validateCode(String value) {
@@ -69,8 +65,8 @@ class _RecoveryCodeViewState extends State<RecoveryCodeView> {
         _isLoading = true;
       });
 
-      dynamic result =
-          await UserService.postSendCode(email: email.toLowerCase());
+      dynamic result = 200;
+      // await UserService.postSendCode(email: email.toLowerCase());
       if (result == 200) {
         setState(() {
           _validate = false;
@@ -79,7 +75,7 @@ class _RecoveryCodeViewState extends State<RecoveryCodeView> {
           _isButtonEnabled = true;
         });
 
-        Navigator.pushNamed(context, RECOVERY_CODE_ROUTE);
+        // Navigator.pushNamed(context, RECOVERY_CODE_ROUTE);
       } else if (result == 404) {
         setState(() {
           warning = "Cette adresse e-mail ne correspond à aucun compte.";
@@ -103,6 +99,7 @@ class _RecoveryCodeViewState extends State<RecoveryCodeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       resizeToAvoidBottomPadding: false,
       body: SafeArea(
         child: Stack(
@@ -155,8 +152,8 @@ class _RecoveryCodeViewState extends State<RecoveryCodeView> {
                                     ),
                                     SizedBox(height: 30),
                                     StrongrText(
-                                      "Vous avez reçu un code de vérification à l'adresse \"" +
-                                          "widget.email" +
+                                      "Un code de vérification a été envoyé à \"" +
+                                          widget.email +
                                           "\".",
                                       size: 18,
                                       color: Colors.black54,
@@ -185,7 +182,7 @@ class _RecoveryCodeViewState extends State<RecoveryCodeView> {
                                             onSaved: (String value) {},
                                             // setState(() => code = value),
                                             onChanged: (String value) {},
-                                            //   setState(() => emailWarning = null);
+                                            //   setState(() => warning = null);
                                             //   isEmailInputEmpty();
                                             // },
                                             hint: "XXXXXXXX",
@@ -205,9 +202,9 @@ class _RecoveryCodeViewState extends State<RecoveryCodeView> {
                               ),
                               SizedBox(height: 5),
                               Visibility(
-                                visible: true,
+                                visible: warning == null ? false : true,
                                 child: StrongrText(
-                                  "emailWarning",
+                                  warning,
                                   size: 16,
                                   color: Colors.red,
                                 ),
@@ -217,6 +214,22 @@ class _RecoveryCodeViewState extends State<RecoveryCodeView> {
                                   // FocusScope.of(context).unfocus();
                                   // Navigator.pushNamed(
                                   //     context, NEW_PASSWORD_ROUTE);
+                                  _scaffoldKey.currentState.showSnackBar(
+                                    SnackBar(
+                                      backgroundColor: StrongrColors.blue,
+                                      content: StrongrText(
+                                        "Code renvoyé",
+                                        size: 18,
+                                        color: Colors.white,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(5),
+                                          topRight: Radius.circular(5),
+                                        ),
+                                      ),
+                                    ),
+                                  );
                                 },
                                 child: StrongrText(
                                   "Renvoyer un code",
