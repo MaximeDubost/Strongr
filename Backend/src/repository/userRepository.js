@@ -1,22 +1,9 @@
 import bcrypt from 'bcrypt';
-import jwt from "jsonwebtoken";
-import nodemailer from "nodemailer"
-
-import UserError from "../errors/UserError"
 
 const { Pool } = require('pg')
 var clt = null;
 const repository = {};
 
-let transport = nodemailer.createTransport({
-    service: 'gmail',
-    secure: false,
-    port: 25,
-    auth: {
-        user: 'team.strongr',
-        pass: '#5tr0n63R'
-    }
-});
 const pool = new Pool({
     host: 'localhost',
     port: 5432,

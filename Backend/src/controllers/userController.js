@@ -3,9 +3,7 @@ import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer"
 
 import userRepository from "../repository/userRepository"
-import UserError from "../errors/UserError"
 
-const { Pool } = require('pg')
 var clt = null;
 const controller = {};
 
@@ -16,22 +14,6 @@ let transport = nodemailer.createTransport({
     auth: {
         user: 'team.strongr',
         pass: '#5tr0n63R'
-    }
-});
-const pool = new Pool({
-    host: 'localhost',
-    port: 5432,
-    user: 'postgres',
-    password: 'root',
-    database: 'StrongrDB'
-});
-
-pool.connect((err, client, release) => {
-    console.log("In pool connect");
-    if (err) {
-        return console.error("Error acquiring client", err.stack);
-    } else {
-        clt = client;
     }
 });
 /**
@@ -178,7 +160,7 @@ controller.checkCode = async (req, res) => {
  */
 controller.resetPassword = async (req, res) => {
     try {
-        await userRepository.resetPassword(req)
+        await userRepository.resetPassword(req.body)
         res.sendStatus(200)
     } catch (error) {
         console.error(error)
