@@ -186,9 +186,7 @@ class _SignInNextViewState extends State<SignInNextView> {
                                       ),
                                     ),
                                     Container(
-                                      child: BackButton(
-                                        onPressed: () => Navigator.pop(context),
-                                      ),
+                                      child: BackButton(),
                                     ),
                                   ],
                                 ),

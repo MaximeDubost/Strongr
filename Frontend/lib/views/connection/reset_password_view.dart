@@ -3,66 +3,43 @@ import 'package:flutter/services.dart';
 import 'package:strongr/services/user_service.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
-import 'package:strongr/utils/global.dart' as global;
 import 'package:strongr/widgets/strongr_raised_button.dart';
 import 'package:strongr/widgets/strongr_rounded_textformfield.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
 class ResetPasswordView extends StatefulWidget {
+  final String email;
+
+  ResetPasswordView({this.email});
+
   @override
   _ResetPasswordViewState createState() => _ResetPasswordViewState();
 }
 
 class _ResetPasswordViewState extends State<ResetPasswordView> {
   GlobalKey<FormState> _key;
-  bool _validate,
-      isCodeSended,
-      _isButtonEnabled,
-      _isSendCodeButtonEnabled,
-      _buttonPressSuccess,
-      _isLoading;
-  TextEditingController _emailController, _codeController;
-  String email, code, emailWarning, codeWarning;
+  bool _validate, _isButtonEnabled, _isLoading;
+  TextEditingController _emailController;
+  String email, warning;
 
   @override
   void initState() {
     _key = GlobalKey();
-    _validate = _isButtonEnabled = _isSendCodeButtonEnabled = isCodeSended =
-        _buttonPressSuccess = _isLoading = false;
-    // isCodeSended = true;
-    email = "";
+    _validate = _isLoading = false;
     _emailController = TextEditingController(text: "");
-    _codeController = TextEditingController(text: "");
-    _isButtonEnabled =
-        _emailController.text.trim() != "" && _codeController.text.trim() != ""
-            ? true
-            : false;
-    _isSendCodeButtonEnabled =
-        _emailController.text.trim() != "" ? true : false;
+    _isButtonEnabled = _emailController.text.trim() != "" ? true : false;
     super.initState();
   }
 
   @override
   void dispose() {
-    super.dispose();
     _emailController.dispose();
-    _codeController.dispose();
+    super.dispose();
   }
 
   bool isEmpty() {
     setState(() {
-      _isButtonEnabled = _emailController.text.trim() != "" &&
-              _codeController.text.trim() != ""
-          ? true
-          : false;
-    });
-    return _isButtonEnabled;
-  }
-
-  bool isEmailInputEmpty() {
-    setState(() {
-      _isSendCodeButtonEnabled =
-          _emailController.text.trim() != "" ? true : false;
+      _isButtonEnabled = _emailController.text.trim() != "" ? true : false;
     });
     return _isButtonEnabled;
   }
@@ -77,59 +54,48 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
       return null;
   }
 
-  String validateCode(String value) {
-    String pattern = r'^[0-9]{8,8}$';
-    RegExp regExp = new RegExp(pattern);
-    if (value.length == 0 || !regExp.hasMatch(value)) {
-      return "Le code est invalide";
-    } else
-      return null;
-  }
-
   void sendToServer() async {
     if (_key.currentState.validate()) {
       _key.currentState.save();
-      _buttonPressSuccess = true;
-
-      // print("email: $email");
-      // print("code: $code");
 
       setState(() {
-        // code = _codeController.text = "";
-        // _isButtonEnabled = false;
+        _isButtonEnabled = false;
         _isLoading = true;
       });
 
-      dynamic result = await UserService.postSendCode(email: email.toLowerCase());
-      if (result == 200)
-      {
+      // TODO
+      dynamic result = 200;
+          // await UserService.postSendCode(email: email.toLowerCase());
+      if (result == 200) {
         setState(() {
           _validate = false;
-          emailWarning = null;
+          warning = null;
           _isLoading = false;
-          code = _codeController.text = "";
-          _isButtonEnabled = false;
-          _isSendCodeButtonEnabled = false;
-          isCodeSended = true;
+          _isButtonEnabled = true;
         });
-      }
-      else if (result == 404)
+
+        Navigator.pushNamed(
+          context,
+          RECOVERY_CODE_ROUTE,
+          arguments: ResetPasswordView(
+            email: email,
+          ),
+        );
+      } else if (result == 404) {
+        setState(() {
+          warning = "Cette adresse e-mail ne correspond à aucun compte.";
+        });
+      } else // 503
       {
         setState(() {
-          emailWarning = "Cette adresse e-mail ne correspond à aucun compte.";
-        });
-      }
-      else // 503
-      {
-        setState(() {
-          emailWarning = "Service indisponible. Veuillez réessayer ultérieurement.";
+          warning = "Service indisponible. Veuillez réessayer ultérieurement.";
         });
       }
       setState(() {
+        _isButtonEnabled = true;
         _isLoading = false;
       });
-    } 
-    else
+    } else
       setState(() {
         _validate = true;
       });
@@ -167,21 +133,19 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                                         width: ScreenSize.width(context) / 1.7,
                                         alignment: Alignment.center,
                                         child: StrongrText(
-                                          "Changement de mot de pass",
+                                          "Changement de mot de passe",
                                           size: 30,
                                         ),
                                       ),
                                     ),
                                     Container(
-                                      child: BackButton(
-                                        onPressed: () => Navigator.pop(context),
-                                      ),
+                                      child: BackButton(),
                                     ),
                                   ],
                                 ),
                               ),
                               SizedBox(height: 30),
-                               Container(
+                              Container(
                                   alignment: Alignment.centerLeft,
                                   child: StrongrText(
                                     "Adresse e-mail",
@@ -191,13 +155,11 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                               StrongrRoundedTextFormField(
                                 controller: _emailController,
                                 validator: validateEmail,
-                                // EXCEPTION CAUGHT BY FOUNDATION LIBRARY
-                                // autofocus: true,
-                                onSaved: (String value) => setState(
-                                    () => email = value.toLowerCase()),
+                                onSaved: (String value) =>
+                                    setState(() => email = value.toLowerCase()),
                                 onChanged: (String value) {
-                                  setState(() => emailWarning = null);
-                                  isEmailInputEmpty();
+                                  setState(() => warning = null);
+                                  isEmpty();
                                 },
                                 maxLength: 50,
                                 hint: "Adresse e-mail",
@@ -205,107 +167,22 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                               ),
                               SizedBox(height: 5),
                               Visibility(
-                                visible: !isCodeSended,
-                                child: StrongrRaisedButton(
-                                  "Envoyer un code",
-                                  onPressed: _isSendCodeButtonEnabled
-                                      ? () async {
-                                          FocusScope.of(context).unfocus();
-                                          sendToServer();
-                                        }
-                                      : null,
+                                visible: warning == null ? false : true,
+                                child: StrongrText(
+                                  warning,
+                                  color: Colors.red,
+                                  size: 16,
                                 ),
                               ),
-                              Visibility(
-                                visible: isCodeSended,
-                                child: Container(
-                                  child: Column(
-                                    children: <Widget>[
-                                      Container(
-                                        // color: Colors.red,
-                                        alignment: Alignment.centerLeft,
-                                        // width: ScreenSize.width(context) / 2,
-                                        child: Column(
-                                          children: <Widget>[
-                                            SizedBox(height: 5),
-                                            StrongrText("Vous avez reçu un code de vérification à l'adresse \""+ email +"\".", size: 16,),
-                                            SizedBox(height: 15),
-                                            Container(
-                                              width: ScreenSize.width(context) / 2,
-                                              child: Column(
-                                                children: <Widget>[
-                                                  Container(
-                                                    alignment: Alignment.centerLeft,
-                                                    child: StrongrText(
-                                                      "Code",
-                                                      size: 16,
-                                                    ),
-                                                  ),
-                                                  SizedBox(height: 10),
-                                                  StrongrRoundedTextFormField(
-                                                    inputFormatters: [
-                                                      WhitelistingTextInputFormatter
-                                                          .digitsOnly
-                                                    ],
-                                                    controller: _codeController,
-                                                    validator: validateCode,
-                                                    // obscureText: !codeVisibility,
-                                                    onSaved: (String value) =>
-                                                        setState(() => code = value),
-                                                    onChanged: (String value) {
-                                                      setState(() => emailWarning = null);
-                                                      isEmailInputEmpty();
-                                                    },
-                                                    hint: "XXXXXXXX",
-                                                    textInputType:
-                                                        TextInputType.number,
-                                                    maxLength: 8,
-                                                    // suffixIcon: Icons.visibility_off,
-                                                    // suffixIconAlt: Icons.visibility,
-                                                    // onPressedSuffixIcon: () => setState(() =>
-                                                    //     codeVisibility = !codeVisibility,
-                                                    // ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      SizedBox(height: 5),
-                                      Visibility(
-                                        visible: _isLoading == false &&
-                                            emailWarning != null,
-                                        child: StrongrText(
-                                          emailWarning,
-                                          size: 16,
-                                          color: Colors.red,
-                                        ),
-                                      ),
-                                      FlatButton(
-                                        onPressed: () {
-                                          FocusScope.of(context).unfocus();
-                                          Navigator.pushNamed(
-                                              context, RESET_PASSWORD_ROUTE);
-                                        },
-                                        child: StrongrText(
-                                          "Renvoyer un code",
-                                          size: 16,
-                                        ),
-                                      ),
-                                      StrongrRaisedButton(
-                                        "Valider",
-                                        onPressed: _isButtonEnabled
-                                            ? () async {
-                                                FocusScope.of(context)
-                                                    .unfocus();
-                                                sendToServer();
-                                              }
-                                            : null,
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                              SizedBox(height: 10),
+                              StrongrRaisedButton(
+                                "Envoyer un code",
+                                onPressed: _isButtonEnabled
+                                    ? () async {
+                                        FocusScope.of(context).unfocus();
+                                        sendToServer();
+                                      }
+                                    : null,
                               ),
                             ],
                           ),
@@ -313,18 +190,6 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                       ),
                     ),
                   ),
-                  // Container(
-                  //   child: FlatButton(
-                  //     onPressed: () {
-                  //       FocusScope.of(context).unfocus();
-                  //       Navigator.pushNamed(context, SIGN_IN_ROUTE);
-                  //     },
-                  //     child: StrongrText(
-                  //       "Pas de compte ? Inscription",
-                  //       size: 16,
-                  //     ),
-                  //   ),
-                  // ),
                 ],
               ),
             ),

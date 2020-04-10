@@ -40,6 +40,11 @@ dev_dependencies:
 
 # The following section is specific to Flutter.
 flutter:
+  assets:
+    - assets/strongr_logo_1.png
+    - assets/strongr_logo_2.png
+    - assets/strongr_404.png
+
   fonts:
     - family: Futura
       fonts:

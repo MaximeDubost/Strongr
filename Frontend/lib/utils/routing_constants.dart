@@ -2,11 +2,12 @@
 const String LOADING_ROUTE = "loading";
 
 // Connection
-const String CONNECTION_ROUTE = 'connection';
 const String SIGN_IN_ROUTE = 'sign_in';
 const String SIGN_IN_NEXT_ROUTE = 'sign_in_next';
 const String LOG_IN_ROUTE = 'log_in';
 const String RESET_PASSWORD_ROUTE = 'reset_password';
+const String RECOVERY_CODE_ROUTE = "recovery_code";
+const String NEW_PASSWORD_ROUTE = "new_password";
 
 // Welcome
 const String WELCOME_ROUTE = "welcome";
