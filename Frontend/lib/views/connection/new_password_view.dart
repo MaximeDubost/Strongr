@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:strongr/services/user_service.dart';
 import 'package:strongr/utils/routing_constants.dart';

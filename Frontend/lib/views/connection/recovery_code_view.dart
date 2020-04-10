@@ -68,8 +68,7 @@ class _RecoveryCodeViewState extends State<RecoveryCodeView> {
       _isLoading = true;
     });
 
-    dynamic result = 200;
-    // await UserService.postSendCode(email: widget.email.toLowerCase());
+    dynamic result = await UserService.postSendCode(email: widget.email.toLowerCase());
     if (result == 200) {
       setState(() {
         _validate = false;
@@ -127,9 +126,7 @@ class _RecoveryCodeViewState extends State<RecoveryCodeView> {
         _isLoading = true;
       });
 
-      // TODO
-      dynamic result = 200;
-      // await UserService.postCheckCode(email: widget.email.toLowerCase(), code: code);
+      dynamic result = await UserService.postCheckCode(email: widget.email.toLowerCase(), code: code);
 
       setState(() {
         code = _codeController.text = "";
