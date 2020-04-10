@@ -17,7 +17,7 @@ class StrongrRoundedContainer extends StatelessWidget {
         ),
       ),
       child: Center(
-        child: StrongrText("ListViewItem"),
+        child: StrongrText("item"),
       ),
     );
   }
