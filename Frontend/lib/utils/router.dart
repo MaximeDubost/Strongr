@@ -8,6 +8,7 @@ import 'package:strongr/views/connection/reset_password_view.dart';
 import 'package:strongr/views/connection/sign_in_next_view.dart';
 import 'package:strongr/views/connection/sign_in_view.dart';
 import 'package:strongr/views/homepage_view.dart';
+import 'package:strongr/views/unknown_view.dart';
 
 import 'routing_constants.dart';
 
@@ -63,7 +64,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
 
     default:
       return NoAnimationMaterialPageRoute(
-        builder: (context) => Scaffold(body: Center(child: Text("Unknown view"))),
+        builder: (context) => UnknownView(),
       );
   }
 }

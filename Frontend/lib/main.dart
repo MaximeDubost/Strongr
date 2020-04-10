@@ -42,7 +42,6 @@ class MyApp extends StatelessWidget {
       ),
       onGenerateRoute: router.generateRoute,
       initialRoute: LOG_IN_ROUTE,
-      // initialRoute: "",
     );
   }
 }
