@@ -25,21 +25,17 @@ class _NewPasswordViewState extends State<NewPasswordView> {
       _isLoading,
       passwordVisibility,
       confirmPasswordVisibility;
-  TextEditingController _emailController,
-      _passwordController,
-      _confirmPasswordController;
-  String email, password, confirmPassword, warning;
+  TextEditingController _passwordController, _confirmPasswordController;
+  String password, confirmPassword, warning;
 
   @override
   void initState() {
     _key = GlobalKey();
     _validate = _isButtonEnabled = _buttonPressSuccess =
         _isLoading = passwordVisibility = confirmPasswordVisibility = false;
-    _emailController = TextEditingController(text: "");
     _passwordController = TextEditingController(text: "");
     _confirmPasswordController = TextEditingController(text: "");
-    _isButtonEnabled = _emailController.text.trim() != "" &&
-            _passwordController.text.trim() != "" &&
+    _isButtonEnabled = _passwordController.text.trim() != "" &&
             _confirmPasswordController.text.trim() != ""
         ? true
         : false;
@@ -49,30 +45,18 @@ class _NewPasswordViewState extends State<NewPasswordView> {
   @override
   void dispose() {
     super.dispose();
-    _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
   }
 
   bool isEmpty() {
     setState(() {
-      _isButtonEnabled = _emailController.text.trim() != "" &&
-              _passwordController.text.trim() != "" &&
+      _isButtonEnabled = _passwordController.text.trim() != "" &&
               _confirmPasswordController.text.trim() != ""
           ? true
           : false;
     });
     return _isButtonEnabled;
-  }
-
-  String validateEmail(String value) {
-    String pattern =
-        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-    RegExp regExp = new RegExp(pattern);
-    if (value.length == 0 || !regExp.hasMatch(value)) {
-      return "L'adresse e-mail est invalide";
-    } else
-      return null;
   }
 
   String validatePassword(String value) {
@@ -116,9 +100,7 @@ class _NewPasswordViewState extends State<NewPasswordView> {
         _isLoading = true;
       });
 
-      // TODO
-      dynamic result = 200;
-      // await UserService.postSendCode(email: email.toLowerCase());
+      dynamic result = await UserService.putResetPassword(email: widget.email.toLowerCase(), password: password);
       if (result == 200) {
         setState(() {
           _validate = false;
@@ -127,21 +109,16 @@ class _NewPasswordViewState extends State<NewPasswordView> {
           _isButtonEnabled = true;
         });
 
-        Navigator.pushNamed(
+        Navigator.pushNamedAndRemoveUntil(
           context,
-          RECOVERY_CODE_ROUTE,
-          arguments: NewPasswordView(
-            email: email,
-          ),
+          LOG_IN_ROUTE,
+          (Route<dynamic> route) => false
         );
-      } else if (result == 404) {
-        setState(() {
-          warning = "Cette adresse e-mail ne correspond à aucun compte.";
-        });
-      } else // 503
+      } 
+      else // 503 ou Exception()
       {
         setState(() {
-          warning = "Service indisponible. Veuillez réessayer ultérieurement.";
+          warning = "Une erreur est survenue. Veuillez réessayer ultérieurement.";
         });
       }
       setState(() {
@@ -265,7 +242,7 @@ class _NewPasswordViewState extends State<NewPasswordView> {
                               ),
                               SizedBox(height: 10),
                               StrongrRaisedButton(
-                                "S'inscrire",
+                                "Terminer",
                                 onPressed: _isButtonEnabled
                                     ? () async {
                                         FocusScope.of(context).unfocus();

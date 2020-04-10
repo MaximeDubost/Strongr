@@ -149,6 +149,7 @@ class _RecoveryCodeViewState extends State<RecoveryCodeView> {
             email: widget.email,
           ),
         );
+        
       } else if (result == 401 || result == 404) {
         setState(() {
           warning = "Le code saisi est incorrect.";

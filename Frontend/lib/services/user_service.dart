@@ -146,7 +146,7 @@ class UserService {
       throw HttpException('');
   }
 
-  /// [POST] /sendCode - TODO
+  /// [POST] /sendCode
   ///
   /// Envoie le code à l'adresse [email].
   static Future<int> postSendCode({@required String email}) async {
@@ -164,7 +164,7 @@ class UserService {
     }
   }
 
-  /// [POST] /checkCode - TODO
+  /// [POST] /checkCode
   ///
   /// Envoie le code [code].
   static Future<int> postCheckCode({
@@ -178,7 +178,7 @@ class UserService {
           ),
           body: {
             'email': email,
-            'code' : code,
+            'code': code,
           });
       return response.statusCode;
     } catch (e) {
@@ -186,21 +186,29 @@ class UserService {
     }
   }
 
-  /// [PUT] /resetPassword - TODO
+  /// [PUT] /resetPassword
   ///
   /// Modifie le mot de passe de l'utilisateur [email] avec le nouveau mot de passe [password].
-  static Future<int> putResetPassword(
-      {@required String email, String password}) async {
-    Response response = await http.put(
+  static Future<int> putResetPassword({
+    @required String email,
+    @required String password,
+  }) async {
+    try
+    {
+      Response response = await http.put(
         Uri.encodeFull(
           global.SERVER_URL + '/resetPassword',
         ),
         body: {
-          '': '',
-        });
-    if (response.statusCode == 200) {
-      return 0;
-    } else
-      throw HttpException('');
+          'email': email,
+          'password': password
+        },
+      );
+      return response.statusCode;
+    }
+    catch (e)
+    {
+      return 503;
+    }
   }
 }
