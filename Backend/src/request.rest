@@ -45,8 +45,8 @@ POST http://localhost:3000/api/login
 Content-Type: application/json
 
 {
-	"connectId" : "christ.ulce@gmail.com", 
-	"password" : "P@ssword&0"
+	"connectId" : "ulce31", 
+	"password" : "P@ssw0rd"
 }
 
 
@@ -88,3 +88,35 @@ Content-Type: application/json
 }
 
 
+
+
+### REQUESTS SESSION
+GET http://localhost:3000/api/session/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJjaGlhcmEuYmVyYXJkaUBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImNiZXJhcmRpIiwiaWF0IjoxNTg2NjE5MDUzfQ.oqfUBj0NMrba1To3qLMEOEimuba8CxBGbdCpt_f9ZzU
+
+### 
+GET http://localhost:3000/api/sessions
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJjaGlhcmEuYmVyYXJkaUBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImNiZXJhcmRpIiwiaWF0IjoxNTg2NjE5MDUzfQ.oqfUBj0NMrba1To3qLMEOEimuba8CxBGbdCpt_f9ZzU
+
+###
+POST http://localhost:3000/api/session
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJjaHJpc3QudWxjZUBnbWFpbC5jb20iLCJ1c2VybmFtZSI6InVsY2UzMSIsImlhdCI6MTU4NjYyMTE1NH0.eJYtYDXHkwnREu_1WPbSVHhZ49hYyAnAhApaFj2KGqs
+Content-Type: application/json
+
+{
+	"sessionName" : "TEST"
+}
+
+###
+DELETE http://localhost:3000/api/session/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJjaHJpc3QudWxjZUBnbWFpbC5jb20iLCJ1c2VybmFtZSI6InVsY2UzMSIsImlhdCI6MTU4NjYyMTE1NH0.eJYtYDXHkwnREu_1WPbSVHhZ49hYyAnAhApaFj2KGqs
+Content-Type: application/json
+
+###
+PUT http://localhost:3000/api/session/2
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJjaHJpc3QudWxjZUBnbWFpbC5jb20iLCJ1c2VybmFtZSI6InVsY2UzMSIsImlhdCI6MTU4NjYyMTE1NH0.eJYtYDXHkwnREu_1WPbSVHhZ49hYyAnAhApaFj2KGqs
+Content-Type: application/json
+
+{
+	"sessionName" : "TEST 2"
+}
