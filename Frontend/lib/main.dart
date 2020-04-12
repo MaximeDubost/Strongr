@@ -38,6 +38,8 @@ class MyApp extends StatelessWidget {
         canvasColor: StrongrColors.canvas,
         primaryColor: StrongrColors.black,
         accentColor: StrongrColors.greyA,
+        // highlightColor: StrongrColors.greyD,
+        // splashColor: StrongrColors.greyC,
         fontFamily: 'Futura',
       ),
       onGenerateRoute: router.generateRoute,

@@ -8,7 +8,7 @@ class StrongrRoundedContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: ScreenSize.width(context) / 1.2,
-      margin: EdgeInsets.only(left: 10, right: 10),
+      margin: EdgeInsets.only(left: 5, right: 5),
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border.all(color: StrongrColors.greyD),
@@ -16,8 +16,14 @@ class StrongrRoundedContainer extends StatelessWidget {
           Radius.circular(25.0),
         ),
       ),
-      child: Center(
-        child: StrongrText("item"),
+      child: FlatButton(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(25.0),
+        ),
+        onPressed: () {},
+        child: Center(
+          child: StrongrText("item"),
+        ),
       ),
     );
   }

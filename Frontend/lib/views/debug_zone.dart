@@ -32,22 +32,24 @@ class _DebugZoneState extends State<DebugZone> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Container(
-          height: ScreenSize.height(context) / 5.5,
-          child: PageView(
-            physics: BouncingScrollPhysics(),
-              onPageChanged: (value) {
-                setState(() {
-                  currentpage = value;
-                });
-              },
-              controller: controller,
-              children: <Widget>[
-                StrongrRoundedContainer(),
-                StrongrRoundedContainer(),
-                StrongrRoundedContainer(),
-              ],
-              // itemBuilder: (context, index) => builder(index)
+        child: Center(
+          child: Container(
+            height: ScreenSize.height(context) / 5.5,
+            child: PageView(
+              physics: BouncingScrollPhysics(),
+                onPageChanged: (value) {
+                  setState(() {
+                    currentpage = value;
+                  });
+                },
+                controller: controller,
+                children: <Widget>[
+                  StrongrRoundedContainer(),
+                  StrongrRoundedContainer(),
+                  StrongrRoundedContainer(),
+                ],
+                // itemBuilder: (context, index) => builder(index)
+            ),
           ),
         ),
       ),

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
+import 'package:strongr/views/homepage/pages/exercises.dart';
+import 'package:strongr/views/homepage/pages/homepage.dart';
+import 'package:strongr/views/homepage/pages/statistics.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
@@ -10,13 +13,18 @@ class HomepageView extends StatefulWidget {
 }
 
 class _HomepageViewState extends State<HomepageView> {
-  List<Widget> exercisesList;
-  List<Widget> sessionsList;
-  List<Widget> programsList;
+  List<Widget> pagesList;
   List<String> popupMenuItems;
+  int currentPage;
 
   @override
   void initState() {
+    currentPage = 1;
+    pagesList = [
+      Exercises(),
+      Homepage(),
+      Statistics(),
+    ];
     popupMenuItems = [
       "Profil",
       "Paramètres",
@@ -57,109 +65,14 @@ class _HomepageViewState extends State<HomepageView> {
           ),
         ],
       ),
-      body: Container(
-        child: Column(
-          children: <Widget>[
-            FlatButton(
-              onPressed: () {},
-              child: Container(
-                padding: EdgeInsets.all(5),
-                // height: 50,
-                // color: Colors.red,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    StrongrText("Exercices", size: 25),
-                    IconButton(
-                      icon: Icon(Icons.keyboard_arrow_right),
-                      onPressed: () {},
-                    )
-                  ],
-                ),
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.all(5),
-              // color: Colors.green,
-              height: ScreenSize.height(context) / 5.5,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: <Widget>[
-                  StrongrRoundedContainer(),
-                  StrongrRoundedContainer(),
-                  StrongrRoundedContainer(),
-                ],
-              ),
-            ),
-            FlatButton(
-              onPressed: () {},
-              child: Container(
-                padding: EdgeInsets.all(5),
-                // height: 50,
-                // color: Colors.red,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    StrongrText("Séances", size: 25),
-                    IconButton(
-                      icon: Icon(Icons.keyboard_arrow_right),
-                      onPressed: () {},
-                    )
-                  ],
-                ),
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.all(5),
-              // color: Colors.green,
-              height: ScreenSize.height(context) / 5.5,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: <Widget>[
-                  StrongrRoundedContainer(),
-                  StrongrRoundedContainer(),
-                  StrongrRoundedContainer(),
-                ],
-              ),
-            ),
-            FlatButton(
-              onPressed: () {},
-              child: Container(
-                padding: EdgeInsets.all(5),
-                // height: 50,
-                // color: Colors.red,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    StrongrText("Programmes", size: 25),
-                    IconButton(
-                      icon: Icon(Icons.keyboard_arrow_right),
-                      onPressed: () {},
-                    )
-                  ],
-                ),
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.all(5),
-              // color: Colors.green,
-              height: ScreenSize.height(context) / 5.5,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: <Widget>[
-                  StrongrRoundedContainer(),
-                  StrongrRoundedContainer(),
-                  StrongrRoundedContainer(),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
+      body: pagesList[currentPage],
       bottomNavigationBar: BottomNavigationBar(
+        onTap: (index) {
+          setState(() => currentPage = index);
+        },
         backgroundColor: StrongrColors.black,
         type: BottomNavigationBarType.fixed,
-        currentIndex: 0,
+        currentIndex: currentPage,
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.fitness_center, color: Colors.white70, size: 22.0),
@@ -190,6 +103,10 @@ class _HomepageViewState extends State<HomepageView> {
           ),
         ],
       ),
+      // bottomNavigationBar: Container(
+      //   height: 60,
+      //   color: StrongrColors.black,
+      // ),
     );
   }
 }
