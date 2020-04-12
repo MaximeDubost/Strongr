@@ -25,88 +25,115 @@ class _HomepageViewState extends State<HomepageView> {
       Homepage(),
       Statistics(),
     ];
-    popupMenuItems = [
-      "Profil",
-      "Paramètres",
-    ];
+    popupMenuItems = currentPage != 0
+        ? [
+            "Profil",
+            "Paramètres",
+          ]
+        : [
+            "Profil",
+            "Paramètres",
+            "Trier par",
+          ];
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomPadding: false,
-      appBar: AppBar(
-        centerTitle: true,
-        leading: IconButton(
-          icon: Icon(Icons.notifications_none),
-          color: Colors.white,
-          onPressed: () {},
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        resizeToAvoidBottomPadding: false,
+        appBar: AppBar(
+          centerTitle: true,
+          leading: IconButton(
+            icon: Icon(Icons.notifications_none),
+            color: Colors.white,
+            onPressed: () {},
+          ),
+          title: Text(currentPage == 1
+              ? "Strongr"
+              : currentPage == 0 ? "Exercices" : "Statistiques"),
+          actions: <Widget>[
+            // IconButton(
+            //     icon: Icon(Icons.more_vert),
+            //     color: Colors.white,
+            //     onPressed: () {},
+            // ),
+            PopupMenuButton<String>(
+              onSelected: (value) => {},
+              itemBuilder: (BuildContext context) {
+                return popupMenuItems.map(
+                  (String choice) {
+                    return PopupMenuItem<String>(
+                      value: choice,
+                      child: Text(choice),
+                    );
+                  },
+                ).toList();
+              },
+            ),
+          ],
         ),
-        title: Text("Strongr"),
-        actions: <Widget>[
-          // IconButton(
-          //     icon: Icon(Icons.more_vert),
-          //     color: Colors.white,
-          //     onPressed: () {},
-          // ),
-          PopupMenuButton<String>(
-            onSelected: (value) => {},
-            itemBuilder: (BuildContext context) {
-              return popupMenuItems.map(
-                (String choice) {
-                  return PopupMenuItem<String>(
-                    value: choice,
-                    child: Text(choice),
-                  );
-                },
-              ).toList();
-            },
-          ),
-        ],
+        body: pagesList[currentPage],
+        bottomNavigationBar: BottomNavigationBar(
+          showUnselectedLabels: false,
+          backgroundColor: StrongrColors.black,
+          type: BottomNavigationBarType.fixed,
+          currentIndex: currentPage,
+          onTap: (index) {
+            setState(() {
+              currentPage = index;
+              popupMenuItems = currentPage != 0
+                  ? [
+                      "Profil",
+                      "Paramètres",
+                    ]
+                  : [
+                      "Profil",
+                      "Paramètres",
+                      "Trier par",
+                    ];
+            });
+          },
+          items: <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.fitness_center, color: Colors.white54, size: 22.0),
+              activeIcon:
+                  Icon(Icons.fitness_center, color: Colors.white, size: 26.0),
+              title: Text(
+                'Exercices',
+                style: TextStyle(
+                    color: currentPage != 0 ? Colors.white54 : Colors.white),
+              ),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home, color: Colors.white54, size: 22.0),
+              activeIcon: Icon(Icons.home, color: Colors.white, size: 26.0),
+              title: Text(
+                'Accueil',
+                style: TextStyle(
+                    color: currentPage != 1 ? Colors.white54 : Colors.white),
+              ),
+            ),
+            BottomNavigationBarItem(
+              icon:
+                  Icon(Icons.multiline_chart, color: Colors.white54, size: 22.0),
+              activeIcon:
+                  Icon(Icons.multiline_chart, color: Colors.white, size: 26.0),
+              title: Text(
+                'Stratistiques',
+                style: TextStyle(
+                    color: currentPage != 2 ? Colors.white54 : Colors.white),
+              ),
+            ),
+          ],
+        ),
+        // bottomNavigationBar: Container(
+        //   height: 60,
+        //   color: StrongrColors.black,
+        // ),
       ),
-      body: pagesList[currentPage],
-      bottomNavigationBar: BottomNavigationBar(
-        onTap: (index) {
-          setState(() => currentPage = index);
-        },
-        backgroundColor: StrongrColors.black,
-        type: BottomNavigationBarType.fixed,
-        currentIndex: currentPage,
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.fitness_center, color: Colors.white70, size: 22.0),
-            activeIcon:
-                Icon(Icons.fitness_center, color: Colors.white, size: 26.0),
-            title: Text(
-              'Exercices',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home, color: Colors.white70, size: 22.0),
-            activeIcon: Icon(Icons.home, color: Colors.white, size: 26.0),
-            title: Text(
-              'Accueil',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-          BottomNavigationBarItem(
-            icon:
-                Icon(Icons.multiline_chart, color: Colors.white70, size: 22.0),
-            activeIcon:
-                Icon(Icons.multiline_chart, color: Colors.white, size: 26.0),
-            title: Text(
-              'Stratistiques',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-        ],
-      ),
-      // bottomNavigationBar: Container(
-      //   height: 60,
-      //   color: StrongrColors.black,
-      // ),
     );
   }
 }

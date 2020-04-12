@@ -3,7 +3,17 @@ import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
-class StrongrRoundedContainer extends StatelessWidget {
+class StrongrRoundedContainer extends StatefulWidget {
+  final Widget content;
+  final Function onPressed;
+
+  StrongrRoundedContainer({@required this.content, @required this.onPressed});
+
+  @override
+  _StrongrRoundedContainerState createState() => _StrongrRoundedContainerState();
+}
+
+class _StrongrRoundedContainerState extends State<StrongrRoundedContainer> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -17,12 +27,13 @@ class StrongrRoundedContainer extends StatelessWidget {
         ),
       ),
       child: FlatButton(
+        
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(25.0),
         ),
-        onPressed: () {},
+        onPressed: widget.onPressed,
         child: Center(
-          child: StrongrText("item"),
+          child: widget.content
         ),
       ),
     );

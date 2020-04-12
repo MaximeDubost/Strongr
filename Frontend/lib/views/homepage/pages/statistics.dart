@@ -9,6 +9,14 @@ class Statistics extends StatefulWidget {
 class _StatisticsState extends State<Statistics> {
   @override
   Widget build(BuildContext context) {
-    return Center(child: StrongrText('Statistics'),);
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Icon(Icons.multiline_chart),
+          StrongrText('Statistiques'),
+        ],
+      ),
+    );
   }
 }

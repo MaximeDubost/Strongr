@@ -66,10 +66,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     ///
     /// Debug Zone
     /// 
-    case DEBUG_ZONE_ROUTE:
-      return CupertinoPageRoute(
-        builder: (context) => DebugZone(),
-      );
+    // case DEBUG_ZONE_ROUTE:
+    //   return CupertinoPageRoute(
+    //     builder: (context) => DebugZone(),
+    //   );
 
     /// 
     /// Page non trouvée

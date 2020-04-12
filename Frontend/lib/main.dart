@@ -40,6 +40,7 @@ class MyApp extends StatelessWidget {
         accentColor: StrongrColors.greyA,
         // highlightColor: StrongrColors.greyD,
         // splashColor: StrongrColors.greyC,
+        cursorColor: StrongrColors.black,
         fontFamily: 'Futura',
       ),
       onGenerateRoute: router.generateRoute,
