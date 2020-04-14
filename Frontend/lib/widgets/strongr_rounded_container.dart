@@ -26,7 +26,6 @@ class _StrongrRoundedContainerState extends State<StrongrRoundedContainer> {
         ),
       ),
       child: FlatButton(
-        
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(25.0),
         ),

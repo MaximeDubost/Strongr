@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/strongr_colors.dart';
+import 'package:strongr/widgets/dialogs/new_exercise_from_list_dialog.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
 class ExercisesPage extends StatefulWidget {
-  final String id;
+  final int id;
 
   ExercisesPage({this.id});
 
@@ -32,8 +33,11 @@ class _ExercisesPageState extends State<ExercisesPage> {
               width: 50,
               // color: Colors.grey,
               child: TextField(
-                style: TextStyle(color: StrongrColors.black, fontFamily: 'Futura', fontSize: 18),
-                inputFormatters:[
+                style: TextStyle(
+                    color: StrongrColors.black,
+                    fontFamily: 'Futura',
+                    fontSize: 18),
+                inputFormatters: [
                   LengthLimitingTextInputFormatter(100),
                 ],
                 controller: null,
@@ -45,12 +49,9 @@ class _ExercisesPageState extends State<ExercisesPage> {
                     borderRadius: BorderRadius.circular(25),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(25),
-                    borderSide: BorderSide(
-                      color: StrongrColors.blue,
-                      width: 1.5
-                    )
-                  ),
+                      borderRadius: BorderRadius.circular(25),
+                      borderSide:
+                          BorderSide(color: StrongrColors.blue, width: 1.5)),
                   fillColor: Colors.white,
                   filled: true,
                 ),
@@ -68,21 +69,47 @@ class _ExercisesPageState extends State<ExercisesPage> {
               padding: EdgeInsets.all(5),
               height: 90,
               child: StrongrRoundedContainer(
-                content: Container(
-                  alignment: Alignment.centerLeft,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      StrongrText(
-                        "Exercice " + i.toString(), bold: true,
+                content: Stack(
+                  children: <Widget>[
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          StrongrText("Exercice " + i.toString(), bold: true),
+                          StrongrText("Muscle(s) ciblé(s)"),
+                        ],
                       ),
-                      StrongrText("Muscle(s) ciblé(s)")
-                    ],
-                  ),
+                    ),
+                    Container(
+                      alignment: Alignment.centerRight,
+                      child: Container(
+                        width: 35,
+                        height: 35,
+                        child: FloatingActionButton(
+                          heroTag: 'fab_' + i.toString(),
+                          tooltip: "Ajouter",
+                          backgroundColor: StrongrColors.blue,
+                          child: Icon(
+                            Icons.add,
+                            color: Colors.white,
+                          ),
+                          onPressed: () => showDialog(
+                              context: context,
+                              builder: (context) =>
+                                  NewExerciseFromListDialog()),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 onPressed: () {
-                  Navigator.pushNamed(context, EXERCISE_ROUTE, arguments: i);
+                  Navigator.pushNamed(
+                    context,
+                    EXERCISE_ROUTE,
+                    arguments: ExercisesPage(id: i),
+                  );
                 },
               ),
             ),

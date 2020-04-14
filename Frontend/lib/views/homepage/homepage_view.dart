@@ -44,6 +44,7 @@ class _HomepageViewState extends State<HomepageView> {
         appBar: AppBar(
           centerTitle: true,
           leading: IconButton(
+            tooltip: "Notifications",
             icon: Icon(Icons.notifications_none),
             color: Colors.white,
             onPressed: () {},
@@ -58,6 +59,7 @@ class _HomepageViewState extends State<HomepageView> {
             //     onPressed: () {},
             // ),
             PopupMenuButton<String>(
+              tooltip: "Menu",
               onSelected: (value) => {},
               itemBuilder: (BuildContext context) {
                 return popupMenuItems.map(
