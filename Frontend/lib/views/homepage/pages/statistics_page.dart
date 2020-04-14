@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
-class Statistics extends StatefulWidget {
+class StatisticsPage extends StatefulWidget {
   @override
-  _StatisticsState createState() => _StatisticsState();
+  _StatisticsPageState createState() => _StatisticsPageState();
 }
 
-class _StatisticsState extends State<Statistics> {
+class _StatisticsPageState extends State<StatisticsPage> {
   @override
   Widget build(BuildContext context) {
     return Center(

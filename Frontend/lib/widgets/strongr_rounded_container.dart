@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
-import 'package:strongr/widgets/strongr_text.dart';
 
 class StrongrRoundedContainer extends StatefulWidget {
   final Widget content;

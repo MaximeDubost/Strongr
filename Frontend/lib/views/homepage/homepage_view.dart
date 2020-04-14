@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
-import 'package:strongr/views/homepage/pages/exercises.dart';
+import 'package:strongr/views/homepage/pages/exercises_page.dart';
 import 'package:strongr/views/homepage/pages/homepage.dart';
-import 'package:strongr/views/homepage/pages/statistics.dart';
-import 'package:strongr/widgets/strongr_rounded_container.dart';
-import 'package:strongr/widgets/strongr_text.dart';
+import 'package:strongr/views/homepage/pages/statistics_page.dart';
 
 class HomepageView extends StatefulWidget {
   @override
@@ -21,9 +18,9 @@ class _HomepageViewState extends State<HomepageView> {
   void initState() {
     currentPage = 1;
     pagesList = [
-      Exercises(),
+      ExercisesPage(),
       Homepage(),
-      Statistics(),
+      StatisticsPage(),
     ];
     popupMenuItems = currentPage != 0
         ? [

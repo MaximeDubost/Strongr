@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:strongr/utils/screen_size.dart';
+import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
-class Exercises extends StatefulWidget {
+class ExercisesPage extends StatefulWidget {
+  final String id;
+
+  ExercisesPage({this.id});
+
   @override
-  _ExercisesState createState() => _ExercisesState();
+  _ExercisesPageState createState() => _ExercisesPageState();
 }
 
-class _ExercisesState extends State<Exercises> {
+class _ExercisesPageState extends State<ExercisesPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -77,7 +81,9 @@ class _ExercisesState extends State<Exercises> {
                     ],
                   ),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushNamed(context, EXERCISE_ROUTE, arguments: i);
+                },
               ),
             ),
         ],
