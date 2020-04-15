@@ -40,22 +40,23 @@ CREATE TABLE _session(
    FOREIGN KEY(id_user) REFERENCES _user(id_user)
 );
 
-CREATE TABLE _app_exercise(
+CREATE TABLE app_exercise(
    id_app_exercise SERIAL,
    name VARCHAR(255) NOT NULL,
-   id_equipment INT,
    PRIMARY KEY(id_app_exercise),
-   FOREIGN KEY(id_equipment) REFERENCES _equipment(id_equipment)
+   
 );
 
-CREATE TABLE _exercise(
+CREATE TABLE exercise(
    id_exercise SERIAL,
    id_app_exercise INT,
    id_user INT,
    name VARCHAR(255) NOT NULL,
+   id_equipment INT,
    PRIMARY KEY(id_app_exercise, id_user, id_exercise),
-   FOREIGN KEY(id_app_exercise) REFERENCES _app_exercise(id_app_exercise),
-   FOREIGN KEY(id_user) REFERENCES _user(id_user)
+   FOREIGN KEY(id_app_exercise) REFERENCES app_exercise(id_app_exercise),
+   FOREIGN KEY(id_user) REFERENCES user_(id_user),
+   FOREIGN KEY(id_equipment) REFERENCES equipment(id_equipment)
 );
 
 CREATE TABLE _set(
@@ -98,4 +99,12 @@ CREATE TABLE _targets(
    PRIMARY KEY(id_muscle, id_app_exercise),
    FOREIGN KEY(id_muscle) REFERENCES _muscle(id_muscle),
    FOREIGN KEY(id_app_exercise) REFERENCES _app_exercise(id_app_exercise)
+);
+
+CREATE TABLE _suggests(
+   id_equipment INT,
+   id_app_exercise INT,
+   PRIMARY KEY(id_equipment, id_app_exercise),
+   FOREIGN KEY(id_equipment) REFERENCES equipment(id_equipment),
+   FOREIGN KEY(id_app_exercise) REFERENCES app_exercise(id_app_exercise)
 );
