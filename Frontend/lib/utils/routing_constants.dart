@@ -14,23 +14,27 @@ const String WELCOME_ROUTE = "welcome";
 
 // Homepage
 const String HOMEPAGE_ROUTE = "homepage";
-const String GLOBAL_EXERCISES_ROUTE = "global_exercises";
-const String STATISTICS_ROUTE = "statistics";
 
-// Exercises
-const String EXERCISES_ROUTE = "exercises";
-const String EXERCISE = "exercise";
+// Exercise
+const String EXERCISE_ROUTE = "exercise";
 
-// Sessions
-const String SESSIONS_ROUTE = "sessions";
-const String SESSION = "session";
+// User Exercises
+const String USER_EXERCISES_LIST_ROUTE = "user_exercises_list";
+const String USER_EXERCISE_ROUTE = "user_exercise";
 
-// Exercises
-const String PROGRAMS_ROUTE = "programs";
-const String PROGRAM = "program";
+// User Sessions
+const String USER_SESSIONS_LIST_ROUTE = "user_sessions_list";
+const String USER_SESSION_ROUTE = "user_session";
+
+// User Programs
+const String USER_PROGRAMS_LIST_ROUTE = "user_programs_list";
+const String USER_PROGRAM_ROUTE = "user_program";
 
 // Profile
 const String PROFILE_ROUTE = "profile";
 
 // Settings
 const String SETTINGS_ROUTE = "settings";
+
+// Debug Zone
+const String DEBUG_ZONE_ROUTE = "debug_zone";

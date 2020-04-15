@@ -7,7 +7,9 @@ import 'package:strongr/views/connection/recovery_code_view.dart';
 import 'package:strongr/views/connection/reset_password_view.dart';
 import 'package:strongr/views/connection/sign_in_next_view.dart';
 import 'package:strongr/views/connection/sign_in_view.dart';
-import 'package:strongr/views/homepage_view.dart';
+import 'package:strongr/views/exercise/exercise_view.dart';
+import 'package:strongr/views/homepage/homepage_view.dart';
+import 'package:strongr/views/homepage/pages/exercises_page.dart';
 import 'package:strongr/views/unknown_view.dart';
 
 import 'routing_constants.dart';
@@ -61,6 +63,27 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return CupertinoPageRoute(
         builder: (context) => HomepageView(),
       );
+
+    ///
+    /// Exercice
+    ///
+    case EXERCISE_ROUTE:
+    ExercisesPage args = settings.arguments;
+      return CupertinoPageRoute(
+        builder: (context) => ExerciseView(id: args.id),
+      );
+
+    ///
+    /// Debug Zone
+    /// 
+    // case DEBUG_ZONE_ROUTE:
+    //   return CupertinoPageRoute(
+    //     builder: (context) => DebugZone(),
+    //   );
+
+    /// 
+    /// Page non trouvée
+    /// 
 
     default:
       return NoAnimationMaterialPageRoute(
