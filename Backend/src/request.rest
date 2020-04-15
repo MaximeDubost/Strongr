@@ -1,5 +1,5 @@
 ###
-GET http://localhost:3000/api/user/5
+GET http://localhost:3000/api/user/1
 
 
 ###
@@ -91,7 +91,7 @@ Content-Type: application/json
 
 
 ### REQUESTS SESSION
-GET http://localhost:3000/api/session/1
+GET http://localhost:3000/api/session/2
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJjaGlhcmEuYmVyYXJkaUBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImNiZXJhcmRpIiwiaWF0IjoxNTg2NjE5MDUzfQ.oqfUBj0NMrba1To3qLMEOEimuba8CxBGbdCpt_f9ZzU
 
 ### 

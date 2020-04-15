@@ -54,7 +54,7 @@ repository.getSessionsByUser = async (req) => {
 }
 
 repository.addSession = async (req) => {
-    var sqlAddSession = "INSERT INTO _session (id_user, name_session) VALUES ($1,$2)"
+    var sqlAddSession = "INSERT INTO _session (id_user, name) VALUES ($1,$2)"
     try {
         await clt.query(sqlAddSession, [req.user.id, req.body.sessionName])
         return 200
