@@ -1,3 +1,4 @@
+import AppExerciseRepository from "../repository/AppExerciseRepository"
 const { Pool } = require('pg')
 var clt = null;
 const controller = {};
@@ -22,15 +23,9 @@ pool.connect((err, client, release) => {
 /**
  * 
  */
-controller.getAllExercises = async (req, res, next) => {
-    let sqlGetAllExercises = "SELECT * FROM _exercise";
-    try {
-        var result = await clt.query(sqlGetAllExercises)
-        console.log(result.rows);
-        res.status(200).json({ data: result.rows })
-    } catch (error) {
-        console.error(error)
-    }
+controller.getAllAppExercises = async (req, res, next) => {
+    var rows = await AppExerciseRepository.getAllAppExercises()
+    res.status(200).json({ data: rows })
 }
 
 export default controller;

@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer"
 
-import userRepository from "../repository/userRepository"
+import UserRepository from "../repository/UserRepository"
 
 var clt = null;
 const controller = {};
@@ -21,7 +21,7 @@ let transport = nodemailer.createTransport({
  */
 controller.getUser = async (req, res) => {
     let body = {};
-    let user = await userRepository.getUser(req.params.id_user);
+    let user = await UserRepository.getUser(req.params.id_user);
     if (user) {
         body = {
             message: 'User found',
@@ -41,7 +41,7 @@ controller.getUser = async (req, res) => {
  */
 controller.register = async (req, res, next) => {
     try {
-        let userRegistered = await userRepository.register(req.body);
+        let userRegistered = await UserRepository.register(req.body);
         res.sendStatus(userRegistered);
     } catch (error) {
         console.error(error)
@@ -52,7 +52,7 @@ controller.register = async (req, res, next) => {
  */
 controller.checkEmail = async (req, res) => {
     try {
-        let emailChecked = await userRepository.checkEmail(req.body.email);
+        let emailChecked = await UserRepository.checkEmail(req.body.email);
         res.sendStatus(emailChecked);
     } catch (error) {
         console.error(error)
@@ -68,7 +68,7 @@ controller.checkEmail = async (req, res) => {
  */
 controller.updateUser = async (req, res) => {
     try {
-        let userUpdated = await userRepository.updateUser(req.params.id_user, req.body);
+        let userUpdated = await UserRepository.updateUser(req.params.id_user, req.body);
         res.sendStatus(userUpdated);
     } catch (error) {
         console.error(error);
@@ -79,7 +79,7 @@ controller.updateUser = async (req, res) => {
  */
 controller.deleteUser = async (req, res) => {
     try {
-        let userDeleted = await userRepository.deleteUser(req.params.id_user);
+        let userDeleted = await UserRepository.deleteUser(req.params.id_user);
         res.sendStatus(userDeleted);
     } catch (error) {
         console.error(error);
@@ -92,7 +92,7 @@ controller.deleteUser = async (req, res) => {
 controller.login = async (req, res) => {
 
     try {
-        let result = await userRepository.login(req.body);
+        let result = await UserRepository.login(req.body);
         if (result.rows.length > 0) {
             if (bcrypt.compareSync(req.body.password, result.rows[0].password)) {
                 var token = jwt.sign({
@@ -120,7 +120,7 @@ controller.logout = (req, res) => {
  */
 controller.sendCode = async (req, res) => {
     try {
-        let repositoryProcess = await userRepository.sendCode(req.body.email);
+        let repositoryProcess = await UserRepository.sendCode(req.body.email);
         if (repositoryProcess != 404) {
             const message = {
                 from: 'team.strongr@gmail.com', // Sender address
@@ -142,10 +142,10 @@ controller.sendCode = async (req, res) => {
  */
 controller.checkCode = async (req, res) => {
     try {
-        let result = await userRepository.checkCode(req.body);
+        let result = await UserRepository.checkCode(req.body);
         console.log(result);
         if (result.rows.length != 0) {
-            let deleteCodeRepo = await userRepository.deleteCode(req.body);
+            let deleteCodeRepo = await UserRepository.deleteCode(req.body);
             res.sendStatus(deleteCodeRepo);
         } else {
             res.sendStatus(401);
@@ -160,7 +160,7 @@ controller.checkCode = async (req, res) => {
  */
 controller.resetPassword = async (req, res) => {
     try {
-        await userRepository.resetPassword(req.body)
+        await UserRepository.resetPassword(req.body)
         res.sendStatus(200)
     } catch (error) {
         console.error(error)

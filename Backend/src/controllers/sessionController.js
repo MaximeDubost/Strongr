@@ -1,9 +1,9 @@
-import sessionRepository from "../repository/sessionRepository"
+import SessionRepository from "../repository/SessionRepository"
 const controller = {};
 
 controller.getSessionByUserAndSession = async (req, res) => {
     try {
-        var session = await sessionRepository.getSessionByUserAndSession(req)
+        var session = await SessionRepository.getSessionByUserAndSession(req)
         if (session === 404) {
             res.sendStatus(session)
         } else {
@@ -16,7 +16,7 @@ controller.getSessionByUserAndSession = async (req, res) => {
 
 controller.getSessionsByUser = async (req, res) => {
     try {
-        var sessions = await sessionRepository.getSessionsByUser(req)
+        var sessions = await SessionRepository.getSessionsByUser(req)
         if (sessions === 404) {
             res.sendStatus(session)
         } else {
@@ -29,7 +29,7 @@ controller.getSessionsByUser = async (req, res) => {
 
 controller.addSession = async (req, res) => {
     try {
-        var result = await sessionRepository.addSession(req)
+        var result = await SessionRepository.addSession(req)
         if (result == 501) {
             res.sendStatus(501)
         } else {
@@ -42,7 +42,7 @@ controller.addSession = async (req, res) => {
 
 controller.deleteSession = async (req, res) => {
     try {
-        var result = await sessionRepository.deleteSession(req)
+        var result = await SessionRepository.deleteSession(req)
         if (result == 501) {
             res.sendStatus(501)
         } else {
@@ -55,7 +55,7 @@ controller.deleteSession = async (req, res) => {
 
 controller.updateSession = async (req, res) => {
     try {
-        var result = await sessionRepository.updateSession(req)
+        var result = await SessionRepository.updateSession(req)
         if (result == 501) {
             res.sendStatus(501)
         } else {

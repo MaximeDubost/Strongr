@@ -100,7 +100,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiO
 
 ###
 POST http://localhost:3000/api/session
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJjaHJpc3QudWxjZUBnbWFpbC5jb20iLCJ1c2VybmFtZSI6InVsY2UzMSIsImlhdCI6MTU4NjYyMTE1NH0.eJYtYDXHkwnREu_1WPbSVHhZ49hYyAnAhApaFj2KGqs
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJjaHJpc3QudWxjZUBnbWFpbC5jb20iLCJ1c2VybmFtZSI6InVsY2UzMSIsImlhdCI6MTU4Njk0MzAyM30.rbsP0Za8igBTkSNxMMYF0hKJu5j25DC44ZE3wynOpzw
 Content-Type: application/json
 
 {
@@ -120,3 +120,6 @@ Content-Type: application/json
 {
 	"sessionName" : "TEST 2"
 }
+
+###
+GET http://localhost:3000/api/appexercises
