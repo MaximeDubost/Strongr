@@ -19,6 +19,7 @@ router.put("/resetPassword", UserController.resetPassword);
 router.post("/checkEmail", UserController.checkEmail);
 
 router.get("/appexercises", AppExerciseController.getAllAppExercises);
+router.post("/appexercises/search", AppExerciseController.searchExercise);
 
 /**  CRUD Session */
 router.get("/session/:id_session", middleware.checkAuth, SessionController.getSessionByUserAndSession)

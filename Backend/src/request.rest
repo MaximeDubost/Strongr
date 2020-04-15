@@ -123,3 +123,11 @@ Content-Type: application/json
 
 ###
 GET http://localhost:3000/api/appexercises
+
+###
+POST  http://localhost:3000/api/appexercises/search
+Content-Type: application/json
+
+{
+	"exercise_name" : "D"
+}

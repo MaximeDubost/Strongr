@@ -23,9 +23,22 @@ pool.connect((err, client, release) => {
 /**
  * 
  */
-controller.getAllAppExercises = async (req, res, next) => {
-    var rows = await AppExerciseRepository.getAllAppExercises()
-    res.status(200).json({ data: rows })
+controller.getAllAppExercises = async (req, res) => {
+    try {
+        var rows = await AppExerciseRepository.getAllAppExercises()
+        res.status(200).json({ data: rows })
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+controller.searchExercise = async (req, res) => {
+    try {
+        var rows = await AppExerciseRepository.searchAppExercise(req.body)
+        res.status(200).json({ data: rows })
+    } catch (error) {
+        console.error(error)
+    }
 }
 
 export default controller;
