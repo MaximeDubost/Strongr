@@ -17,8 +17,8 @@ router.post("/sendCode", userController.sendCode);
 router.post("/checkCode", userController.checkCode);
 router.put("/resetPassword", userController.resetPassword);
 router.post("/checkEmail", userController.checkEmail);
+
 router.get("/exercises", exerciseController.getAllExercises);
-//router.get()
 
 /**  CRUD Session */
 router.get("/session/:id_session", middleware.checkAuth, sessionController.getSessionByUserAndSession)
