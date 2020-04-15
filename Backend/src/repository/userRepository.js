@@ -49,8 +49,8 @@ repository.register = async (body) => {
         } else {
             let birth_to_datetime = new Date(body.birthdate);
 
-            let sqlRegister = "INSERT INTO _user (firstname, lastname, username, birthdate, phonenumber, email, password, signeddate) VALUES($1, $2, $3, $4, $5, $6, $7, $8)";
-            await clt.query(sqlRegister, [body.firstname, body.lastname, body.username, birth_to_datetime, body.phonenumber, body.email, bcrypt.hashSync(body.password, 10), new Date()])
+            let sqlRegister = "INSERT INTO _user (email, password, firstname, lastname, phonenumber, birthdate, username, signeddate) VALUES($1, $2, $3, $4, $5, $6, $7, $8)";
+            await clt.query(sqlRegister, [body.email, bcrypt.hashSync(body.password, 10), body.firstname, body.lastname, body.phonenumber, birth_to_datetime, body.username, new Date()])
             res = 201;
         }
         return res;
