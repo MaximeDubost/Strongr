@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:collection/collection.dart';
 
-import 'Equipment.dart';
-import 'Muscle.dart';
+import 'equipment.dart';
+import 'muscle.dart';
 
 class AppExercise {
   int id;
@@ -47,8 +47,8 @@ class AppExercise {
     return AppExercise(
       id: map['id'],
       name: map['name'],
-      muscleList: List<Muscle>.from(map['muscleList']?.map((x) => Muscle.fromMap(x))),
-      equipmentList: List<Equipment>.from(map['equipmentList']?.map((x) => Equipment.fromMap(x))),
+      muscleList: List<Muscle>.from(map['muscleList']?.map((x) => Muscle.fromMap(x))) ?? null,
+      equipmentList: List<Equipment>.from(map['equipmentList']?.map((x) => Equipment.fromMap(x))) ?? null,
     );
   }
 

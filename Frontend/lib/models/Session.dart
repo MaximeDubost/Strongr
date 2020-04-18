@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:collection/collection.dart';
 
-import 'Exercise.dart';
+import 'exercise.dart';
 
 class Session {
   int id;
