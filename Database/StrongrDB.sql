@@ -77,7 +77,7 @@ CREATE TABLE _set(
    FOREIGN KEY(id_app_exercise, id_user, id_exercise) REFERENCES _exercise(id_app_exercise, id_user, id_exercise)
 );
 
-CREATE TABLE _composes(
+CREATE TABLE _program_session(
    id_user INT,
    id_program INT,
    id_user_1 INT,
@@ -87,7 +87,7 @@ CREATE TABLE _composes(
    FOREIGN KEY(id_user_1, id_session) REFERENCES _session(id_user, id_session)
 );
 
-CREATE TABLE _comprises(
+CREATE TABLE _session_exercise(
    id_app_exercise INT,
    id_user INT,
    id_exercise INT,
@@ -98,7 +98,7 @@ CREATE TABLE _comprises(
    FOREIGN KEY(id_user_1, id_session) REFERENCES _session(id_user, id_session)
 );
 
-CREATE TABLE _targets(
+CREATE TABLE _app_exercise_muscle(
    id_muscle INT,
    id_app_exercise INT,
    PRIMARY KEY(id_muscle, id_app_exercise),
@@ -106,7 +106,7 @@ CREATE TABLE _targets(
    FOREIGN KEY(id_app_exercise) REFERENCES _app_exercise(id_app_exercise)
 );
 
-CREATE TABLE _suggests(
+CREATE TABLE _app_exercise_equipment(
    id_equipment INT,
    id_app_exercise INT,
    PRIMARY KEY(id_equipment, id_app_exercise),
