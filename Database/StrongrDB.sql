@@ -27,6 +27,8 @@ CREATE TABLE _user(
 CREATE TABLE _program(
    id_program SERIAL,
    id_user INT,
+   creation_date TIMESTAMP,
+   last_update TIMESTAMP,
    name VARCHAR(255) NOT NULL,
    PRIMARY KEY(id_user, id_program),
    FOREIGN KEY(id_user) REFERENCES _user(id_user)
@@ -36,6 +38,8 @@ CREATE TABLE _session(
    id_session SERIAL,
    id_user INT,
    name VARCHAR(255) NOT NULL,
+   creation_date TIMESTAMP,
+   last_update TIMESTAMP,
    PRIMARY KEY(id_user, id_session),
    FOREIGN KEY(id_user) REFERENCES _user(id_user)
 );
@@ -52,6 +56,8 @@ CREATE TABLE _exercise(
    id_user INT,
    name VARCHAR(255) NOT NULL,
    id_equipment INT,
+   creation_date TIMESTAMP,
+   last_update TIMESTAMP,
    PRIMARY KEY(id_app_exercise, id_user, id_exercise),
    FOREIGN KEY(id_app_exercise) REFERENCES _app_exercise(id_app_exercise),
    FOREIGN KEY(id_user) REFERENCES _user(id_user),
