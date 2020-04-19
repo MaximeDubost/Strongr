@@ -58,7 +58,7 @@ repository.getAllAppExercises = async () => {
 repository.searchAppExercise = async (body) => {
     let sqlSearchAppExercise = "SELECT ae.id_app_exercise, ae.name FROM _app_exercise ae WHERE ae.name LIKE $1"
     try {
-        var result = await clt.query(sqlSearchAppExercise, [body.exercise_name + "%"]);
+        var result = await clt.query(sqlSearchAppExercise, ["%" + body.exercise_name + "%"]);
         console.log(result.rows)
         return result.rows
     } catch (error) {

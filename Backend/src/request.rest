@@ -129,5 +129,5 @@ POST  http://localhost:3000/api/appexercises/search
 Content-Type: application/json
 
 {
-	"exercise_name" : "D"
+	"exercise_name" : "Dév"
 }
