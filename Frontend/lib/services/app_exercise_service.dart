@@ -8,7 +8,7 @@ import 'package:strongr/utils/global.dart' as global;
 import 'package:strongr/models/app_exercise.dart';
 
 class AppExerciseService {
-  /// [GET] /appexercises - TODO
+  /// [GET] /appexercises
   ///
   /// Retourne la liste des exercices de l'application.
   static Future<List<AppExercise>> getAppExercises() async {
@@ -19,8 +19,7 @@ class AppExerciseService {
     );
     if (response.statusCode == 200) {
       List<AppExercise> appExercisesList = List<AppExercise>();
-      var data = jsonDecode(response.body)["data"];
-      for(final appExercise in jsonDecode(response.body)["data"] as List)
+      for(final appExercise in jsonDecode(response.body)['data'] as List)
         appExercisesList.add(AppExercise.fromMap(appExercise));
       return appExercisesList;
     } else
