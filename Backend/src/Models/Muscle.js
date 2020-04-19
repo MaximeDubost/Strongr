@@ -1,7 +1,7 @@
 class Muscle {
     constructor(id, name) {
-        this.id_muscle = id
-        this.name_muscle = name
+        this.id = id
+        this.name = name
     }
 }
 
