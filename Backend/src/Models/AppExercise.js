@@ -1,13 +1,13 @@
 class AppExercise {
     constructor(id, name, muscleList, equipmentList) {
-        this.id = id
-        this.name = name
+        this.id_app_exercise = id
+        this.name_app_exercise = name
         this.muscleList = muscleList
         this.equipmentList = equipmentList
     }
 
     static class(obj) {
-        console.log(obj)
+        //console.log(obj)
         return new AppExercise(obj.id, obj.name, obj.muscleList, obj.equipmentList);
     }
 

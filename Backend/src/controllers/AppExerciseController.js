@@ -28,4 +28,10 @@ controller.getAllAppExercises = async (req, res, next) => {
     res.status(200).json({ data: rows })
 }
 
+controller.getDetailAppExercise = async (req, res, next) => {
+    var rows = await AppExerciseRepository.getDetailAppExercise(req.params)
+    res.status(200).json({ data: rows })
+}
+
+
 export default controller;
