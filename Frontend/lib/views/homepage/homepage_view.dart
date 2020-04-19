@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:strongr/utils/strongr_colors.dart';
-import 'package:strongr/views/homepage/pages/exercises_page.dart';
+import 'package:strongr/views/homepage/pages/app_exercises_page.dart';
 import 'package:strongr/views/homepage/pages/homepage.dart';
 import 'package:strongr/views/homepage/pages/statistics_page.dart';
 

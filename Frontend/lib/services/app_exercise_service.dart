@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
@@ -12,17 +11,21 @@ class AppExerciseService {
   ///
   /// Retourne la liste des exercices de l'application.
   static Future<List<AppExercise>> getAppExercises() async {
-    Response response = await http.get(
-      Uri.encodeFull(
-        global.SERVER_URL + '/appexercises',
-      ),
-    );
-    if (response.statusCode == 200) {
+    try {
+      Response response = await http.get(
+        Uri.encodeFull(
+          global.SERVER_URL + '/appexercises',
+        ),
+      );
       List<AppExercise> appExercisesList = List<AppExercise>();
       for(final appExercise in jsonDecode(response.body)['data'] as List)
         appExercisesList.add(AppExercise.fromMap(appExercise));
       return appExercisesList;
-    } else
-      throw HttpException('');
+    }
+    catch (e)
+    {
+      return [];
+    }
+    // return [];
   }
 }

@@ -38,7 +38,8 @@ class _ExercisesPageState extends State<ExercisesPage> {
             margin: EdgeInsets.only(top: 20, bottom: 20),
             padding: EdgeInsets.only(left: 10, right: 10),
             height: 60,
-            color: Colors.transparent,
+            width: ScreenSize.width(context),
+            // color: Colors.blue,
             child: Container(
               alignment: Alignment.center,
               height: 50,
@@ -61,9 +62,10 @@ class _ExercisesPageState extends State<ExercisesPage> {
                     borderRadius: BorderRadius.circular(25),
                   ),
                   focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(25),
-                      borderSide:
-                          BorderSide(color: StrongrColors.blue, width: 1.5)),
+                    borderRadius: BorderRadius.circular(25),
+                    borderSide:
+                        BorderSide(color: StrongrColors.blue, width: 1.5),
+                  ),
                   fillColor: Colors.white,
                   filled: true,
                 ),
@@ -73,9 +75,10 @@ class _ExercisesPageState extends State<ExercisesPage> {
           Container(
             margin: EdgeInsets.only(bottom: 10, left: 100, right: 100),
             height: 1,
-            width: 100,
+            width: ScreenSize.width(context) / 2,
             color: Colors.grey[350],
           ),
+
           FutureBuilder(
             future: futureAppExercisesList,
             builder: (context, snapshot) {
@@ -83,6 +86,16 @@ class _ExercisesPageState extends State<ExercisesPage> {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
+                    snapshot.data.length != 0
+                        ? SizedBox()
+                        : Container(
+                            alignment: Alignment.center,
+                            height: ScreenSize.height(context) / 1.75,
+                            child: StrongrText(
+                              "Aucun élément à afficher",
+                              color: Colors.grey,
+                            ),
+                          ),
                     for (final item in snapshot.data)
                       Container(
                         padding: EdgeInsets.all(5),
@@ -157,7 +170,7 @@ class _ExercisesPageState extends State<ExercisesPage> {
               } else
                 return Container(
                   alignment: Alignment.center,
-                  height: 100,
+                  height: ScreenSize.height(context) / 1.75,
                   child: CircularProgressIndicator(
                     valueColor:
                         AlwaysStoppedAnimation<Color>(StrongrColors.blue),
@@ -165,55 +178,6 @@ class _ExercisesPageState extends State<ExercisesPage> {
                 );
             },
           ),
-          // for (int i = 1; i <= 10; i++)
-          //   Container(
-          //     padding: EdgeInsets.all(5),
-          //     height: 90,
-          //     child: StrongrRoundedContainer(
-          //       content: Stack(
-          //         children: <Widget>[
-          //           Container(
-          //             alignment: Alignment.centerLeft,
-          //             child: Column(
-          //               crossAxisAlignment: CrossAxisAlignment.start,
-          //               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          //               children: <Widget>[
-          //                 StrongrText("Exercice " + i.toString(), bold: true),
-          //                 StrongrText("Muscle(s) ciblé(s)"),
-          //               ],
-          //             ),
-          //           ),
-          //           Container(
-          //             alignment: Alignment.centerRight,
-          //             child: Container(
-          //               width: 35,
-          //               height: 35,
-          //               child: FloatingActionButton(
-          //                 heroTag: 'fab_' + i.toString(),
-          //                 tooltip: "Ajouter",
-          //                 backgroundColor: StrongrColors.blue,
-          //                 child: Icon(
-          //                   Icons.add,
-          //                   color: Colors.white,
-          //                 ),
-          //                 onPressed: () => showDialog(
-          //                     context: context,
-          //                     builder: (context) =>
-          //                         NewExerciseFromListDialog()),
-          //               ),
-          //             ),
-          //           ),
-          //         ],
-          //       ),
-          //       onPressed: () {
-          //         Navigator.pushNamed(
-          //           context,
-          //           EXERCISE_ROUTE,
-          //           arguments: ExercisesPage(id: i),
-          //         );
-          //       },
-          //     ),
-          //   ),
         ],
       ),
     );

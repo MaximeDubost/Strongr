@@ -7,9 +7,9 @@ import 'package:strongr/views/connection/recovery_code_view.dart';
 import 'package:strongr/views/connection/reset_password_view.dart';
 import 'package:strongr/views/connection/sign_in_next_view.dart';
 import 'package:strongr/views/connection/sign_in_view.dart';
-import 'package:strongr/views/exercise/exercise_view.dart';
+import 'package:strongr/views/app_exercise/app_exercise_view.dart';
 import 'package:strongr/views/homepage/homepage_view.dart';
-import 'package:strongr/views/homepage/pages/exercises_page.dart';
+import 'package:strongr/views/homepage/pages/app_exercises_page.dart';
 import 'package:strongr/views/unknown_view.dart';
 
 import 'routing_constants.dart';
