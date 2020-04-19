@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:collection/collection.dart';
 
-import 'Session.dart';
+import 'session.dart';
 
 class Program {
   int id;

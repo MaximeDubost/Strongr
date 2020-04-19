@@ -15,7 +15,6 @@ import 'package:strongr/views/unknown_view.dart';
 import 'routing_constants.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
-
   switch (settings.name) {
 
     ///
@@ -30,7 +29,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case SIGN_IN_NEXT_ROUTE:
       SignInView args = settings.arguments;
       return CupertinoPageRoute(
-        builder: (context) => SignInNextView(email: args.email, password: args.password),
+        builder: (context) =>
+            SignInNextView(email: args.email, password: args.password),
       );
 
     case LOG_IN_ROUTE:
@@ -50,7 +50,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       );
 
     case NEW_PASSWORD_ROUTE:
-    RecoveryCodeView args = settings.arguments;
+      RecoveryCodeView args = settings.arguments;
       return CupertinoPageRoute(
         builder: (context) => NewPasswordView(email: args.email),
       );
@@ -68,22 +68,25 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     /// Exercice
     ///
     case EXERCISE_ROUTE:
-    ExercisesPage args = settings.arguments;
+      ExercisesPage args = settings.arguments;
       return CupertinoPageRoute(
-        builder: (context) => ExerciseView(id: args.id),
+        builder: (context) => ExerciseView(
+          id: args.id,
+          name: args.name,
+        ),
       );
 
     ///
     /// Debug Zone
-    /// 
+    ///
     // case DEBUG_ZONE_ROUTE:
     //   return CupertinoPageRoute(
     //     builder: (context) => DebugZone(),
     //   );
 
-    /// 
+    ///
     /// Page non trouvée
-    /// 
+    ///
 
     default:
       return NoAnimationMaterialPageRoute(

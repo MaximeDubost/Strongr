@@ -6,9 +6,10 @@ import 'package:strongr/widgets/strongr_text.dart';
 
 class ExerciseView extends StatefulWidget {
   final int id;
+  final String name;
   final bool isBelonged;
 
-  ExerciseView({this.id, this.isBelonged = false});
+  ExerciseView({this.id, this.name, this.isBelonged = false});
 
   @override
   _ExerciseViewState createState() => _ExerciseViewState();
@@ -20,7 +21,7 @@ class _ExerciseViewState extends State<ExerciseView> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text("Exercice " + widget.id.toString()),
+        title: Text(widget.name),
       ),
       body: Container(
         padding: EdgeInsets.all(10),

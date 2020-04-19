@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:collection/collection.dart';
 
-import 'Set.dart';
+import 'set.dart';
 
 class Exercise {
   int id;

@@ -27,7 +27,7 @@ pool.connect((err, client, release) => {
  */
 repository.getAllAppExercises = async () => {
     var appExList = []
-    let sqlGetAllAppExercises = "SELECT ae.id_app_exercise, ae.name as exercise_name, mu.id_muscle, mu.name as muscle_name FROM _app_exercise ae JOIN _targets ta ON ae.id_app_exercise = ta.id_app_exercise JOIN _muscle mu ON ta.id_muscle = mu.id_muscle"
+    let sqlGetAllAppExercises = "SELECT ae.id_app_exercise, ae.name as exercise_name, mu.id_muscle, mu.name as muscle_name FROM _app_exercise ae JOIN _app_exercise_muscle ta ON ae.id_app_exercise = ta.id_app_exercise JOIN _muscle mu ON ta.id_muscle = mu.id_muscle"
     try {
         var result = await clt.query(sqlGetAllAppExercises);
         console.log(result.rows)
@@ -38,12 +38,12 @@ repository.getAllAppExercises = async () => {
             result.rows.map((row) => {
                 if (i === row.id_app_exercise) {
                     if (!exists) {
-                        appExList.push(new AppExercise(row.id_app_exercise, row.exercise_name, []))
+                        appExList.push(new AppExercise(row.id_app_exercise, row.exercise_name, [], []))
                         exists = true
                         k++
                     }
                     //console.log("Avant push muscle ", appExList[j])
-                    AppExerciseModel.class(appExList[k]).muscleList.push(new Muscle(row.id_muscle, row.muscle_name))
+                    AppExercise.class(appExList[k]).muscleList.push(new Muscle(row.id_muscle, row.muscle_name))
                     //console.log("Après push muscle ", appExList[j])
                     j++
                 }

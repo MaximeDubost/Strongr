@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:strongr/models/app_exercise.dart';
+import 'package:strongr/services/app_exercise_service.dart';
 import 'package:strongr/utils/routing_constants.dart';
+import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/widgets/dialogs/new_exercise_from_list_dialog.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
@@ -8,14 +11,23 @@ import 'package:strongr/widgets/strongr_text.dart';
 
 class ExercisesPage extends StatefulWidget {
   final int id;
+  final String name;
 
-  ExercisesPage({this.id});
+  ExercisesPage({this.id, this.name});
 
   @override
   _ExercisesPageState createState() => _ExercisesPageState();
 }
 
 class _ExercisesPageState extends State<ExercisesPage> {
+  Future<List<AppExercise>> futureAppExercisesList;
+
+  @override
+  void initState() {
+    futureAppExercisesList = AppExerciseService.getAppExercises();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -64,55 +76,144 @@ class _ExercisesPageState extends State<ExercisesPage> {
             width: 100,
             color: Colors.grey[350],
           ),
-          for (int i = 1; i <= 10; i++)
-            Container(
-              padding: EdgeInsets.all(5),
-              height: 90,
-              child: StrongrRoundedContainer(
-                content: Stack(
+          FutureBuilder(
+            future: futureAppExercisesList,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          StrongrText("Exercice " + i.toString(), bold: true),
-                          StrongrText("Muscle(s) ciblé(s)"),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      alignment: Alignment.centerRight,
-                      child: Container(
-                        width: 35,
-                        height: 35,
-                        child: FloatingActionButton(
-                          heroTag: 'fab_' + i.toString(),
-                          tooltip: "Ajouter",
-                          backgroundColor: StrongrColors.blue,
-                          child: Icon(
-                            Icons.add,
-                            color: Colors.white,
+                    for (final item in snapshot.data)
+                      Container(
+                        padding: EdgeInsets.all(5),
+                        height: 90,
+                        child: StrongrRoundedContainer(
+                          width: ScreenSize.width(context),
+                          content: Stack(
+                            children: <Widget>[
+                              Container(
+                                alignment: Alignment.centerLeft,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: <Widget>[
+                                    StrongrText(
+                                      snapshot.data[snapshot.data.indexOf(item)]
+                                          .name,
+                                      textAlign: TextAlign.start,
+                                      bold: true,
+                                    ),
+                                    StrongrText(
+                                      snapshot.data[snapshot.data.indexOf(item)]
+                                          .muscleList[0].name,
+                                      textAlign: TextAlign.start,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                alignment: Alignment.centerRight,
+                                child: Container(
+                                  width: 35,
+                                  height: 35,
+                                  child: FloatingActionButton(
+                                    elevation: 0,
+                                    heroTag: 'fab_' +
+                                        snapshot.data.indexOf(item).toString(),
+                                    tooltip: "Ajouter",
+                                    backgroundColor: StrongrColors.blue,
+                                    child: Icon(
+                                      Icons.add,
+                                      color: Colors.white,
+                                    ),
+                                    onPressed: () => showDialog(
+                                        context: context,
+                                        builder: (context) =>
+                                            NewExerciseFromListDialog()),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                          onPressed: () => showDialog(
-                              context: context,
-                              builder: (context) =>
-                                  NewExerciseFromListDialog()),
+                          onPressed: () {
+                            Navigator.pushNamed(
+                              context,
+                              EXERCISE_ROUTE,
+                              arguments: ExercisesPage(
+                                id: snapshot
+                                    .data[snapshot.data.indexOf(item)].id,
+                                name: snapshot
+                                    .data[snapshot.data.indexOf(item)].name,
+                              ),
+                            );
+                          },
                         ),
                       ),
-                    ),
                   ],
-                ),
-                onPressed: () {
-                  Navigator.pushNamed(
-                    context,
-                    EXERCISE_ROUTE,
-                    arguments: ExercisesPage(id: i),
-                  );
-                },
-              ),
-            ),
+                );
+              } else if (snapshot.hasError) {
+                return Text(snapshot.error, textAlign: TextAlign.center);
+              } else
+                return Container(
+                  alignment: Alignment.center,
+                  height: 100,
+                  child: CircularProgressIndicator(
+                    valueColor:
+                        AlwaysStoppedAnimation<Color>(StrongrColors.blue),
+                  ),
+                );
+            },
+          ),
+          // for (int i = 1; i <= 10; i++)
+          //   Container(
+          //     padding: EdgeInsets.all(5),
+          //     height: 90,
+          //     child: StrongrRoundedContainer(
+          //       content: Stack(
+          //         children: <Widget>[
+          //           Container(
+          //             alignment: Alignment.centerLeft,
+          //             child: Column(
+          //               crossAxisAlignment: CrossAxisAlignment.start,
+          //               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          //               children: <Widget>[
+          //                 StrongrText("Exercice " + i.toString(), bold: true),
+          //                 StrongrText("Muscle(s) ciblé(s)"),
+          //               ],
+          //             ),
+          //           ),
+          //           Container(
+          //             alignment: Alignment.centerRight,
+          //             child: Container(
+          //               width: 35,
+          //               height: 35,
+          //               child: FloatingActionButton(
+          //                 heroTag: 'fab_' + i.toString(),
+          //                 tooltip: "Ajouter",
+          //                 backgroundColor: StrongrColors.blue,
+          //                 child: Icon(
+          //                   Icons.add,
+          //                   color: Colors.white,
+          //                 ),
+          //                 onPressed: () => showDialog(
+          //                     context: context,
+          //                     builder: (context) =>
+          //                         NewExerciseFromListDialog()),
+          //               ),
+          //             ),
+          //           ),
+          //         ],
+          //       ),
+          //       onPressed: () {
+          //         Navigator.pushNamed(
+          //           context,
+          //           EXERCISE_ROUTE,
+          //           arguments: ExercisesPage(id: i),
+          //         );
+          //       },
+          //     ),
+          //   ),
         ],
       ),
     );
