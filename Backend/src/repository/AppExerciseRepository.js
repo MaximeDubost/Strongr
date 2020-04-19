@@ -22,9 +22,6 @@ pool.connect((err, client, release) => {
     }
 });
 
-/**
- * foreach row 
- */
 repository.getAllAppExercises = async () => {
     var appExList = []
     let sqlGetAllAppExercises = "SELECT ae.id_app_exercise, ae.name as exercise_name, mu.id_muscle, mu.name as muscle_name FROM _app_exercise ae JOIN _app_exercise_muscle ta ON ae.id_app_exercise = ta.id_app_exercise JOIN _muscle mu ON ta.id_muscle = mu.id_muscle"
@@ -54,6 +51,17 @@ repository.getAllAppExercises = async () => {
         return appExList;
     }
     catch (error) {
+        console.error(error)
+    }
+}
+
+repository.searchAppExercise = async (body) => {
+    let sqlSearchAppExercise = "SELECT ae.id_app_exercise, ae.name FROM _app_exercise ae WHERE ae.name LIKE $1"
+    try {
+        var result = await clt.query(sqlSearchAppExercise, ["%" + body.exercise_name + "%"]);
+        console.log(result.rows)
+        return result.rows
+    } catch (error) {
         console.error(error)
     }
 }
