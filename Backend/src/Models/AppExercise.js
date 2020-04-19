@@ -7,7 +7,7 @@ class AppExercise {
     }
 
     static class(obj) {
-        console.log(obj)
+        //console.log(obj)
         return new AppExercise(obj.id, obj.name, obj.muscleList, obj.equipmentList);
     }
 
