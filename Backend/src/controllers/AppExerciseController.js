@@ -41,4 +41,9 @@ controller.searchExercise = async (req, res) => {
     }
 }
 
+controller.getDetailAppExercise = async (req, res, next) => {
+    var rows = await AppExerciseRepository.getDetailAppExercise(req.params)
+    res.status(200).json(rows)
+}
+
 export default controller;

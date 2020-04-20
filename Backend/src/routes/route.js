@@ -20,6 +20,7 @@ router.post("/checkEmail", UserController.checkEmail);
 
 router.get("/appexercises", AppExerciseController.getAllAppExercises);
 router.post("/appexercises/search", AppExerciseController.searchExercise);
+router.get("/appexercise/:id_app_exercise", AppExerciseController.getDetailAppExercise);
 
 /**  CRUD Session */
 router.get("/session/:id_session", middleware.checkAuth, SessionController.getSessionByUserAndSession)

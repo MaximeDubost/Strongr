@@ -1,7 +1,7 @@
 class Equipment {
-    constructor(id_equipment, name_equipment) {
-        this.id_equipment = id_equipment
-        this.name_equipment = name_equipment
+    constructor(id, name) {
+        this.id = id
+        this.name = name
     }
 }
 
