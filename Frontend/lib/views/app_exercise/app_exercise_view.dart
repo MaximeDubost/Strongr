@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:strongr/models/app_exercise.dart';
+import 'package:strongr/services/app_exercise_service.dart';
+import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/widgets/dialogs/new_exercise_from_list_dialog.dart';
 import 'package:strongr/widgets/strongr_text.dart';
@@ -16,6 +19,14 @@ class ExerciseView extends StatefulWidget {
 }
 
 class _ExerciseViewState extends State<ExerciseView> {
+  Future<AppExercise> futureAppExercise;
+
+  @override
+  void initState() {
+    futureAppExercise = AppExerciseService.getAppExercise(id: widget.id);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,12 +35,104 @@ class _ExerciseViewState extends State<ExerciseView> {
         title: Text(widget.name),
       ),
       body: Container(
-        padding: EdgeInsets.all(10),
-        child: Center(
-            child: StrongrText(
-          "Informations exercice",
-          color: Colors.grey,
-        )),
+        padding: EdgeInsets.all(20),
+        child: FutureBuilder(
+          future: futureAppExercise,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return Container(
+                // color: Colors.red,
+                child: snapshot.data.id != null
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Center(
+                            child: StrongrText(
+                              snapshot.data.muscleList.length <= 1
+                                  ? "Muscle ciblé"
+                                  : "Muscles ciblés",
+                              size: 22,
+                              bold: true,
+                              textAlign: TextAlign.start,
+                            ),
+                          ),
+                          Divider(
+                            color: Colors.grey[350],
+                            thickness: 1,
+                            indent: ScreenSize.width(context) / 4,
+                            endIndent: ScreenSize.width(context) / 4,
+                          ),
+                          SizedBox(height: 10),
+                          snapshot.data.muscleList.length == 0
+                              ? Center(
+                                  child: StrongrText(
+                                    "Aucun élément à afficher",
+                                    color: Colors.grey,
+                                  ),
+                                )
+                              : SizedBox(),
+                          for (final item in snapshot.data.muscleList)
+                            Column(
+                              children: <Widget>[
+                                StrongrText("• " + item.name),
+                                SizedBox(height: 10),
+                              ],
+                            ),
+                          SizedBox(height: 20),
+                          Center(
+                            child: StrongrText(
+                              snapshot.data.equipmentList.length <= 1
+                                  ? "Équipement associé"
+                                  : "Équipements associés",
+                              size: 22,
+                              bold: true,
+                              textAlign: TextAlign.start,
+                            ),
+                          ),
+                          Divider(
+                            color: Colors.grey[350],
+                            thickness: 1,
+                            indent: ScreenSize.width(context) / 4,
+                            endIndent: ScreenSize.width(context) / 4,
+                          ),
+                          SizedBox(height: 10),
+                          snapshot.data.equipmentList.length == 0
+                              ? Center(
+                                  child: StrongrText(
+                                    "Aucun",
+                                    color: Colors.grey,
+                                  ),
+                                )
+                              : SizedBox(),
+                          for (final item in snapshot.data.equipmentList)
+                            Column(
+                              children: <Widget>[
+                                // StrongrText(item.id.toString()),
+                                StrongrText("• " + item.name),
+                                SizedBox(height: 5),
+                              ],
+                            )
+                        ],
+                      )
+                    : Center(
+                        child: StrongrText(
+                          "Aucune donnée existante concernant cet exercice",
+                          color: Colors.grey,
+                        ),
+                      ),
+              );
+            } else if (snapshot.hasError) {
+              return Text(snapshot.error, textAlign: TextAlign.center);
+            } else
+              return Container(
+                alignment: Alignment.center,
+                height: ScreenSize.height(context) / 1.25,
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(StrongrColors.blue),
+                ),
+              );
+          },
+        ),
       ),
       floatingActionButton: !widget.isBelonged
           ? FloatingActionButton.extended(
@@ -39,7 +142,9 @@ class _ExerciseViewState extends State<ExerciseView> {
                 color: Colors.white,
               ),
               backgroundColor: StrongrColors.blue,
-              onPressed: () => showDialog(context: context, builder: (context) => NewExerciseFromListDialog()),
+              onPressed: () => showDialog(
+                  context: context,
+                  builder: (context) => NewExerciseFromListDialog()),
               label: StrongrText(
                 "Ajouter",
                 color: Colors.white,

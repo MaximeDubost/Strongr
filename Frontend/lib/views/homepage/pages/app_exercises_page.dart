@@ -28,6 +28,16 @@ class _ExercisesPageState extends State<ExercisesPage> {
     super.initState();
   }
 
+  String displayMuscleListToString(List muscleList) {
+    String result = "";
+    for(final item in muscleList) {
+      result += item.name;
+      if(muscleList.indexOf(item) != muscleList.length - 1)
+        result += ", ";
+    }
+    return result;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -35,7 +45,7 @@ class _ExercisesPageState extends State<ExercisesPage> {
         physics: BouncingScrollPhysics(),
         children: <Widget>[
           Container(
-            margin: EdgeInsets.only(top: 20, bottom: 20),
+            margin: EdgeInsets.only(top: 20, bottom: 5),
             padding: EdgeInsets.only(left: 10, right: 10),
             height: 60,
             width: ScreenSize.width(context),
@@ -72,13 +82,12 @@ class _ExercisesPageState extends State<ExercisesPage> {
               ),
             ),
           ),
-          Container(
-            margin: EdgeInsets.only(bottom: 10, left: 100, right: 100),
-            height: 1,
-            width: ScreenSize.width(context) / 2,
+          Divider(
             color: Colors.grey[350],
+            thickness: 1,
+            indent: ScreenSize.width(context) / 4,
+            endIndent: ScreenSize.width(context) / 4,
           ),
-
           FutureBuilder(
             future: futureAppExercisesList,
             builder: (context, snapshot) {
@@ -118,8 +127,9 @@ class _ExercisesPageState extends State<ExercisesPage> {
                                       bold: true,
                                     ),
                                     StrongrText(
-                                      snapshot.data[snapshot.data.indexOf(item)]
-                                          .muscleList[0].name,
+                                      // snapshot.data[snapshot.data.indexOf(item)]
+                                      //     .muscleList[0].name,
+                                      displayMuscleListToString(snapshot.data[snapshot.data.indexOf(item)].muscleList),
                                       textAlign: TextAlign.start,
                                     ),
                                   ],
@@ -133,7 +143,7 @@ class _ExercisesPageState extends State<ExercisesPage> {
                                   child: FloatingActionButton(
                                     elevation: 0,
                                     heroTag: 'fab_' +
-                                        snapshot.data.indexOf(item).toString(),
+                                        (snapshot.data.indexOf(item)+1).toString(),
                                     tooltip: "Ajouter",
                                     backgroundColor: StrongrColors.blue,
                                     child: Icon(
@@ -150,6 +160,7 @@ class _ExercisesPageState extends State<ExercisesPage> {
                             ],
                           ),
                           onPressed: () {
+                            FocusScope.of(context).unfocus();
                             Navigator.pushNamed(
                               context,
                               EXERCISE_ROUTE,

@@ -54,7 +54,7 @@ class AppExercise {
 
   String toJson() => json.encode(toMap());
 
-  static AppExercise fromJson(String source) => fromMap(json.decode(source));
+  static AppExercise fromJson(String source) => fromMap(json.decode(source)[0]);
 
   @override
   String toString() {

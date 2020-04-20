@@ -28,14 +28,24 @@ pool.connect((err, client, release) => {
  */
 repository.getAllAppExercises = async () => {
     var appExList = []
-    let sqlGetAllAppExercises = "SELECT ae.id_app_exercise, ae.name as exercise_name, mu.id_muscle, mu.name as muscle_name FROM _app_exercise ae JOIN _app_exercise_muscle ta ON ae.id_app_exercise = ta.id_app_exercise JOIN _muscle mu ON ta.id_muscle = mu.id_muscle"
+    let sqlGetAllAppExercises = `
+    SELECT ae.id_app_exercise, ae.name as exercise_name, mu.id_muscle, mu.name as muscle_name
+    FROM _app_exercise ae
+    JOIN _app_exercise_muscle ta ON ae.id_app_exercise = ta.id_app_exercise
+    JOIN _muscle mu ON ta.id_muscle = mu.id_muscle
+    ORDER BY id_app_exercise
+    `
     try {
         var result = await clt.query(sqlGetAllAppExercises);
-        console.log(result.rows)
+        // console.log(result.rows)
         var exists = false
         var j = 0
         var k = -1
+        console.log()
+        console.log("ID du dernier élément : " + result.rows[result.rows.length - 1].id_app_exercise)
+        console.log()
         for (var i = 1; i <= result.rows[result.rows.length - 1].id_app_exercise; i++) {
+            console.log("(i) Tour de boucle : " + i)
             result.rows.map((row) => {
                 if (i === row.id_app_exercise) {
                     if (!exists) {
@@ -43,15 +53,19 @@ repository.getAllAppExercises = async () => {
                         exists = true
                         k++
                     }
-                    //console.log("Avant push muscle ", appExList[j])
+                    // console.log("Avant push muscle ", appExList[k])
                     AppExercise.class(appExList[k]).muscleList.push(new Muscle(row.id_muscle, row.muscle_name))
-                    //console.log("Après push muscle ", appExList[j])
+                    // console.log("Après push muscle ", appExList[k])
                     j++
+                    console.log("(j) Nb Muscle(s) ajouté(s) à cet AE : " + j)
+                    console.log("(k) Indice dans appExList : " + k)
                 }
             })
             exists = false
             j = 0
+            console.log()
         }
+        // console.log(appExList)
         return appExList;
     }
     catch (error) {

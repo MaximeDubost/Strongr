@@ -23,16 +23,17 @@ class NewExerciseFromListDialog extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
                 Container(
-                  height: 2,
+                  height: 1,
                   width: ScreenSize.width(context) / 4,
                   color: StrongrColors.greyA,
                 ),
                 StrongrText(
                   "OU",
+                  bold: true,
                   size: 16,
                 ),
                 Container(
-                  height: 2,
+                  height: 1,
                   width: ScreenSize.width(context) / 4,
                   color: StrongrColors.greyA,
                 ),
