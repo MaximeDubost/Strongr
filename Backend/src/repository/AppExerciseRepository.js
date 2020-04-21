@@ -38,11 +38,11 @@ repository.getAllAppExercises = async () => {
         var exists = false
         var j = 0
         var k = -1
-        console.log()
-        console.log("ID du dernier élément : " + result.rows[result.rows.length - 1].id_app_exercise)
-        console.log()
+        // console.log()
+        // console.log("ID du dernier élément : " + result.rows[result.rows.length - 1].id_app_exercise)
+        // console.log()
         for (var i = 1; i <= result.rows[result.rows.length - 1].id_app_exercise; i++) {
-            console.log("(i) Tour de boucle : " + i)
+            // console.log("(i) Tour de boucle : " + i)
             result.rows.map((row) => {
                 if (i === row.id_app_exercise) {
                     if (!exists) {
@@ -54,13 +54,13 @@ repository.getAllAppExercises = async () => {
                     AppExercise.class(appExList[k]).muscleList.push(new Muscle(row.id_muscle, row.muscle_name))
                     // console.log("Après push muscle ", appExList[k])
                     j++
-                    console.log("(j) Nb Muscle(s) ajouté(s) à cet AE : " + j)
-                    console.log("(k) Indice dans appExList : " + k)
+                    // console.log("(j) Nb Muscle(s) ajouté(s) à cet AE : " + j)
+                    // console.log("(k) Indice dans appExList : " + k)
                 }
             })
             exists = false
             j = 0
-            console.log()
+            // console.log()
         }
         // console.log(appExList)
         return appExList;
@@ -82,7 +82,7 @@ repository.getDetailAppExercise = async (body) => {
     `
     try {
         var result = await clt.query(getDetailAppExercise, [body.id_app_exercise]);
-        console.log(result.rows)
+        // console.log(result.rows)
         var exists = false
         var j = 0
         var k = -1
@@ -94,18 +94,18 @@ repository.getDetailAppExercise = async (body) => {
                         exists = true
                         k++
                     }
-                    console.log("Avant push muscle ", appExList[j])
+                    // console.log("Avant push muscle ", appExList[j])
                     var muscleExist = AppExercise.class(appExList[k]).muscleList.filter(muscle => muscle.id === row.id_muscle)
-                    console.log(muscleExist.length)
+                    // console.log(muscleExist.length)
                     if (muscleExist.length === 0) {
                         AppExercise.class(appExList[k]).muscleList.push(new Muscle(row.id_muscle, row.muscle_name))
                     }
                     var equipmentExist = AppExercise.class(appExList[k]).equipmentList.filter(equipment => equipment.id === row.id_equipment)
-                    console.log(equipmentExist.length)
+                    // console.log(equipmentExist.length)
                     if (equipmentExist.length === 0) {
                         AppExercise.class(appExList[k]).equipmentList.push(new Equipment(row.id_equipment, row.equipment_name))
                     }
-                    console.log("Après push muscle ", appExList[j])
+                    // console.log("Après push muscle ", appExList[j])
                     j++
                 }
             })
@@ -118,19 +118,5 @@ repository.getDetailAppExercise = async (body) => {
         console.error(error)
     }
 }
-
-repository.searchAppExercise = async (body) => {
-    let sqlSearchAppExercise = "SELECT ae.id_app_exercise, ae.name FROM _app_exercise ae WHERE ae.name LIKE $1"
-    try {
-        var result = await clt.query(sqlSearchAppExercise, ["%" + body.exercise_name + "%"]);
-        console.log(result.rows)
-        return result.rows
-    } catch (error) {
-        console.error(error)
-    }
-}
-
-
-
 
 export default repository;

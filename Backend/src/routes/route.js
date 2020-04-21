@@ -18,8 +18,8 @@ router.post("/checkCode", UserController.checkCode);
 router.put("/resetPassword", UserController.resetPassword);
 router.post("/checkEmail", UserController.checkEmail);
 
+/** Read only AppExercise */
 router.get("/appexercises", AppExerciseController.getAllAppExercises);
-router.post("/appexercises/search", AppExerciseController.searchExercise);
 router.get("/appexercise/:id_app_exercise", AppExerciseController.getDetailAppExercise);
 
 /**  CRUD Session */
@@ -30,4 +30,3 @@ router.delete("/session/:id_session", middleware.checkAuth, SessionController.de
 router.put("/session/:id_session", middleware.checkAuth, SessionController.updateSession)
 
 export default router;
-
