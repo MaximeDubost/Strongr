@@ -49,9 +49,11 @@ class _HomepageViewState extends State<HomepageView> {
             color: Colors.white,
             onPressed: () {},
           ),
-          title: Text(currentPage == 1
-              ? "Strongr"
-              : currentPage == 0 ? "Exercices" : "Statistiques"),
+          title: Text(
+            currentPage == 1
+                ? "Strongr"
+                : currentPage == 0 ? "Exercices" : "Statistiques",
+          ),
           actions: <Widget>[
             // IconButton(
             //     icon: Icon(Icons.more_vert),
@@ -60,7 +62,7 @@ class _HomepageViewState extends State<HomepageView> {
             // ),
             PopupMenuButton<String>(
               tooltip: "Menu",
-              onSelected: (value) => {},
+              onSelected: (value) {},
               itemBuilder: (BuildContext context) {
                 return popupMenuItems.map(
                   (String choice) {
@@ -97,7 +99,8 @@ class _HomepageViewState extends State<HomepageView> {
           },
           items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(
-              icon: Icon(Icons.fitness_center, color: Colors.white54, size: 22.0),
+              icon:
+                  Icon(Icons.fitness_center, color: Colors.white54, size: 22.0),
               activeIcon:
                   Icon(Icons.fitness_center, color: Colors.white, size: 26.0),
               title: Text(
@@ -116,8 +119,8 @@ class _HomepageViewState extends State<HomepageView> {
               ),
             ),
             BottomNavigationBarItem(
-              icon:
-                  Icon(Icons.multiline_chart, color: Colors.white54, size: 22.0),
+              icon: Icon(Icons.multiline_chart,
+                  color: Colors.white54, size: 22.0),
               activeIcon:
                   Icon(Icons.multiline_chart, color: Colors.white, size: 26.0),
               title: Text(

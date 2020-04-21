@@ -29,15 +29,6 @@ controller.getAllAppExercises = async (req, res) => {
     }
 }
 
-controller.searchExercise = async (req, res) => {
-    try {
-        var rows = await AppExerciseRepository.searchAppExercise(req.body)
-        res.status(200).json(rows)
-    } catch (error) {
-        console.error(error)
-    }
-}
-
 controller.getDetailAppExercise = async (req, res) => {
     try {
         var rows = await AppExerciseRepository.getDetailAppExercise(req.params)

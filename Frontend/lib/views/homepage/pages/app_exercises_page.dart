@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:strongr/models/app_exercise.dart';
 import 'package:strongr/services/app_exercise_service.dart';
+import 'package:strongr/utils/diacritics.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
@@ -20,26 +21,42 @@ class ExercisesPage extends StatefulWidget {
 }
 
 class _ExercisesPageState extends State<ExercisesPage> {
+  TextEditingController searchbarController;
   Future<List<AppExercise>> futureAppExercisesList;
 
   @override
   void initState() {
+    searchbarController = TextEditingController(text: "");
     futureAppExercisesList = AppExerciseService.getAppExercises();
     super.initState();
   }
 
+  int resultCountOnResearch(dynamic data) {
+    int result = 0;
+    for (final item in data) {
+      if (Diacritics.remove(
+              data[data.indexOf(item)].name.toString().toLowerCase())
+          .contains(
+              Diacritics.remove(searchbarController.text.toLowerCase()))) {
+        result++;
+      }
+    }
+    return result;
+  }
+
   String displayMuscleListToString(List muscleList) {
     String result = "";
-    for(final item in muscleList) {
+    for (final item in muscleList) {
       result += item.name;
-      if(muscleList.indexOf(item) != muscleList.length - 1)
-        result += ", ";
+      if (muscleList.indexOf(item) != muscleList.length - 1) result += ", ";
     }
     return result;
   }
 
   @override
   Widget build(BuildContext context) {
+    print("build");
+    print(searchbarController.text);
     return Container(
       child: ListView(
         physics: BouncingScrollPhysics(),
@@ -56,6 +73,7 @@ class _ExercisesPageState extends State<ExercisesPage> {
               width: 50,
               // color: Colors.grey,
               child: TextField(
+                controller: searchbarController,
                 style: TextStyle(
                     color: StrongrColors.black,
                     fontFamily: 'Futura',
@@ -63,8 +81,7 @@ class _ExercisesPageState extends State<ExercisesPage> {
                 inputFormatters: [
                   LengthLimitingTextInputFormatter(100),
                 ],
-                controller: null,
-                onChanged: (newValue) {},
+                onChanged: (newValue) => setState(() {}),
                 decoration: InputDecoration(
                   suffixIcon: Icon(Icons.search, color: StrongrColors.blue),
                   hintText: "Rechercher un exercice...",
@@ -101,79 +118,127 @@ class _ExercisesPageState extends State<ExercisesPage> {
                             alignment: Alignment.center,
                             height: ScreenSize.height(context) / 1.75,
                             child: StrongrText(
-                              "Aucun élément à afficher",
+                              "Impossible d'afficher les exercices",
                               color: Colors.grey,
                             ),
                           ),
-                    for (final item in snapshot.data)
-                      Container(
-                        padding: EdgeInsets.all(5),
-                        height: 90,
-                        child: StrongrRoundedContainer(
-                          width: ScreenSize.width(context),
-                          content: Stack(
-                            children: <Widget>[
-                              Container(
-                                alignment: Alignment.centerLeft,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: <Widget>[
-                                    StrongrText(
-                                      snapshot.data[snapshot.data.indexOf(item)]
-                                          .name,
-                                      textAlign: TextAlign.start,
-                                      bold: true,
-                                    ),
-                                    StrongrText(
-                                      // snapshot.data[snapshot.data.indexOf(item)]
-                                      //     .muscleList[0].name,
-                                      displayMuscleListToString(snapshot.data[snapshot.data.indexOf(item)].muscleList),
-                                      textAlign: TextAlign.start,
-                                    ),
-                                  ],
-                                ),
+                    resultCountOnResearch(snapshot.data) != 0
+                        ? Container(
+                            child: Column(
+                              children: <Widget>[
+                                for (final item in snapshot.data)
+                                  searchbarController.text == "" ||
+                                          Diacritics.remove(snapshot
+                                                  .data[snapshot.data
+                                                      .indexOf(item)]
+                                                  .name
+                                                  .toString()
+                                                  .toLowerCase())
+                                              .contains(Diacritics.remove(
+                                                  searchbarController.text
+                                                      .toLowerCase()))
+                                      ? Container(
+                                          padding: EdgeInsets.all(5),
+                                          height: 90,
+                                          child: StrongrRoundedContainer(
+                                            width: ScreenSize.width(context),
+                                            content: Stack(
+                                              children: <Widget>[
+                                                Container(
+                                                  alignment:
+                                                      Alignment.centerLeft,
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceEvenly,
+                                                    children: <Widget>[
+                                                      StrongrText(
+                                                        snapshot
+                                                            .data[snapshot.data
+                                                                .indexOf(item)]
+                                                            .name,
+                                                        textAlign:
+                                                            TextAlign.start,
+                                                        bold: true,
+                                                      ),
+                                                      StrongrText(
+                                                        displayMuscleListToString(
+                                                            snapshot
+                                                                .data[snapshot
+                                                                    .data
+                                                                    .indexOf(
+                                                                        item)]
+                                                                .muscleList),
+                                                        textAlign:
+                                                            TextAlign.start,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                Container(
+                                                  alignment:
+                                                      Alignment.centerRight,
+                                                  child: Container(
+                                                    width: 35,
+                                                    height: 35,
+                                                    child: FloatingActionButton(
+                                                      elevation: 0,
+                                                      heroTag: 'fab_' +
+                                                          (snapshot.data.indexOf(
+                                                                      item) +
+                                                                  1)
+                                                              .toString(),
+                                                      tooltip: "Ajouter",
+                                                      backgroundColor:
+                                                          StrongrColors.blue,
+                                                      child: Icon(
+                                                        Icons.add,
+                                                        color: Colors.white,
+                                                      ),
+                                                      onPressed: () => showDialog(
+                                                          context: context,
+                                                          builder: (context) =>
+                                                              NewExerciseFromListDialog()),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            onPressed: () {
+                                              FocusScope.of(context).unfocus();
+                                              Navigator.pushNamed(
+                                                context,
+                                                EXERCISE_ROUTE,
+                                                arguments: ExercisesPage(
+                                                  id: snapshot
+                                                      .data[snapshot.data
+                                                          .indexOf(item)]
+                                                      .id,
+                                                  name: snapshot
+                                                      .data[snapshot.data
+                                                          .indexOf(item)]
+                                                      .name,
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        )
+                                      : SizedBox(),
+                              ],
+                            ),
+                          )
+                        : Container(
+                            height: ScreenSize.height(context) / 1.75,
+                            child: Center(
+                              child: StrongrText(
+                                "Aucun résultat trouvé",
+                                color: Colors.grey,
                               ),
-                              Container(
-                                alignment: Alignment.centerRight,
-                                child: Container(
-                                  width: 35,
-                                  height: 35,
-                                  child: FloatingActionButton(
-                                    elevation: 0,
-                                    heroTag: 'fab_' +
-                                        (snapshot.data.indexOf(item)+1).toString(),
-                                    tooltip: "Ajouter",
-                                    backgroundColor: StrongrColors.blue,
-                                    child: Icon(
-                                      Icons.add,
-                                      color: Colors.white,
-                                    ),
-                                    onPressed: () => showDialog(
-                                        context: context,
-                                        builder: (context) =>
-                                            NewExerciseFromListDialog()),
-                                  ),
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
-                          onPressed: () {
-                            FocusScope.of(context).unfocus();
-                            Navigator.pushNamed(
-                              context,
-                              EXERCISE_ROUTE,
-                              arguments: ExercisesPage(
-                                id: snapshot
-                                    .data[snapshot.data.indexOf(item)].id,
-                                name: snapshot
-                                    .data[snapshot.data.indexOf(item)].name,
-                              ),
-                            );
-                          },
-                        ),
-                      ),
                   ],
                 );
               } else if (snapshot.hasError) {
