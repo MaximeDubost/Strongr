@@ -4,11 +4,114 @@ import 'package:strongr/utils/strongr_colors.dart';
 import '../strongr_text.dart';
 
 class FiltersDialog extends StatefulWidget {
+  final int groupValue;
+  final bool switchValue;
+  final bool muscleCheckboxValue1;
+  final bool muscleCheckboxValue2;
+  final bool muscleCheckboxValue3;
+  final bool muscleCheckboxValue4;
+  final bool muscleCheckboxValue5;
+  final bool muscleCheckboxValue6;
+  final bool muscleCheckboxValue7;
+  final bool muscleCheckboxValue8;
+  final bool muscleCheckboxValue9;
+  final bool muscleCheckboxValue10;
+
+  FiltersDialog({
+    this.groupValue,
+    this.switchValue,
+    this.muscleCheckboxValue1,
+    this.muscleCheckboxValue2,
+    this.muscleCheckboxValue3,
+    this.muscleCheckboxValue4,
+    this.muscleCheckboxValue5,
+    this.muscleCheckboxValue6,
+    this.muscleCheckboxValue7,
+    this.muscleCheckboxValue8,
+    this.muscleCheckboxValue9,
+    this.muscleCheckboxValue10,
+  });
+
   @override
   _FiltersDialogState createState() => _FiltersDialogState();
 }
 
 class _FiltersDialogState extends State<FiltersDialog> {
+  int groupValue;
+  bool switchValue;
+  bool muscleCheckboxValue1;
+  bool muscleCheckboxValue2;
+  bool muscleCheckboxValue3;
+  bool muscleCheckboxValue4;
+  bool muscleCheckboxValue5;
+  bool muscleCheckboxValue6;
+  bool muscleCheckboxValue7;
+  bool muscleCheckboxValue8;
+  bool muscleCheckboxValue9;
+  bool muscleCheckboxValue10;
+
+  @override
+  void initState() {
+    groupValue = 1;
+    switchValue = false;
+    muscleCheckboxValue1 = true;
+    muscleCheckboxValue2 = false;
+    muscleCheckboxValue3 = false;
+    muscleCheckboxValue4 = false;
+    muscleCheckboxValue5 = false;
+    muscleCheckboxValue6 = false;
+    muscleCheckboxValue7 = false;
+    muscleCheckboxValue8 = false;
+    muscleCheckboxValue9 = false;
+    muscleCheckboxValue10 = false;
+    super.initState();
+  }
+
+  void filterModeChange() {
+    if (switchCheckboxValue(muscleCheckboxValue1) != false)
+      setState(() => muscleCheckboxValue1 = switchCheckboxValue(muscleCheckboxValue1));
+    if (switchCheckboxValue(muscleCheckboxValue2) != false)
+      setState(() => muscleCheckboxValue2 = switchCheckboxValue(muscleCheckboxValue2));
+    if (switchCheckboxValue(muscleCheckboxValue3) != false)
+      setState(() => muscleCheckboxValue3 = switchCheckboxValue(muscleCheckboxValue3));
+    if (switchCheckboxValue(muscleCheckboxValue4) != false)
+      setState(() => muscleCheckboxValue4 = switchCheckboxValue(muscleCheckboxValue4));
+    if (switchCheckboxValue(muscleCheckboxValue5) != false)
+      setState(() => muscleCheckboxValue5 = switchCheckboxValue(muscleCheckboxValue5));
+    if (switchCheckboxValue(muscleCheckboxValue6) != false)
+      setState(() => muscleCheckboxValue6 = switchCheckboxValue(muscleCheckboxValue6));
+    if (switchCheckboxValue(muscleCheckboxValue7) != false)
+      setState(() => muscleCheckboxValue7 = switchCheckboxValue(muscleCheckboxValue7));
+    if (switchCheckboxValue(muscleCheckboxValue8) != false)
+      setState(() => muscleCheckboxValue8 = switchCheckboxValue(muscleCheckboxValue8));
+    if (switchCheckboxValue(muscleCheckboxValue9) != false)
+      setState(() => muscleCheckboxValue9 = switchCheckboxValue(muscleCheckboxValue9));
+    if (switchCheckboxValue(muscleCheckboxValue10) != false)
+      setState(() => muscleCheckboxValue10 = switchCheckboxValue(muscleCheckboxValue10));
+  }
+
+  bool switchCheckboxValue(bool checkboxValueToChange) {
+    if (checkboxValueToChange == true || checkboxValueToChange == null) {
+      if (switchValue == false)
+        return true;
+      else
+        return null;
+    }
+    return false;
+  }
+
+  bool changeCheckboxValue(bool checkboxValueToChange) {
+    if(checkboxValueToChange == true || checkboxValueToChange == null)
+      return false;
+    else
+    {
+      if(switchValue == false)
+        return true;
+      else
+        return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -29,17 +132,25 @@ class _FiltersDialogState extends State<FiltersDialog> {
               children: <Widget>[
                 buildRadio(
                   "A-Z",
-                  value: true,
-                  onChanged: (bool newValue) {},
-                  onTap: () {},
-                  groupeValue: true,
+                  value: 1,
+                  groupeValue: groupValue,
+                  onChanged: (int newValue) => setState(
+                    () => groupValue = newValue,
+                  ),
+                  onTap: () {
+                    if (groupValue != 1) setState(() => groupValue = 1);
+                  },
                 ),
                 buildRadio(
                   "Z-A",
-                  value: false,
-                  onChanged: (bool newValue) {},
-                  onTap: () {},
-                  groupeValue: true,
+                  value: 2,
+                  groupeValue: groupValue,
+                  onChanged: (int newValue) => setState(
+                    () => groupValue = newValue,
+                  ),
+                  onTap: () {
+                    if (groupValue != 2) setState(() => groupValue = 2);
+                  },
                 ),
               ],
             ),
@@ -49,13 +160,53 @@ class _FiltersDialogState extends State<FiltersDialog> {
               bold: true,
               size: 20,
             ),
-            FlatButton(
-              onPressed: () {},
-              child: StrongrText(
-                "Tout sélectionner",
-                size: 18,
-                color: Colors.grey,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                FlatButton(
+                  onPressed: () {
+                    if (switchValue) {
+                      setState(() => switchValue = !switchValue);
+                      filterModeChange();
+                    }
+                  },
+                  child: StrongrText(
+                    "Inclure",
+                    size: 18,
+                    color: !switchValue ? StrongrColors.blue : Colors.grey,
+                  ),
+                ),
+                Switch(
+                  inactiveTrackColor: Colors.grey,
+                  inactiveThumbColor: StrongrColors.blue,
+                  activeTrackColor: Colors.grey,
+                  activeColor: Colors.red[800],
+                  value: switchValue,
+                  onChanged: (newValue) {
+                    setState(() => switchValue = newValue);
+                    // if (switchCheckboxValue(muscleCheckboxValue1) != false)
+                    //   setState(() => muscleCheckboxValue1 =
+                    //       switchCheckboxValue(muscleCheckboxValue1));
+                    filterModeChange();
+                  },
+                ),
+                FlatButton(
+                  onPressed: () {
+                    if (!switchValue) {
+                      setState(() => switchValue = !switchValue);
+                      // if (switchCheckboxValue(muscleCheckboxValue1) != false)
+                      //   setState(() => muscleCheckboxValue1 =
+                      //       switchCheckboxValue(muscleCheckboxValue1));
+                      filterModeChange();
+                    }
+                  },
+                  child: StrongrText(
+                    "Exclure",
+                    size: 18,
+                    color: switchValue ? Colors.red[800] : Colors.grey,
+                  ),
+                ),
+              ],
             ),
             Table(
               defaultColumnWidth: FractionColumnWidth(0.55),
@@ -64,15 +215,15 @@ class _FiltersDialogState extends State<FiltersDialog> {
                   children: [
                     buildCheckbox(
                       "Abdominaux",
-                      value: true,
-                      onChanged: (bool newValue) {},
-                      onTap: () {},
+                      value: muscleCheckboxValue1,
+                      onChanged: (bool newValue) => setState(() => muscleCheckboxValue1 = changeCheckboxValue(muscleCheckboxValue1)),
+                      onTap: () => setState(() => muscleCheckboxValue1 = changeCheckboxValue(muscleCheckboxValue1)),
                     ),
                     buildCheckbox(
                       "Avant bras",
-                      value: false,
-                      onChanged: (bool newValue) {},
-                      onTap: () {},
+                      value: muscleCheckboxValue2,
+                      onChanged: (bool newValue) => setState(() => muscleCheckboxValue2 = changeCheckboxValue(muscleCheckboxValue2)),
+                      onTap: () => setState(() => muscleCheckboxValue2 = changeCheckboxValue(muscleCheckboxValue2)),
                     ),
                   ],
                 ),
@@ -80,15 +231,15 @@ class _FiltersDialogState extends State<FiltersDialog> {
                   children: [
                     buildCheckbox(
                       "Biceps",
-                      value: false,
-                      onChanged: (bool newValue) {},
-                      onTap: () {},
+                      value: muscleCheckboxValue3,
+                      onChanged: (bool newValue) => setState(() => muscleCheckboxValue3 = changeCheckboxValue(muscleCheckboxValue3)),
+                      onTap: () => setState(() => muscleCheckboxValue3 = changeCheckboxValue(muscleCheckboxValue3)),
                     ),
                     buildCheckbox(
                       "Dos",
-                      value: false,
-                      onChanged: (bool newValue) {},
-                      onTap: () {},
+                      value: muscleCheckboxValue4,
+                      onChanged: (bool newValue) => setState(() => muscleCheckboxValue4 = changeCheckboxValue(muscleCheckboxValue4)),
+                      onTap: () => setState(() => muscleCheckboxValue4 = changeCheckboxValue(muscleCheckboxValue4)),
                     ),
                   ],
                 ),
@@ -96,15 +247,15 @@ class _FiltersDialogState extends State<FiltersDialog> {
                   children: [
                     buildCheckbox(
                       "Épaules",
-                      value: false,
-                      onChanged: (bool newValue) {},
-                      onTap: () {},
+                      value: muscleCheckboxValue5,
+                      onChanged: (bool newValue) => setState(() => muscleCheckboxValue5 = changeCheckboxValue(muscleCheckboxValue5)),
+                      onTap: () => setState(() => muscleCheckboxValue5 = changeCheckboxValue(muscleCheckboxValue5)),
                     ),
                     buildCheckbox(
                       "Ischios",
-                      value: false,
-                      onChanged: (bool newValue) {},
-                      onTap: () {},
+                      value: muscleCheckboxValue6,
+                      onChanged: (bool newValue) => setState(() => muscleCheckboxValue6 = changeCheckboxValue(muscleCheckboxValue6)),
+                      onTap: () => setState(() => muscleCheckboxValue6 = changeCheckboxValue(muscleCheckboxValue6)),
                     ),
                   ],
                 ),
@@ -112,15 +263,15 @@ class _FiltersDialogState extends State<FiltersDialog> {
                   children: [
                     buildCheckbox(
                       "Mollets",
-                      value: false,
-                      onChanged: (bool newValue) {},
-                      onTap: () {},
+                      value: muscleCheckboxValue7,
+                      onChanged: (bool newValue) => setState(() => muscleCheckboxValue7 = changeCheckboxValue(muscleCheckboxValue7)),
+                      onTap: () => setState(() => muscleCheckboxValue7 = changeCheckboxValue(muscleCheckboxValue7)),
                     ),
                     buildCheckbox(
                       "Pectoraux",
-                      value: false,
-                      onChanged: (bool newValue) {},
-                      onTap: () {},
+                      value: muscleCheckboxValue8,
+                      onChanged: (bool newValue) => setState(() => muscleCheckboxValue8 = changeCheckboxValue(muscleCheckboxValue8)),
+                      onTap: () => setState(() => muscleCheckboxValue8 = changeCheckboxValue(muscleCheckboxValue8)),
                     ),
                   ],
                 ),
@@ -128,15 +279,15 @@ class _FiltersDialogState extends State<FiltersDialog> {
                   children: [
                     buildCheckbox(
                       "Quadriceps",
-                      value: false,
-                      onChanged: (bool newValue) {},
-                      onTap: () {},
+                      value: muscleCheckboxValue9,
+                      onChanged: (bool newValue) => setState(() => muscleCheckboxValue9 = changeCheckboxValue(muscleCheckboxValue9)),
+                      onTap: () => setState(() => muscleCheckboxValue9 = changeCheckboxValue(muscleCheckboxValue9)),
                     ),
                     buildCheckbox(
                       "Triceps",
-                      value: false,
-                      onChanged: (bool newValue) {},
-                      onTap: () {},
+                      value: muscleCheckboxValue10,
+                      onChanged: (bool newValue) => setState(() => muscleCheckboxValue10 = changeCheckboxValue(muscleCheckboxValue10)),
+                      onTap: () => setState(() => muscleCheckboxValue10 = changeCheckboxValue(muscleCheckboxValue10)),
                     ),
                   ],
                 ),
@@ -150,10 +301,10 @@ class _FiltersDialogState extends State<FiltersDialog> {
 
   Widget buildRadio(
     String content, {
-    @required bool value,
+    @required int value,
     @required Function onChanged,
     @required Function onTap,
-    @required bool groupeValue,
+    @required int groupeValue,
   }) {
     return Row(
       children: <Widget>[
@@ -190,10 +341,11 @@ class _FiltersDialogState extends State<FiltersDialog> {
     return Row(
       children: <Widget>[
         Container(
-          width: 20,
+          width: 30,
           height: 40,
           child: Checkbox(
-            activeColor: StrongrColors.blue,
+            tristate: true,
+            activeColor: value != null ? StrongrColors.blue : Colors.red[800],
             value: value,
             onChanged: onChanged,
           ),
