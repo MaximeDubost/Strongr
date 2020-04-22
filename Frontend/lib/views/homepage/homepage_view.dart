@@ -3,6 +3,7 @@ import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/views/homepage/pages/app_exercises_page.dart';
 import 'package:strongr/views/homepage/pages/homepage.dart';
 import 'package:strongr/views/homepage/pages/statistics_page.dart';
+import 'package:strongr/widgets/dialogs/filters_dialog.dart';
 
 class HomepageView extends StatefulWidget {
   @override
@@ -30,7 +31,7 @@ class _HomepageViewState extends State<HomepageView> {
         : [
             "Profil",
             "Paramètres",
-            "Trier par",
+            "Filtrer",
           ];
     super.initState();
   }
@@ -62,7 +63,22 @@ class _HomepageViewState extends State<HomepageView> {
             // ),
             PopupMenuButton<String>(
               tooltip: "Menu",
-              onSelected: (value) {},
+              onSelected: (value) {
+                switch (value) {
+                  case "Profil":
+                    // TODO : Vue Profil
+                    break;
+                  case "Paramètres":
+                    // TODO : Vue Paramètres
+                    break;
+                  case "Filtrer":
+                    showDialog(
+                      context: context,
+                      builder: (context) => FiltersDialog(),
+                    );
+                    break;
+                }
+              },
               itemBuilder: (BuildContext context) {
                 return popupMenuItems.map(
                   (String choice) {
@@ -93,7 +109,7 @@ class _HomepageViewState extends State<HomepageView> {
                   : [
                       "Profil",
                       "Paramètres",
-                      "Trier par",
+                      "Filtrer",
                     ];
             });
           },

@@ -55,8 +55,6 @@ class _ExercisesPageState extends State<ExercisesPage> {
 
   @override
   Widget build(BuildContext context) {
-    print("build");
-    print(searchbarController.text);
     return Container(
       child: ListView(
         physics: BouncingScrollPhysics(),
@@ -198,10 +196,12 @@ class _ExercisesPageState extends State<ExercisesPage> {
                                                         Icons.add,
                                                         color: Colors.white,
                                                       ),
-                                                      onPressed: () => showDialog(
-                                                          context: context,
-                                                          builder: (context) =>
-                                                              NewExerciseFromListDialog()),
+                                                      onPressed: () =>
+                                                          showDialog(
+                                                        context: context,
+                                                        builder: (context) =>
+                                                            NewExerciseFromListDialog(),
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
