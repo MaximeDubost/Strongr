@@ -11,6 +11,7 @@ class HomepageView extends StatefulWidget {
 }
 
 class _HomepageViewState extends State<HomepageView> {
+  GlobalKey<dynamic> _appExercisesPageKey = GlobalKey();
   List<Widget> pagesList;
   List<String> popupMenuItems;
   int currentPage;
@@ -19,7 +20,7 @@ class _HomepageViewState extends State<HomepageView> {
   void initState() {
     currentPage = 1;
     pagesList = [
-      ExercisesPage(),
+      ExercisesPage(key: _appExercisesPageKey),
       Homepage(),
       StatisticsPage(),
     ];
@@ -63,7 +64,7 @@ class _HomepageViewState extends State<HomepageView> {
             // ),
             PopupMenuButton<String>(
               tooltip: "Menu",
-              onSelected: (value) {
+              onSelected: (value) async {
                 switch (value) {
                   case "Profil":
                     // TODO : Vue Profil
@@ -72,10 +73,14 @@ class _HomepageViewState extends State<HomepageView> {
                     // TODO : Vue Paramètres
                     break;
                   case "Filtres":
-                    showDialog(
+                    await showDialog(
                       context: context,
                       builder: (context) => FiltersDialog(),
-                    );
+                    ).then((val) {
+                      if (val == true) {
+                        _appExercisesPageKey.currentState.refresh();
+                      }
+                    });
                     break;
                 }
               },

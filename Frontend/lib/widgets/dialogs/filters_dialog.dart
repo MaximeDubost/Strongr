@@ -480,7 +480,7 @@ class _FiltersDialogState extends State<FiltersDialog> {
                     ? null
                     : () {
                         applyAllFilters();
-                        Navigator.pop(context);
+                        Navigator.pop(context, true);
                       }),
           ],
         ),
