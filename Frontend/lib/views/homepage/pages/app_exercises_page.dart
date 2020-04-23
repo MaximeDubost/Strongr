@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:strongr/models/Muscle.dart';
 import 'package:strongr/models/app_exercise.dart';
 import 'package:strongr/services/app_exercise_service.dart';
 import 'package:strongr/utils/diacritics.dart';
@@ -23,11 +24,13 @@ class ExercisesPage extends StatefulWidget {
 class _ExercisesPageState extends State<ExercisesPage> {
   TextEditingController searchbarController;
   Future<List<AppExercise>> futureAppExercisesList;
+  bool sortedByAlpha;
 
   @override
   void initState() {
     searchbarController = TextEditingController(text: "");
     futureAppExercisesList = AppExerciseService.getAppExercises();
+    sortedByAlpha = true;
     super.initState();
   }
 
@@ -51,6 +54,13 @@ class _ExercisesPageState extends State<ExercisesPage> {
       if (muscleList.indexOf(item) != muscleList.length - 1) result += ", ";
     }
     return result;
+  }
+
+  /// Méthode vérifiant si un [muscleName] est compris dans la [muscleList] d'un exercice
+  bool muscleListContains(
+      {@required List<Muscle> muscleList, @required String muscleName}) {
+    for (final item in muscleList) if (item.name == muscleName) return true;
+    return false;
   }
 
   @override
@@ -97,11 +107,50 @@ class _ExercisesPageState extends State<ExercisesPage> {
               ),
             ),
           ),
-          Divider(
-            color: Colors.grey[350],
-            thickness: 1,
-            indent: ScreenSize.width(context) / 4,
-            endIndent: ScreenSize.width(context) / 4,
+          // Container(
+          //   padding: EdgeInsets.all(10),
+          //   child: Column(
+          //     crossAxisAlignment: CrossAxisAlignment.start,
+          //     children: <Widget>[
+          //       // Container(
+          //       //   alignment: Alignment.centerLeft,
+          //       //   child: StrongrText("Filtres : ", color: Colors.grey, size: 16,),
+          //       // ),
+          //     ],
+          //   ),
+          // ),
+          Container(
+            height: 25,
+            // color: Colors.red,
+            child: Stack(
+              children: <Widget>[
+                Center(
+                  child: Divider(
+                    color: Colors.grey[350],
+                    height: 0,
+                    thickness: 1,
+                    indent: ScreenSize.width(context) / 4,
+                    endIndent: ScreenSize.width(context) / 4,
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Container(
+                    margin: EdgeInsets.only(left: 25),
+                    width: 55,
+                    child: InkWell(
+                      onTap: () => setState(() => sortedByAlpha = !sortedByAlpha),
+                      child: Row(
+                        children: <Widget>[
+                          Icon(sortedByAlpha ? Icons.arrow_drop_down : Icons.arrow_drop_up, color: Colors.grey),
+                          StrongrText(sortedByAlpha ? "A-Z" : "Z-A", color: Colors.grey, size: 14,),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
           FutureBuilder(
             future: futureAppExercisesList,
@@ -123,6 +172,7 @@ class _ExercisesPageState extends State<ExercisesPage> {
                     resultCountOnResearch(snapshot.data) != 0
                         ? Container(
                             child: Column(
+                              verticalDirection: sortedByAlpha ? VerticalDirection.down : VerticalDirection.up,
                               children: <Widget>[
                                 for (final item in snapshot.data)
                                   searchbarController.text == "" ||

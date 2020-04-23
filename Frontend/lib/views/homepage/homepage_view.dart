@@ -31,7 +31,7 @@ class _HomepageViewState extends State<HomepageView> {
         : [
             "Profil",
             "Paramètres",
-            "Filtrer",
+            "Filtres",
           ];
     super.initState();
   }
@@ -71,7 +71,7 @@ class _HomepageViewState extends State<HomepageView> {
                   case "Paramètres":
                     // TODO : Vue Paramètres
                     break;
-                  case "Filtrer":
+                  case "Filtres":
                     showDialog(
                       context: context,
                       builder: (context) => FiltersDialog(),
@@ -109,7 +109,7 @@ class _HomepageViewState extends State<HomepageView> {
                   : [
                       "Profil",
                       "Paramètres",
-                      "Filtrer",
+                      "Filtres",
                     ];
             });
           },

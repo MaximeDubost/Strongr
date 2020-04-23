@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
+import 'package:strongr/widgets/strongr_raised_button.dart';
 import '../strongr_text.dart';
 
 class FiltersDialog extends StatefulWidget {
@@ -54,7 +55,7 @@ class _FiltersDialogState extends State<FiltersDialog> {
   void initState() {
     groupValue = 1;
     switchValue = false;
-    muscleCheckboxValue1 = true;
+    muscleCheckboxValue1 = false;
     muscleCheckboxValue2 = false;
     muscleCheckboxValue3 = false;
     muscleCheckboxValue4 = false;
@@ -198,44 +199,44 @@ class _FiltersDialogState extends State<FiltersDialog> {
     return AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
       content: Container(
-        height: 420,
+        height: 400,
         width: ScreenSize.width(context),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            StrongrText(
-              "Trier par",
-              bold: true,
-              size: 20,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                buildRadio(
-                  "A-Z",
-                  value: 1,
-                  groupeValue: groupValue,
-                  onChanged: (int newValue) => setState(
-                    () => groupValue = newValue,
-                  ),
-                  onTap: () {
-                    if (groupValue != 1) setState(() => groupValue = 1);
-                  },
-                ),
-                buildRadio(
-                  "Z-A",
-                  value: 2,
-                  groupeValue: groupValue,
-                  onChanged: (int newValue) => setState(
-                    () => groupValue = newValue,
-                  ),
-                  onTap: () {
-                    if (groupValue != 2) setState(() => groupValue = 2);
-                  },
-                ),
-              ],
-            ),
-            Divider(thickness: 1),
+            // StrongrText(
+            //   "Trier par",
+            //   bold: true,
+            //   size: 20,
+            // ),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+            //   children: <Widget>[
+            //     buildRadio(
+            //       "A-Z",
+            //       value: 1,
+            //       groupeValue: groupValue,
+            //       onChanged: (int newValue) => setState(
+            //         () => groupValue = newValue,
+            //       ),
+            //       onTap: () {
+            //         if (groupValue != 1) setState(() => groupValue = 1);
+            //       },
+            //     ),
+            //     buildRadio(
+            //       "Z-A",
+            //       value: 2,
+            //       groupeValue: groupValue,
+            //       onChanged: (int newValue) => setState(
+            //         () => groupValue = newValue,
+            //       ),
+            //       onTap: () {
+            //         if (groupValue != 2) setState(() => groupValue = 2);
+            //       },
+            //     ),
+            //   ],
+            // ),
+            // Divider(thickness: 1),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
@@ -326,6 +327,7 @@ class _FiltersDialogState extends State<FiltersDialog> {
                 ),
               ],
             ),
+            Divider(thickness: 1),
             Table(
               defaultColumnWidth: FractionColumnWidth(0.55),
               children: [
@@ -440,6 +442,12 @@ class _FiltersDialogState extends State<FiltersDialog> {
                   ],
                 ),
               ],
+            ),
+            Divider(thickness: 1),
+            StrongrRaisedButton(
+              "Filtrer",
+              color: StrongrColors.blue,
+              onPressed: areAllChecked() ? null : () => Navigator.pop(context)
             ),
           ],
         ),
