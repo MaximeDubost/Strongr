@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:strongr/models/Muscle.dart';
 import 'package:strongr/models/app_exercise.dart';
 import 'package:strongr/services/app_exercise_service.dart';
+import 'package:strongr/utils/app_exercises_filters.dart';
 import 'package:strongr/utils/diacritics.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
@@ -107,18 +108,19 @@ class _ExercisesPageState extends State<ExercisesPage> {
               ),
             ),
           ),
-          // Container(
-          //   padding: EdgeInsets.all(10),
-          //   child: Column(
-          //     crossAxisAlignment: CrossAxisAlignment.start,
-          //     children: <Widget>[
-          //       // Container(
-          //       //   alignment: Alignment.centerLeft,
-          //       //   child: StrongrText("Filtres : ", color: Colors.grey, size: 16,),
-          //       // ),
-          //     ],
-          //   ),
-          // ),
+          Visibility(
+            visible: !AppExercisesFilters.areAllDisabled(),
+            child: Container(
+              padding: EdgeInsets.only(top: 5, left: 20, right: 20, bottom: 5),
+              alignment: Alignment.centerLeft,
+              child: StrongrText(
+                "Filtres : " + AppExercisesFilters.allEnabledFiltersToString(),
+                textAlign: TextAlign.start,
+                color: Colors.grey,
+                size: 16,
+              ),
+            ),
+          ),
           Container(
             height: 25,
             // color: Colors.red,
@@ -139,11 +141,21 @@ class _ExercisesPageState extends State<ExercisesPage> {
                     margin: EdgeInsets.only(left: 25),
                     width: 55,
                     child: InkWell(
-                      onTap: () => setState(() => sortedByAlpha = !sortedByAlpha),
+                      onTap: () =>
+                          setState(() => sortedByAlpha = !sortedByAlpha),
                       child: Row(
                         children: <Widget>[
-                          Icon(sortedByAlpha ? Icons.arrow_drop_down : Icons.arrow_drop_up, color: Colors.grey),
-                          StrongrText(sortedByAlpha ? "A-Z" : "Z-A", color: Colors.grey, size: 14,),
+                          Icon(
+                            sortedByAlpha
+                                ? Icons.keyboard_arrow_down
+                                : Icons.keyboard_arrow_up,
+                            color: Colors.black87,
+                          ),
+                          StrongrText(
+                            sortedByAlpha ? "A-Z" : "Z-A",
+                            color: Colors.black87,
+                            size: 14,
+                          ),
                         ],
                       ),
                     ),
@@ -172,7 +184,9 @@ class _ExercisesPageState extends State<ExercisesPage> {
                     resultCountOnResearch(snapshot.data) != 0
                         ? Container(
                             child: Column(
-                              verticalDirection: sortedByAlpha ? VerticalDirection.down : VerticalDirection.up,
+                              verticalDirection: sortedByAlpha
+                                  ? VerticalDirection.down
+                                  : VerticalDirection.up,
                               children: <Widget>[
                                 for (final item in snapshot.data)
                                   searchbarController.text == "" ||
