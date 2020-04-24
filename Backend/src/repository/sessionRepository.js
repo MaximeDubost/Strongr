@@ -54,9 +54,9 @@ repository.getSessionsByUser = async (req) => {
 }
 
 repository.addSession = async (req) => {
-    var sqlAddSession = "INSERT INTO _session (id_user, name) VALUES ($1,$2)"
+    var sqlAddSession = "INSERT INTO _session (id_user, name, creation_date, last_update) VALUES ($1, $2, $3, $4)"
     try {
-        await clt.query(sqlAddSession, [req.user.id, req.body.sessionName])
+        await clt.query(sqlAddSession, [req.user.id, req.body.session_name, new Date(), new Date()])
         return 200
     } catch (error) {
         console.log(error)
@@ -76,9 +76,9 @@ repository.deleteSession = async (req) => {
 }
 
 repository.updateSession = async (req) => {
-    var sqlUpdateSession = "UPDATE _session SET name_session = $1 WHERE id_user = $2 AND id_session = $3"
+    var sqlUpdateSession = "UPDATE _session SET name_session = $1, last_update = $2 WHERE id_user = $3 AND id_session = $4"
     try {
-        await clt.query(sqlUpdateSession, [req.body.sessionName, req.user.id, req.params.id_session])
+        await clt.query(sqlUpdateSession, [req.body.session_name, new Date(), req.user.id, req.params.id_session])
         return 200
     } catch (error) {
         console.log(error)
