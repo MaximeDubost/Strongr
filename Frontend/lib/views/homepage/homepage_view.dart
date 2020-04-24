@@ -13,7 +13,9 @@ class HomepageView extends StatefulWidget {
 class _HomepageViewState extends State<HomepageView> {
   GlobalKey<dynamic> _appExercisesPageKey = GlobalKey();
   List<Widget> pagesList;
-  List<String> popupMenuItems;
+  List<String> popupMenuItems,
+      homepagePopupMenuItems,
+      appExercisesPopupMenuItems;
   int currentPage;
 
   @override
@@ -24,16 +26,10 @@ class _HomepageViewState extends State<HomepageView> {
       Homepage(),
       StatisticsPage(),
     ];
-    popupMenuItems = currentPage != 0
-        ? [
-            "Profil",
-            "Paramètres",
-          ]
-        : [
-            "Profil",
-            "Paramètres",
-            "Filtres",
-          ];
+    homepagePopupMenuItems = ["Profil", "Paramètres"];
+    appExercisesPopupMenuItems = ["Profil", "Paramètres", "Filtres"];
+    popupMenuItems =
+        currentPage != 0 ? homepagePopupMenuItems : appExercisesPopupMenuItems;
     super.initState();
   }
 
@@ -57,11 +53,6 @@ class _HomepageViewState extends State<HomepageView> {
                 : currentPage == 0 ? "Exercices" : "Statistiques",
           ),
           actions: <Widget>[
-            // IconButton(
-            //     icon: Icon(Icons.more_vert),
-            //     color: Colors.white,
-            //     onPressed: () {},
-            // ),
             PopupMenuButton<String>(
               tooltip: "Menu",
               onSelected: (value) async {
@@ -98,65 +89,82 @@ class _HomepageViewState extends State<HomepageView> {
           ],
         ),
         body: pagesList[currentPage],
-        bottomNavigationBar: BottomNavigationBar(
-          showUnselectedLabels: false,
-          backgroundColor: StrongrColors.black,
-          type: BottomNavigationBarType.fixed,
-          currentIndex: currentPage,
-          onTap: (index) {
-            setState(() {
-              currentPage = index;
-              popupMenuItems = currentPage != 0
-                  ? [
-                      "Profil",
-                      "Paramètres",
-                    ]
-                  : [
-                      "Profil",
-                      "Paramètres",
-                      "Filtres",
-                    ];
-            });
-          },
-          items: <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon:
-                  Icon(Icons.fitness_center, color: Colors.white54, size: 22.0),
-              activeIcon:
-                  Icon(Icons.fitness_center, color: Colors.white, size: 26.0),
-              title: Text(
-                'Exercices',
-                style: TextStyle(
-                    color: currentPage != 0 ? Colors.white54 : Colors.white),
-              ),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home, color: Colors.white54, size: 22.0),
-              activeIcon: Icon(Icons.home, color: Colors.white, size: 26.0),
-              title: Text(
-                'Accueil',
-                style: TextStyle(
-                    color: currentPage != 1 ? Colors.white54 : Colors.white),
-              ),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.multiline_chart,
-                  color: Colors.white54, size: 22.0),
-              activeIcon:
-                  Icon(Icons.multiline_chart, color: Colors.white, size: 26.0),
-              title: Text(
-                'Stratistiques',
-                style: TextStyle(
-                    color: currentPage != 2 ? Colors.white54 : Colors.white),
-              ),
-            ),
-          ],
-        ),
-        // bottomNavigationBar: Container(
-        //   height: 60,
-        //   color: StrongrColors.black,
-        // ),
+        bottomNavigationBar: buildBottomNavigationBar(),
       ),
+    );
+  }
+
+  /// Retourne la barre de navigation inférieure.
+  BottomNavigationBar buildBottomNavigationBar() {
+    return BottomNavigationBar(
+      showUnselectedLabels: false,
+      backgroundColor: StrongrColors.black,
+      type: BottomNavigationBarType.fixed,
+      currentIndex: currentPage,
+      onTap: (index) {
+        setState(() {
+          currentPage = index;
+          popupMenuItems = currentPage != 0
+              ? homepagePopupMenuItems
+              : appExercisesPopupMenuItems;
+        });
+      },
+      items: <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+          icon: Icon(
+            Icons.fitness_center,
+            color: Colors.white54,
+            size: 22.0,
+          ),
+          activeIcon: Icon(
+            Icons.fitness_center,
+            color: Colors.white,
+            size: 26.0,
+          ),
+          title: Text(
+            'Exercices',
+            style: TextStyle(
+              color: currentPage != 0 ? Colors.white54 : Colors.white,
+            ),
+          ),
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(
+            Icons.home,
+            color: Colors.white54,
+            size: 22.0,
+          ),
+          activeIcon: Icon(
+            Icons.home,
+            color: Colors.white,
+            size: 26.0,
+          ),
+          title: Text(
+            'Accueil',
+            style: TextStyle(
+              color: currentPage != 1 ? Colors.white54 : Colors.white,
+            ),
+          ),
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(
+            Icons.multiline_chart,
+            color: Colors.white54,
+            size: 22.0,
+          ),
+          activeIcon: Icon(
+            Icons.multiline_chart,
+            color: Colors.white,
+            size: 26.0,
+          ),
+          title: Text(
+            'Stratistiques',
+            style: TextStyle(
+              color: currentPage != 2 ? Colors.white54 : Colors.white,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

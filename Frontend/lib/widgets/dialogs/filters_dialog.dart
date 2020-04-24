@@ -6,40 +6,11 @@ import 'package:strongr/utils/app_exercises_filters.dart';
 import '../strongr_text.dart';
 
 class FiltersDialog extends StatefulWidget {
-  // // final int groupValue;
-  // final bool switchValue;
-  // final bool muscleCheckboxValue1;
-  // final bool muscleCheckboxValue2;
-  // final bool muscleCheckboxValue3;
-  // final bool muscleCheckboxValue4;
-  // final bool muscleCheckboxValue5;
-  // final bool muscleCheckboxValue6;
-  // final bool muscleCheckboxValue7;
-  // final bool muscleCheckboxValue8;
-  // final bool muscleCheckboxValue9;
-  // final bool muscleCheckboxValue10;
-
-  // FiltersDialog({
-  //   // this.groupValue,
-  //   this.switchValue,
-  //   this.muscleCheckboxValue1,
-  //   this.muscleCheckboxValue2,
-  //   this.muscleCheckboxValue3,
-  //   this.muscleCheckboxValue4,
-  //   this.muscleCheckboxValue5,
-  //   this.muscleCheckboxValue6,
-  //   this.muscleCheckboxValue7,
-  //   this.muscleCheckboxValue8,
-  //   this.muscleCheckboxValue9,
-  //   this.muscleCheckboxValue10,
-  // });
-
   @override
   _FiltersDialogState createState() => _FiltersDialogState();
 }
 
 class _FiltersDialogState extends State<FiltersDialog> {
-  // int groupValue;
   bool switchValue,
       muscleCheckboxValue1,
       muscleCheckboxValue2,
@@ -54,22 +25,41 @@ class _FiltersDialogState extends State<FiltersDialog> {
 
   @override
   void initState() {
-    // groupValue = 1;
     switchValue = AppExercisesFilters.filterMode;
-    muscleCheckboxValue1 = !switchValue ? AppExercisesFilters.abs : AppExercisesFilters.abs ? false : null;
-    muscleCheckboxValue2 = !switchValue ? AppExercisesFilters.forearms : AppExercisesFilters.forearms ? false : null;
-    muscleCheckboxValue3 = !switchValue ? AppExercisesFilters.biceps : AppExercisesFilters.biceps ? false : null;
-    muscleCheckboxValue4 = !switchValue ? AppExercisesFilters.back : AppExercisesFilters.back ? false : null;
-    muscleCheckboxValue5 = !switchValue ? AppExercisesFilters.shoulders : AppExercisesFilters.shoulders ? false : null;
-    muscleCheckboxValue6 = !switchValue ? AppExercisesFilters.hamstrings : AppExercisesFilters.hamstrings ? false : null;
-    muscleCheckboxValue7 = !switchValue ? AppExercisesFilters.calves : AppExercisesFilters.calves ? false : null;
-    muscleCheckboxValue8 = !switchValue ? AppExercisesFilters.pectorals : AppExercisesFilters.pectorals ? false : null;
-    muscleCheckboxValue9 = !switchValue ? AppExercisesFilters.quadriceps : AppExercisesFilters.quadriceps ? false : null;
-    muscleCheckboxValue10 = !switchValue ? AppExercisesFilters.triceps : AppExercisesFilters.triceps ? false : null;
+    muscleCheckboxValue1 = !switchValue
+        ? AppExercisesFilters.abs
+        : AppExercisesFilters.abs ? false : null;
+    muscleCheckboxValue2 = !switchValue
+        ? AppExercisesFilters.forearms
+        : AppExercisesFilters.forearms ? false : null;
+    muscleCheckboxValue3 = !switchValue
+        ? AppExercisesFilters.biceps
+        : AppExercisesFilters.biceps ? false : null;
+    muscleCheckboxValue4 = !switchValue
+        ? AppExercisesFilters.back
+        : AppExercisesFilters.back ? false : null;
+    muscleCheckboxValue5 = !switchValue
+        ? AppExercisesFilters.shoulders
+        : AppExercisesFilters.shoulders ? false : null;
+    muscleCheckboxValue6 = !switchValue
+        ? AppExercisesFilters.hamstrings
+        : AppExercisesFilters.hamstrings ? false : null;
+    muscleCheckboxValue7 = !switchValue
+        ? AppExercisesFilters.calves
+        : AppExercisesFilters.calves ? false : null;
+    muscleCheckboxValue8 = !switchValue
+        ? AppExercisesFilters.pectorals
+        : AppExercisesFilters.pectorals ? false : null;
+    muscleCheckboxValue9 = !switchValue
+        ? AppExercisesFilters.quadriceps
+        : AppExercisesFilters.quadriceps ? false : null;
+    muscleCheckboxValue10 = !switchValue
+        ? AppExercisesFilters.triceps
+        : AppExercisesFilters.triceps ? false : null;
     super.initState();
   }
 
-  /// Vérifie si une Checkbox est cochée et change sa valeur en fonction de la valeur du Switch
+  /// Vérifie si une Checkbox est cochée et change sa valeur en fonction de la valeur du Switch.
   void filterModeChange() {
     if (switchCheckboxValue(muscleCheckboxValue1) != false)
       setState(() =>
@@ -103,7 +93,7 @@ class _FiltersDialogState extends State<FiltersDialog> {
           muscleCheckboxValue10 = switchCheckboxValue(muscleCheckboxValue10));
   }
 
-  /// Vérifie si toutes les Checkboxes sont cochées
+  /// Vérifie si toutes les Checkboxes sont cochées.
   bool areAllChecked() {
     if (switchCheckboxValue(muscleCheckboxValue1) == false ||
         switchCheckboxValue(muscleCheckboxValue2) == false ||
@@ -118,7 +108,7 @@ class _FiltersDialogState extends State<FiltersDialog> {
     return true;
   }
 
-  /// Vérifie si toutes les Checkboxes sont décochées
+  /// Vérifie si toutes les Checkboxes sont décochées.
   bool areAllUnchecked() {
     if (switchCheckboxValue(muscleCheckboxValue1) != false ||
         switchCheckboxValue(muscleCheckboxValue2) != false ||
@@ -133,7 +123,7 @@ class _FiltersDialogState extends State<FiltersDialog> {
     return true;
   }
 
-  /// Coche toutes les Checkboxes en fonction de la valeur du Switch
+  /// Coche toutes les Checkboxes en fonction de la valeur du Switch.
   void checkAll() {
     if (!switchValue)
       setState(() {
@@ -151,7 +141,7 @@ class _FiltersDialogState extends State<FiltersDialog> {
       });
   }
 
-  /// Décoche toutes les cases
+  /// Décoche toutes les cases.
   void uncheckAll() {
     setState(() {
       muscleCheckboxValue1 = muscleCheckboxValue2 = muscleCheckboxValue3 =
@@ -161,7 +151,7 @@ class _FiltersDialogState extends State<FiltersDialog> {
     });
   }
 
-  /// Détermine la valeur d'une Checkbox en fonction de la valeur du Switch
+  /// Détermine la valeur d'un Checkbox [checkboxValueToChange] en fonction de la valeur du Switch
   bool switchCheckboxValue(bool checkboxValueToChange) {
     if (checkboxValueToChange == true || checkboxValueToChange == null) {
       if (switchValue == false)
@@ -172,7 +162,7 @@ class _FiltersDialogState extends State<FiltersDialog> {
     return false;
   }
 
-  /// Détermine la valeur à attribuer à une Checkbox en fonction de la valeur du Switch
+  /// Détermine la valeur à attribuer à un Checkbox [checkboxValueToChange] en fonction de la valeur du Switch
   bool changeCheckboxValue(bool checkboxValueToChange) {
     if (checkboxValueToChange == true || checkboxValueToChange == null)
       return false;
@@ -184,11 +174,10 @@ class _FiltersDialogState extends State<FiltersDialog> {
     }
   }
 
-  /// Applique les filtres
+  /// Applique les filtres.
   void applyAllFilters() {
     AppExercisesFilters.filterMode = switchValue;
-    if(!switchValue)
-    {
+    if (!switchValue) {
       AppExercisesFilters.abs = muscleCheckboxValue1;
       AppExercisesFilters.forearms = muscleCheckboxValue2;
       AppExercisesFilters.biceps = muscleCheckboxValue3;
@@ -199,31 +188,24 @@ class _FiltersDialogState extends State<FiltersDialog> {
       AppExercisesFilters.pectorals = muscleCheckboxValue8;
       AppExercisesFilters.quadriceps = muscleCheckboxValue9;
       AppExercisesFilters.triceps = muscleCheckboxValue10;
-    }
-    else
-    {
+    } else {
       AppExercisesFilters.abs = muscleCheckboxValue1 == false ? true : false;
-      AppExercisesFilters.forearms = muscleCheckboxValue2 == false ? true : false;
+      AppExercisesFilters.forearms =
+          muscleCheckboxValue2 == false ? true : false;
       AppExercisesFilters.biceps = muscleCheckboxValue3 == false ? true : false;
       AppExercisesFilters.back = muscleCheckboxValue4 == false ? true : false;
-      AppExercisesFilters.shoulders = muscleCheckboxValue5 == false ? true : false;
-      AppExercisesFilters.hamstrings = muscleCheckboxValue6 == false ? true : false;
+      AppExercisesFilters.shoulders =
+          muscleCheckboxValue5 == false ? true : false;
+      AppExercisesFilters.hamstrings =
+          muscleCheckboxValue6 == false ? true : false;
       AppExercisesFilters.calves = muscleCheckboxValue7 == false ? true : false;
-      AppExercisesFilters.pectorals = muscleCheckboxValue8 == false ? true : false;
-      AppExercisesFilters.quadriceps = muscleCheckboxValue9 == false ? true : false;
-      AppExercisesFilters.triceps = muscleCheckboxValue10 == false ? true : false;
+      AppExercisesFilters.pectorals =
+          muscleCheckboxValue8 == false ? true : false;
+      AppExercisesFilters.quadriceps =
+          muscleCheckboxValue9 == false ? true : false;
+      AppExercisesFilters.triceps =
+          muscleCheckboxValue10 == false ? true : false;
     }
-    // print("--------------------------------");
-    // print("Abdominaux : " + AppExercisesFilters.abs.toString());
-    // print("Avant-bras : " + AppExercisesFilters.forearms.toString());
-    // print("Biceps : " + AppExercisesFilters.biceps.toString());
-    // print("Dos : " + AppExercisesFilters.back.toString());
-    // print("Épaules : " + AppExercisesFilters.shoulders.toString());
-    // print("Ischios : " + AppExercisesFilters.hamstrings.toString());
-    // print("Mollets : " + AppExercisesFilters.calves.toString());
-    // print("Pectoraux : " + AppExercisesFilters.pectorals.toString());
-    // print("Quadriceps : " + AppExercisesFilters.quadriceps.toString());
-    // print("Triceps : " + AppExercisesFilters.triceps.toString());
   }
 
   @override
@@ -236,39 +218,6 @@ class _FiltersDialogState extends State<FiltersDialog> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            // StrongrText(
-            //   "Trier par",
-            //   bold: true,
-            //   size: 20,
-            // ),
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.spaceAround,
-            //   children: <Widget>[
-            //     buildRadio(
-            //       "A-Z",
-            //       value: 1,
-            //       groupeValue: groupValue,
-            //       onChanged: (int newValue) => setState(
-            //         () => groupValue = newValue,
-            //       ),
-            //       onTap: () {
-            //         if (groupValue != 1) setState(() => groupValue = 1);
-            //       },
-            //     ),
-            //     buildRadio(
-            //       "Z-A",
-            //       value: 2,
-            //       groupeValue: groupValue,
-            //       onChanged: (int newValue) => setState(
-            //         () => groupValue = newValue,
-            //       ),
-            //       onTap: () {
-            //         if (groupValue != 2) setState(() => groupValue = 2);
-            //       },
-            //     ),
-            //   ],
-            // ),
-            // Divider(thickness: 1),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
@@ -281,10 +230,7 @@ class _FiltersDialogState extends State<FiltersDialog> {
                   highlightColor: Colors.transparent,
                   child: Icon(
                     Icons.select_all,
-                    color: !areAllChecked()
-                        // ? !switchValue ? StrongrColors.blue : Colors.red[800]
-                        ? StrongrColors.black
-                        : Colors.grey,
+                    color: !areAllChecked() ? StrongrColors.black : Colors.grey,
                   ),
                 ),
                 StrongrText(
@@ -301,10 +247,8 @@ class _FiltersDialogState extends State<FiltersDialog> {
                   highlightColor: Colors.transparent,
                   child: Icon(
                     Icons.delete_outline,
-                    color: !areAllUnchecked()
-                        // ? !switchValue ? StrongrColors.blue : Colors.red[800]
-                        ? StrongrColors.black
-                        : Colors.grey,
+                    color:
+                        !areAllUnchecked() ? StrongrColors.black : Colors.grey,
                   ),
                 ),
               ],
@@ -333,9 +277,6 @@ class _FiltersDialogState extends State<FiltersDialog> {
                   value: switchValue,
                   onChanged: (newValue) {
                     setState(() => switchValue = newValue);
-                    // if (switchCheckboxValue(muscleCheckboxValue1) != false)
-                    //   setState(() => muscleCheckboxValue1 =
-                    //       switchCheckboxValue(muscleCheckboxValue1));
                     filterModeChange();
                   },
                 ),
@@ -343,9 +284,6 @@ class _FiltersDialogState extends State<FiltersDialog> {
                   onPressed: () {
                     if (!switchValue) {
                       setState(() => switchValue = !switchValue);
-                      // if (switchCheckboxValue(muscleCheckboxValue1) != false)
-                      //   setState(() => muscleCheckboxValue1 =
-                      //       switchCheckboxValue(muscleCheckboxValue1));
                       filterModeChange();
                     }
                   },
@@ -488,7 +426,9 @@ class _FiltersDialogState extends State<FiltersDialog> {
     );
   }
 
-  Widget buildRadio(
+  /// Retourne une Row avec un texte [content] et un Radio
+  /// avec les attributs [value], [onChanged], [onTap] & [groupeValue].
+  Row buildRadio(
     String content, {
     @required int value,
     @required Function onChanged,
@@ -526,7 +466,9 @@ class _FiltersDialogState extends State<FiltersDialog> {
     );
   }
 
-  Widget buildCheckbox(
+  /// Retourne une Row avec un texte [content] et un Checkbox
+  /// avec les attributs [value], [onChanged] & [onTap].
+  Row buildCheckbox(
     String content, {
     @required bool value,
     @required Function onChanged,
@@ -562,4 +504,45 @@ class _FiltersDialogState extends State<FiltersDialog> {
       ],
     );
   }
+
+  // Column buildSortByPart() {
+  //   return Column(
+  //     children: <Widget>[
+  //       StrongrText(
+  //         "Trier par",
+  //         bold: true,
+  //         size: 20,
+  //       ),
+  //       Row(
+  //         mainAxisAlignment: MainAxisAlignment.spaceAround,
+  //         children: <Widget>[
+  //           buildRadio(
+  //             "A-Z",
+  //             value: 1,
+  //             groupeValue: groupValue,
+  //             onChanged: (int newValue) => setState(
+  //               () => groupValue = newValue,
+  //             ),
+  //             onTap: () {
+  //               if (groupValue != 1) setState(() => groupValue = 1);
+  //             },
+  //           ),
+  //           buildRadio(
+  //             "Z-A",
+  //             value: 2,
+  //             groupeValue: groupValue,
+  //             onChanged: (int newValue) => setState(
+  //               () => groupValue = newValue,
+  //             ),
+  //             onTap: () {
+  //               if (groupValue != 2) setState(() => groupValue = 2);
+  //             },
+  //           ),
+  //         ],
+  //       ),
+  //       Divider(thickness: 1),
+  //     ],
+  //   );
+  // }
+
 }

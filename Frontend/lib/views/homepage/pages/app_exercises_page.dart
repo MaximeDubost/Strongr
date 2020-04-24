@@ -8,6 +8,7 @@ import 'package:strongr/utils/diacritics.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
+import 'package:strongr/widgets/dialogs/filters_dialog.dart';
 import 'package:strongr/widgets/dialogs/new_exercise_from_list_dialog.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
 import 'package:strongr/widgets/strongr_text.dart';
@@ -36,19 +37,7 @@ class _ExercisesPageState extends State<ExercisesPage> {
     super.initState();
   }
 
-  // int resultCountOnResearch(dynamic data) {
-  //   int result = 0;
-  //   for (final item in data) {
-  //     if (Diacritics.remove(
-  //             data[data.indexOf(item)].name.toString().toLowerCase())
-  //         .contains(
-  //             Diacritics.remove(searchbarController.text.toLowerCase()))) {
-  //       result++;
-  //     }
-  //   }
-  //   return result;
-  // }
-
+  /// Affiche une [muscleList] sous forme de chaîne de charactères.
   String displayMuscleListToString(List muscleList) {
     String result = "";
     for (final item in muscleList) {
@@ -58,26 +47,16 @@ class _ExercisesPageState extends State<ExercisesPage> {
     return result;
   }
 
-  /// Méthode vérifiant si un [muscleName] est compris dans la [muscleList] d'un exercice
-  bool muscleListContains(
-      {@required List<Muscle> muscleList, @required String muscleName}) {
+  /// Méthode vérifiant si un [muscleName] est compris dans la [muscleList] d'un exercice.
+  bool muscleListContains({
+    @required List<Muscle> muscleList,
+    @required String muscleName,
+  }) {
     for (final item in muscleList) if (item.name == muscleName) return true;
     return false;
   }
 
-  // static List<Muscle> mList;
-  // static List<String> test = AppExercisesFilters.allEnabledFiltersToList();
-  // int c = test.length;
-  // Column col = Column(
-  //   children: <Widget>[
-  //     for(final item in mList)
-  //       if(true)
-  //         Container()
-  //       else
-  //         SizedBox()
-  //   ],
-  // );
-
+  /// Retourne le nombre de résultats d'une liste d'[appExercises] après recherche et filtres.
   int resultCount(List<AppExercise> appExercises) {
     int result = 0;
     for (final appExercise in appExercises)
@@ -100,6 +79,7 @@ class _ExercisesPageState extends State<ExercisesPage> {
     return result;
   }
 
+  /// Affiche une liste d'[appExercises].
   Widget buildAppExercisesList(List<AppExercise> appExercises) {
     return Column(
       verticalDirection:
@@ -193,11 +173,17 @@ class _ExercisesPageState extends State<ExercisesPage> {
     );
   }
 
-  /// Compare une liste de muscles avec une liste de filtres, retourne vrai s'il y a au moins une correspondance, faux sinon
+  /// Compare une liste de muscles [muscles] avec une liste de filtres [filters].
+  /// Retourne true s'il y a au moins une correspondance parmis leurs éléments, false sinon.
   bool compareMusclesWithFilters(List<Muscle> muscles, List<String> filters) {
     for (final muscle in muscles)
       for (final filter in filters) if (muscle.name == filter) return true;
     return false;
+  }
+
+  /// Actualise la page.
+  void refresh() {
+    setState(() {});
   }
 
   @override
@@ -211,12 +197,10 @@ class _ExercisesPageState extends State<ExercisesPage> {
             padding: EdgeInsets.only(left: 10, right: 10),
             height: 60,
             width: ScreenSize.width(context),
-            // color: Colors.blue,
             child: Container(
               alignment: Alignment.center,
               height: 50,
               width: 50,
-              // color: Colors.grey,
               child: TextField(
                 controller: searchbarController,
                 style: TextStyle(
@@ -245,21 +229,40 @@ class _ExercisesPageState extends State<ExercisesPage> {
             ),
           ),
           Visibility(
-            visible: !AppExercisesFilters.areAllDisabled(),
+            visible: !AppExercisesFilters.areAllDisabled() &&
+                AppExercisesFilters.atLeastOneDisabled(),
             child: Container(
               padding: EdgeInsets.only(top: 5, left: 20, right: 20, bottom: 5),
               alignment: Alignment.centerLeft,
-              child: StrongrText(
-                "Filtres : " + AppExercisesFilters.allEnabledFiltersToString(),
-                textAlign: TextAlign.start,
-                color: Colors.grey,
-                size: 16,
+              child: InkWell(
+                onTap: () async {
+                  FocusScope.of(context).unfocus();
+                  await showDialog(
+                    context: context,
+                    builder: (context) => FiltersDialog(),
+                  ).then((val) {
+                    if (val == true) refresh();
+                  });
+                },
+                child: StrongrText(
+                  !AppExercisesFilters.filterMode
+                      ? AppExercisesFilters.allEnabledFiltersToList().length ==
+                              1
+                          ? "Filtre : " +
+                              AppExercisesFilters.allEnabledFiltersToString()
+                          : "Filtres : " +
+                              AppExercisesFilters.allEnabledFiltersToString()
+                      : "Filtres : Tout sauf " +
+                          AppExercisesFilters.allDisabledFiltersToString(),
+                  textAlign: TextAlign.start,
+                  color: Colors.grey,
+                  size: 16,
+                ),
               ),
             ),
           ),
           Container(
             height: 25,
-            // color: Colors.red,
             child: Stack(
               children: <Widget>[
                 Center(
@@ -317,123 +320,8 @@ class _ExercisesPageState extends State<ExercisesPage> {
                               color: Colors.grey,
                             ),
                           ),
-                    // resultCountOnResearch(snapshot.data) != 0
                     resultCount(snapshot.data) != 0
                         ? Container(
-                            // child: Column(
-                            //   verticalDirection: sortedByAlpha
-                            //       ? VerticalDirection.down
-                            //       : VerticalDirection.up,
-                            //   children: <Widget>[
-                            //     for (final item in snapshot.data)
-                            //       searchbarController.text == "" ||
-                            //               Diacritics.remove(
-                            //                 snapshot
-                            //                     .data[
-                            //                         snapshot.data.indexOf(item)]
-                            //                     .name
-                            //                     .toString()
-                            //                     .toLowerCase(),
-                            //               ).contains(
-                            //                 Diacritics.remove(
-                            //                   searchbarController.text
-                            //                       .toLowerCase(),
-                            //                 ),
-                            //               )
-                            //           ? Container(
-                            //               padding: EdgeInsets.all(5),
-                            //               height: 90,
-                            //               child: StrongrRoundedContainer(
-                            //                 width: ScreenSize.width(context),
-                            //                 content: Stack(
-                            //                   children: <Widget>[
-                            //                     Container(
-                            //                       alignment:
-                            //                           Alignment.centerLeft,
-                            //                       child: Column(
-                            //                         crossAxisAlignment:
-                            //                             CrossAxisAlignment
-                            //                                 .start,
-                            //                         mainAxisAlignment:
-                            //                             MainAxisAlignment
-                            //                                 .spaceEvenly,
-                            //                         children: <Widget>[
-                            //                           StrongrText(
-                            //                             snapshot
-                            //                                 .data[snapshot.data
-                            //                                     .indexOf(item)]
-                            //                                 .name,
-                            //                             textAlign:
-                            //                                 TextAlign.start,
-                            //                             bold: true,
-                            //                           ),
-                            //                           StrongrText(
-                            //                             displayMuscleListToString(
-                            //                                 snapshot
-                            //                                     .data[snapshot
-                            //                                         .data
-                            //                                         .indexOf(
-                            //                                             item)]
-                            //                                     .muscleList),
-                            //                             textAlign:
-                            //                                 TextAlign.start,
-                            //                           ),
-                            //                         ],
-                            //                       ),
-                            //                     ),
-                            //                     Container(
-                            //                       alignment:
-                            //                           Alignment.centerRight,
-                            //                       child: Container(
-                            //                         width: 35,
-                            //                         height: 35,
-                            //                         child: FloatingActionButton(
-                            //                           elevation: 0,
-                            //                           heroTag: 'fab_' +
-                            //                               (snapshot.data.indexOf(
-                            //                                           item) +
-                            //                                       1)
-                            //                                   .toString(),
-                            //                           tooltip: "Ajouter",
-                            //                           backgroundColor:
-                            //                               StrongrColors.blue,
-                            //                           child: Icon(
-                            //                             Icons.add,
-                            //                             color: Colors.white,
-                            //                           ),
-                            //                           onPressed: () =>
-                            //                               showDialog(
-                            //                             context: context,
-                            //                             builder: (context) =>
-                            //                                 NewExerciseFromListDialog(),
-                            //                           ),
-                            //                         ),
-                            //                       ),
-                            //                     ),
-                            //                   ],
-                            //                 ),
-                            //                 onPressed: () {
-                            //                   FocusScope.of(context).unfocus();
-                            //                   Navigator.pushNamed(
-                            //                     context,
-                            //                     EXERCISE_ROUTE,
-                            //                     arguments: ExercisesPage(
-                            //                       id: snapshot
-                            //                           .data[snapshot.data
-                            //                               .indexOf(item)]
-                            //                           .id,
-                            //                       name: snapshot
-                            //                           .data[snapshot.data
-                            //                               .indexOf(item)]
-                            //                           .name,
-                            //                     ),
-                            //                   );
-                            //                 },
-                            //               ),
-                            //             )
-                            //           : SizedBox(),
-                            //   ],
-                            // ),
                             child: buildAppExercisesList(snapshot.data),
                           )
                         : Container(
@@ -463,9 +351,5 @@ class _ExercisesPageState extends State<ExercisesPage> {
         ],
       ),
     );
-  }
-
-  void refresh() {
-    setState(() {});
   }
 }

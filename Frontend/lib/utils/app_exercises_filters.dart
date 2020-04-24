@@ -11,6 +11,7 @@ class AppExercisesFilters {
   static bool quadriceps = false;
   static bool triceps = false;
 
+  /// Retourne true si tous les filtres sont désactiver, false sinon.
   static bool areAllDisabled() {
     if (abs == false &&
         forearms == false &&
@@ -25,6 +26,39 @@ class AppExercisesFilters {
     return false;
   }
 
+  /// Retourne true si au moins un filtre est désactivé, false sinon.
+  static bool atLeastOneDisabled() {
+    if (abs == false ||
+        forearms == false ||
+        biceps == false ||
+        back == false ||
+        shoulders == false ||
+        hamstrings == false ||
+        calves == false ||
+        pectorals == false ||
+        quadriceps == false ||
+        triceps == false) return true;
+    return false;
+  }
+
+  /// Retourne la liste de tous les filtres désactivés sous forme de chaîne de caractères.
+  static String allDisabledFiltersToString() {
+    String result = "";
+    if (!abs) result += "Abdominaux, ";
+    if (!forearms) result += "Avant-bras, ";
+    if (!biceps) result += "Biceps, ";
+    if (!back) result += "Dos, ";
+    if (!shoulders) result += "Épaules, ";
+    if (!hamstrings) result += "Ischios, ";
+    if (!calves) result += "Mollets, ";
+    if (!pectorals) result += "Pectoraux, ";
+    if (!quadriceps) result += "Quadriceps, ";
+    if (!triceps) result += "Triceps, ";
+    if (result.length != 0) result = result.substring(0, result.length - 2);
+    return result;
+  }
+
+  /// Retourne la liste de tous les filtres activés sous forme de chaîne de caractères.
   static String allEnabledFiltersToString() {
     String result = "";
     if (abs) result += "Abdominaux, ";
@@ -41,6 +75,7 @@ class AppExercisesFilters {
     return result;
   }
 
+  /// Retourne la liste de tous les filtres activés.
   static List<String> allEnabledFiltersToList() {
     List<String> result = List<String>();
     if (abs) result.add("Abdominaux");
@@ -56,6 +91,7 @@ class AppExercisesFilters {
     return result;
   }
 
+  /// Désactive tous les filtres et réinitialise le mode de filtrage par défaut.
   static void disableAll() {
     filterMode = false;
     abs = false;
