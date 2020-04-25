@@ -19,35 +19,32 @@ CREATE TABLE _user(
    phonenumber VARCHAR(255),
    birthdate DATE NOT NULL,
    username VARCHAR(255) NOT NULL UNIQUE,
+   weight REAL,
    signeddate TIMESTAMP NOT NULL,
    recoverycode VARCHAR(255),
    PRIMARY KEY(id_user)
 );
 
-CREATE TABLE _program(
-   id_program SERIAL,
-   id_user INT,
-   creation_date TIMESTAMP,
-   last_update TIMESTAMP,
-   name VARCHAR(255) NOT NULL,
-   PRIMARY KEY(id_user, id_program),
-   FOREIGN KEY(id_user) REFERENCES _user(id_user)
-);
-
-CREATE TABLE _session(
-   id_session SERIAL,
-   id_user INT,
-   name VARCHAR(255) NOT NULL,
-   creation_date TIMESTAMP,
-   last_update TIMESTAMP,
-   PRIMARY KEY(id_user, id_session),
-   FOREIGN KEY(id_user) REFERENCES _user(id_user)
-);
-
 CREATE TABLE _app_exercise(
    id_app_exercise SERIAL,
    name VARCHAR(255) NOT NULL,
+   description TEXT,
+   image VARCHAR(255) UNIQUE,
    PRIMARY KEY(id_app_exercise)
+);
+
+CREATE TABLE _session_type(
+   id_session_type SERIAL,
+   name VARCHAR(255) NOT NULL,
+   description TEXT,
+   PRIMARY KEY(id_session_type)
+);
+
+CREATE TABLE _program_goal(
+   id_program_goal SERIAL,
+   name VARCHAR(255) NOT NULL,
+   description TEXT,
+   PRIMARY KEY(id_program_goal)
 );
 
 CREATE TABLE _exercise(
@@ -62,6 +59,30 @@ CREATE TABLE _exercise(
    FOREIGN KEY(id_app_exercise) REFERENCES _app_exercise(id_app_exercise),
    FOREIGN KEY(id_user) REFERENCES _user(id_user),
    FOREIGN KEY(id_equipment) REFERENCES _equipment(id_equipment)
+);
+
+CREATE TABLE _program(
+   id_program SERIAL,
+   id_user INT,
+   id_program_goal INT,
+   name VARCHAR(255) NOT NULL,
+   creation_date TIMESTAMP,
+   last_update TIMESTAMP,
+   PRIMARY KEY(id_user, id_program),
+   FOREIGN KEY(id_user) REFERENCES _user(id_user),
+   FOREIGN KEY(id_program_goal) REFERENCES _program_goal(id_program_goal)
+);
+
+CREATE TABLE _session(
+   id_session SERIAL,
+   id_user INT,
+   id_session_type INT,
+   name VARCHAR(255) NOT NULL,
+   creation_date TIMESTAMP,
+   last_update TIMESTAMP,
+   PRIMARY KEY(id_user, id_session),
+   FOREIGN KEY(id_user) REFERENCES _user(id_user),
+   FOREIGN KEY(id_session_type) REFERENCES _session_type(id_session_type)
 );
 
 CREATE TABLE _set(

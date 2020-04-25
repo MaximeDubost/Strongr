@@ -142,3 +142,14 @@ VALUES
 	(61, 5),
 	(62, 4),
 	(63, 4);
+
+INSERT INTO public._session_type(name, description)
+VALUES 
+('Split body', 'Le split body met la priorité sur l''intensité du training et non sur la fréquence d''entrainement, il s''agit d''entraîner chaque muscle une unique fois par semaine, on va donc pouvoir aller à l''échec et utiliser des techniques d''intensification. Il faut cependant un bon niveau pour employer ces méthodes d''intensification de manière efficace.
+
+En compensant la réduction de la fréquence d''entrainement par l''intensité on peut s''assurer des gains aussi élevés qu''avec les autres méthodes.
+Les personnes ayant une mauvaise récupération doivent donc éviter le full body et préférer le split body, cependant si vous n''aimez pas le split ou n''arrivez pas à mettre beaucoup d''intensité en une séance il vaut mieux opter pour du half body ou du fullbody.'),
+('Half body', 'Le half body consiste quant à lui à entraîner le haut et le bas du corps séparément, en général 2 fois chacun par semaine. On va donc pouvoir mettre plus d''intensité qu''en full body, car les différentes parties du corps auront un peu plus de temps pour récupérer.
+
+Les personnes ayant une mauvaise récupération peuvent entraîner chaque moitié du corps tous les 5 jours, ce qui leurs permet de garder une bonne intensité tout en favorisant leur récupération.'),
+('Full body', 'Le full body est conseillé aux débutants en musculation car la répétition fréquente des exercices leur permet une adaptation nerveuse ainsi qu''un apprentissage des mouvements plus rapide. Il n''est cependant pas réservé qu''aux débutants, car ils ne peuvent pas mettre beaucoup d''intensité dans leurs séances, ce qui leur permet de travailler chaque muscle souvent.');
