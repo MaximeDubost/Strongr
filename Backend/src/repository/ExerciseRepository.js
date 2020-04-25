@@ -40,13 +40,34 @@ repository.readExercises = async () => {
     let sqlReadAllExercices = "SELECT * FROM _exercise WHERE id_user = $1"
     try {
         var result = await clt.query(sqlReadAllExercices,[1])
-    
         return result;
     } catch(error)
     {
         console.log(error)
     }
 
+}
+
+repository.updateExercise = async (req) => {
+    let date = new Date();
+    let sqlUpdateExercise = "UPDATE _exercise SET "+ req.body.modify +" = $1, last_update = $2 WHERE id_exercise=$3"
+    try {
+        await clt.query(sqlUpdateExercise, [req.body.value, date, req.params.id_exercise])
+        return res = 201
+    } catch(error)
+    {
+        console.log(error)
+    }
+}
+
+repository.deleteExercise = async (req) => {
+    let sqlDeleteExercise = "DELETE FROM _exercise WHERE id_exercise = $1"
+    try {
+        await clt.query(sqlDeleteExercise, [req.params.id_exercise])    
+        return res = 201
+    }catch(error){
+        console.log(error)
+    }
 }
 
 

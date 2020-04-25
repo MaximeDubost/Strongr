@@ -11,7 +11,7 @@ const controller = {};
  * @param id_equipment
  */
 controller.createExercise = async (req, res) => {
-    var rows = await ExerciseRepository.createExercise(req.body)
+    let rows = await ExerciseRepository.createExercise(req.body)
     //console.log(rows)
     res.status(200).json({ data: rows })
 }
@@ -20,8 +20,22 @@ controller.createExercise = async (req, res) => {
  * read all exercises
  */
 controller.readExercises = async (req, res) => {
-    var rows = await ExerciseRepository.readExercises()
+    let rows = await ExerciseRepository.readExercises()
     res.status(200).json({ data: rows.rows })
 }
+
+/**
+ * update user exercise
+ */
+controller.updateExercise = async (req, res) => {
+    let rows = await ExerciseRepository.updateExercise(req)
+    res.status(200).json({rows})
+}
+
+controller.deleteExercise = async (req, res) => {
+    let rows = await ExerciseRepository.deleteExercise(req)
+    res.status(200).json({rows})
+}
+
 
 export default controller;

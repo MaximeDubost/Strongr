@@ -31,6 +31,8 @@ router.put("/session/:id_session", middleware.checkAuth, SessionController.updat
 /**  CRUD Exercise */
 router.post("/exercise/create", ExerciseController.createExercise);
 router.get("/exercise/read", ExerciseController.readExercises);
+router.put("/exercise/update/:id_exercise", ExerciseController.updateExercise);
+router.delete("/exercise/delete/:id_exercise", ExerciseController.deleteExercise);
 
 export default router;
 
