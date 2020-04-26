@@ -8,11 +8,13 @@
     "server:prod": "node ./dist/bin/www",
     "dev": "npm-run-all server",
     "clean": "rimraf dist",
-    "build": "babel ./src --out-dir dist",
+    "build": "babel ./src -d dist --source-maps",
     "prod": "NODE_ENV=production npm-run-all clean build server:prod",
     "watch": "nodemon"
   },
   "dependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
     "bcrypt": "^3.0.8",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
@@ -30,6 +32,7 @@
     "@babel/core": "^7.8.3",
     "@babel/node": "^7.8.3",
     "@babel/preset-env": "^7.8.3",
+    "babel-preset-env": "^1.7.0",
     "nodemon": "^2.0.2"
   }
 }

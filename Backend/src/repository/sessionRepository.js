@@ -1,23 +1,6 @@
-const { Pool } = require('pg')
-var clt = null;
+import clt from "../core/config/database";
 const repository = {};
 
-const pool = new Pool({
-    host: 'localhost',
-    port: 5432,
-    user: 'postgres',
-    password: 'root',
-    database: 'StrongrDB'
-});
-
-pool.connect((err, client, release) => {
-    console.log("In pool connect");
-    if (err) {
-        return console.error("Error acquiring client", err.stack);
-    } else {
-        clt = client;
-    }
-});
 
 repository.getSessionByUserAndSession = async (req) => {
     let res;
