@@ -4,7 +4,6 @@ import nodemailer from "nodemailer"
 
 import UserRepository from "../repository/UserRepository"
 
-var clt = null;
 const controller = {};
 
 let transport = nodemailer.createTransport({
@@ -39,7 +38,8 @@ controller.getUser = async (req, res) => {
  * @param password varchar,
  * @param email varchar,
  */
-controller.register = async (req, res, next) => {
+controller.register = async (req, res) => {
+
     try {
         let userRegistered = await UserRepository.register(req.body);
         res.sendStatus(userRegistered);
