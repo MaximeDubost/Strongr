@@ -16,19 +16,19 @@ const String WELCOME_ROUTE = "welcome";
 const String HOMEPAGE_ROUTE = "homepage";
 
 // Exercise
-const String EXERCISE_ROUTE = "exercise";
+const String APP_EXERCISE_ROUTE = "app_exercise";
 
 // User Exercises
-const String USER_EXERCISES_LIST_ROUTE = "user_exercises_list";
-const String USER_EXERCISE_ROUTE = "user_exercise";
+const String EXERCISES_ROUTE = "exercises";
+const String EXERCISE_ROUTE = "exercise";
 
 // User Sessions
-const String USER_SESSIONS_LIST_ROUTE = "user_sessions_list";
-const String USER_SESSION_ROUTE = "user_session";
+const String SESSIONS_ROUTE = "sessions";
+const String SESSION_ROUTE = "session";
 
 // User Programs
-const String USER_PROGRAMS_LIST_ROUTE = "user_programs_list";
-const String USER_PROGRAM_ROUTE = "user_program";
+const String PROGRAMS_ROUTE = "programs";
+const String PROGRAM_ROUTE = "program";
 
 // Profile
 const String PROFILE_ROUTE = "profile";

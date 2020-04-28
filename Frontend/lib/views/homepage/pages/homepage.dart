@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
+import 'package:strongr/utils/strongr_colors.dart';
+import 'package:strongr/views/exercise/exercise_view.dart';
+import 'package:strongr/views/program/program_view.dart';
+import 'package:strongr/views/session/session_view.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
@@ -48,17 +53,17 @@ class _HomepageState extends State<Homepage> {
       child: Column(
         children: <Widget>[
           FlatButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pushNamed(context, EXERCISES_ROUTE);
+            },
             child: Container(
+              height: ScreenSize.height(context) / 12,
               padding: EdgeInsets.all(5),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  StrongrText("Exercices", size: 25),
-                  IconButton(
-                    icon: Icon(Icons.keyboard_arrow_right),
-                    onPressed: () {},
-                  )
+                  StrongrText("Vos exercices", size: 25),
+                  Icon(Icons.keyboard_arrow_right),
                 ],
               ),
             ),
@@ -76,77 +81,110 @@ class _HomepageState extends State<Homepage> {
               children: <Widget>[
                 for (int i = 1; i <= 3; i++)
                   StrongrRoundedContainer(
-                    content: Container(
-                      padding: EdgeInsets.only(left: 10, top: 8, bottom: 8),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            child: StrongrText(
-                              "Exercice perso. " + i.toString(), bold: true,
+                    content: Stack(
+                      children: <Widget>[
+                        Container(
+                          padding: EdgeInsets.only(left: 10, top: 8, bottom: 8),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Container(
+                                alignment: Alignment.centerLeft,
+                                child: StrongrText(
+                                  "Exercice perso. " + i.toString(),
+                                  bold: true,
+                                ),
+                              ),
+                              Container(
+                                alignment: Alignment.centerLeft,
+                                child: Row(
+                                  children: <Widget>[
+                                    Icon(Icons.fitness_center),
+                                    Container(
+                                        padding: EdgeInsets.only(left: 10),
+                                        child: StrongrText(
+                                          "Exercice X",
+                                        )),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                alignment: Alignment.centerLeft,
+                                child: Row(
+                                  children: <Widget>[
+                                    Icon(Icons.show_chart),
+                                    Container(
+                                        padding: EdgeInsets.only(left: 10),
+                                        child: StrongrText(
+                                          "X kg",
+                                        )),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                alignment: Alignment.centerLeft,
+                                child: Row(
+                                  children: <Widget>[
+                                    Icon(Icons.refresh),
+                                    Container(
+                                        padding: EdgeInsets.only(left: 10),
+                                        child: StrongrText(
+                                          "X série(s)",
+                                        )),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          padding: EdgeInsets.only(bottom: 10, right: 10),
+                          alignment: Alignment.bottomRight,
+                          child: Container(
+                            width: 35,
+                            height: 35,
+                            child: FloatingActionButton(
+                              elevation: 0,
+                              heroTag: 'exercise_fab_' + i.toString(),
+                              tooltip: "Démarrer",
+                              backgroundColor: StrongrColors.blue,
+                              child: Icon(
+                                Icons.play_arrow,
+                                color: Colors.white,
+                              ),
+                              onPressed: () {},
                             ),
                           ),
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            child: Row(
-                              children: <Widget>[
-                                Icon(Icons.fitness_center),
-                                Container(
-                                    padding: EdgeInsets.only(left: 10),
-                                    child: StrongrText(
-                                      "Exercice X",
-                                    )),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            child: Row(
-                              children: <Widget>[
-                                Icon(Icons.show_chart),
-                                Container(
-                                    padding: EdgeInsets.only(left: 10),
-                                    child: StrongrText(
-                                      "X kg",
-                                    )),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            child: Row(
-                              children: <Widget>[
-                                Icon(Icons.refresh),
-                                Container(
-                                    padding: EdgeInsets.only(left: 10),
-                                    child: StrongrText(
-                                      "X série(s)",
-                                    )),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushNamed(
+                        context,
+                        EXERCISE_ROUTE,
+                        arguments: ExerciseView(
+                          id: i.toString(),
+                          name: "Exercice perso. " + i.toString(),
+                        ),
+                      );
+                    },
                   ),
               ],
             ),
           ),
           FlatButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pushNamed(context, SESSIONS_ROUTE);
+            },
             child: Container(
+              height: ScreenSize.height(context) / 12,
               padding: EdgeInsets.all(5),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  StrongrText("Séances", size: 25),
-                  IconButton(
-                    icon: Icon(Icons.keyboard_arrow_right),
-                    onPressed: () {},
-                  )
+                  StrongrText("Vos séances", size: 25),
+                  Icon(Icons.keyboard_arrow_right),
                 ],
               ),
             ),
@@ -164,77 +202,110 @@ class _HomepageState extends State<Homepage> {
               children: <Widget>[
                 for (int i = 1; i <= 3; i++)
                   StrongrRoundedContainer(
-                    content: Container(
-                      padding: EdgeInsets.only(left: 10, top: 8, bottom: 8),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            child: StrongrText(
-                              "Séance perso. " + i.toString(), bold: true,
+                    content: Stack(
+                      children: <Widget>[
+                        Container(
+                          padding: EdgeInsets.only(left: 10, top: 8, bottom: 8),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Container(
+                                alignment: Alignment.centerLeft,
+                                child: StrongrText(
+                                  "Séance perso. " + i.toString(),
+                                  bold: true,
+                                ),
+                              ),
+                              Container(
+                                alignment: Alignment.centerLeft,
+                                child: Row(
+                                  children: <Widget>[
+                                    Icon(Icons.accessibility),
+                                    Container(
+                                        padding: EdgeInsets.only(left: 10),
+                                        child: StrongrText(
+                                          "Full body",
+                                        )),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                alignment: Alignment.centerLeft,
+                                child: Row(
+                                  children: <Widget>[
+                                    Icon(Icons.fitness_center),
+                                    Container(
+                                        padding: EdgeInsets.only(left: 10),
+                                        child: StrongrText(
+                                          "X exercices",
+                                        )),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                alignment: Alignment.centerLeft,
+                                child: Row(
+                                  children: <Widget>[
+                                    Icon(Icons.show_chart),
+                                    Container(
+                                        padding: EdgeInsets.only(left: 10),
+                                        child: StrongrText(
+                                          "X kg",
+                                        )),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          padding: EdgeInsets.only(bottom: 10, right: 10),
+                          alignment: Alignment.bottomRight,
+                          child: Container(
+                            width: 35,
+                            height: 35,
+                            child: FloatingActionButton(
+                              elevation: 0,
+                              heroTag: 'session_fab_' + i.toString(),
+                              tooltip: "Démarrer",
+                              backgroundColor: StrongrColors.blue,
+                              child: Icon(
+                                Icons.play_arrow,
+                                color: Colors.white,
+                              ),
+                              onPressed: () {},
                             ),
                           ),
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            child: Row(
-                              children: <Widget>[
-                                Icon(Icons.accessibility),
-                                Container(
-                                    padding: EdgeInsets.only(left: 10),
-                                    child: StrongrText(
-                                      "Full body",
-                                    )),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            child: Row(
-                              children: <Widget>[
-                                Icon(Icons.fitness_center),
-                                Container(
-                                    padding: EdgeInsets.only(left: 10),
-                                    child: StrongrText(
-                                      "X exercices",
-                                    )),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            child: Row(
-                              children: <Widget>[
-                                Icon(Icons.show_chart),
-                                Container(
-                                    padding: EdgeInsets.only(left: 10),
-                                    child: StrongrText(
-                                      "X kg",
-                                    )),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushNamed(
+                        context,
+                        SESSION_ROUTE,
+                        arguments: SessionView(
+                          id: i.toString(),
+                          name: "Séance perso. " + i.toString(),
+                        ),
+                      );
+                    },
                   ),
               ],
             ),
           ),
           FlatButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pushNamed(context, PROGRAMS_ROUTE);
+            },
             child: Container(
+              height: ScreenSize.height(context) / 12,
               padding: EdgeInsets.all(5),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  StrongrText("Programmes", size: 25),
-                  IconButton(
-                    icon: Icon(Icons.keyboard_arrow_right),
-                    onPressed: () {},
-                  )
+                  StrongrText("Vos programmes", size: 25),
+                  Icon(Icons.keyboard_arrow_right),
                 ],
               ),
             ),
@@ -252,61 +323,94 @@ class _HomepageState extends State<Homepage> {
               children: <Widget>[
                 for (int i = 1; i <= 3; i++)
                   StrongrRoundedContainer(
-                    content: Container(
-                      padding: EdgeInsets.only(left: 10, top: 8, bottom: 8),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            child: StrongrText(
-                              "Programme perso. " + i.toString(), bold: true,
+                    content: Stack(
+                      children: <Widget>[
+                        Container(
+                          padding: EdgeInsets.only(left: 10, top: 8, bottom: 8),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Container(
+                                alignment: Alignment.centerLeft,
+                                child: StrongrText(
+                                  "Programme perso. " + i.toString(),
+                                  bold: true,
+                                ),
+                              ),
+                              Container(
+                                alignment: Alignment.centerLeft,
+                                child: Row(
+                                  children: <Widget>[
+                                    Icon(Icons.star_border),
+                                    Container(
+                                        padding: EdgeInsets.only(left: 10),
+                                        child: StrongrText(
+                                          "Objectif",
+                                        )),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                alignment: Alignment.centerLeft,
+                                child: Row(
+                                  children: <Widget>[
+                                    Icon(Icons.calendar_today),
+                                    Container(
+                                        padding: EdgeInsets.only(left: 10),
+                                        child: StrongrText(
+                                          "X séances",
+                                        )),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                alignment: Alignment.centerLeft,
+                                child: Row(
+                                  children: <Widget>[
+                                    Icon(Icons.fitness_center),
+                                    Container(
+                                        padding: EdgeInsets.only(left: 10),
+                                        child: StrongrText(
+                                          "X exercices",
+                                        )),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          padding: EdgeInsets.only(bottom: 10, right: 10),
+                          alignment: Alignment.bottomRight,
+                          child: Container(
+                            width: 35,
+                            height: 35,
+                            child: FloatingActionButton(
+                              elevation: 0,
+                              heroTag: 'program_fab_' + i.toString(),
+                              tooltip: "Démarrer",
+                              backgroundColor: StrongrColors.blue,
+                              child: Icon(
+                                Icons.play_arrow,
+                                color: Colors.white,
+                              ),
+                              onPressed: () {},
                             ),
                           ),
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            child: Row(
-                              children: <Widget>[
-                                Icon(Icons.star_border),
-                                Container(
-                                    padding: EdgeInsets.only(left: 10),
-                                    child: StrongrText(
-                                      "Objectif",
-                                    )),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            child: Row(
-                              children: <Widget>[
-                                Icon(Icons.calendar_today),
-                                Container(
-                                    padding: EdgeInsets.only(left: 10),
-                                    child: StrongrText(
-                                      "X séances",
-                                    )),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            child: Row(
-                              children: <Widget>[
-                                Icon(Icons.fitness_center),
-                                Container(
-                                    padding: EdgeInsets.only(left: 10),
-                                    child: StrongrText(
-                                      "X exercices",
-                                    )),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushNamed(
+                        context,
+                        PROGRAM_ROUTE,
+                        arguments: ProgramView(
+                          id: i.toString(),
+                          name: "Programme perso. " + i.toString(),
+                        ),
+                      );
+                    },
                   ),
               ],
             ),

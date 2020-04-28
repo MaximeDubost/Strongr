@@ -13,18 +13,18 @@ import 'package:strongr/widgets/dialogs/new_exercise_from_list_dialog.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
-class ExercisesPage extends StatefulWidget {
+class AppExercisesPage extends StatefulWidget {
   final GlobalKey<dynamic> key;
   final int id;
   final String name;
 
-  ExercisesPage({this.key, this.id, this.name});
+  AppExercisesPage({this.key, this.id, this.name});
 
   @override
-  _ExercisesPageState createState() => _ExercisesPageState();
+  _AppExercisesPageState createState() => _AppExercisesPageState();
 }
 
-class _ExercisesPageState extends State<ExercisesPage> {
+class _AppExercisesPageState extends State<AppExercisesPage> {
   TextEditingController searchbarController;
   Future<List<AppExercise>> futureAppExercisesList;
   bool sortedByAlpha;
@@ -159,8 +159,8 @@ class _ExercisesPageState extends State<ExercisesPage> {
                   FocusScope.of(context).unfocus();
                   Navigator.pushNamed(
                     context,
-                    EXERCISE_ROUTE,
-                    arguments: ExercisesPage(
+                    APP_EXERCISE_ROUTE,
+                    arguments: AppExercisesPage(
                       id: appExercises[appExercises.indexOf(appExercise)].id,
                       name:
                           appExercises[appExercises.indexOf(appExercise)].name,

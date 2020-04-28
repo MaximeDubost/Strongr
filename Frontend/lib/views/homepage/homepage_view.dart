@@ -22,7 +22,7 @@ class _HomepageViewState extends State<HomepageView> {
   void initState() {
     currentPage = 1;
     pagesList = [
-      ExercisesPage(key: _appExercisesPageKey),
+      AppExercisesPage(key: _appExercisesPageKey),
       Homepage(),
       StatisticsPage(),
     ];

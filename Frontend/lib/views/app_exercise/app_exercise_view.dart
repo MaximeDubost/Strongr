@@ -7,18 +7,18 @@ import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/widgets/dialogs/new_exercise_from_list_dialog.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
-class ExerciseView extends StatefulWidget {
+class AppExerciseView extends StatefulWidget {
   final int id;
   final String name;
   final bool isBelonged;
 
-  ExerciseView({this.id, this.name, this.isBelonged = false});
+  AppExerciseView({this.id, this.name, this.isBelonged = false});
 
   @override
-  _ExerciseViewState createState() => _ExerciseViewState();
+  _AppExerciseViewState createState() => _AppExerciseViewState();
 }
 
-class _ExerciseViewState extends State<ExerciseView> {
+class _AppExerciseViewState extends State<AppExerciseView> {
   Future<AppExercise> futureAppExercise;
 
   @override
