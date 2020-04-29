@@ -34,6 +34,7 @@ class _ProgramsViewState extends State<ProgramsView> {
           title: Text("Vos programmes"),
           actions: <Widget>[
             PopupMenuButton<String>(
+              tooltip: "Menu",
               itemBuilder: (context) {
                 return [];
               },

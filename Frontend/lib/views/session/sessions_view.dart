@@ -34,6 +34,7 @@ class _SessionsViewState extends State<SessionsView> {
           title: Text("Vos séances"),
           actions: <Widget>[
             PopupMenuButton<String>(
+              tooltip: "Menu",
               itemBuilder: (context) {
                 return [];
               },

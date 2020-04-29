@@ -34,6 +34,7 @@ class _ExercisesViewState extends State<ExercisesView> {
           title: Text("Vos exerices"),
           actions: <Widget>[
             PopupMenuButton<String>(
+              tooltip: "Menu",
               itemBuilder: (context) {
                 return [];
               },
