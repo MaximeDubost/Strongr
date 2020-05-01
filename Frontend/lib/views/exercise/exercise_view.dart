@@ -67,26 +67,30 @@ class _ExerciseViewState extends State<ExerciseView> {
             Container(
               height: 35,
               width: 35,
-              child: isEditMode ? RawMaterialButton(
-                onPressed: () {},
-                child: Icon(
-                  Icons.delete_outline,
-                  color: Colors.red[300],
-                ),
-                shape: CircleBorder(),
-              ) : RawMaterialButton(onPressed: null),
+              child: isEditMode
+                  ? RawMaterialButton(
+                      onPressed: () {},
+                      child: Icon(
+                        Icons.delete_outline,
+                        color: Colors.red[800],
+                      ),
+                      shape: CircleBorder(),
+                    )
+                  : RawMaterialButton(onPressed: null),
             ),
             Container(
               height: 35,
               width: 35,
-              child: isEditMode ? RawMaterialButton(
-                onPressed: () {},
-                child: Icon(
-                  Icons.reorder,
-                  color: Colors.grey,
-                ),
-                shape: CircleBorder(),
-              ) : RawMaterialButton(onPressed: null),
+              child: isEditMode
+                  ? RawMaterialButton(
+                      onPressed: () {},
+                      child: Icon(
+                        Icons.reorder,
+                        color: Colors.grey,
+                      ),
+                      shape: CircleBorder(),
+                    )
+                  : RawMaterialButton(onPressed: null),
             ),
           ],
         ),
@@ -122,11 +126,15 @@ class _ExerciseViewState extends State<ExerciseView> {
       body: Container(
         child: Column(
           children: <Widget>[
-            Container(
+            InkWell(
+              onTap: isEditMode ? null : () {},
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  RawMaterialButton(onPressed: null),
+                  Container(
+                    height: 50,
+                    width: 100,
+                  ),
                   Container(
                     padding: EdgeInsets.all(20),
                     child: StrongrText(
@@ -135,18 +143,14 @@ class _ExerciseViewState extends State<ExerciseView> {
                       bold: true,
                     ),
                   ),
-                  isEditMode
-                      ? RawMaterialButton(onPressed: null)
-                      : Container(
-                          alignment: Alignment.centerRight,
-                          child: RawMaterialButton(
-                            onPressed: () {},
-                            child: Icon(
-                              Icons.info_outline,
-                            ),
-                            shape: CircleBorder(),
-                          ),
-                        )
+                  Opacity(
+                    opacity: isEditMode ? 0 : 1,
+                    child: Container(
+                      height: 50,
+                      width: 100,
+                      child: Icon(Icons.info_outline),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -162,12 +166,12 @@ class _ExerciseViewState extends State<ExerciseView> {
                   ? ReorderableListView(
                       onReorder: (oldIndex, newIndex) {},
                       children: <Widget>[
-                        for (int i = 1; i <= 6; i++) buildListViewItem(i),
+                        for (int i = 1; i <= 4; i++) buildListViewItem(i),
                       ],
                     )
                   : ListView(
                       children: <Widget>[
-                        for (int i = 1; i <= 6; i++) buildListViewItem(i),
+                        for (int i = 1; i <= 4; i++) buildListViewItem(i),
                       ],
                     ),
             ),
