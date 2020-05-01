@@ -35,7 +35,7 @@ class _ExerciseViewState extends State<ExerciseView> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Container(
-              height: 35,
+              // color: Colors.yellow,
               width: 35,
               child: Center(
                 child: StrongrText(
@@ -44,53 +44,80 @@ class _ExerciseViewState extends State<ExerciseView> {
                 ),
               ),
             ),
-            Container(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      Icon(Icons.replay),
-                      StrongrText(" Répétitions : 10"),
-                    ],
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Icon(Icons.hourglass_empty),
-                      StrongrText(" Repos : 60s"),
-                    ],
-                  ),
-                ],
+            Flexible(
+              child: Container(
+                // color: Colors.red,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        Container(
+                          padding: EdgeInsets.only(left: 5, right: 5),
+                          child: Icon(Icons.refresh),
+                        ),
+                        Flexible(
+                          child: Container(
+                            // color: Colors.blue,
+                            child: StrongrText(
+                              "Répétitions : 10",
+                              textAlign: TextAlign.start,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Container(
+                          padding: EdgeInsets.only(left: 5, right: 5),
+                          child: Icon(Icons.hourglass_empty),
+                        ),
+                        Container(
+                          width: 185,
+                          child: StrongrText(
+                            "Repos : 60s",
+                            textAlign: TextAlign.start,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
-            Container(
-              height: 35,
-              width: 35,
-              child: isEditMode
-                  ? RawMaterialButton(
-                      onPressed: () {},
-                      child: Icon(
-                        Icons.delete_outline,
-                        color: Colors.red[800],
+            Visibility(
+              visible: isEditMode,
+              child: Container(
+                // color: Colors.green,
+                child: Row(
+                  children: <Widget>[
+                    Container(
+                      width: 35,
+                      child: RawMaterialButton(
+                        onPressed: () {},
+                        child: Icon(
+                          Icons.close,
+                          color: Colors.red[800],
+                        ),
+                        shape: CircleBorder(),
                       ),
-                      shape: CircleBorder(),
-                    )
-                  : RawMaterialButton(onPressed: null),
-            ),
-            Container(
-              height: 35,
-              width: 35,
-              child: isEditMode
-                  ? RawMaterialButton(
-                      onPressed: () {},
-                      child: Icon(
-                        Icons.reorder,
-                        color: Colors.grey,
+                    ),
+                    Container(
+                      width: 35,
+                      child: RawMaterialButton(
+                        onPressed: () {},
+                        child: Icon(
+                          Icons.reorder,
+                          color: Colors.grey,
+                        ),
+                        shape: CircleBorder(),
                       ),
-                      shape: CircleBorder(),
-                    )
-                  : RawMaterialButton(onPressed: null),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ],
         ),
@@ -139,7 +166,7 @@ class _ExerciseViewState extends State<ExerciseView> {
                     padding: EdgeInsets.all(20),
                     child: StrongrText(
                       "Crunch",
-                      size: 22,
+                      // size: 22,
                       bold: true,
                     ),
                   ),
@@ -202,6 +229,21 @@ class _ExerciseViewState extends State<ExerciseView> {
                 ),
               ),
             ),
+            Visibility(
+              visible: isEditMode,
+              child: Container(
+                padding: EdgeInsets.all(10),
+                width: ScreenSize.width(context),
+                child: Center(
+                  child: FloatingActionButton(
+                    mini: true,
+                    backgroundColor: Colors.grey,
+                    onPressed: () {},
+                    child: Icon(Icons.add, color: Colors.white),
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -212,7 +254,7 @@ class _ExerciseViewState extends State<ExerciseView> {
           isEditMode ? Icons.delete_outline : Icons.play_arrow,
           color: Colors.white,
         ),
-        onPressed: () {},
+        onPressed: isEditMode ? () {} : () {},
         label: StrongrText(
           isEditMode ? "Supprimer" : "Démarrer",
           color: Colors.white,
