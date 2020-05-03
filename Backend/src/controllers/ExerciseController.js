@@ -11,7 +11,7 @@ const controller = {};
  * @param id_equipment
  */
 controller.createExercise = async (req, res) => {
-    let rows = await ExerciseRepository.createExercise(req.body)
+    let rows = await ExerciseRepository.createExercise(req)
     //console.log(rows)
     res.status(200).json({ data: rows })
 }
