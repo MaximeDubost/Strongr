@@ -20,7 +20,7 @@ controller.createExercise = async (req, res) => {
  * read all exercises
  */
 controller.readExercises = async (req, res) => {
-    let rows = await ExerciseRepository.readExercises()
+    let rows = await ExerciseRepository.readExercises(req)
     res.status(200).json({ data: rows.rows })
 }
 

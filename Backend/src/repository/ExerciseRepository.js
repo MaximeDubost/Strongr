@@ -36,10 +36,11 @@ repository.createExercise = async (body) => {
     }
 }
 
-repository.readExercises = async () => {
+repository.readExercises = async (req) => {
+    console.log('user id = '+req.user.id);
     let sqlReadAllExercices = "SELECT * FROM _exercise WHERE id_user = $1"
     try {
-        var result = await clt.query(sqlReadAllExercices,[1])
+        var result = await clt.query(sqlReadAllExercices,[req.user.id])
         return result;
     } catch(error)
     {
