@@ -7,8 +7,8 @@ controller.createUserProgram = async (req, res) => {
     res.sendStatus(status)
 }
 
-controller.getUserProgram = async (req, res) => {
-    let result = await UserProgramRepository.getUserProgram(req);
+controller.getProgramsPreview = async (req, res) => {
+    let result = await UserProgramRepository.getProgramsPreview(req);
     if (result != 500) {
         res.status(200).json(result)
     } else {

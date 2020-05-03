@@ -21,8 +21,18 @@ repository.createUserProgram = async (req) => {
     }
 }
 
-repository.getUserProgram = async (req) => {
-    let sql = "SELECT * FROM _program WHERE id_user = $1"
+repository.getProgramsPreview = async (req) => {
+    let sql = `
+    SELECT p.name, pg.name, 
+    COUNT(DISTINCT ps.id_session) as nbSessions, 
+    COUNT(se.id_exercise) as nbExercises
+    FROM _program p 
+    JOIN _program_goal pg ON p.id_program_goal = pg.id_program_goal
+    JOIN _program_session ps ON p.id_program = ps.id_program
+    JOIN _session_exercise se ON se.id_session = ps.id_session
+    WHERE p.id_user = $1
+    GROUP BY p.id_program, p.name, pg.name
+    `
     try {
         let result = await clt.query(sql, [req.user.id])
         return result.rows
