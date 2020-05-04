@@ -4,6 +4,7 @@ import middleware from "../middleware/middlewares";
 import UserController from "../controllers/UserController";
 import AppExerciseController from "../controllers/AppExerciseController";
 import SessionController from "../controllers/SessionController";
+import ExerciseController from "../controllers/ExerciseController";
 let router = express.Router();
 
 /** CRUD + LOGIN user */
@@ -28,5 +29,11 @@ router.get("/sessions", middleware.checkAuth, SessionController.getSessionsByUse
 router.post("/session", middleware.checkAuth, SessionController.addSession)
 router.delete("/session/:id_session", middleware.checkAuth, SessionController.deleteSession)
 router.put("/session/:id_session", middleware.checkAuth, SessionController.updateSession)
+
+/**  CRUD Exercise */
+router.post("/exercise/create", middleware.checkAuth, ExerciseController.createExercise);
+router.get("/exercise/read", middleware.checkAuth, ExerciseController.readExercises);
+router.put("/exercise/update/:id_exercise", middleware.checkAuth, ExerciseController.updateExercise);
+router.delete("/exercise/delete/:id_exercise", middleware.checkAuth, ExerciseController.deleteExercise);
 
 export default router;
