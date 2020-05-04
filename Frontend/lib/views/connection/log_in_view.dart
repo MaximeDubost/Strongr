@@ -202,6 +202,7 @@ class _LogInViewState extends State<LogInView> {
                                   setState(() => warning = null);
                                   isEmpty();
                                 },
+                                maxLength: 30,
                                 hint: "Mot de passe",
                                 textInputType: TextInputType.visiblePassword,
                                 suffixIcon: Icons.visibility_off,

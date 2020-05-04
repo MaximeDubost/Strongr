@@ -32,7 +32,7 @@ class StrongrRoundedTextFormField extends StatefulWidget {
     this.onSaved,
     this.onChanged,
     this.obscureText = false,
-    this.maxLength = 30,
+    this.maxLength,
     this.suffixIcon,
     this.suffixIconAlt,
     this.suffixIconColor,
