@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:strongr/models/Exercise.dart';
+import 'package:strongr/services/exercise_service.dart';
+import 'package:strongr/utils/diacritics.dart';
+import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
+import 'package:strongr/widgets/strongr_rounded_container.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
 class ExercisesView extends StatefulWidget {
@@ -10,16 +15,149 @@ class ExercisesView extends StatefulWidget {
 }
 
 class _ExercisesViewState extends State<ExercisesView> {
+  List<String> popupMenuItems;
   TextEditingController searchbarController;
-  // Future<List<AppExercise>> futureAppExercisesList;
+  Future<List<Exercise>> futureExercises;
   bool sortedByAlpha;
 
   @override
   void initState() {
+    popupMenuItems = ["Filtres", "Créer"];
     searchbarController = TextEditingController(text: "");
-    // futureAppExercisesList = AppExerciseService.getAppExercises();
+    futureExercises = ExerciseService.getExercises();
     sortedByAlpha = true;
     super.initState();
+  }
+
+  /// Retourne le nombre de résultats d'une liste d'[appExercises] après recherche et filtres.
+  int resultCount(List<Exercise> exercises) {
+    int result = 0;
+    for (final exercise in exercises)
+      if 
+      (
+        (
+          searchbarController.text == "" ||
+          Diacritics.remove
+          (
+            exercises[exercises.indexOf(exercise)]
+                .name
+                .toString()
+                .toLowerCase(),
+          ).contains(
+            Diacritics.remove(
+              searchbarController.text.toLowerCase(),
+            ),
+          )
+        ) 
+        // &&
+        // (
+        //   AppExercisesFilters.areAllDisabled() ||
+        //       compareMusclesWithFilters(
+        //         exercise.muscleList,
+        //         AppExercisesFilters.allEnabledFiltersToList(),
+        //       )
+        // )
+      ) 
+      result++;
+    return result;
+  }
+
+  /// Affiche une liste d'[exercises].
+  Widget buildAppExercisesList(List<Exercise> exercises) {
+    return Column(
+      verticalDirection:
+          sortedByAlpha ? VerticalDirection.down : VerticalDirection.up,
+      children: <Widget>[
+        for (final exercise in exercises)
+          if ((searchbarController.text == "" ||
+                  Diacritics.remove(
+                    exercises[exercises.indexOf(exercise)]
+                        .name
+                        .toString()
+                        .toLowerCase(),
+                  ).contains(
+                    Diacritics.remove(
+                      searchbarController.text.toLowerCase(),
+                    ),
+                  )) 
+              //     &&
+              // (AppExercisesFilters.areAllDisabled() ||
+              //     compareMusclesWithFilters(
+              //       exercise.muscleList,
+              //       AppExercisesFilters.allEnabledFiltersToList(),
+              //     ))
+                  )
+            Container(
+              padding: EdgeInsets.all(5),
+              height: 180,
+              child: StrongrRoundedContainer(
+                width: ScreenSize.width(context),
+                content: Stack(
+                  children: <Widget>[
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          StrongrText(
+                            exercises[exercises.indexOf(exercise)]
+                                .name,
+                            textAlign: TextAlign.start,
+                            bold: true,
+                          ),
+                          StrongrText(
+                            // displayMuscleListToString(
+                            //     exercises[exercises.indexOf(exercise)]
+                            //         .muscleList),
+                            "DEBUG",
+                            textAlign: TextAlign.start,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      alignment: Alignment.centerRight,
+                      child: Container(
+                        width: 35,
+                        height: 35,
+                        child: FloatingActionButton(
+                          elevation: 0,
+                          heroTag: 'fab_' +
+                              (exercises.indexOf(exercise) + 1)
+                                  .toString(),
+                          tooltip: "Ajouter",
+                          backgroundColor: StrongrColors.blue,
+                          child: Icon(
+                            Icons.add,
+                            color: Colors.white,
+                          ),
+                          // onPressed: () => showDialog(
+                          //   context: context,
+                          //   builder: (context) => NewExerciseFromListDialog(),
+                          // ),
+                          onPressed: () {},
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                onPressed: () {
+                  // FocusScope.of(context).unfocus();
+                  // Navigator.pushNamed(
+                  //   context,
+                  //   APP_EXERCISE_ROUTE,
+                  //   arguments: AppExercisesPage(
+                  //     id: appExercises[appExercises.indexOf(appExercise)].id,
+                  //     name:
+                  //         appExercises[appExercises.indexOf(appExercise)].name,
+                  //   ),
+                  // );
+                },
+              ),
+            ),
+      ],
+    );
   }
 
   @override
@@ -35,8 +173,31 @@ class _ExercisesViewState extends State<ExercisesView> {
           actions: <Widget>[
             PopupMenuButton<String>(
               tooltip: "Menu",
-              itemBuilder: (context) {
-                return [];
+              onSelected: (value) async {
+                switch (value) {
+                  case "Filtres":
+                    break;
+                  case "Créer":
+                    await Navigator.pushNamed(
+                      context,
+                      EXERCISE_ADD_ROUTE,
+                    ).then((val) {
+                      if (val == true) {
+                        setState(() {});
+                      }
+                    });
+                    break;
+                }
+              },
+              itemBuilder: (BuildContext context) {
+                return popupMenuItems.map(
+                  (String choice) {
+                    return PopupMenuItem<String>(
+                      value: choice,
+                      child: Text(choice),
+                    );
+                  },
+                ).toList();
               },
             ),
           ],
@@ -159,6 +320,51 @@ class _ExercisesViewState extends State<ExercisesView> {
                     ),
                   ],
                 ),
+              ),
+              FutureBuilder(
+                future: futureExercises,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        snapshot.data.length != 0
+                            ? SizedBox()
+                            : Container(
+                                alignment: Alignment.center,
+                                height: ScreenSize.height(context) / 1.75,
+                                child: StrongrText(
+                                  "Aucun élément à afficher",
+                                  color: Colors.grey,
+                                ),
+                              ),
+                        resultCount(snapshot.data) != 0
+                            ? Container(
+                                child: buildAppExercisesList(snapshot.data),
+                              )
+                            : Container(
+                                height: ScreenSize.height(context) / 1.75,
+                                child: Center(
+                                  child: StrongrText(
+                                    "Aucun résultat trouvé",
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ),
+                      ],
+                    );
+                  } else if (snapshot.hasError) {
+                    return Text(snapshot.error, textAlign: TextAlign.center);
+                  } else
+                    return Container(
+                      alignment: Alignment.center,
+                      height: ScreenSize.height(context) / 1.75,
+                      child: CircularProgressIndicator(
+                        valueColor:
+                            AlwaysStoppedAnimation<Color>(StrongrColors.blue),
+                      ),
+                    );
+                },
               ),
             ],
           ),

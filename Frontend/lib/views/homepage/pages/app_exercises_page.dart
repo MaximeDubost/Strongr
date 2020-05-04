@@ -1,24 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:strongr/models/muscle.dart';
-import 'package:strongr/models/app_exercise.dart';
+import 'package:strongr/models/AppExercise.dart';
 import 'package:strongr/services/app_exercise_service.dart';
 import 'package:strongr/utils/app_exercises_filters.dart';
 import 'package:strongr/utils/diacritics.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
+import 'package:strongr/views/exercise/exercise_create_view.dart';
 import 'package:strongr/widgets/dialogs/filters_dialog.dart';
 import 'package:strongr/widgets/dialogs/new_exercise_from_list_dialog.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
 import 'package:strongr/widgets/strongr_text.dart';
+import 'package:strongr/views/app_exercise/app_exercise_view.dart';
 
 class AppExercisesPage extends StatefulWidget {
   final GlobalKey<dynamic> key;
   final int id;
   final String name;
+  final bool fromExercises;
 
-  AppExercisesPage({this.key, this.id, this.name});
+  AppExercisesPage({this.key, this.id, this.name, this.fromExercises = false});
 
   @override
   _AppExercisesPageState createState() => _AppExercisesPageState();
@@ -146,10 +149,24 @@ class _AppExercisesPageState extends State<AppExercisesPage> {
                             Icons.add,
                             color: Colors.white,
                           ),
-                          onPressed: () => showDialog(
-                            context: context,
-                            builder: (context) => NewExerciseFromListDialog(),
-                          ),
+                          onPressed: widget.fromExercises
+                              ? () => Navigator.pushNamed(
+                                    context,
+                                    EXERCISE_CREATE_ROUTE,
+                                    arguments: ExerciseCreateView(
+                                      id: appExercises[
+                                              appExercises.indexOf(appExercise)]
+                                          .id,
+                                      name: appExercises[
+                                              appExercises.indexOf(appExercise)]
+                                          .name,
+                                    ),
+                                  )
+                              : () => showDialog(
+                                    context: context,
+                                    builder: (context) =>
+                                        NewExerciseFromListDialog(),
+                                  ),
                         ),
                       ),
                     ),
@@ -160,10 +177,11 @@ class _AppExercisesPageState extends State<AppExercisesPage> {
                   Navigator.pushNamed(
                     context,
                     APP_EXERCISE_ROUTE,
-                    arguments: AppExercisesPage(
+                    arguments: AppExerciseView(
                       id: appExercises[appExercises.indexOf(appExercise)].id,
                       name:
                           appExercises[appExercises.indexOf(appExercise)].name,
+                      fromExercises: widget.fromExercises,
                     ),
                   );
                 },

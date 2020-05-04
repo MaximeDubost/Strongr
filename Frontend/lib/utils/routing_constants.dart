@@ -21,14 +21,20 @@ const String APP_EXERCISE_ROUTE = "app_exercise";
 // User Exercises
 const String EXERCISES_ROUTE = "exercises";
 const String EXERCISE_ROUTE = "exercise";
+const String EXERCISE_ADD_ROUTE = "exercise_add";
+const String EXERCISE_CREATE_ROUTE = "exercise_create";
 
 // User Sessions
 const String SESSIONS_ROUTE = "sessions";
 const String SESSION_ROUTE = "session";
+const String SESSION_ADD_ROUTE = "session_add";
+const String SESSION_CREATE_ROUTE = "session_create";
 
 // User Programs
 const String PROGRAMS_ROUTE = "programs";
 const String PROGRAM_ROUTE = "program";
+const String PROGRAM_ADD_ROUTE = "program_add";
+const String PROGRAM_CREATE_ROUTE = "program_create";
 
 // Profile
 const String PROFILE_ROUTE = "profile";

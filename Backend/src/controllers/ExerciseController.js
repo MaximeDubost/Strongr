@@ -21,6 +21,7 @@ controller.createExercise = async (req, res) => {
  */
 controller.readExercises = async (req, res) => {
     let rows = await ExerciseRepository.readExercises(req)
+    console.log(rows.rows)
     res.status(200).json({ data: rows.rows })
 }
 
@@ -32,10 +33,12 @@ controller.updateExercise = async (req, res) => {
     res.status(200).json({rows})
 }
 
+/**
+ * delete user exercise
+ */
 controller.deleteExercise = async (req, res) => {
     let rows = await ExerciseRepository.deleteExercise(req)
     res.status(200).json({rows})
 }
-
 
 export default controller;

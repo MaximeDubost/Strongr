@@ -8,10 +8,11 @@ import 'package:strongr/views/connection/reset_password_view.dart';
 import 'package:strongr/views/connection/sign_in_next_view.dart';
 import 'package:strongr/views/connection/sign_in_view.dart';
 import 'package:strongr/views/app_exercise/app_exercise_view.dart';
+import 'package:strongr/views/exercise/exercise_add_view.dart';
+import 'package:strongr/views/exercise/exercise_create_view.dart';
 import 'package:strongr/views/exercise/exercise_view.dart';
 import 'package:strongr/views/exercise/exercises_view.dart';
 import 'package:strongr/views/homepage/homepage_view.dart';
-import 'package:strongr/views/homepage/pages/app_exercises_page.dart';
 import 'package:strongr/views/program/program_view.dart';
 import 'package:strongr/views/program/programs_view.dart';
 import 'package:strongr/views/session/session_view.dart';
@@ -74,11 +75,12 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     /// Exercice Application
     ///
     case APP_EXERCISE_ROUTE:
-      AppExercisesPage args = settings.arguments;
+      AppExerciseView args = settings.arguments;
       return CupertinoPageRoute(
         builder: (context) => AppExerciseView(
           id: args.id,
           name: args.name,
+          fromExercises: args.fromExercises,
         ),
       );
 
@@ -89,11 +91,25 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return CupertinoPageRoute(
         builder: (context) => ExercisesView(),
       );
-    
+
     case EXERCISE_ROUTE:
       ExerciseView args = settings.arguments;
       return CupertinoPageRoute(
         builder: (context) => ExerciseView(
+          id: args.id,
+          name: args.name,
+        ),
+      );
+
+    case EXERCISE_ADD_ROUTE:
+      return CupertinoPageRoute(
+        builder: (context) => ExerciseAddView(),
+      );
+
+    case EXERCISE_CREATE_ROUTE:
+      ExerciseCreateView args = settings.arguments;
+      return CupertinoPageRoute(
+        builder: (context) => ExerciseCreateView(
           id: args.id,
           name: args.name,
         ),
@@ -106,7 +122,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return CupertinoPageRoute(
         builder: (context) => SessionsView(),
       );
-    
+
     case SESSION_ROUTE:
       SessionView args = settings.arguments;
       return CupertinoPageRoute(
@@ -116,6 +132,14 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         ),
       );
 
+    case SESSION_ADD_ROUTE:
+      return null;
+      break;
+
+    case SESSION_CREATE_ROUTE:
+      return null;
+      break;
+
     ///
     /// Programme(s)
     ///
@@ -123,7 +147,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return CupertinoPageRoute(
         builder: (context) => ProgramsView(),
       );
-    
+
     case PROGRAM_ROUTE:
       ProgramView args = settings.arguments;
       return CupertinoPageRoute(
@@ -132,6 +156,14 @@ Route<dynamic> generateRoute(RouteSettings settings) {
           name: args.name,
         ),
       );
+
+    case PROGRAM_ADD_ROUTE:
+      return null;
+      break;
+
+    case PROGRAM_CREATE_ROUTE:
+      return null;
+      break;
 
     ///
     /// Debug Zone

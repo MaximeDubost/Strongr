@@ -4,8 +4,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
-import 'package:strongr/utils/global.dart' as global;
-import 'package:strongr/models/app_exercise.dart';
+import 'package:strongr/utils/Global.dart';
+import 'package:strongr/models/AppExercise.dart';
 
 class AppExerciseService {
   /// [GET] /appexercises
@@ -15,7 +15,7 @@ class AppExerciseService {
     try {
       Response response = await http.get(
         Uri.encodeFull(
-          global.SERVER_URL + '/appexercises',
+          Global.SERVER_URL + '/appexercises',
         ),
       );
       List<AppExercise> appExercisesList = List<AppExercise>();
@@ -34,7 +34,7 @@ class AppExerciseService {
     try {
       Response response = await http.get(
         Uri.encodeFull(
-          global.SERVER_URL + '/appexercise/' + id.toString(),
+          Global.SERVER_URL + '/appexercise/' + id.toString(),
         ),
       );
       return AppExercise.fromJson(response.body);

@@ -22,9 +22,7 @@ pool.connect((err, client, release) => {
     }
 });
 
-/**
- * create exercises 
- */
+/// CREATE
 repository.createExercise = async (req) => {
     let date = new Date();
     let sqlCreateExercise = "INSERT INTO _exercise (id_app_exercise, id_user, name, id_equipment, creation_date, last_update) VALUES ($1, $2, $3, $4, $5, $6)"   
@@ -37,6 +35,7 @@ repository.createExercise = async (req) => {
     }
 }
 
+/// READ
 repository.readExercises = async (req) => {
     console.log('user id = '+req.user.id);
     let sqlReadAllExercices = "SELECT * FROM _exercise WHERE id_user = $1"
@@ -50,6 +49,7 @@ repository.readExercises = async (req) => {
 
 }
 
+/// UPDATE
 repository.updateExercise = async (req) => {
     let date = new Date();
     let sqlUpdateExercise = "UPDATE _exercise SET id_app_exercise=$1, name=$2, id_equipment=$3, last_update=$4 WHERE id_exercise=$5 AND id_user=$6"
@@ -62,6 +62,7 @@ repository.updateExercise = async (req) => {
     }
 }
 
+/// DELETE
 repository.deleteExercise = async (req) => {
     let sqlDeleteExercise = "DELETE FROM _exercise WHERE id_exercise = $1"
     try {
@@ -71,8 +72,5 @@ repository.deleteExercise = async (req) => {
         console.log(error)
     }
 }
-
-
-
 
 export default repository;

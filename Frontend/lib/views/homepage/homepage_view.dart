@@ -58,10 +58,8 @@ class _HomepageViewState extends State<HomepageView> {
               onSelected: (value) async {
                 switch (value) {
                   case "Profil":
-                    // TODO : Vue Profil
                     break;
                   case "Paramètres":
-                    // TODO : Vue Paramètres
                     break;
                   case "Filtres":
                     await showDialog(
