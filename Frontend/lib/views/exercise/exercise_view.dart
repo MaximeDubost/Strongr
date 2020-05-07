@@ -74,11 +74,13 @@ class _ExerciseViewState extends State<ExerciseView> {
                           padding: EdgeInsets.only(left: 5, right: 5),
                           child: Icon(Icons.hourglass_empty),
                         ),
-                        Container(
-                          width: 185,
-                          child: StrongrText(
-                            "Repos : 60s",
-                            textAlign: TextAlign.start,
+                        Flexible(
+                          child: Container(
+                            // width: 185,
+                            child: StrongrText(
+                              "Repos : 60s",
+                              textAlign: TextAlign.start,
+                            ),
                           ),
                         ),
                       ],

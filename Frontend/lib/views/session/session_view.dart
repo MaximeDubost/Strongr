@@ -35,7 +35,7 @@ class _SessionViewState extends State<SessionView> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Container(
-              // color: Colors.yellow,
+              // color: Colors.blue,
               width: 35,
               child: Center(
                 child: StrongrText(
@@ -74,11 +74,13 @@ class _SessionViewState extends State<SessionView> {
                           padding: EdgeInsets.only(left: 5, right: 5),
                           child: Icon(Icons.refresh),
                         ),
-                        Container(
-                          width: 185,
-                          child: StrongrText(
-                            "4 séries",
-                            textAlign: TextAlign.start,
+                        Flexible(
+                          child: Container(
+                            // width: 185,
+                            child: StrongrText(
+                              "4 séries",
+                              textAlign: TextAlign.start,
+                            ),
                           ),
                         ),
                       ],
