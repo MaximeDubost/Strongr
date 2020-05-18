@@ -23,15 +23,14 @@ repository.createUserProgram = async (req) => {
 
 repository.getProgramsPreview = async (req) => {
     let sql = `
-    SELECT p.name, pg.name, 
-    COUNT(DISTINCT ps.id_session) as nbSessions, 
-    COUNT(se.id_exercise) as nbExercises
+    SELECT p.id_program as id, p.name as name ,pg.name as program_goal,
+    COUNT(DISTINCT ps.id_session) as session_count, 1 as Tonnage
     FROM _program p 
     JOIN _program_goal pg ON p.id_program_goal = pg.id_program_goal
     JOIN _program_session ps ON p.id_program = ps.id_program
-    JOIN _session_exercise se ON se.id_session = ps.id_session
     WHERE p.id_user = $1
-    GROUP BY p.id_program, p.name, pg.name
+    GROUP BY p.id_program, p.name, pg.name, p.last_update
+    ORDER BY p.last_update DESC
     `
     try {
         let result = await clt.query(sql, [req.user.id])
