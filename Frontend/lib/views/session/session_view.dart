@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
+import 'package:strongr/views/exercise/exercise_view.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
 class SessionView extends StatefulWidget {
   final String id;
   final String name;
+  final bool fromProgram;
 
-  SessionView({this.id, this.name});
+  SessionView({this.id, this.name, this.fromProgram = false});
 
   @override
   _SessionViewState createState() => _SessionViewState();
@@ -28,20 +31,68 @@ class _SessionViewState extends State<SessionView> {
       margin: i == 1 ? EdgeInsets.only(top: 5) : null,
       key: ValueKey(i),
       padding: EdgeInsets.all(5),
-      height: 90,
+      height: 110,
       child: StrongrRoundedContainer(
         width: ScreenSize.width(context),
         content: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
+            // Container(
+            //   // color: Colors.blue,
+            //   width: 35,
+            //   child: Center(
+            //     child: StrongrText(
+            //       i.toString(),
+            //       bold: true,
+            //     ),
+            //   ),
+            // ),
             Container(
-              // color: Colors.blue,
+              // color: Colors.red,
               width: 35,
-              child: Center(
-                child: StrongrText(
-                  i.toString(),
-                  bold: true,
-                ),
+              height: 110,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Container(
+                    height: 30,
+                    // color: Colors.blue,
+                    child: RawMaterialButton(
+                      onPressed: isEditMode ? () {} : null,
+                      child: Icon(
+                        Icons.keyboard_arrow_up,
+                        color: isEditMode
+                            ? StrongrColors.black
+                            : Colors.transparent,
+                      ),
+                      shape: CircleBorder(),
+                    ),
+                  ),
+                  Container(
+                    // color: Colors.yellow,
+                    width: 30,
+                    child: Center(
+                      child: StrongrText(
+                        i.toString(),
+                        bold: true,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    height: 30,
+                    // color: Colors.blue,
+                    child: RawMaterialButton(
+                      onPressed: isEditMode ? () {} : null,
+                      child: Icon(
+                        Icons.keyboard_arrow_down,
+                        color: isEditMode
+                            ? StrongrColors.black
+                            : Colors.transparent,
+                      ),
+                      shape: CircleBorder(),
+                    ),
+                  ),
+                ],
               ),
             ),
             Flexible(
@@ -62,7 +113,9 @@ class _SessionViewState extends State<SessionView> {
                             // color: Colors.blue,
                             child: StrongrText(
                               "Crunch",
+                              color: isEditMode ? Colors.grey : StrongrColors.black,
                               textAlign: TextAlign.start,
+                              maxLines: 2,
                             ),
                           ),
                         ),
@@ -78,8 +131,32 @@ class _SessionViewState extends State<SessionView> {
                           child: Container(
                             // width: 185,
                             child: StrongrText(
-                              "4 séries",
+                              "5 séries",
+                              color: isEditMode ? Colors.grey : StrongrColors.black,
                               textAlign: TextAlign.start,
+                              maxLines: 1,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Container(
+                          padding: EdgeInsets.only(left: 5, right: 5),
+                          child: Icon(
+                            Icons.show_chart,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        Flexible(
+                          child: Container(
+                            // width: 185,
+                            child: StrongrText(
+                              "Tonnage non calculé",
+                              color: Colors.grey,
+                              textAlign: TextAlign.start,
+                              maxLines: 1,
                             ),
                           ),
                         ),
@@ -89,59 +166,50 @@ class _SessionViewState extends State<SessionView> {
                 ),
               ),
             ),
-            Visibility(
-              visible: isEditMode,
-              child: Container(
-                // color: Colors.green,
-                child: Row(
-                  children: <Widget>[
-                    Container(
-                      width: 35,
-                      child: RawMaterialButton(
-                        onPressed: () {},
-                        child: Icon(
-                          Icons.close,
-                          color: Colors.red[800],
-                        ),
-                        shape: CircleBorder(),
+            !isEditMode
+                ? Container(
+                    width: 35,
+                    height: 35,
+                    child: FloatingActionButton(
+                      elevation: 0,
+                      heroTag: "fs_exercise_play_fab_" + i.toString(),
+                      tooltip: !isEditMode ? "Démarrer" : "Supprimer",
+                      backgroundColor:
+                          !isEditMode ? StrongrColors.blue : Colors.red[800],
+                      child: Icon(
+                        !isEditMode ? Icons.play_arrow : Icons.delete_outline,
+                        color: Colors.white,
                       ),
+                      onPressed: () {},
                     ),
-                    Container(
-                      width: 35,
-                      child: RawMaterialButton(
-                        onPressed: () {},
-                        child: Icon(
-                          Icons.reorder,
-                          color: Colors.grey,
-                        ),
-                        shape: CircleBorder(),
+                  )
+                : Container(
+                    width: 35,
+                    height: 35,
+                    child: RawMaterialButton(
+                      child: Icon(
+                        Icons.close,
+                        color: Colors.red[800],
                       ),
+                      shape: CircleBorder(),
+                      onPressed: () {},
                     ),
-                  ],
-                ),
-              ),
-            ),
-            Visibility(
-              visible: !isEditMode,
-              child: Container(
-                width: 35,
-                height: 35,
-                child: FloatingActionButton(
-                  elevation: 0,
-                  heroTag: "play_fab_" + i.toString(),
-                  tooltip: "Démarrer",
-                  backgroundColor: StrongrColors.blue,
-                  child: Icon(
-                    Icons.play_arrow,
-                    color: Colors.white,
                   ),
-                  onPressed: () {},
-                ),
-              ),
-            )
           ],
         ),
-        onPressed: () {},
+        onPressed: !isEditMode
+            ? () {
+                Navigator.pushNamed(
+                  context,
+                  EXERCISE_ROUTE,
+                  arguments: ExerciseView(
+                    id: i.toString(),
+                    name: "Exercice perso. " + i.toString(),
+                    fromSession: true,
+                  ),
+                );
+              }
+            : null,
       ),
     );
   }
@@ -209,18 +277,24 @@ class _SessionViewState extends State<SessionView> {
             Container(
               // margin: EdgeInsets.only(top: 10),
               height: ScreenSize.height(context) / 1.6,
-              child: isEditMode
-                  ? ReorderableListView(
-                      onReorder: (oldIndex, newIndex) {},
-                      children: <Widget>[
-                        for (int i = 1; i <= 4; i++) buildListViewItem(i),
-                      ],
-                    )
-                  : ListView(
-                      children: <Widget>[
-                        for (int i = 1; i <= 4; i++) buildListViewItem(i),
-                      ],
-                    ),
+              // child: isEditMode
+              //     ? ReorderableListView(
+              //         onReorder: (oldIndex, newIndex) {},
+              //         children: <Widget>[
+              //           for (int i = 1; i <= 4; i++) buildListViewItem(i),
+              //         ],
+              //       )
+              //     : ListView(
+              //         children: <Widget>[
+              //           for (int i = 1; i <= 4; i++) buildListViewItem(i),
+              //         ],
+              //       ),
+              child: ListView(
+                physics: BouncingScrollPhysics(),
+                children: <Widget>[
+                  for (int i = 1; i <= 5; i++) buildListViewItem(i),
+                ],
+              ),
             ),
             Container(
               width: ScreenSize.width(context),
@@ -268,7 +342,7 @@ class _SessionViewState extends State<SessionView> {
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        heroTag: 'session_fab_' + widget.id.toString(),
+        heroTag: !widget.fromProgram ? 'session_play_fab_' + widget.id.toString() : 'fp_session_play_fab_' + widget.id.toString(),
         backgroundColor: isEditMode ? Colors.red[800] : StrongrColors.blue,
         icon: Icon(
           isEditMode ? Icons.delete_outline : Icons.play_arrow,

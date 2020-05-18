@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
+import 'package:strongr/views/app_exercise/app_exercise_view.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
 class ExerciseView extends StatefulWidget {
   final String id;
   final String name;
+  final bool fromSession;
 
-  ExerciseView({this.id, this.name});
+  ExerciseView({this.id, this.name, this.fromSession = false});
 
   @override
   _ExerciseViewState createState() => _ExerciseViewState();
@@ -28,20 +31,68 @@ class _ExerciseViewState extends State<ExerciseView> {
       margin: i == 1 ? EdgeInsets.only(top: 5) : null,
       key: ValueKey(i),
       padding: EdgeInsets.all(5),
-      height: 90,
+      height: 110,
       child: StrongrRoundedContainer(
         width: ScreenSize.width(context),
         content: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
+            // Container(
+            //   // color: Colors.yellow,
+            //   width: 35,
+            //   child: Center(
+            //     child: StrongrText(
+            //       i.toString(),
+            //       bold: true,
+            //     ),
+            //   ),
+            // ),
             Container(
-              // color: Colors.yellow,
+              // color: Colors.red,
               width: 35,
-              child: Center(
-                child: StrongrText(
-                  i.toString(),
-                  bold: true,
-                ),
+              height: 110,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Container(
+                    height: 30,
+                    // color: Colors.blue,
+                    child: RawMaterialButton(
+                      onPressed: isEditMode ? () {} : null,
+                      child: Icon(
+                        Icons.keyboard_arrow_up,
+                        color: isEditMode
+                            ? StrongrColors.black
+                            : Colors.transparent,
+                      ),
+                      shape: CircleBorder(),
+                    ),
+                  ),
+                  Container(
+                    // color: Colors.yellow,
+                    width: 30,
+                    child: Center(
+                      child: StrongrText(
+                        i.toString(),
+                        bold: true,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    height: 30,
+                    // color: Colors.blue,
+                    child: RawMaterialButton(
+                      onPressed: isEditMode ? () {} : null,
+                      child: Icon(
+                        Icons.keyboard_arrow_down,
+                        color: isEditMode
+                            ? StrongrColors.black
+                            : Colors.transparent,
+                      ),
+                      shape: CircleBorder(),
+                    ),
+                  ),
+                ],
               ),
             ),
             Flexible(
@@ -62,6 +113,9 @@ class _ExerciseViewState extends State<ExerciseView> {
                             // color: Colors.blue,
                             child: StrongrText(
                               "Répétitions : 10",
+                              color: isEditMode
+                                  ? Colors.grey
+                                  : StrongrColors.black,
                               textAlign: TextAlign.start,
                             ),
                           ),
@@ -78,8 +132,33 @@ class _ExerciseViewState extends State<ExerciseView> {
                           child: Container(
                             // width: 185,
                             child: StrongrText(
-                              "Repos : 60s",
+                              "Repos : 01:30",
+                              color: isEditMode
+                                  ? Colors.grey
+                                  : StrongrColors.black,
                               textAlign: TextAlign.start,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Container(
+                          padding: EdgeInsets.only(left: 5, right: 5),
+                          child: Icon(
+                            Icons.show_chart,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        Flexible(
+                          child: Container(
+                            // width: 185,
+                            child: StrongrText(
+                              "Tonnage non calculé",
+                              color: Colors.grey,
+                              textAlign: TextAlign.start,
+                              maxLines: 1,
                             ),
                           ),
                         ),
@@ -106,24 +185,13 @@ class _ExerciseViewState extends State<ExerciseView> {
                         shape: CircleBorder(),
                       ),
                     ),
-                    Container(
-                      width: 35,
-                      child: RawMaterialButton(
-                        onPressed: () {},
-                        child: Icon(
-                          Icons.reorder,
-                          color: Colors.grey,
-                        ),
-                        shape: CircleBorder(),
-                      ),
-                    ),
                   ],
                 ),
               ),
             ),
           ],
         ),
-        onPressed: () {},
+        onPressed: !isEditMode ? () {} : null,
       ),
     );
   }
@@ -156,7 +224,18 @@ class _ExerciseViewState extends State<ExerciseView> {
         child: Column(
           children: <Widget>[
             InkWell(
-              onTap: isEditMode ? null : () {},
+              onTap: isEditMode
+                  ? null
+                  : () {
+                      Navigator.pushNamed(
+                        context,
+                        APP_EXERCISE_ROUTE,
+                        arguments: AppExerciseView(
+                          id: 1,
+                          name: "Crunch",
+                        ),
+                      );
+                    },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
@@ -191,18 +270,24 @@ class _ExerciseViewState extends State<ExerciseView> {
             Container(
               // margin: EdgeInsets.only(top: 10),
               height: ScreenSize.height(context) / 1.6,
-              child: isEditMode
-                  ? ReorderableListView(
-                      onReorder: (oldIndex, newIndex) {},
-                      children: <Widget>[
-                        for (int i = 1; i <= 4; i++) buildListViewItem(i),
-                      ],
-                    )
-                  : ListView(
-                      children: <Widget>[
-                        for (int i = 1; i <= 4; i++) buildListViewItem(i),
-                      ],
-                    ),
+              // child: isEditMode
+              //     ? ReorderableListView(
+              //         onReorder: (oldIndex, newIndex) {},
+              //         children: <Widget>[
+              //           for (int i = 1; i <= 4; i++) buildListViewItem(i),
+              //         ],
+              //       )
+              //     : ListView(
+              //         children: <Widget>[
+              //           for (int i = 1; i <= 4; i++) buildListViewItem(i),
+              //         ],
+              //       ),
+              child: ListView(
+                physics: BouncingScrollPhysics(),
+                children: <Widget>[
+                  for (int i = 1; i <= 5; i++) buildListViewItem(i),
+                ],
+              ),
             ),
             Container(
               width: ScreenSize.width(context),
@@ -250,7 +335,7 @@ class _ExerciseViewState extends State<ExerciseView> {
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        heroTag: 'exercise_fab_' + widget.id.toString(),
+        heroTag: !widget.fromSession ? 'exercise_play_fab_' + widget.id.toString() : 'fs_exercise_play_fab_' + widget.id.toString(),
         backgroundColor: isEditMode ? Colors.red[800] : StrongrColors.blue,
         icon: Icon(
           isEditMode ? Icons.delete_outline : Icons.play_arrow,

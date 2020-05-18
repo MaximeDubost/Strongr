@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
+import 'package:strongr/views/session/session_view.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
@@ -23,20 +25,68 @@ class _ProgramViewState extends State<ProgramView> {
       margin: i == 1 ? EdgeInsets.only(top: 5) : null,
       key: ValueKey(i),
       padding: EdgeInsets.all(5),
-      height: 90,
+      height: 110,
       child: StrongrRoundedContainer(
         width: ScreenSize.width(context),
         content: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
+            // Container(
+            //   // color: Colors.yellow,
+            //   width: 50,
+            //   child: Center(
+            //     child: StrongrText(
+            //       getShortWeekDay(i),
+            //       bold: true,
+            //     ),
+            //   ),
+            // ),
             Container(
-              // color: Colors.yellow,
+              // color: Colors.red,
               width: 50,
-              child: Center(
-                child: StrongrText(
-                  getShortWeekDay(i),
-                  bold: true,
-                ),
+              height: 110,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Container(
+                    height: 30,
+                    // color: Colors.blue,
+                    child: RawMaterialButton(
+                      onPressed: isEditMode ? () {} : null,
+                      child: Icon(
+                        Icons.keyboard_arrow_up,
+                        color: isEditMode
+                            ? StrongrColors.black
+                            : Colors.transparent,
+                      ),
+                      shape: CircleBorder(),
+                    ),
+                  ),
+                  Container(
+                    // color: Colors.yellow,
+                    width: 50,
+                    child: Center(
+                      child: StrongrText(
+                        getShortWeekDay(i),
+                        bold: true,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    height: 30,
+                    // color: Colors.blue,
+                    child: RawMaterialButton(
+                      onPressed: isEditMode ? () {} : null,
+                      child: Icon(
+                        Icons.keyboard_arrow_down,
+                        color: isEditMode
+                            ? StrongrColors.black
+                            : Colors.transparent,
+                      ),
+                      shape: CircleBorder(),
+                    ),
+                  ),
+                ],
               ),
             ),
             Flexible(
@@ -57,6 +107,9 @@ class _ProgramViewState extends State<ProgramView> {
                             // color: Colors.blue,
                             child: StrongrText(
                               "Full body",
+                              color: isEditMode
+                                  ? Colors.grey
+                                  : StrongrColors.black,
                               textAlign: TextAlign.start,
                             ),
                           ),
@@ -72,8 +125,32 @@ class _ProgramViewState extends State<ProgramView> {
                         Container(
                           width: 185,
                           child: StrongrText(
-                            "4 exercices",
+                            "5 exercices",
+                            color:
+                                isEditMode ? Colors.grey : StrongrColors.black,
                             textAlign: TextAlign.start,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Container(
+                          padding: EdgeInsets.only(left: 5, right: 5),
+                          child: Icon(
+                            Icons.show_chart,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        Flexible(
+                          child: Container(
+                            // width: 185,
+                            child: StrongrText(
+                              "Tonnage non calculé",
+                              color: Colors.grey,
+                              textAlign: TextAlign.start,
+                              maxLines: 1,
+                            ),
                           ),
                         ),
                       ],
@@ -103,7 +180,7 @@ class _ProgramViewState extends State<ProgramView> {
                 height: 35,
                 child: FloatingActionButton(
                   elevation: 0,
-                  heroTag: "play_fab_" + i.toString(),
+                  heroTag: "fp_session_play_fab_" + i.toString(),
                   tooltip: "Démarrer",
                   backgroundColor: StrongrColors.blue,
                   child: Icon(
@@ -116,7 +193,19 @@ class _ProgramViewState extends State<ProgramView> {
             )
           ],
         ),
-        onPressed: () {},
+        onPressed: !isEditMode
+            ? () {
+                Navigator.pushNamed(
+                  context,
+                  SESSION_ROUTE,
+                  arguments: SessionView(
+                    id: i.toString(),
+                    name: "Séance perso. " + i.toString(),
+                    fromProgram: true,
+                  ),
+                );
+              }
+            : null,
       ),
     );
   }
@@ -240,16 +329,8 @@ class _ProgramViewState extends State<ProgramView> {
             Container(
               // margin: EdgeInsets.only(top: 10),
               height: ScreenSize.height(context) / 1.6,
-              child:
-                  // isEditMode
-                  //     ? ReorderableListView(
-                  //         onReorder: (oldIndex, newIndex) {},
-                  //         children: <Widget>[
-                  //           for (int i = 1; i <= 7; i++) buildListViewItem(i),
-                  //         ],
-                  //       )
-                  // :
-                  ListView(
+              child: ListView(
+                physics: BouncingScrollPhysics(),
                 children: <Widget>[
                   for (int i = 1; i <= 7; i++)
                     i % 3 != 0
@@ -281,7 +362,9 @@ class _ProgramViewState extends State<ProgramView> {
                                       child: StrongrText(
                                         getShortWeekDay(i),
                                         size: 36,
-                                        color: StrongrColors.greyC,
+                                        color: !isEditMode
+                                            ? StrongrColors.greyC
+                                            : StrongrColors.greyB,
                                       ),
                                     ),
                                     Container(
@@ -353,7 +436,7 @@ class _ProgramViewState extends State<ProgramView> {
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        heroTag: 'program_fab_' + widget.id.toString(),
+        heroTag: 'program_play_fab_' + widget.id.toString(),
         backgroundColor: isEditMode
             ? Colors.red[800]
             : DateTime.now().weekday % 3 != 0
@@ -363,7 +446,8 @@ class _ProgramViewState extends State<ProgramView> {
           isEditMode ? Icons.delete_outline : Icons.play_arrow,
           color: Colors.white,
         ),
-        onPressed: isEditMode ? () {} : DateTime.now().weekday % 3 != 0 ? () {} : null,
+        onPressed:
+            isEditMode ? () {} : DateTime.now().weekday % 3 != 0 ? () {} : null,
         label: StrongrText(
           isEditMode ? "Supprimer" : "Démarrer (" + weekday + ")",
           color: Colors.white,

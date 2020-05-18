@@ -98,6 +98,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         builder: (context) => ExerciseView(
           id: args.id,
           name: args.name,
+          fromSession: args.fromSession,
         ),
       );
 
@@ -129,6 +130,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         builder: (context) => SessionView(
           id: args.id,
           name: args.name,
+          fromProgram: args.fromProgram,
         ),
       );
 

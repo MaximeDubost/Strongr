@@ -95,7 +95,8 @@ class _HomepageState extends State<Homepage> {
                               padding:
                                   EdgeInsets.only(left: 10, top: 8, bottom: 8),
                               child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Container(
@@ -111,23 +112,11 @@ class _HomepageState extends State<Homepage> {
                                       children: <Widget>[
                                         Icon(Icons.fitness_center),
                                         Container(
-                                            padding: EdgeInsets.only(left: 10),
-                                            child: StrongrText(
-                                              "Exercice X",
-                                            )),
-                                      ],
-                                    ),
-                                  ),
-                                  Container(
-                                    alignment: Alignment.centerLeft,
-                                    child: Row(
-                                      children: <Widget>[
-                                        Icon(Icons.show_chart),
-                                        Container(
-                                            padding: EdgeInsets.only(left: 10),
-                                            child: StrongrText(
-                                              "X kg",
-                                            )),
+                                          padding: EdgeInsets.only(left: 10),
+                                          child: StrongrText(
+                                            "Crunch",
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -137,10 +126,29 @@ class _HomepageState extends State<Homepage> {
                                       children: <Widget>[
                                         Icon(Icons.refresh),
                                         Container(
-                                            padding: EdgeInsets.only(left: 10),
-                                            child: StrongrText(
-                                              "X série(s)",
-                                            )),
+                                          padding: EdgeInsets.only(left: 10),
+                                          child: StrongrText(
+                                            "5 séries",
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    alignment: Alignment.centerLeft,
+                                    child: Row(
+                                      children: <Widget>[
+                                        Icon(
+                                          Icons.show_chart,
+                                          color: Colors.grey,
+                                        ),
+                                        Container(
+                                          padding: EdgeInsets.only(left: 10),
+                                          child: StrongrText(
+                                            "Tonnage non calculé",
+                                            color: Colors.grey,
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -155,7 +163,7 @@ class _HomepageState extends State<Homepage> {
                                 height: 35,
                                 child: FloatingActionButton(
                                   elevation: 0,
-                                  heroTag: 'exercise_fab_' + i.toString(),
+                                  heroTag: 'exercise_play_fab_' + i.toString(),
                                   tooltip: "Démarrer",
                                   backgroundColor: StrongrColors.blue,
                                   child: Icon(
@@ -227,7 +235,8 @@ class _HomepageState extends State<Homepage> {
                               padding:
                                   EdgeInsets.only(left: 10, top: 8, bottom: 8),
                               child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Container(
@@ -243,10 +252,11 @@ class _HomepageState extends State<Homepage> {
                                       children: <Widget>[
                                         Icon(Icons.accessibility),
                                         Container(
-                                            padding: EdgeInsets.only(left: 10),
-                                            child: StrongrText(
-                                              "Full body",
-                                            )),
+                                          padding: EdgeInsets.only(left: 10),
+                                          child: StrongrText(
+                                            "Full body",
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -256,10 +266,11 @@ class _HomepageState extends State<Homepage> {
                                       children: <Widget>[
                                         Icon(Icons.fitness_center),
                                         Container(
-                                            padding: EdgeInsets.only(left: 10),
-                                            child: StrongrText(
-                                              "X exercices",
-                                            )),
+                                          padding: EdgeInsets.only(left: 10),
+                                          child: StrongrText(
+                                            "5 exercices",
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -267,12 +278,17 @@ class _HomepageState extends State<Homepage> {
                                     alignment: Alignment.centerLeft,
                                     child: Row(
                                       children: <Widget>[
-                                        Icon(Icons.show_chart),
+                                        Icon(
+                                          Icons.show_chart,
+                                          color: Colors.grey,
+                                        ),
                                         Container(
-                                            padding: EdgeInsets.only(left: 10),
-                                            child: StrongrText(
-                                              "X kg",
-                                            )),
+                                          padding: EdgeInsets.only(left: 10),
+                                          child: StrongrText(
+                                            "Tonnage non calculé",
+                                            color: Colors.grey,
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -287,7 +303,7 @@ class _HomepageState extends State<Homepage> {
                                 height: 35,
                                 child: FloatingActionButton(
                                   elevation: 0,
-                                  heroTag: 'session_fab_' + i.toString(),
+                                  heroTag: 'session_play_fab_' + i.toString(),
                                   tooltip: "Démarrer",
                                   backgroundColor: StrongrColors.blue,
                                   child: Icon(
@@ -359,7 +375,8 @@ class _HomepageState extends State<Homepage> {
                               padding:
                                   EdgeInsets.only(left: 10, top: 8, bottom: 8),
                               child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Container(
@@ -375,10 +392,11 @@ class _HomepageState extends State<Homepage> {
                                       children: <Widget>[
                                         Icon(Icons.star_border),
                                         Container(
-                                            padding: EdgeInsets.only(left: 10),
-                                            child: StrongrText(
-                                              "Objectif",
-                                            )),
+                                          padding: EdgeInsets.only(left: 10),
+                                          child: StrongrText(
+                                            "Prise de masse",
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -388,10 +406,11 @@ class _HomepageState extends State<Homepage> {
                                       children: <Widget>[
                                         Icon(Icons.calendar_today),
                                         Container(
-                                            padding: EdgeInsets.only(left: 10),
-                                            child: StrongrText(
-                                              "X séances",
-                                            )),
+                                          padding: EdgeInsets.only(left: 10),
+                                          child: StrongrText(
+                                            "5 séances",
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -399,12 +418,17 @@ class _HomepageState extends State<Homepage> {
                                     alignment: Alignment.centerLeft,
                                     child: Row(
                                       children: <Widget>[
-                                        Icon(Icons.fitness_center),
+                                        Icon(
+                                          Icons.show_chart,
+                                          color: Colors.grey,
+                                        ),
                                         Container(
-                                            padding: EdgeInsets.only(left: 10),
-                                            child: StrongrText(
-                                              "X exercices",
-                                            )),
+                                          padding: EdgeInsets.only(left: 10),
+                                          child: StrongrText(
+                                            "Tonnage non calculé",
+                                            color: Colors.grey,
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -419,15 +443,19 @@ class _HomepageState extends State<Homepage> {
                                 height: 35,
                                 child: FloatingActionButton(
                                   elevation: 0,
-                                  heroTag: 'program_fab_' + i.toString(),
+                                  heroTag: 'program_play_fab_' + i.toString(),
                                   tooltip: "Démarrer",
-                                  backgroundColor: DateTime.now().weekday % 3 != 0 ? StrongrColors.blue : Colors.grey,
+                                  backgroundColor:
+                                      DateTime.now().weekday % 3 != 0
+                                          ? StrongrColors.blue
+                                          : Colors.grey,
                                   child: Icon(
                                     Icons.play_arrow,
                                     color: Colors.white,
                                   ),
-                                  onPressed: DateTime.now().weekday % 3 != 0 ? () {} : null,
-
+                                  onPressed: DateTime.now().weekday % 3 != 0
+                                      ? () {}
+                                      : null,
                                 ),
                               ),
                             ),
