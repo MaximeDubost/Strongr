@@ -20,6 +20,62 @@ class _ProgramViewState extends State<ProgramView> {
   String weekday;
   bool isEditMode;
 
+  @override
+  void initState() {
+    isEditMode = false;
+    switch (DateTime.now().weekday) {
+      case DateTime.monday:
+        weekday = "Lundi";
+        break;
+      case DateTime.tuesday:
+        weekday = "Mardi";
+        break;
+      case DateTime.wednesday:
+        weekday = "Mercredi";
+        break;
+      case DateTime.thursday:
+        weekday = "Jeudi";
+        break;
+      case DateTime.friday:
+        weekday = "Vendredi";
+        break;
+      case DateTime.saturday:
+        weekday = "Samedi";
+        break;
+      case DateTime.sunday:
+        weekday = "Dimanche";
+        break;
+    }
+    super.initState();
+  }
+
+  String getShortWeekDay(int day) {
+    switch (day) {
+      case DateTime.monday:
+        return "Lun.";
+        break;
+      case DateTime.tuesday:
+        return "Mar.";
+        break;
+      case DateTime.wednesday:
+        return "Mer.";
+        break;
+      case DateTime.thursday:
+        return "Jeu.";
+        break;
+      case DateTime.friday:
+        return "Ven.";
+        break;
+      case DateTime.saturday:
+        return "Sam.";
+        break;
+      case DateTime.sunday:
+        return "Dim.";
+        break;
+    }
+    return "";
+  }
+
   Container buildListViewItem(int i) {
     return Container(
       margin: i == 1 ? EdgeInsets.only(top: 5) : null,
@@ -28,6 +84,8 @@ class _ProgramViewState extends State<ProgramView> {
       height: 110,
       child: StrongrRoundedContainer(
         width: ScreenSize.width(context),
+        borderColor: i == DateTime.now().weekday && !isEditMode ? StrongrColors.blue80: StrongrColors.greyD,
+        borderWidth: i == DateTime.now().weekday && !isEditMode ? 3 : 1,
         content: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
@@ -208,62 +266,6 @@ class _ProgramViewState extends State<ProgramView> {
             : null,
       ),
     );
-  }
-
-  @override
-  void initState() {
-    isEditMode = false;
-    switch (DateTime.now().weekday) {
-      case DateTime.monday:
-        weekday = "Lundi";
-        break;
-      case DateTime.tuesday:
-        weekday = "Mardi";
-        break;
-      case DateTime.wednesday:
-        weekday = "Mercredi";
-        break;
-      case DateTime.thursday:
-        weekday = "Jeudi";
-        break;
-      case DateTime.friday:
-        weekday = "Vendredi";
-        break;
-      case DateTime.saturday:
-        weekday = "Samedi";
-        break;
-      case DateTime.sunday:
-        weekday = "Dimanche";
-        break;
-    }
-    super.initState();
-  }
-
-  String getShortWeekDay(int day) {
-    switch (day) {
-      case DateTime.monday:
-        return "Lun.";
-        break;
-      case DateTime.tuesday:
-        return "Mar.";
-        break;
-      case DateTime.wednesday:
-        return "Mer.";
-        break;
-      case DateTime.thursday:
-        return "Jeu.";
-        break;
-      case DateTime.friday:
-        return "Ven.";
-        break;
-      case DateTime.saturday:
-        return "Sam.";
-        break;
-      case DateTime.sunday:
-        return "Dim.";
-        break;
-    }
-    return "";
   }
 
   @override

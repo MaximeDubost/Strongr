@@ -96,7 +96,7 @@ class _HomepageState extends State<Homepage> {
                                   EdgeInsets.only(left: 10, top: 8, bottom: 8),
                               child: Column(
                                 mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceAround,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Container(
@@ -106,51 +106,61 @@ class _HomepageState extends State<Homepage> {
                                       bold: true,
                                     ),
                                   ),
-                                  Container(
-                                    alignment: Alignment.centerLeft,
-                                    child: Row(
-                                      children: <Widget>[
-                                        Icon(Icons.fitness_center),
-                                        Container(
-                                          padding: EdgeInsets.only(left: 10),
-                                          child: StrongrText(
-                                            "Crunch",
-                                          ),
+                                  Column(
+                                    children: <Widget>[
+                                      Container(
+                                        height: 30,
+                                        alignment: Alignment.centerLeft,
+                                        child: Row(
+                                          children: <Widget>[
+                                            Icon(Icons.fitness_center),
+                                            Container(
+                                              padding:
+                                                  EdgeInsets.only(left: 10),
+                                              child: StrongrText(
+                                                "Crunch",
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                                  Container(
-                                    alignment: Alignment.centerLeft,
-                                    child: Row(
-                                      children: <Widget>[
-                                        Icon(Icons.refresh),
-                                        Container(
-                                          padding: EdgeInsets.only(left: 10),
-                                          child: StrongrText(
-                                            "5 séries",
-                                          ),
+                                      ),
+                                      Container(
+                                        height: 30,
+                                        alignment: Alignment.centerLeft,
+                                        child: Row(
+                                          children: <Widget>[
+                                            Icon(Icons.refresh),
+                                            Container(
+                                              padding:
+                                                  EdgeInsets.only(left: 10),
+                                              child: StrongrText(
+                                                "5 séries",
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                                  Container(
-                                    alignment: Alignment.centerLeft,
-                                    child: Row(
-                                      children: <Widget>[
-                                        Icon(
-                                          Icons.show_chart,
-                                          color: Colors.grey,
+                                      ),
+                                      Container(
+                                        height: 30,
+                                        alignment: Alignment.centerLeft,
+                                        child: Row(
+                                          children: <Widget>[
+                                            Icon(
+                                              Icons.show_chart,
+                                              color: Colors.grey,
+                                            ),
+                                            Container(
+                                              padding:
+                                                  EdgeInsets.only(left: 10),
+                                              child: StrongrText(
+                                                "Tonnage non calculé",
+                                                color: Colors.grey,
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        Container(
-                                          padding: EdgeInsets.only(left: 10),
-                                          child: StrongrText(
-                                            "Tonnage non calculé",
-                                            color: Colors.grey,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
@@ -236,7 +246,7 @@ class _HomepageState extends State<Homepage> {
                                   EdgeInsets.only(left: 10, top: 8, bottom: 8),
                               child: Column(
                                 mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceAround,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Container(
@@ -246,51 +256,61 @@ class _HomepageState extends State<Homepage> {
                                       bold: true,
                                     ),
                                   ),
-                                  Container(
-                                    alignment: Alignment.centerLeft,
-                                    child: Row(
-                                      children: <Widget>[
-                                        Icon(Icons.accessibility),
-                                        Container(
-                                          padding: EdgeInsets.only(left: 10),
-                                          child: StrongrText(
-                                            "Full body",
-                                          ),
+                                  Column(
+                                    children: <Widget>[
+                                      Container(
+                                        height: 30,
+                                        alignment: Alignment.centerLeft,
+                                        child: Row(
+                                          children: <Widget>[
+                                            Icon(Icons.accessibility),
+                                            Container(
+                                              padding:
+                                                  EdgeInsets.only(left: 10),
+                                              child: StrongrText(
+                                                "Full body",
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                                  Container(
-                                    alignment: Alignment.centerLeft,
-                                    child: Row(
-                                      children: <Widget>[
-                                        Icon(Icons.fitness_center),
-                                        Container(
-                                          padding: EdgeInsets.only(left: 10),
-                                          child: StrongrText(
-                                            "5 exercices",
-                                          ),
+                                      ),
+                                      Container(
+                                        height: 30,
+                                        alignment: Alignment.centerLeft,
+                                        child: Row(
+                                          children: <Widget>[
+                                            Icon(Icons.fitness_center),
+                                            Container(
+                                              padding:
+                                                  EdgeInsets.only(left: 10),
+                                              child: StrongrText(
+                                                "5 exercices",
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                                  Container(
-                                    alignment: Alignment.centerLeft,
-                                    child: Row(
-                                      children: <Widget>[
-                                        Icon(
-                                          Icons.show_chart,
-                                          color: Colors.grey,
+                                      ),
+                                      Container(
+                                        height: 30,
+                                        alignment: Alignment.centerLeft,
+                                        child: Row(
+                                          children: <Widget>[
+                                            Icon(
+                                              Icons.show_chart,
+                                              color: Colors.grey,
+                                            ),
+                                            Container(
+                                              padding:
+                                                  EdgeInsets.only(left: 10),
+                                              child: StrongrText(
+                                                "Tonnage non calculé",
+                                                color: Colors.grey,
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        Container(
-                                          padding: EdgeInsets.only(left: 10),
-                                          child: StrongrText(
-                                            "Tonnage non calculé",
-                                            color: Colors.grey,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
@@ -376,7 +396,7 @@ class _HomepageState extends State<Homepage> {
                                   EdgeInsets.only(left: 10, top: 8, bottom: 8),
                               child: Column(
                                 mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceAround,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Container(
@@ -386,51 +406,61 @@ class _HomepageState extends State<Homepage> {
                                       bold: true,
                                     ),
                                   ),
-                                  Container(
-                                    alignment: Alignment.centerLeft,
-                                    child: Row(
-                                      children: <Widget>[
-                                        Icon(Icons.star_border),
-                                        Container(
-                                          padding: EdgeInsets.only(left: 10),
-                                          child: StrongrText(
-                                            "Prise de masse",
-                                          ),
+                                  Column(
+                                    children: <Widget>[
+                                      Container(
+                                        height: 30,
+                                        alignment: Alignment.centerLeft,
+                                        child: Row(
+                                          children: <Widget>[
+                                            Icon(Icons.star_border),
+                                            Container(
+                                              padding:
+                                                  EdgeInsets.only(left: 10),
+                                              child: StrongrText(
+                                                "Prise de masse",
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                                  Container(
-                                    alignment: Alignment.centerLeft,
-                                    child: Row(
-                                      children: <Widget>[
-                                        Icon(Icons.calendar_today),
-                                        Container(
-                                          padding: EdgeInsets.only(left: 10),
-                                          child: StrongrText(
-                                            "5 séances",
-                                          ),
+                                      ),
+                                      Container(
+                                        height: 30,
+                                        alignment: Alignment.centerLeft,
+                                        child: Row(
+                                          children: <Widget>[
+                                            Icon(Icons.calendar_today),
+                                            Container(
+                                              padding:
+                                                  EdgeInsets.only(left: 10),
+                                              child: StrongrText(
+                                                "5 séances",
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                                  Container(
-                                    alignment: Alignment.centerLeft,
-                                    child: Row(
-                                      children: <Widget>[
-                                        Icon(
-                                          Icons.show_chart,
-                                          color: Colors.grey,
+                                      ),
+                                      Container(
+                                        height: 30,
+                                        alignment: Alignment.centerLeft,
+                                        child: Row(
+                                          children: <Widget>[
+                                            Icon(
+                                              Icons.show_chart,
+                                              color: Colors.grey,
+                                            ),
+                                            Container(
+                                              padding:
+                                                  EdgeInsets.only(left: 10),
+                                              child: StrongrText(
+                                                "Tonnage non calculé",
+                                                color: Colors.grey,
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        Container(
-                                          padding: EdgeInsets.only(left: 10),
-                                          child: StrongrText(
-                                            "Tonnage non calculé",
-                                            color: Colors.grey,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),

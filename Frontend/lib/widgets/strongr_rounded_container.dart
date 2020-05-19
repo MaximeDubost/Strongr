@@ -7,8 +7,9 @@ class StrongrRoundedContainer extends StatefulWidget {
   final Widget content;
   final Function onPressed;
   final Color borderColor;
+  final double borderWidth;
 
-  StrongrRoundedContainer({this.width, @required this.content, @required this.onPressed, this.borderColor});
+  StrongrRoundedContainer({this.width, @required this.content, @required this.onPressed, this.borderColor, this.borderWidth = 1});
 
   @override
   _StrongrRoundedContainerState createState() => _StrongrRoundedContainerState();
@@ -22,7 +23,7 @@ class _StrongrRoundedContainerState extends State<StrongrRoundedContainer> {
       margin: EdgeInsets.only(left: 5, right: 5),
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border.all(color: widget.borderColor == null ? StrongrColors.greyD : widget.borderColor),
+        border: Border.all(color: widget.borderColor == null ? StrongrColors.greyD : widget.borderColor, width: widget.borderWidth),
         borderRadius: BorderRadius.all(
           Radius.circular(25.0),
         ),

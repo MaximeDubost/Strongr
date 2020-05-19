@@ -1,77 +1,98 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:strongr/models/Exercise.dart';
-import 'package:strongr/services/exercise_service.dart';
+import 'package:strongr/models/muscle.dart';
+import 'package:strongr/models/AppExercise.dart';
+import 'package:strongr/services/app_exercise_service.dart';
+import 'package:strongr/utils/app_exercises_filters.dart';
 import 'package:strongr/utils/diacritics.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
+import 'package:strongr/widgets/dialogs/filters_dialog.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
+import 'exercise_view.dart';
+
 class ExercisesView extends StatefulWidget {
+  final GlobalKey<dynamic> key;
+  final int id;
+  final String name;
+  final bool fromExercises;
+
+  ExercisesView({this.key, this.id, this.name, this.fromExercises = false});
+
   @override
   _ExercisesViewState createState() => _ExercisesViewState();
 }
 
 class _ExercisesViewState extends State<ExercisesView> {
-  List<String> popupMenuItems;
   TextEditingController searchbarController;
-  Future<List<Exercise>> futureExercises;
+  Future<List<AppExercise>> futureAppExercisesList;
   bool sortedByAlpha;
+  List<String> popupMenuItems;
 
   @override
   void initState() {
-    popupMenuItems = ["Filtres", "Créer"];
     searchbarController = TextEditingController(text: "");
-    futureExercises = ExerciseService.getExercises();
+    futureAppExercisesList = AppExerciseService.getAppExercises();
     sortedByAlpha = true;
+    popupMenuItems = ["Créer"];
     super.initState();
   }
 
-  /// Retourne le nombre de résultats d'une liste d'[appExercises] après recherche et filtres.
-  int resultCount(List<Exercise> exercises) {
-    int result = 0;
-    for (final exercise in exercises)
-      if 
-      (
-        (
-          searchbarController.text == "" ||
-          Diacritics.remove
-          (
-            exercises[exercises.indexOf(exercise)]
-                .name
-                .toString()
-                .toLowerCase(),
-          ).contains(
-            Diacritics.remove(
-              searchbarController.text.toLowerCase(),
-            ),
-          )
-        ) 
-        // &&
-        // (
-        //   AppExercisesFilters.areAllDisabled() ||
-        //       compareMusclesWithFilters(
-        //         exercise.muscleList,
-        //         AppExercisesFilters.allEnabledFiltersToList(),
-        //       )
-        // )
-      ) 
-      result++;
+  /// Affiche une [muscleList] sous forme de chaîne de charactères.
+  String displayMuscleListToString(List muscleList) {
+    String result = "";
+    for (final item in muscleList) {
+      result += item.name;
+      if (muscleList.indexOf(item) != muscleList.length - 1) result += ", ";
+    }
     return result;
   }
 
-  /// Affiche une liste d'[exercises].
-  Widget buildAppExercisesList(List<Exercise> exercises) {
+  /// Méthode vérifiant si un [muscleName] est compris dans la [muscleList] d'un exercice.
+  bool muscleListContains({
+    @required List<Muscle> muscleList,
+    @required String muscleName,
+  }) {
+    for (final item in muscleList) if (item.name == muscleName) return true;
+    return false;
+  }
+
+  /// Retourne le nombre de résultats d'une liste d'[appExercises] après recherche et filtres.
+  int resultCount(List<AppExercise> appExercises) {
+    int result = 0;
+    for (final appExercise in appExercises)
+      if ((searchbarController.text == "" ||
+              Diacritics.remove(
+                appExercises[appExercises.indexOf(appExercise)]
+                    .name
+                    .toString()
+                    .toLowerCase(),
+              ).contains(
+                Diacritics.remove(
+                  searchbarController.text.toLowerCase(),
+                ),
+              )) &&
+          (AppExercisesFilters.areAllDisabled() ||
+              compareMusclesWithFilters(
+                appExercise.muscleList,
+                AppExercisesFilters.allEnabledFiltersToList(),
+              ))) result++;
+    return result;
+  }
+
+  /// Affiche une liste d'[appExercises].
+  Widget buildAppExercisesList(List<AppExercise> appExercises) {
     return Column(
       verticalDirection:
           sortedByAlpha ? VerticalDirection.down : VerticalDirection.up,
       children: <Widget>[
-        for (final exercise in exercises)
+        for (final appExercise in appExercises)
           if ((searchbarController.text == "" ||
                   Diacritics.remove(
-                    exercises[exercises.indexOf(exercise)]
+                    appExercises[appExercises.indexOf(appExercise)]
                         .name
                         .toString()
                         .toLowerCase(),
@@ -79,63 +100,100 @@ class _ExercisesViewState extends State<ExercisesView> {
                     Diacritics.remove(
                       searchbarController.text.toLowerCase(),
                     ),
-                  )) 
-              //     &&
-              // (AppExercisesFilters.areAllDisabled() ||
-              //     compareMusclesWithFilters(
-              //       exercise.muscleList,
-              //       AppExercisesFilters.allEnabledFiltersToList(),
-              //     ))
-                  )
+                  )) &&
+              (AppExercisesFilters.areAllDisabled() ||
+                  compareMusclesWithFilters(
+                    appExercise.muscleList,
+                    AppExercisesFilters.allEnabledFiltersToList(),
+                  )))
             Container(
               padding: EdgeInsets.all(5),
-              height: 180,
+              height: 140,
               child: StrongrRoundedContainer(
                 width: ScreenSize.width(context),
                 content: Stack(
                   children: <Widget>[
                     Container(
-                      alignment: Alignment.centerLeft,
+                      padding: EdgeInsets.only(left: 10, top: 8, bottom: 8),
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: <Widget>[
-                          StrongrText(
-                            exercises[exercises.indexOf(exercise)]
-                                .name,
-                            textAlign: TextAlign.start,
-                            bold: true,
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            child: StrongrText(
+                              "Exercice perso. " +
+                                  (appExercises.indexOf(appExercise) + 1)
+                                      .toString(),
+                              bold: true,
+                            ),
                           ),
-                          StrongrText(
-                            // displayMuscleListToString(
-                            //     exercises[exercises.indexOf(exercise)]
-                            //         .muscleList),
-                            "DEBUG",
-                            textAlign: TextAlign.start,
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            child: Row(
+                              children: <Widget>[
+                                Icon(Icons.fitness_center),
+                                Container(
+                                  padding: EdgeInsets.only(left: 10),
+                                  child: StrongrText(
+                                    "Crunch",
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            child: Row(
+                              children: <Widget>[
+                                Icon(Icons.refresh),
+                                Container(
+                                  padding: EdgeInsets.only(left: 10),
+                                  child: StrongrText(
+                                    "5 séries",
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            child: Row(
+                              children: <Widget>[
+                                Icon(
+                                  Icons.show_chart,
+                                  color: Colors.grey,
+                                ),
+                                Container(
+                                  padding: EdgeInsets.only(left: 10),
+                                  child: StrongrText(
+                                    "Tonnage non calculé",
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
                     ),
                     Container(
-                      alignment: Alignment.centerRight,
+                      padding: EdgeInsets.only(bottom: 10, right: 10),
+                      alignment: Alignment.bottomRight,
                       child: Container(
                         width: 35,
                         height: 35,
                         child: FloatingActionButton(
                           elevation: 0,
-                          heroTag: 'fab_' +
-                              (exercises.indexOf(exercise) + 1)
+                          heroTag: 'exercise_play_fab_' +
+                              (appExercises.indexOf(appExercise) + 1)
                                   .toString(),
-                          tooltip: "Ajouter",
+                          tooltip: "Démarrer",
                           backgroundColor: StrongrColors.blue,
                           child: Icon(
-                            Icons.add,
+                            Icons.play_arrow,
                             color: Colors.white,
                           ),
-                          // onPressed: () => showDialog(
-                          //   context: context,
-                          //   builder: (context) => NewExerciseFromListDialog(),
-                          // ),
                           onPressed: () {},
                         ),
                       ),
@@ -143,21 +201,33 @@ class _ExercisesViewState extends State<ExercisesView> {
                   ],
                 ),
                 onPressed: () {
-                  // FocusScope.of(context).unfocus();
-                  // Navigator.pushNamed(
-                  //   context,
-                  //   APP_EXERCISE_ROUTE,
-                  //   arguments: AppExercisesPage(
-                  //     id: appExercises[appExercises.indexOf(appExercise)].id,
-                  //     name:
-                  //         appExercises[appExercises.indexOf(appExercise)].name,
-                  //   ),
-                  // );
+                  Navigator.pushNamed(
+                    context,
+                    EXERCISE_ROUTE,
+                    arguments: ExerciseView(
+                      id: (appExercises.indexOf(appExercise) + 1).toString(),
+                      name: "Exercice perso. " +
+                          (appExercises.indexOf(appExercise) + 1).toString(),
+                    ),
+                  );
                 },
               ),
             ),
       ],
     );
+  }
+
+  /// Compare une liste de muscles [muscles] avec une liste de filtres [filters].
+  /// Retourne true s'il y a au moins une correspondance parmis leurs éléments, false sinon.
+  bool compareMusclesWithFilters(List<Muscle> muscles, List<String> filters) {
+    for (final muscle in muscles)
+      for (final filter in filters) if (muscle.name == filter) return true;
+    return false;
+  }
+
+  /// Actualise la page.
+  void refresh() {
+    setState(() {});
   }
 
   @override
@@ -242,43 +312,43 @@ class _ExercisesViewState extends State<ExercisesView> {
                   ),
                 ),
               ),
-              // Visibility(
-              //   visible: !AppExercisesFilters.areAllDisabled() &&
-              //       AppExercisesFilters.atLeastOneDisabled(),
-              //   child: Container(
-              //     padding:
-              //         EdgeInsets.only(top: 5, left: 20, right: 20, bottom: 5),
-              //     alignment: Alignment.centerLeft,
-              //     child: InkWell(
-              //       onTap: () async {
-              //         FocusScope.of(context).unfocus();
-              //         await showDialog(
-              //           context: context,
-              //           builder: (context) => FiltersDialog(),
-              //         ).then((val) {
-              //           if (val == true) refresh();
-              //         });
-              //       },
-              //       child: StrongrText(
-              //         !AppExercisesFilters.filterMode
-              //             ? AppExercisesFilters.allEnabledFiltersToList()
-              //                         .length ==
-              //                     1
-              //                 ? "Filtre : " +
-              //                     AppExercisesFilters
-              //                         .allEnabledFiltersToString()
-              //                 : "Filtres : " +
-              //                     AppExercisesFilters
-              //                         .allEnabledFiltersToString()
-              //             : "Filtres : Tout sauf " +
-              //                 AppExercisesFilters.allDisabledFiltersToString(),
-              //         textAlign: TextAlign.start,
-              //         color: Colors.grey,
-              //         size: 16,
-              //       ),
-              //     ),
-              //   ),
-              // ),
+              Visibility(
+                visible: !AppExercisesFilters.areAllDisabled() &&
+                    AppExercisesFilters.atLeastOneDisabled(),
+                child: Container(
+                  padding:
+                      EdgeInsets.only(top: 5, left: 20, right: 20, bottom: 5),
+                  alignment: Alignment.centerLeft,
+                  child: InkWell(
+                    onTap: () async {
+                      FocusScope.of(context).unfocus();
+                      await showDialog(
+                        context: context,
+                        builder: (context) => FiltersDialog(),
+                      ).then((val) {
+                        if (val == true) refresh();
+                      });
+                    },
+                    child: StrongrText(
+                      !AppExercisesFilters.filterMode
+                          ? AppExercisesFilters.allEnabledFiltersToList()
+                                      .length ==
+                                  1
+                              ? "Filtre : " +
+                                  AppExercisesFilters
+                                      .allEnabledFiltersToString()
+                              : "Filtres : " +
+                                  AppExercisesFilters
+                                      .allEnabledFiltersToString()
+                          : "Filtres : Tout sauf " +
+                              AppExercisesFilters.allDisabledFiltersToString(),
+                      textAlign: TextAlign.start,
+                      color: Colors.grey,
+                      size: 16,
+                    ),
+                  ),
+                ),
+              ),
               Container(
                 height: 25,
                 child: Stack(
@@ -322,7 +392,7 @@ class _ExercisesViewState extends State<ExercisesView> {
                 ),
               ),
               FutureBuilder(
-                future: futureExercises,
+                future: futureAppExercisesList,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return Column(
@@ -334,7 +404,7 @@ class _ExercisesViewState extends State<ExercisesView> {
                                 alignment: Alignment.center,
                                 height: ScreenSize.height(context) / 1.75,
                                 child: StrongrText(
-                                  "Aucun élément à afficher",
+                                  "Impossible d'afficher les exercices",
                                   color: Colors.grey,
                                 ),
                               ),
@@ -346,7 +416,7 @@ class _ExercisesViewState extends State<ExercisesView> {
                                 height: ScreenSize.height(context) / 1.75,
                                 child: Center(
                                   child: StrongrText(
-                                    "Aucun résultat trouvé",
+                                    "Aucun exercice trouvé",
                                     color: Colors.grey,
                                   ),
                                 ),

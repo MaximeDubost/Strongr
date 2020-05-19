@@ -106,7 +106,7 @@ class _ExerciseViewState extends State<ExerciseView> {
                       children: <Widget>[
                         Container(
                           padding: EdgeInsets.only(left: 5, right: 5),
-                          child: Icon(Icons.refresh),
+                          child: Icon(Icons.autorenew),
                         ),
                         Flexible(
                           child: Container(
@@ -233,6 +233,7 @@ class _ExerciseViewState extends State<ExerciseView> {
                         arguments: AppExerciseView(
                           id: 1,
                           name: "Crunch",
+                          isBelonged: true,
                         ),
                       );
                     },

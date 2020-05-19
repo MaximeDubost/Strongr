@@ -80,6 +80,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         builder: (context) => AppExerciseView(
           id: args.id,
           name: args.name,
+          isBelonged: args.isBelonged,
           fromExercises: args.fromExercises,
         ),
       );
