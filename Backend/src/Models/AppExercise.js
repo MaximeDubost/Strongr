@@ -2,8 +2,10 @@ class AppExercise {
     constructor(id, name, muscleList, equipmentList) {
         this.id = id
         this.name = name
-        this.muscleList = muscleList
-        this.equipmentList = equipmentList
+        if (muscleList != null && equipmentList != null) {
+            this.muscleList = muscleList
+            this.equipmentList = equipmentList
+        }
     }
 
     static class(obj) {
