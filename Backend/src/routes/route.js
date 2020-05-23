@@ -5,6 +5,7 @@ import UserController from "../controllers/UserController";
 import AppExerciseController from "../controllers/AppExerciseController";
 import SessionController from "../controllers/SessionController";
 import ExerciseController from "../controllers/ExerciseController";
+import ProgramController from "../controllers/ProgramController";
 let router = express.Router();
 
 /** CRUD + LOGIN user */
@@ -36,5 +37,8 @@ router.get("/exercises", middleware.checkAuth, ExerciseController.readExercises)
 router.get("/exercise/:id_exercise", middleware.checkAuth, ExerciseController.detailExercise);
 router.put("/exercise/:id_exercise", middleware.checkAuth, ExerciseController.updateExercise);
 router.delete("/exercise/:id_exercise", middleware.checkAuth, ExerciseController.deleteExercise);
+
+/** CRUD Program */
+router.get("/program", middleware.checkAuth, ProgramController.readProgram);
 
 export default router;

@@ -131,3 +131,7 @@ Content-Type: application/json
 {
 	"exercise_name" : "Dév"
 }
+
+###
+GET http://localhost:3000/api/program
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJjaHJpc3QudWxjZUBnbWFpbC5jb20iLCJ1c2VybmFtZSI6InVsY2UzMSIsImlhdCI6MTU4NjYyMTE1NH0.eJYtYDXHkwnREu_1WPbSVHhZ49hYyAnAhApaFj2KGqs

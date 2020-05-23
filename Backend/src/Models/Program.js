@@ -1,10 +1,10 @@
 class Program {
-    constructor(id_program, user, creation_date, last_update, name_program) {
-        this.id_program = id_program
-        this.user = user
-        this.creation_date = creation_date
-        this.last_update = last_update
-        this.name_program = name_program
+    constructor(id, name, program_goal_name, session_count, tonnage) {
+        this.id = id
+        this.name = name
+        this.program_goal_name = program_goal_name
+        this.session_count = session_count
+        this.tonnage = tonnage
     }
 }
 
