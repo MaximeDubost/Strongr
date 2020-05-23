@@ -1,29 +1,11 @@
-import Muscle from "../Models/Muscle"
 import AppExercise from "../Models/AppExercise"
 import Exercise from "../Models/Exercise"
 import Set from "../Models/Set"
 import DetailExercise from "../Models/DetailExercise"
+import clt from "../core/config/database";
 
-const { Pool } = require('pg')
-var clt = null;
 const repository = {};
 
-const pool = new Pool({
-    host: 'localhost',
-    port: 5432,
-    user: 'postgres',
-    password: 'root',
-    database: 'StrongrDB'
-});
-
-pool.connect((err, client, release) => {
-    console.log("In pool connect");
-    if (err) {
-        return console.error("Error acquiring client", err.stack);
-    } else {
-        clt = client;
-    }
-});
 
 /**
  * create exercises 
@@ -41,7 +23,6 @@ repository.createExercise = async (req) => {
 }
 
 repository.readExercises = async (req) => {
-    console.log('user id = ' + req.user.id);
     let exercise_list = []
     let sqlReadAllExercices = `
     SELECT e.id_exercise, e.name as name_exercise, ae.name as name_app_exercise, COUNT(s.id_set) as set_count, null as tonnage
@@ -58,7 +39,7 @@ repository.readExercises = async (req) => {
                 exercise_list.push(new Exercise(row.id_exercise, row.name_exercise, row.name_app_exercise, row.set_count, row.tonnage))
             })
         }
-        console.log(exercise_list)
+
         return exercise_list
     } catch (error) {
         console.log(error)
