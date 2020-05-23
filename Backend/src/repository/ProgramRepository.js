@@ -1,29 +1,8 @@
-import Muscle from "../Models/Muscle"
-import AppExercise from "../Models/AppExercise"
 import Program from "../Models/Program"
-import Set from "../Models/Set"
-import DetailExercise from "../Models/DetailExercise"
+import clt from "../core/config/database";
 
-const { Pool } = require('pg')
-var clt = null;
 const repository = {};
 
-const pool = new Pool({
-    host: 'localhost',
-    port: 5432,
-    user: 'postgres',
-    password: 'root',
-    database: 'StrongrDB'
-});
-
-pool.connect((err, client, release) => {
-    console.log("In pool connect");
-    if (err) {
-        return console.error("Error acquiring client", err.stack);
-    } else {
-        clt = client;
-    }
-});
 
 repository.readProgram = async (req) => {
     let program_list = []
