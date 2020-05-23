@@ -325,7 +325,7 @@ class _ExerciseViewState extends State<ExerciseView> {
                 child: Center(
                   child: FloatingActionButton(
                     mini: true,
-                    backgroundColor: Colors.grey,
+                    backgroundColor: StrongrColors.blue,
                     onPressed: () {},
                     child: Icon(Icons.add, color: Colors.white),
                   ),

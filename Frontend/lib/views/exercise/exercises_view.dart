@@ -37,7 +37,7 @@ class _ExercisesViewState extends State<ExercisesView> {
     searchbarController = TextEditingController(text: "");
     futureAppExercisesList = AppExerciseService.getAppExercises();
     sortedByAlpha = true;
-    popupMenuItems = ["Créer"];
+    popupMenuItems = ["Filtres", "Créer"];
     super.initState();
   }
 

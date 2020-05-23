@@ -13,8 +13,10 @@ import 'package:strongr/views/exercise/exercise_create_view.dart';
 import 'package:strongr/views/exercise/exercise_view.dart';
 import 'package:strongr/views/exercise/exercises_view.dart';
 import 'package:strongr/views/homepage/homepage_view.dart';
+import 'package:strongr/views/program/program_create_view.dart';
 import 'package:strongr/views/program/program_view.dart';
 import 'package:strongr/views/program/programs_view.dart';
+import 'package:strongr/views/session/session_create_view.dart';
 import 'package:strongr/views/session/session_view.dart';
 import 'package:strongr/views/session/sessions_view.dart';
 import 'package:strongr/views/unknown_view.dart';
@@ -140,8 +142,9 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       break;
 
     case SESSION_CREATE_ROUTE:
-      return null;
-      break;
+      return CupertinoPageRoute(
+        builder: (context) => SessionCreateView(),
+      );
 
     ///
     /// Programme(s)
@@ -165,8 +168,9 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       break;
 
     case PROGRAM_CREATE_ROUTE:
-      return null;
-      break;
+      return CupertinoPageRoute(
+        builder: (context) => ProgramCreateView(),
+      );
 
     ///
     /// Debug Zone

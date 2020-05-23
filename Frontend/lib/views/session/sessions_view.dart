@@ -13,6 +13,7 @@ import 'package:strongr/widgets/dialogs/filters_dialog.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
+
 class SessionsView extends StatefulWidget {
   final GlobalKey<dynamic> key;
   final int id;
@@ -36,7 +37,7 @@ class _SessionsViewState extends State<SessionsView> {
     searchbarController = TextEditingController(text: "");
     futureAppExercisesList = AppExerciseService.getAppExercises();
     sortedByAlpha = true;
-    popupMenuItems = ["Créer"];
+    popupMenuItems = ["Filtres", "Créer"];
     super.initState();
   }
 
@@ -247,14 +248,14 @@ class _SessionsViewState extends State<SessionsView> {
                   case "Filtres":
                     break;
                   case "Créer":
-                    // await Navigator.pushNamed(
-                    //   context,
-                    //   EXERCISE_ADD_ROUTE,
-                    // ).then((val) {
-                    //   if (val == true) {
-                    //     setState(() {});
-                    //   }
-                    // });
+                    await Navigator.pushNamed(
+                      context,
+                      SESSION_CREATE_ROUTE,
+                    ).then((val) {
+                      if (val == true) {
+                        setState(() {});
+                      }
+                    });
                     break;
                 }
               },

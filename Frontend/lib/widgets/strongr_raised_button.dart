@@ -36,7 +36,7 @@ class _StrongrRaisedButtonState extends State<StrongrRaisedButton> {
         child: Text(
           widget.content,
           style: TextStyle(
-              fontSize: 20, fontFamily: 'Calibri', color: Colors.white),
+              fontSize: 20, fontFamily: 'Futura', color: Colors.white),
         ),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),

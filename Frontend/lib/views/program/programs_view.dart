@@ -37,7 +37,7 @@ class _ProgramsViewState extends State<ProgramsView> {
     searchbarController = TextEditingController(text: "");
     futureAppExercisesList = AppExerciseService.getAppExercises();
     sortedByAlpha = true;
-    popupMenuItems = ["Créer"];
+    popupMenuItems = ["Filtres", "Créer"];
     super.initState();
   }
 
@@ -248,14 +248,14 @@ class _ProgramsViewState extends State<ProgramsView> {
                   case "Filtres":
                     break;
                   case "Créer":
-                    // await Navigator.pushNamed(
-                    //   context,
-                    //   EXERCISE_ADD_ROUTE,
-                    // ).then((val) {
-                    //   if (val == true) {
-                    //     setState(() {});
-                    //   }
-                    // });
+                    await Navigator.pushNamed(
+                      context,
+                      PROGRAM_CREATE_ROUTE,
+                    ).then((val) {
+                      if (val == true) {
+                        setState(() {});
+                      }
+                    });
                     break;
                 }
               },

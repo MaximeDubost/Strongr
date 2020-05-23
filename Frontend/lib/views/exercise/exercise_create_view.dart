@@ -171,7 +171,7 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
                                 width: ScreenSize.width(context) / 2.8,
                                 child: Center(
                                   child: StrongrText(
-                                    "Machine guidée, tirage horizontal",
+                                    "Banc décliné",
                                     size: 18,
                                   ),
                                 ),
@@ -191,12 +191,30 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
                         ),
                         StrongrRoundedContainer(
                           width: ScreenSize.width(context) / 1.5,
-                          content: null,
-                          onPressed: () {},
-                        ),
-                        StrongrRoundedContainer(
-                          width: ScreenSize.width(context) / 1.5,
-                          content: null,
+                          content: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: <Widget>[
+                              Container(
+                                // color: Colors.red,
+                                width: ScreenSize.width(context) / 2.8,
+                                child: Center(
+                                  child: StrongrText(
+                                    "Poulie position haute",
+                                    size: 18,
+                                  ),
+                                ),
+                              ),
+                              VerticalDivider(
+                                thickness: 1,
+                                indent: 10,
+                                endIndent: 10,
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.info_outline),
+                                onPressed: () {},
+                              )
+                            ],
+                          ),
                           onPressed: () {},
                         ),
                       ],
@@ -448,6 +466,36 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
                       ],
                     ),
                   ),
+                  Container(
+                    // color: Colors.red,
+                    height: 35,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: <Widget>[
+                        Container(
+                          width: 35,
+                        ),
+                        Container(
+                          width: 135,
+                          child: StrongrText(
+                            "Répétitions",
+                            size: 18,
+                          ),
+                        ),
+                        Container(
+                          width: 135,
+                          child: StrongrText(
+                            "Repos",
+                            size: 18,
+                          ),
+                        ),
+                        Container(
+                          width: 35,
+                        ),
+                      ],
+                    ),
+                  ),
                   Visibility(
                     visible: _unique && linesCount != 1,
                     child: Divider(
@@ -457,7 +505,8 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
                   ),
                   Center(
                     child: Container(
-                      height: ScreenSize.height(context) / 3.2,
+                      // color: Colors.blue,
+                      height: _unique ? ScreenSize.height(context) / 3.8 : 65,
                       child: Visibility(
                         visible: _visibility,
                         child: Container(
@@ -466,84 +515,175 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
                             physics: BouncingScrollPhysics(),
                             children: <Widget>[
                               for (int i = 0; i < linesCount; i++)
-                                Row(
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: EdgeInsets.only(left: 20),
-                                      child: Text(
-                                        _unique
-                                            ? linesCount == 1
-                                                ? "•"
-                                                : (i + 1).toString()
-                                            : "•",
-                                        style: TextStyle(
-                                          color: StrongrColors.blue,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                    Flexible(
-                                      child: Row(
-                                        children: <Widget>[
-                                          Flexible(
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.fromLTRB(
-                                                      20, 10, 5, 10),
-                                              child: TextFormField(
-                                                maxLength: 3,
-                                                keyboardType:
-                                                    TextInputType.number,
-                                                cursorColor: Colors.grey,
-                                                decoration: InputDecoration(
-                                                  contentPadding:
-                                                      EdgeInsets.all(10),
-                                                  labelText: 'Répétitions',
-                                                  labelStyle: TextStyle(
-                                                    color: Colors.grey,
-                                                  ),
-                                                  counterText: "",
-                                                ),
-                                              ),
+                                Container(
+                                  height: 65,
+                                  // color: Colors.green,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: <Widget>[
+                                      Container(
+                                        height: 35,
+                                        width: 35,
+                                        // color: Colors.red,
+                                        child: Center(
+                                          child: Text(
+                                            _unique
+                                                ? linesCount == 1
+                                                    ? "•"
+                                                    : (i + 1).toString()
+                                                : "•",
+                                            style: TextStyle(
+                                              color: StrongrColors.blue,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
                                             ),
                                           ),
-                                          Flexible(
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.fromLTRB(
-                                                      5, 10, 5, 10),
-                                              child: TextFormField(
-                                                maxLength: 5,
-                                                keyboardType:
-                                                    TextInputType.datetime,
-                                                cursorColor: Colors.grey,
-                                                decoration: InputDecoration(
-                                                  contentPadding:
-                                                      EdgeInsets.all(10),
-                                                  labelText: 'Repos',
-                                                  labelStyle: TextStyle(
-                                                    color: Colors.grey,
+                                        ),
+                                      ),
+                                      Container(
+                                        // color: Colors.blue,
+                                        height: 50,
+                                        child: StrongrRoundedContainer(
+                                          width: 135,
+                                          content: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: <Widget>[
+                                              Container(
+                                                height: 35,
+                                                width: 35,
+                                                child: RawMaterialButton(
+                                                  child: StrongrText(
+                                                    "-",
+                                                    color: StrongrColors.black,
                                                   ),
-                                                  counterText: "",
+                                                  shape: CircleBorder(),
+                                                  onPressed: null,
+                                                  onLongPress: null,
                                                 ),
                                               ),
-                                            ),
+                                              Flexible(
+                                                child: TextFormField(
+                                                  textAlign: TextAlign.center,
+                                                  validator:
+                                                      validateSeriesCount,
+                                                  keyboardType:
+                                                      TextInputType.number,
+                                                  inputFormatters: <
+                                                      TextInputFormatter>[
+                                                    LengthLimitingTextInputFormatter(
+                                                        2),
+                                                    WhitelistingTextInputFormatter
+                                                        .digitsOnly
+                                                  ],
+                                                  controller: null,
+                                                  decoration: InputDecoration(
+                                                    border: InputBorder.none,
+                                                    contentPadding:
+                                                        EdgeInsets.all(5),
+                                                  ),
+                                                  onSaved: (String value) {},
+                                                  onChanged: (newValue) {},
+                                                ),
+                                              ),
+                                              Container(
+                                                height: 35,
+                                                width: 35,
+                                                child: RawMaterialButton(
+                                                  child: StrongrText(
+                                                    "+",
+                                                    color: StrongrColors.black,
+                                                  ),
+                                                  shape: CircleBorder(),
+                                                  onPressed: null,
+                                                  onLongPress: null,
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                        ],
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(right: 10),
-                                      child: IconButton(
-                                        icon: Icon(
-                                          Icons.tune,
-                                          color: Colors.grey,
+                                          onPressed: null,
                                         ),
-                                        onPressed: () {},
                                       ),
-                                    ),
-                                  ],
+                                      Container(
+                                        // color: Colors.green,
+                                        height: 50,
+                                        child: StrongrRoundedContainer(
+                                          width: 135,
+                                          content: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: <Widget>[
+                                              Container(
+                                                height: 35,
+                                                width: 35,
+                                                child: RawMaterialButton(
+                                                  child: StrongrText(
+                                                    "-",
+                                                    color: StrongrColors.black,
+                                                  ),
+                                                  shape: CircleBorder(),
+                                                  onPressed: null,
+                                                  onLongPress: null,
+                                                ),
+                                              ),
+                                              Flexible(
+                                                child: TextFormField(
+                                                  textAlign: TextAlign.center,
+                                                  validator:
+                                                      validateSeriesCount,
+                                                  keyboardType:
+                                                      TextInputType.number,
+                                                  inputFormatters: <
+                                                      TextInputFormatter>[
+                                                    LengthLimitingTextInputFormatter(
+                                                        2),
+                                                    WhitelistingTextInputFormatter
+                                                        .digitsOnly
+                                                  ],
+                                                  controller: null,
+                                                  decoration: InputDecoration(
+                                                    border: InputBorder.none,
+                                                    contentPadding:
+                                                        EdgeInsets.all(5),
+                                                  ),
+                                                  onSaved: (String value) {},
+                                                  onChanged: (newValue) {},
+                                                ),
+                                              ),
+                                              Container(
+                                                height: 35,
+                                                width: 35,
+                                                child: RawMaterialButton(
+                                                  child: StrongrText(
+                                                    "+",
+                                                    color: StrongrColors.black,
+                                                  ),
+                                                  shape: CircleBorder(),
+                                                  onPressed: null,
+                                                  onLongPress: null,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          onPressed: null,
+                                        ),
+                                      ),
+                                      Container(
+                                        // color: Colors.yellow,
+                                        height: 35,
+                                        width: 35,
+                                        child: RawMaterialButton(
+                                          child: Icon(
+                                            Icons.tune,
+                                            color: StrongrColors.black,
+                                          ),
+                                          onPressed: () {},
+                                          shape: CircleBorder(),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                             ],
                           ),
@@ -564,21 +704,25 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        // heroTag: 'program_fab_' + widget.id.toString(),
-        backgroundColor:
-            validSet(strict: true) ? StrongrColors.blue : Colors.grey,
-        icon: Icon(
-          Icons.check,
-          color: Colors.white,
-        ),
-        onPressed: validSet() ? () {} : null,
-        label: StrongrText(
-          "Créer",
-          color: Colors.white,
+      bottomNavigationBar: Container(
+        height: 80,
+        child: Center(
+          child: FloatingActionButton.extended(
+            // heroTag: 'program_fab_' + widget.id.toString(),
+            backgroundColor:
+                validSet(strict: true) ? StrongrColors.blue : Colors.grey,
+            icon: Icon(
+              Icons.check,
+              color: Colors.white,
+            ),
+            onPressed: validSet() ? () {} : null,
+            label: StrongrText(
+              "Créer",
+              color: Colors.white,
+            ),
+          ),
         ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }
