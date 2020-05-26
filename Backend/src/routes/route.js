@@ -31,9 +31,10 @@ router.delete("/session/:id_session", middleware.checkAuth, SessionController.de
 router.put("/session/:id_session", middleware.checkAuth, SessionController.updateSession)
 
 /**  CRUD Exercise */
-router.post("/exercise/create", middleware.checkAuth, ExerciseController.createExercise);
-router.get("/exercise/read", middleware.checkAuth, ExerciseController.readExercises);
-router.put("/exercise/update/:id_exercise", middleware.checkAuth, ExerciseController.updateExercise);
-router.delete("/exercise/delete/:id_exercise", middleware.checkAuth, ExerciseController.deleteExercise);
+router.post("/exercise", middleware.checkAuth, ExerciseController.createExercise);
+router.get("/exercises", middleware.checkAuth, ExerciseController.readExercises);
+router.get("/exercise/:id_exercise", middleware.checkAuth, ExerciseController.detailExercise);
+router.put("/exercise/:id_exercise", middleware.checkAuth, ExerciseController.updateExercise);
+router.delete("/exercise/:id_exercise", middleware.checkAuth, ExerciseController.deleteExercise);
 
 export default router;
