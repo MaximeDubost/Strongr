@@ -29,7 +29,7 @@ class ExerciseService {
         exercises.add(ExercisePreview.fromMap(exercise));
       return exercises;
     } catch (e) {
-      return [];
+      return null;
     }
   }
 

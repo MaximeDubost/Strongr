@@ -27,7 +27,7 @@ class _HomepageState extends State<Homepage> {
       sessionsListCurrentPage,
       programsListCurrentPage;
 
-  Future<List<ExercisePreview>> futureListExercises;
+  Future<List<ExercisePreview>> futureExercises;
 
   @override
   void initState() {
@@ -49,7 +49,7 @@ class _HomepageState extends State<Homepage> {
       viewportFraction: 0.85,
     );
 
-    futureListExercises = ExerciseService.getExercises();
+    futureExercises = ExerciseService.getExercises();
     super.initState();
   }
 
@@ -86,10 +86,207 @@ class _HomepageState extends State<Homepage> {
               // color: Colors.red,
               // height: ScreenSize.height(context) / 5.5,
               child: FutureBuilder(
-                future: futureListExercises,
+                future: futureExercises,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    return Center(child: StrongrText(snapshot.data.toString()),);
+                    if (snapshot.data == null) {
+                      return Center(
+                        child: StrongrText(
+                          "Impossible d'afficher vos exercices",
+                          color: Colors.grey,
+                        ),
+                      );
+                    } else if (snapshot.data.length == 0) {
+                      return Center(
+                        child: StrongrText(
+                          "Aucun exercice",
+                          color: Colors.grey,
+                        ),
+                      );
+                    } else
+                      return PageView(
+                        physics: BouncingScrollPhysics(),
+                        onPageChanged: (value) {
+                          setState(() {
+                            exercisesListCurrentPage = value;
+                          });
+                        },
+                        controller: exercisesListController,
+                        children: <Widget>[
+                          for (final item in snapshot.data)
+                            StrongrRoundedContainer(
+                              content: Stack(
+                                children: <Widget>[
+                                  Container(
+                                    padding: EdgeInsets.only(
+                                        left: 10, top: 8, bottom: 8),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Container(
+                                          alignment: Alignment.centerLeft,
+                                          child: StrongrText(
+                                            item.name,
+                                            bold: true,
+                                          ),
+                                        ),
+                                        Column(
+                                          children: <Widget>[
+                                            Container(
+                                              height: 30,
+                                              alignment: Alignment.centerLeft,
+                                              child: Row(
+                                                children: <Widget>[
+                                                  Icon(
+                                                    Icons.fitness_center,
+                                                    color:
+                                                        item.appExerciseName !=
+                                                                null
+                                                            ? StrongrColors
+                                                                .black
+                                                            : Colors.grey,
+                                                  ),
+                                                  Container(
+                                                    padding: EdgeInsets.only(
+                                                        left: 10),
+                                                    child: StrongrText(
+                                                      item.appExerciseName !=
+                                                              null
+                                                          ? item.appExerciseName
+                                                          : "Aucun exercice",
+                                                      color:
+                                                          item.appExerciseName !=
+                                                                  null
+                                                              ? StrongrColors
+                                                                  .black
+                                                              : Colors.grey,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Container(
+                                              height: 30,
+                                              alignment: Alignment.centerLeft,
+                                              child: Row(
+                                                children: <Widget>[
+                                                  Icon(
+                                                    Icons.refresh,
+                                                    color: int.parse(item
+                                                                    .setCount) >
+                                                                0 ||
+                                                            int.parse(item
+                                                                    .setCount) !=
+                                                                null
+                                                        ? StrongrColors.black
+                                                        : Colors.grey,
+                                                  ),
+                                                  Container(
+                                                    padding: EdgeInsets.only(
+                                                        left: 10),
+                                                    child: StrongrText(
+                                                      int.parse(item.setCount) >
+                                                                  0 ||
+                                                              int.parse(item
+                                                                      .setCount) !=
+                                                                  null
+                                                          ? int.parse(item
+                                                                      .setCount) <=
+                                                                  1
+                                                              ? item.setCount +
+                                                                  " série"
+                                                              : item.setCount +
+                                                                  " séries"
+                                                          : "Aucune série",
+                                                      color: int.parse(item
+                                                                      .setCount) >
+                                                                  0 ||
+                                                              int.parse(item
+                                                                      .setCount) !=
+                                                                  null
+                                                          ? StrongrColors.black
+                                                          : Colors.grey,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Container(
+                                              height: 30,
+                                              alignment: Alignment.centerLeft,
+                                              child: Row(
+                                                children: <Widget>[
+                                                  Icon(
+                                                    Icons.show_chart,
+                                                    color: item.tonnage != null
+                                                        ? StrongrColors.black
+                                                        : Colors.grey,
+                                                  ),
+                                                  Container(
+                                                    padding: EdgeInsets.only(
+                                                        left: 10),
+                                                    child: StrongrText(
+                                                      item.tonnage != null
+                                                          ? "Tonnage de " +
+                                                              item.tonnage
+                                                                  .toString() +
+                                                              "kg"
+                                                          : "Tonnage non calculé",
+                                                      color: item.tonnage !=
+                                                              null
+                                                          ? StrongrColors.black
+                                                          : Colors.grey,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    padding:
+                                        EdgeInsets.only(bottom: 10, right: 10),
+                                    alignment: Alignment.bottomRight,
+                                    child: Container(
+                                      width: 35,
+                                      height: 35,
+                                      child: FloatingActionButton(
+                                        elevation: 0,
+                                        heroTag: 'exercise_play_fab_' +
+                                            item.id.toString(),
+                                        tooltip: "Démarrer",
+                                        backgroundColor: StrongrColors.blue,
+                                        child: Icon(
+                                          Icons.play_arrow,
+                                          color: Colors.white,
+                                        ),
+                                        onPressed: () {},
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              onPressed: () {
+                                Navigator.pushNamed(
+                                  context,
+                                  EXERCISE_ROUTE,
+                                  arguments: ExerciseView(
+                                    id: item.id.toString(),
+                                    name: item.name,
+                                  ),
+                                );
+                              },
+                            ),
+                        ],
+                      );
+
+                    // return Center(child: StrongrText(snapshot.data.toString()),);
                   } else if (snapshot.hasError) {
                     return Text(snapshot.error, textAlign: TextAlign.center);
                   } else
@@ -103,124 +300,124 @@ class _HomepageState extends State<Homepage> {
                     );
                 },
               ),
-                // child: PageView(
-                //   physics: BouncingScrollPhysics(),
-                //   onPageChanged: (value) {
-                //     setState(() {
-                //       exercisesListCurrentPage = value;
-                //     });
-                //   },
-                //   controller: exercisesListController,
-                //   children: <Widget>[
-                //     for (int i = 1; i <= 3; i++)
-                //       StrongrRoundedContainer(
-                //         content: Stack(
-                //           children: <Widget>[
-                //             Container(
-                //               padding:
-                //                   EdgeInsets.only(left: 10, top: 8, bottom: 8),
-                //               child: Column(
-                //                 mainAxisAlignment: MainAxisAlignment.spaceAround,
-                //                 crossAxisAlignment: CrossAxisAlignment.start,
-                //                 children: <Widget>[
-                //                   Container(
-                //                     alignment: Alignment.centerLeft,
-                //                     child: StrongrText(
-                //                       "Exercice perso. " + i.toString(),
-                //                       bold: true,
-                //                     ),
-                //                   ),
-                //                   Column(
-                //                     children: <Widget>[
-                //                       Container(
-                //                         height: 30,
-                //                         alignment: Alignment.centerLeft,
-                //                         child: Row(
-                //                           children: <Widget>[
-                //                             Icon(Icons.fitness_center),
-                //                             Container(
-                //                               padding: EdgeInsets.only(left: 10),
-                //                               child: StrongrText(
-                //                                 "Crunch",
-                //                               ),
-                //                             ),
-                //                           ],
-                //                         ),
-                //                       ),
-                //                       Container(
-                //                         height: 30,
-                //                         alignment: Alignment.centerLeft,
-                //                         child: Row(
-                //                           children: <Widget>[
-                //                             Icon(Icons.refresh),
-                //                             Container(
-                //                               padding: EdgeInsets.only(left: 10),
-                //                               child: StrongrText(
-                //                                 "5 séries",
-                //                               ),
-                //                             ),
-                //                           ],
-                //                         ),
-                //                       ),
-                //                       Container(
-                //                         height: 30,
-                //                         alignment: Alignment.centerLeft,
-                //                         child: Row(
-                //                           children: <Widget>[
-                //                             Icon(
-                //                               Icons.show_chart,
-                //                               color: Colors.grey,
-                //                             ),
-                //                             Container(
-                //                               padding: EdgeInsets.only(left: 10),
-                //                               child: StrongrText(
-                //                                 "Tonnage non calculé",
-                //                                 color: Colors.grey,
-                //                               ),
-                //                             ),
-                //                           ],
-                //                         ),
-                //                       ),
-                //                     ],
-                //                   ),
-                //                 ],
-                //               ),
-                //             ),
-                //             Container(
-                //               padding: EdgeInsets.only(bottom: 10, right: 10),
-                //               alignment: Alignment.bottomRight,
-                //               child: Container(
-                //                 width: 35,
-                //                 height: 35,
-                //                 child: FloatingActionButton(
-                //                   elevation: 0,
-                //                   heroTag: 'exercise_play_fab_' + i.toString(),
-                //                   tooltip: "Démarrer",
-                //                   backgroundColor: StrongrColors.blue,
-                //                   child: Icon(
-                //                     Icons.play_arrow,
-                //                     color: Colors.white,
-                //                   ),
-                //                   onPressed: () {},
-                //                 ),
-                //               ),
-                //             ),
-                //           ],
-                //         ),
-                //         onPressed: () {
-                //           Navigator.pushNamed(
-                //             context,
-                //             EXERCISE_ROUTE,
-                //             arguments: ExerciseView(
-                //               id: i.toString(),
-                //               name: "Exercice perso. " + i.toString(),
-                //             ),
-                //           );
-                //         },
-                //       ),
-                //   ],
-                // ),
-                // ),
+              // child: PageView(
+              //   physics: BouncingScrollPhysics(),
+              //   onPageChanged: (value) {
+              //     setState(() {
+              //       exercisesListCurrentPage = value;
+              //     });
+              //   },
+              //   controller: exercisesListController,
+              //   children: <Widget>[
+              //     for (int i = 1; i <= 3; i++)
+              //       StrongrRoundedContainer(
+              //         content: Stack(
+              //           children: <Widget>[
+              //             Container(
+              //               padding:
+              //                   EdgeInsets.only(left: 10, top: 8, bottom: 8),
+              //               child: Column(
+              //                 mainAxisAlignment: MainAxisAlignment.spaceAround,
+              //                 crossAxisAlignment: CrossAxisAlignment.start,
+              //                 children: <Widget>[
+              //                   Container(
+              //                     alignment: Alignment.centerLeft,
+              //                     child: StrongrText(
+              //                       "Exercice perso. " + i.toString(),
+              //                       bold: true,
+              //                     ),
+              //                   ),
+              //                   Column(
+              //                     children: <Widget>[
+              //                       Container(
+              //                         height: 30,
+              //                         alignment: Alignment.centerLeft,
+              //                         child: Row(
+              //                           children: <Widget>[
+              //                             Icon(Icons.fitness_center),
+              //                             Container(
+              //                               padding: EdgeInsets.only(left: 10),
+              //                               child: StrongrText(
+              //                                 "Crunch",
+              //                               ),
+              //                             ),
+              //                           ],
+              //                         ),
+              //                       ),
+              //                       Container(
+              //                         height: 30,
+              //                         alignment: Alignment.centerLeft,
+              //                         child: Row(
+              //                           children: <Widget>[
+              //                             Icon(Icons.refresh),
+              //                             Container(
+              //                               padding: EdgeInsets.only(left: 10),
+              //                               child: StrongrText(
+              //                                 "5 séries",
+              //                               ),
+              //                             ),
+              //                           ],
+              //                         ),
+              //                       ),
+              //                       Container(
+              //                         height: 30,
+              //                         alignment: Alignment.centerLeft,
+              //                         child: Row(
+              //                           children: <Widget>[
+              //                             Icon(
+              //                               Icons.show_chart,
+              //                               color: Colors.grey,
+              //                             ),
+              //                             Container(
+              //                               padding: EdgeInsets.only(left: 10),
+              //                               child: StrongrText(
+              //                                 "Tonnage non calculé",
+              //                                 color: Colors.grey,
+              //                               ),
+              //                             ),
+              //                           ],
+              //                         ),
+              //                       ),
+              //                     ],
+              //                   ),
+              //                 ],
+              //               ),
+              //             ),
+              //             Container(
+              //               padding: EdgeInsets.only(bottom: 10, right: 10),
+              //               alignment: Alignment.bottomRight,
+              //               child: Container(
+              //                 width: 35,
+              //                 height: 35,
+              //                 child: FloatingActionButton(
+              //                   elevation: 0,
+              //                   heroTag: 'exercise_play_fab_' + i.toString(),
+              //                   tooltip: "Démarrer",
+              //                   backgroundColor: StrongrColors.blue,
+              //                   child: Icon(
+              //                     Icons.play_arrow,
+              //                     color: Colors.white,
+              //                   ),
+              //                   onPressed: () {},
+              //                 ),
+              //               ),
+              //             ),
+              //           ],
+              //         ),
+              //         onPressed: () {
+              //           Navigator.pushNamed(
+              //             context,
+              //             EXERCISE_ROUTE,
+              //             arguments: ExerciseView(
+              //               id: i.toString(),
+              //               name: "Exercice perso. " + i.toString(),
+              //             ),
+              //           );
+              //         },
+              //       ),
+              //   ],
+              // ),
+              // ),
             ),
           ),
           Flexible(

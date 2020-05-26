@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:strongr/models/ExercisePreview.dart';
 import 'package:strongr/models/muscle.dart';
 import 'package:strongr/models/AppExercise.dart';
-import 'package:strongr/services/app_exercise_service.dart';
+import 'package:strongr/services/exercise_service.dart';
 import 'package:strongr/utils/app_exercises_filters.dart';
 import 'package:strongr/utils/diacritics.dart';
 import 'package:strongr/utils/routing_constants.dart';
@@ -28,14 +29,14 @@ class ExercisesView extends StatefulWidget {
 
 class _ExercisesViewState extends State<ExercisesView> {
   TextEditingController searchbarController;
-  Future<List<AppExercise>> futureAppExercisesList;
+  Future<List<ExercisePreview>> futureExercises;
   bool sortedByAlpha;
   List<String> popupMenuItems;
 
   @override
   void initState() {
     searchbarController = TextEditingController(text: "");
-    futureAppExercisesList = AppExerciseService.getAppExercises();
+    futureExercises = ExerciseService.getExercises();
     sortedByAlpha = true;
     popupMenuItems = ["Filtres", "Créer"];
     super.initState();
@@ -61,7 +62,7 @@ class _ExercisesViewState extends State<ExercisesView> {
   }
 
   /// Retourne le nombre de résultats d'une liste d'[appExercises] après recherche et filtres.
-  int resultCount(List<AppExercise> appExercises) {
+  int resultCount(List<ExercisePreview> appExercises) {
     int result = 0;
     for (final appExercise in appExercises)
       if ((searchbarController.text == "" ||
@@ -74,38 +75,42 @@ class _ExercisesViewState extends State<ExercisesView> {
                 Diacritics.remove(
                   searchbarController.text.toLowerCase(),
                 ),
-              )) &&
-          (AppExercisesFilters.areAllDisabled() ||
-              compareMusclesWithFilters(
-                appExercise.muscleList,
-                AppExercisesFilters.allEnabledFiltersToList(),
-              ))) result++;
+              ))
+          //     &&
+          // (AppExercisesFilters.areAllDisabled() ||
+          //     compareMusclesWithFilters(
+          //       appExercise.muscleList,
+          //       AppExercisesFilters.allEnabledFiltersToList(),
+          //     ))
+          ) result++;
     return result;
   }
 
-  /// Affiche une liste d'[appExercises].
-  Widget buildAppExercisesList(List<AppExercise> appExercises) {
+  /// Affiche une liste d'[exercises].
+  Widget buildExercisesList(List<ExercisePreview> exercises) {
     return Column(
       verticalDirection:
           sortedByAlpha ? VerticalDirection.down : VerticalDirection.up,
       children: <Widget>[
-        for (final appExercise in appExercises)
+        for (final item in exercises)
           if ((searchbarController.text == "" ||
-                  Diacritics.remove(
-                    appExercises[appExercises.indexOf(appExercise)]
-                        .name
-                        .toString()
-                        .toLowerCase(),
-                  ).contains(
-                    Diacritics.remove(
-                      searchbarController.text.toLowerCase(),
-                    ),
-                  )) &&
-              (AppExercisesFilters.areAllDisabled() ||
-                  compareMusclesWithFilters(
-                    appExercise.muscleList,
-                    AppExercisesFilters.allEnabledFiltersToList(),
-                  )))
+              Diacritics.remove(
+                exercises[exercises.indexOf(item)]
+                    .name
+                    .toString()
+                    .toLowerCase(),
+              ).contains(
+                Diacritics.remove(
+                  searchbarController.text.toLowerCase(),
+                ),
+              ))
+          //     &&
+          // (AppExercisesFilters.areAllDisabled() ||
+          //     compareMusclesWithFilters(
+          //       appExercise.muscleList,
+          //       AppExercisesFilters.allEnabledFiltersToList(),
+          //     ))
+          )
             Container(
               padding: EdgeInsets.all(5),
               height: 140,
@@ -122,9 +127,7 @@ class _ExercisesViewState extends State<ExercisesView> {
                           Container(
                             alignment: Alignment.centerLeft,
                             child: StrongrText(
-                              "Exercice perso. " +
-                                  (appExercises.indexOf(appExercise) + 1)
-                                      .toString(),
+                              item.name,
                               bold: true,
                             ),
                           ),
@@ -132,11 +135,21 @@ class _ExercisesViewState extends State<ExercisesView> {
                             alignment: Alignment.centerLeft,
                             child: Row(
                               children: <Widget>[
-                                Icon(Icons.fitness_center),
+                                Icon(
+                                  Icons.fitness_center,
+                                  color: item.appExerciseName != null
+                                      ? StrongrColors.black
+                                      : Colors.grey,
+                                ),
                                 Container(
                                   padding: EdgeInsets.only(left: 10),
                                   child: StrongrText(
-                                    "Crunch",
+                                    item.appExerciseName != null
+                                        ? item.appExerciseName
+                                        : "Aucun exercice",
+                                    color: item.appExerciseName != null
+                                        ? StrongrColors.black
+                                        : Colors.grey,
                                   ),
                                 ),
                               ],
@@ -146,11 +159,26 @@ class _ExercisesViewState extends State<ExercisesView> {
                             alignment: Alignment.centerLeft,
                             child: Row(
                               children: <Widget>[
-                                Icon(Icons.refresh),
+                                Icon(
+                                  Icons.refresh,
+                                  color: int.parse(item.setCount) > 0 ||
+                                          int.parse(item.setCount) != null
+                                      ? StrongrColors.black
+                                      : Colors.grey,
+                                ),
                                 Container(
                                   padding: EdgeInsets.only(left: 10),
                                   child: StrongrText(
-                                    "5 séries",
+                                    int.parse(item.setCount) > 0 ||
+                                            int.parse(item.setCount) != null
+                                        ? int.parse(item.setCount) <= 1
+                                            ? item.setCount + " série"
+                                            : item.setCount + " séries"
+                                        : "Aucune série",
+                                    color: int.parse(item.setCount) > 0 ||
+                                            int.parse(item.setCount) != null
+                                        ? StrongrColors.black
+                                        : Colors.grey,
                                   ),
                                 ),
                               ],
@@ -162,13 +190,21 @@ class _ExercisesViewState extends State<ExercisesView> {
                               children: <Widget>[
                                 Icon(
                                   Icons.show_chart,
-                                  color: Colors.grey,
+                                  color: item.tonnage != null
+                                      ? StrongrColors.black
+                                      : Colors.grey,
                                 ),
                                 Container(
                                   padding: EdgeInsets.only(left: 10),
                                   child: StrongrText(
-                                    "Tonnage non calculé",
-                                    color: Colors.grey,
+                                    item.tonnage != null
+                                        ? "Tonnage de " +
+                                            item.tonnage.toString() +
+                                            "kg"
+                                        : "Tonnage non calculé",
+                                    color: item.tonnage != null
+                                        ? StrongrColors.black
+                                        : Colors.grey,
                                   ),
                                 ),
                               ],
@@ -185,9 +221,7 @@ class _ExercisesViewState extends State<ExercisesView> {
                         height: 35,
                         child: FloatingActionButton(
                           elevation: 0,
-                          heroTag: 'exercise_play_fab_' +
-                              (appExercises.indexOf(appExercise) + 1)
-                                  .toString(),
+                          heroTag: 'exercise_play_fab_' + item.id.toString(),
                           tooltip: "Démarrer",
                           backgroundColor: StrongrColors.blue,
                           child: Icon(
@@ -205,9 +239,8 @@ class _ExercisesViewState extends State<ExercisesView> {
                     context,
                     EXERCISE_ROUTE,
                     arguments: ExerciseView(
-                      id: (appExercises.indexOf(appExercise) + 1).toString(),
-                      name: "Exercice perso. " +
-                          (appExercises.indexOf(appExercise) + 1).toString(),
+                      id: item.id.toString(),
+                      name: item.name,
                     ),
                   );
                 },
@@ -392,7 +425,7 @@ class _ExercisesViewState extends State<ExercisesView> {
                 ),
               ),
               FutureBuilder(
-                future: futureAppExercisesList,
+                future: futureExercises,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return Column(
@@ -410,7 +443,7 @@ class _ExercisesViewState extends State<ExercisesView> {
                               ),
                         resultCount(snapshot.data) != 0
                             ? Container(
-                                child: buildAppExercisesList(snapshot.data),
+                                child: buildExercisesList(snapshot.data),
                               )
                             : Container(
                                 height: ScreenSize.height(context) / 1.75,

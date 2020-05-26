@@ -5,15 +5,17 @@ const controller = {};
 
 
 /**
+ * create exercise
+ * 
  * @param id_app_exercise
  * @param id_user
  * @param name
  * @param id_equipment
  */
 controller.createExercise = async (req, res) => {
-    let rows = await ExerciseRepository.createExercise(req)
+    let status = await ExerciseRepository.createExercise(req)
     //console.log(rows)
-    res.status(200).json(rows)
+    res.sendStatus(status)
 }
 
 /**

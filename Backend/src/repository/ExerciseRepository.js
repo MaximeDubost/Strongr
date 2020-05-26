@@ -31,7 +31,7 @@ repository.createExercise = async (req) => {
     let sqlCreateExercise = "INSERT INTO _exercise (id_app_exercise, id_user, name, id_equipment, creation_date, last_update) VALUES ($1, $2, $3, $4, $5, $6)"
     try {
         await clt.query(sqlCreateExercise, [req.body.id_app_exercise, req.user.id, req.body.name, req.body.id_equipment, date, date])
-        return res = 201;
+        return 201;
     }
     catch (error) {
         console.error(error)
@@ -48,7 +48,8 @@ repository.readExercises = async (req) => {
     JOIN _app_exercise ae ON ae.id_app_exercise = e.id_app_exercise
     JOIN _set s ON s.id_exercise = e.id_exercise
     WHERE e.id_user = $1
-    GROUP BY e.id_exercise, e.name, ae.name
+    GROUP BY e.id_exercise, e.name, ae.name, e.last_update
+    ORDER BY e.last_update DESC
     `
     try {
         var result = await clt.query(sqlReadAllExercices, [req.user.id])
@@ -71,7 +72,7 @@ repository.updateExercise = async (req) => {
     let sqlUpdateExercise = "UPDATE _exercise SET id_app_exercise=$1, name=$2, id_equipment=$3, last_update=$4 WHERE id_exercise=$5 AND id_user=$6"
     try {
         await clt.query(sqlUpdateExercise, [req.body.id_app_exercise, req.body.name, req.body.id_equipment, date, req.params.id_exercise, req.user.id])
-        return res = 201
+        return 200
     } catch (error) {
         console.log(error)
     }
@@ -79,10 +80,10 @@ repository.updateExercise = async (req) => {
 
 /// DELETE
 repository.deleteExercise = async (req) => {
-    let sqlDeleteExercise = "DELETE FROM _exercise WHERE id_exercise = $1"
+    let sqlDeleteExercise = "DELETE FROM _exercise WHERE id_exercise = $1 AND id_user = $2"
     try {
-        await clt.query(sqlDeleteExercise, [req.params.id_exercise])
-        return res = 201
+        await clt.query(sqlDeleteExercise, [req.params.id_exercise, req.user.id])
+        return 200
     } catch (error) {
         console.log(error)
     }
@@ -119,7 +120,5 @@ repository.detailExercise = async (req) => {
         console.log(error)
     }
 }
-
-
 
 export default repository;
