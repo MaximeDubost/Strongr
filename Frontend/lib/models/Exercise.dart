@@ -61,11 +61,12 @@ class Exercise {
     return Exercise(
       id: map['id'],
       name: map['name'],
-      appExercise: AppExercise.fromMap(map['app_exercise']),
-      sets: List<Set>.from(map['sets']?.map((x) => x)),
+      // appExercise: AppExercise.fromMap(map['app_exercise']),
+      appExercise: AppExercise(id: map['id'], name: map['name']),
+      sets: List<Set>.from(map['sets']?.map((x) => Set.fromMap(x))) ?? null,
       tonnage: map['tonnage'],
-      creationDate: DateTime.fromMillisecondsSinceEpoch(map['creation_date']),
-      lastUpdate: DateTime.fromMillisecondsSinceEpoch(map['last_update']),
+      creationDate: DateTime.parse(map['creation_date']),
+      lastUpdate: DateTime.parse(map['last_update']),
     );
   }
 

@@ -241,6 +241,7 @@ class _ExercisesViewState extends State<ExercisesView> {
                     arguments: ExerciseView(
                       id: item.id.toString(),
                       name: item.name,
+                      appExerciseName: item.appExerciseName,
                     ),
                   );
                 },
@@ -412,7 +413,7 @@ class _ExercisesViewState extends State<ExercisesView> {
                                 color: Colors.black87,
                               ),
                               StrongrText(
-                                sortedByAlpha ? "A-Z" : "Z-A",
+                                sortedByAlpha ? "Date" : "Date",
                                 color: Colors.black87,
                                 size: 14,
                               ),
@@ -456,9 +457,9 @@ class _ExercisesViewState extends State<ExercisesView> {
                               ),
                       ],
                     );
-                  } else if (snapshot.hasError) {
+                  } else if (snapshot.hasError)
                     return Text(snapshot.error, textAlign: TextAlign.center);
-                  } else
+                  else
                     return Container(
                       alignment: Alignment.center,
                       height: ScreenSize.height(context) / 1.75,

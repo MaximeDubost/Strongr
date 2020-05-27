@@ -101,6 +101,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         builder: (context) => ExerciseView(
           id: args.id,
           name: args.name,
+          appExerciseName: args.appExerciseName,
           fromSession: args.fromSession,
         ),
       );

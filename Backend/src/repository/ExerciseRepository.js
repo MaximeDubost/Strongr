@@ -111,9 +111,9 @@ repository.detailExercise = async (req) => {
         WHERE e.id_exercise = $1;
         `
         result = await clt.query(sql, [req.params.id_exercise])
-        console.log(result)
+        console.log("result.rows: ", result.rows)
         let app_exercise = new AppExercise(result.rows[0].id_app_exercise, result.rows[0].name_app_exercise)
-        console.log(app_exercise)
+        console.log("app_exercise: ", app_exercise)
         return new DetailExercise(result.rows[0].id_exercise, result.rows[0].name_exercise, app_exercise, set_list, result.rows[0].creation_date, result.rows[0].last_update)
 
     } catch (error) {

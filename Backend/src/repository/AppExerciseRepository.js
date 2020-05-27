@@ -66,7 +66,7 @@ repository.getDetailAppExercise = async (body) => {
     `
     try {
         var result = await clt.query(getDetailAppExercise, [body.id_app_exercise]);
-        // console.log(result.rows)
+        console.log(result.rows)
         var exists = false
         var j = 0
         var k = -1
@@ -79,16 +79,14 @@ repository.getDetailAppExercise = async (body) => {
                         k++
                     }
                     // console.log("Avant push muscle ", appExList[j])
-                    var muscleExist = AppExercise.class(appExList[k]).muscleList.filter(muscle => muscle.id === row.id_muscle)
+                    var muscleExist = appExList[k].muscleList.filter(muscle => muscle.id === row.id_muscle)
                     // console.log(muscleExist.length)
-                    if (muscleExist.length === 0) {
-                        AppExercise.class(appExList[k]).muscleList.push(new Muscle(row.id_muscle, row.muscle_name))
-                    }
-                    var equipmentExist = AppExercise.class(appExList[k]).equipmentList.filter(equipment => equipment.id === row.id_equipment)
+                    if (muscleExist.length === 0)
+                        appExList[k].muscleList.push(new Muscle(row.id_muscle, row.muscle_name))
+                    var equipmentExist = appExList[k].equipmentList.filter(equipment => equipment.id === row.id_equipment)
                     // console.log(equipmentExist.length)
-                    if (equipmentExist.length === 0) {
-                        AppExercise.class(appExList[k]).equipmentList.push(new Equipment(row.id_equipment, row.equipment_name))
-                    }
+                    if (equipmentExist.length === 0)
+                        appExList[k].equipmentList.push(new Equipment(row.id_equipment, row.equipment_name))
                     // console.log("Après push muscle ", appExList[j])
                     j++
                 }

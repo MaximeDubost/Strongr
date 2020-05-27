@@ -47,7 +47,7 @@ class Set {
     return Set(
       id: map['id'],
       place: map['place'],
-      repetitionCount: map['repetition_count'],
+      repetitionCount: map['repetitions_count'],
       restTime: map['rest_time'],
       tonnage: map['tonnage'],
     );

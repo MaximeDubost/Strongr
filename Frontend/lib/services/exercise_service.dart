@@ -36,7 +36,7 @@ class ExerciseService {
   /// [GET] /exercise/[id]
   ///
   /// Retourne le détail d'un exercice [id].
-  static Future<List<Exercise>> getExercise({@required int id}) async {
+  static Future<Exercise> getExercise({@required int id}) async {
     try {
       Response response = await http.get(
         Uri.encodeFull(
@@ -46,12 +46,10 @@ class ExerciseService {
           'Authorization': 'Bearer ' + Global.token
         },
       );
-      List<Exercise> exercises = List<Exercise>();
-      for (final exercise in jsonDecode(response.body))
-        exercises.add(Exercise.fromMap(exercise));
-      return exercises;
+      print(response.body.toString());
+      return Exercise.fromJson(response.body);
     } catch (e) {
-      return [];
+      return Exercise();
     }
   }
 

@@ -279,6 +279,7 @@ class _HomepageState extends State<Homepage> {
                                   arguments: ExerciseView(
                                     id: item.id.toString(),
                                     name: item.name,
+                                    appExerciseName: item.appExerciseName,
                                   ),
                                 );
                               },
@@ -300,124 +301,6 @@ class _HomepageState extends State<Homepage> {
                     );
                 },
               ),
-              // child: PageView(
-              //   physics: BouncingScrollPhysics(),
-              //   onPageChanged: (value) {
-              //     setState(() {
-              //       exercisesListCurrentPage = value;
-              //     });
-              //   },
-              //   controller: exercisesListController,
-              //   children: <Widget>[
-              //     for (int i = 1; i <= 3; i++)
-              //       StrongrRoundedContainer(
-              //         content: Stack(
-              //           children: <Widget>[
-              //             Container(
-              //               padding:
-              //                   EdgeInsets.only(left: 10, top: 8, bottom: 8),
-              //               child: Column(
-              //                 mainAxisAlignment: MainAxisAlignment.spaceAround,
-              //                 crossAxisAlignment: CrossAxisAlignment.start,
-              //                 children: <Widget>[
-              //                   Container(
-              //                     alignment: Alignment.centerLeft,
-              //                     child: StrongrText(
-              //                       "Exercice perso. " + i.toString(),
-              //                       bold: true,
-              //                     ),
-              //                   ),
-              //                   Column(
-              //                     children: <Widget>[
-              //                       Container(
-              //                         height: 30,
-              //                         alignment: Alignment.centerLeft,
-              //                         child: Row(
-              //                           children: <Widget>[
-              //                             Icon(Icons.fitness_center),
-              //                             Container(
-              //                               padding: EdgeInsets.only(left: 10),
-              //                               child: StrongrText(
-              //                                 "Crunch",
-              //                               ),
-              //                             ),
-              //                           ],
-              //                         ),
-              //                       ),
-              //                       Container(
-              //                         height: 30,
-              //                         alignment: Alignment.centerLeft,
-              //                         child: Row(
-              //                           children: <Widget>[
-              //                             Icon(Icons.refresh),
-              //                             Container(
-              //                               padding: EdgeInsets.only(left: 10),
-              //                               child: StrongrText(
-              //                                 "5 séries",
-              //                               ),
-              //                             ),
-              //                           ],
-              //                         ),
-              //                       ),
-              //                       Container(
-              //                         height: 30,
-              //                         alignment: Alignment.centerLeft,
-              //                         child: Row(
-              //                           children: <Widget>[
-              //                             Icon(
-              //                               Icons.show_chart,
-              //                               color: Colors.grey,
-              //                             ),
-              //                             Container(
-              //                               padding: EdgeInsets.only(left: 10),
-              //                               child: StrongrText(
-              //                                 "Tonnage non calculé",
-              //                                 color: Colors.grey,
-              //                               ),
-              //                             ),
-              //                           ],
-              //                         ),
-              //                       ),
-              //                     ],
-              //                   ),
-              //                 ],
-              //               ),
-              //             ),
-              //             Container(
-              //               padding: EdgeInsets.only(bottom: 10, right: 10),
-              //               alignment: Alignment.bottomRight,
-              //               child: Container(
-              //                 width: 35,
-              //                 height: 35,
-              //                 child: FloatingActionButton(
-              //                   elevation: 0,
-              //                   heroTag: 'exercise_play_fab_' + i.toString(),
-              //                   tooltip: "Démarrer",
-              //                   backgroundColor: StrongrColors.blue,
-              //                   child: Icon(
-              //                     Icons.play_arrow,
-              //                     color: Colors.white,
-              //                   ),
-              //                   onPressed: () {},
-              //                 ),
-              //               ),
-              //             ),
-              //           ],
-              //         ),
-              //         onPressed: () {
-              //           Navigator.pushNamed(
-              //             context,
-              //             EXERCISE_ROUTE,
-              //             arguments: ExerciseView(
-              //               id: i.toString(),
-              //               name: "Exercice perso. " + i.toString(),
-              //             ),
-              //           );
-              //         },
-              //       ),
-              //   ],
-              // ),
-              // ),
             ),
           ),
           Flexible(
