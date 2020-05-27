@@ -338,7 +338,7 @@ class _AppExercisesPageState extends State<AppExercisesPage> {
                               color: Colors.grey,
                             ),
                           ),
-                    resultCount(snapshot.data) != 0
+                    resultCount(snapshot.data) != 0 || snapshot.data.length == 0
                         ? Container(
                             child: buildAppExercisesList(snapshot.data),
                           )

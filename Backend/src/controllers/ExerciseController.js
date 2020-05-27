@@ -3,7 +3,6 @@ const { Pool } = require('pg')
 var clt = null;
 const controller = {};
 
-
 /**
  * create exercise
  * 
@@ -14,7 +13,6 @@ const controller = {};
  */
 controller.createExercise = async (req, res) => {
     let status = await ExerciseRepository.createExercise(req)
-    //console.log(rows)
     res.sendStatus(status)
 }
 
@@ -23,6 +21,11 @@ controller.createExercise = async (req, res) => {
  */
 controller.readExercises = async (req, res) => {
     let rows = await ExerciseRepository.readExercises(req)
+    res.status(200).json(rows)
+}
+
+controller.detailExercise = async (req, res) => {
+    let rows = await ExerciseRepository.detailExercise(req)
     res.status(200).json(rows)
 }
 
@@ -39,11 +42,6 @@ controller.updateExercise = async (req, res) => {
  */
 controller.deleteExercise = async (req, res) => {
     let rows = await ExerciseRepository.deleteExercise(req)
-    res.status(200).json(rows)
-}
-
-controller.detailExercise = async (req, res) => {
-    let rows = await ExerciseRepository.detailExercise(req)
     res.status(200).json(rows)
 }
 

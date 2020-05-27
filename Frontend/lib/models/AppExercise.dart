@@ -43,13 +43,24 @@ class AppExercise {
 
   static AppExercise fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
-  
-    return AppExercise(
-      id: map['id'],
-      name: map['name'],
-      muscleList: List<Muscle>.from(map['muscleList']?.map((x) => Muscle.fromMap(x))) ?? null,
-      equipmentList: List<Equipment>.from(map['equipmentList']?.map((x) => Equipment.fromMap(x))) ?? null,
-    );
+
+    try
+    {
+      return AppExercise(
+        id: map['id'],
+        name: map['name'],
+        muscleList: List<Muscle>.from(map['muscleList']?.map((x) => Muscle.fromMap(x))) ?? null,
+        equipmentList: List<Equipment>.from(map['equipmentList']?.map((x) => Equipment.fromMap(x))) ?? null,
+      );
+    } 
+    catch(e)
+    {
+      return AppExercise(
+        id: map['id'],
+        name: map['name'],
+      );
+    }
+    
   }
 
   String toJson() => json.encode(toMap());

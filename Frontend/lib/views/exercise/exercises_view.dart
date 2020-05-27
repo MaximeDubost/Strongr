@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:strongr/models/ExercisePreview.dart';
 import 'package:strongr/models/muscle.dart';
-import 'package:strongr/models/AppExercise.dart';
 import 'package:strongr/services/exercise_service.dart';
 import 'package:strongr/utils/app_exercises_filters.dart';
 import 'package:strongr/utils/diacritics.dart';
@@ -30,14 +29,14 @@ class ExercisesView extends StatefulWidget {
 class _ExercisesViewState extends State<ExercisesView> {
   TextEditingController searchbarController;
   Future<List<ExercisePreview>> futureExercises;
-  bool sortedByAlpha;
+  bool sortedByRecent;
   List<String> popupMenuItems;
 
   @override
   void initState() {
     searchbarController = TextEditingController(text: "");
     futureExercises = ExerciseService.getExercises();
-    sortedByAlpha = true;
+    sortedByRecent = true;
     popupMenuItems = ["Filtres", "Créer"];
     super.initState();
   }
@@ -90,7 +89,7 @@ class _ExercisesViewState extends State<ExercisesView> {
   Widget buildExercisesList(List<ExercisePreview> exercises) {
     return Column(
       verticalDirection:
-          sortedByAlpha ? VerticalDirection.down : VerticalDirection.up,
+          sortedByRecent ? VerticalDirection.down : VerticalDirection.up,
       children: <Widget>[
         for (final item in exercises)
           if ((searchbarController.text == "" ||
@@ -396,26 +395,31 @@ class _ExercisesViewState extends State<ExercisesView> {
                         endIndent: ScreenSize.width(context) / 4,
                       ),
                     ),
-                    Align(
+                    Container(
+                      // color: Colors.blue,
                       alignment: Alignment.centerLeft,
                       child: Container(
+                        // color: Colors.green,
                         margin: EdgeInsets.only(left: 25),
-                        width: 55,
+                        width: 70,
                         child: InkWell(
                           onTap: () =>
-                              setState(() => sortedByAlpha = !sortedByAlpha),
+                              setState(() => sortedByRecent = !sortedByRecent),
                           child: Row(
                             children: <Widget>[
                               Icon(
-                                sortedByAlpha
+                                sortedByRecent
                                     ? Icons.keyboard_arrow_down
                                     : Icons.keyboard_arrow_up,
                                 color: Colors.black87,
                               ),
-                              StrongrText(
-                                sortedByAlpha ? "Date" : "Date",
-                                color: Colors.black87,
-                                size: 14,
+                              Container(
+                                // color: Colors.red,
+                                child: StrongrText(
+                                  sortedByRecent ? "Récent" : "Ancien",
+                                  color: Colors.black87,
+                                  size: 14,
+                                ),
                               ),
                             ],
                           ),
@@ -438,11 +442,11 @@ class _ExercisesViewState extends State<ExercisesView> {
                                 alignment: Alignment.center,
                                 height: ScreenSize.height(context) / 1.75,
                                 child: StrongrText(
-                                  "Impossible d'afficher les exercices",
+                                  "Aucun exercice à afficher",
                                   color: Colors.grey,
                                 ),
                               ),
-                        resultCount(snapshot.data) != 0
+                        resultCount(snapshot.data) != 0 || snapshot.data.length == 0
                             ? Container(
                                 child: buildExercisesList(snapshot.data),
                               )

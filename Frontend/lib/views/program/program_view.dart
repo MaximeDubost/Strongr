@@ -84,7 +84,9 @@ class _ProgramViewState extends State<ProgramView> {
       height: 110,
       child: StrongrRoundedContainer(
         width: ScreenSize.width(context),
-        borderColor: i == DateTime.now().weekday && !isEditMode ? StrongrColors.blue80: StrongrColors.greyD,
+        borderColor: i == DateTime.now().weekday && !isEditMode
+            ? StrongrColors.blue80
+            : StrongrColors.greyD,
         borderWidth: i == DateTime.now().weekday && !isEditMode ? 3 : 1,
         content: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -164,7 +166,7 @@ class _ProgramViewState extends State<ProgramView> {
                           child: Container(
                             // color: Colors.blue,
                             child: StrongrText(
-                              "Full body",
+                              "session_type_name",
                               color: isEditMode
                                   ? Colors.grey
                                   : StrongrColors.black,
@@ -183,7 +185,7 @@ class _ProgramViewState extends State<ProgramView> {
                         Container(
                           width: 185,
                           child: StrongrText(
-                            "5 exercices",
+                            "exercise_count",
                             color:
                                 isEditMode ? Colors.grey : StrongrColors.black,
                             textAlign: TextAlign.start,
@@ -264,6 +266,7 @@ class _ProgramViewState extends State<ProgramView> {
                 );
               }
             : null,
+        onLongPressed: !isEditMode ? () => setState(() => isEditMode = true) : null,
       ),
     );
   }
@@ -297,27 +300,25 @@ class _ProgramViewState extends State<ProgramView> {
           children: <Widget>[
             InkWell(
               onTap: isEditMode ? null : () {},
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              child: Stack(
                 children: <Widget>[
                   Container(
-                    height: 50,
-                    width: 100,
-                  ),
-                  Container(
+                    width: ScreenSize.width(context),
                     padding: EdgeInsets.all(20),
                     child: StrongrText(
-                      "Prise de masse",
-                      // size: 22,
+                      "program_goal_name",
                       bold: true,
                     ),
                   ),
-                  Opacity(
-                    opacity: isEditMode ? 0 : 1,
-                    child: Container(
-                      height: 50,
-                      width: 100,
-                      child: Icon(Icons.info_outline),
+                  Container(
+                    padding: EdgeInsets.only(
+                        top: 20, bottom: 20, left: 15, right: 15),
+                    alignment: Alignment.centerRight,
+                    child: Opacity(
+                      opacity: isEditMode ? 0 : 1,
+                      child: Container(
+                        child: Icon(Icons.info_outline),
+                      ),
                     ),
                   ),
                 ],

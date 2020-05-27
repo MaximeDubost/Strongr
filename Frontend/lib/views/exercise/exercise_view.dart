@@ -228,6 +228,7 @@ class _ExerciseViewState extends State<ExerciseView> {
               ],
             ),
             onPressed: !isEditMode ? () {} : null,
+            onLongPressed: !isEditMode ? () => setState(() => isEditMode = true) : null,
           ),
         ),
       );
@@ -261,43 +262,66 @@ class _ExerciseViewState extends State<ExerciseView> {
       body: Container(
         child: Column(
           children: <Widget>[
-            InkWell(
-              onTap: isEditMode
-                  ? null
-                  : () {
-                      Navigator.pushNamed(
-                        context,
-                        APP_EXERCISE_ROUTE,
-                        arguments: AppExerciseView(
-                          id: 1,
-                          name: "Crunch",
-                          isBelonged: true,
-                        ),
-                      );
-                    },
-              child: Stack(
-                children: <Widget>[
-                  Container(
+            FutureBuilder(
+              future: futureExercise,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  print(snapshot.data);
+                  return Container(
+                    // color: Colors.red,
+                    child: InkWell(
+                      onTap: isEditMode
+                          ? null
+                          : () {
+                              Navigator.pushNamed(
+                                context,
+                                APP_EXERCISE_ROUTE,
+                                arguments: AppExerciseView(
+                                  id: snapshot.data.appExercise.id,
+                                  name: snapshot.data.appExercise.name,
+                                  isBelonged: true,
+                                ),
+                              );
+                            },
+                      child: Stack(
+                        children: <Widget>[
+                          Container(
+                            width: ScreenSize.width(context),
+                            padding: EdgeInsets.all(20),
+                            child: StrongrText(
+                              widget.appExerciseName,
+                              bold: true,
+                            ),
+                          ),
+                          Container(
+                            padding: EdgeInsets.only(
+                                top: 20, bottom: 20, left: 15, right: 15),
+                            alignment: Alignment.centerRight,
+                            child: Opacity(
+                              opacity: isEditMode ? 0 : 1,
+                              child: Container(
+                                child: Icon(Icons.info_outline),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }
+                if (snapshot.hasError) {
+                  return Text(snapshot.error, textAlign: TextAlign.center);
+                } else {
+                  return Container(
                     width: ScreenSize.width(context),
                     padding: EdgeInsets.all(20),
                     child: StrongrText(
                       widget.appExerciseName,
                       bold: true,
                     ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.only(
-                        top: 20, bottom: 20, left: 15, right: 15),
-                    alignment: Alignment.centerRight,
-                    child: Opacity(
-                      opacity: isEditMode ? 0 : 1,
-                      child: Container(
-                        child: Icon(Icons.info_outline),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                  );
+                }
+              },
             ),
             Container(
               width: ScreenSize.width(context),
@@ -362,15 +386,18 @@ class _ExerciseViewState extends State<ExerciseView> {
                             color: Colors.grey,
                             size: 16,
                           ),
-                          StrongrText(snapshot.data.creationDate != snapshot.data.lastUpdate ?
-                            "Mis à jour le " +
-                                DateFormater.format(
-                                    snapshot.data.lastUpdate.toString()) +
-                                " à " +
-                                DateFormater.format(
-                                  snapshot.data.lastUpdate.toString(),
-                                  timeOnly: true,
-                                ) : "",
+                          StrongrText(
+                            snapshot.data.creationDate !=
+                                    snapshot.data.lastUpdate
+                                ? "Mis à jour le " +
+                                    DateFormater.format(
+                                        snapshot.data.lastUpdate.toString()) +
+                                    " à " +
+                                    DateFormater.format(
+                                      snapshot.data.lastUpdate.toString(),
+                                      timeOnly: true,
+                                    )
+                                : "",
                             color: Colors.grey,
                             size: 16,
                           ),

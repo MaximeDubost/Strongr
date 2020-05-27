@@ -58,7 +58,7 @@ repository.readExercises = async (req) => {
                 exercise_list.push(new Exercise(row.id_exercise, row.name_exercise, row.name_app_exercise, row.set_count, row.tonnage))
             })
         }
-        console.log(exercise_list)
+        // console.log(exercise_list)
         return exercise_list
     } catch (error) {
         console.log(error)
@@ -111,9 +111,9 @@ repository.detailExercise = async (req) => {
         WHERE e.id_exercise = $1;
         `
         result = await clt.query(sql, [req.params.id_exercise])
-        console.log("result.rows: ", result.rows)
+        // console.log("result.rows: ", result.rows)
         let app_exercise = new AppExercise(result.rows[0].id_app_exercise, result.rows[0].name_app_exercise)
-        console.log("app_exercise: ", app_exercise)
+        // console.log("app_exercise: ", app_exercise)
         return new DetailExercise(result.rows[0].id_exercise, result.rows[0].name_exercise, app_exercise, set_list, result.rows[0].creation_date, result.rows[0].last_update)
 
     } catch (error) {

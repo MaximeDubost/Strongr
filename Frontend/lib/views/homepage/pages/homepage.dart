@@ -99,7 +99,7 @@ class _HomepageState extends State<Homepage> {
                     } else if (snapshot.data.length == 0) {
                       return Center(
                         child: StrongrText(
-                          "Aucun exercice",
+                          "Aucun exercice à afficher",
                           color: Colors.grey,
                         ),
                       );

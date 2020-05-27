@@ -112,7 +112,7 @@ class _SessionViewState extends State<SessionView> {
                           child: Container(
                             // color: Colors.blue,
                             child: StrongrText(
-                              "Crunch",
+                              "app_exercise_name",
                               color: isEditMode ? Colors.grey : StrongrColors.black,
                               textAlign: TextAlign.start,
                               maxLines: 2,
@@ -131,7 +131,7 @@ class _SessionViewState extends State<SessionView> {
                           child: Container(
                             // width: 185,
                             child: StrongrText(
-                              "5 séries",
+                              "set_count",
                               color: isEditMode ? Colors.grey : StrongrColors.black,
                               textAlign: TextAlign.start,
                               maxLines: 1,
@@ -204,12 +204,13 @@ class _SessionViewState extends State<SessionView> {
                   EXERCISE_ROUTE,
                   arguments: ExerciseView(
                     id: i.toString(),
-                    name: "Exercice perso. " + i.toString(),
+                    name: "name (" + i.toString() + ")",
                     fromSession: true,
                   ),
                 );
               }
             : null,
+        onLongPressed: !isEditMode ? () => setState(() => isEditMode = true) : null,
       ),
     );
   }
@@ -243,31 +244,29 @@ class _SessionViewState extends State<SessionView> {
           children: <Widget>[
             InkWell(
               onTap: isEditMode ? null : () {},
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Container(
-                    height: 50,
-                    width: 100,
-                  ),
-                  Container(
-                    padding: EdgeInsets.all(20),
-                    child: StrongrText(
-                      "Full body",
-                      // size: 22,
-                      bold: true,
-                    ),
-                  ),
-                  Opacity(
-                    opacity: isEditMode ? 0 : 1,
-                    child: Container(
-                      height: 50,
-                      width: 100,
-                      child: Icon(Icons.info_outline),
-                    ),
-                  ),
-                ],
-              ),
+              child: Stack(
+                        children: <Widget>[
+                          Container(
+                            width: ScreenSize.width(context),
+                            padding: EdgeInsets.all(20),
+                            child: StrongrText(
+                              "session_type_name",
+                              bold: true,
+                            ),
+                          ),
+                          Container(
+                            padding: EdgeInsets.only(
+                                top: 20, bottom: 20, left: 15, right: 15),
+                            alignment: Alignment.centerRight,
+                            child: Opacity(
+                              opacity: isEditMode ? 0 : 1,
+                              child: Container(
+                                child: Icon(Icons.info_outline),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
             ),
             Container(
               width: ScreenSize.width(context),
