@@ -46,7 +46,6 @@ class ExerciseService {
           'Authorization': 'Bearer ' + Global.token
         },
       );
-      print(response.body.toString());
       return Exercise.fromJson(response.body);
     } catch (e) {
       return Exercise();

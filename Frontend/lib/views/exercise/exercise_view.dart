@@ -39,7 +39,7 @@ class _ExerciseViewState extends State<ExerciseView> {
     for (final item in setList)
       builtSetList.add(
         Container(
-          margin: item == 1 ? EdgeInsets.only(top: 5) : null,
+          margin: setList.indexOf(item) == 0 ? EdgeInsets.only(top: 5) : null,
           key: ValueKey(item.id),
           padding: EdgeInsets.all(5),
           height: 110,
