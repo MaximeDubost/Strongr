@@ -196,6 +196,7 @@ class _NewPasswordViewState extends State<NewPasswordView> {
                                   });
                                   isEmpty();
                                 },
+                                maxLength: 30,
                                 hint: "Mot de passe",
                                 textInputType: TextInputType.visiblePassword,
                                 suffixIcon: Icons.visibility_off,
@@ -222,6 +223,7 @@ class _NewPasswordViewState extends State<NewPasswordView> {
                                   setState(() => warning = null);
                                   isEmpty();
                                 },
+                                maxLength: 30,
                                 hint: "Confirmation mot de passe",
                                 textInputType: TextInputType.visiblePassword,
                                 suffixIcon: Icons.visibility_off,

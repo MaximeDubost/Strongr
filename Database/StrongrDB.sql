@@ -90,7 +90,7 @@ CREATE TABLE _set(
    id_app_exercise INT,
    id_user INT,
    id_exercise INT,
-   repetitions_count INT,
+   repetition_count INT,
    rest_time INT,
    expected_performance INT,
    realized_performance INT,

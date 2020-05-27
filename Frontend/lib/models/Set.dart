@@ -2,42 +2,42 @@ import 'dart:convert';
 
 class Set {
   int id;
-  int repetitionsCount;
+  int place;
+  int repetitionCount;
   int restTime;
-  int expectedPerformance;
-  int realizedPerformance;
-  
+  double tonnage;
+
   Set({
     this.id,
-    this.repetitionsCount,
+    this.place,
+    this.repetitionCount,
     this.restTime,
-    this.expectedPerformance,
-    this.realizedPerformance,
+    this.tonnage,
   });
 
   Set copyWith({
     int id,
-    int repetitionsCount,
+    int place,
+    int repetitionCount,
     int restTime,
-    int expectedPerformance,
-    int realizedPerformance,
+    double tonnage,
   }) {
     return Set(
       id: id ?? this.id,
-      repetitionsCount: repetitionsCount ?? this.repetitionsCount,
+      place: place ?? this.place,
+      repetitionCount: repetitionCount ?? this.repetitionCount,
       restTime: restTime ?? this.restTime,
-      expectedPerformance: expectedPerformance ?? this.expectedPerformance,
-      realizedPerformance: realizedPerformance ?? this.realizedPerformance,
+      tonnage: tonnage ?? this.tonnage,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'repetitionsCount': repetitionsCount,
+      'place': place,
+      'repetitionCount': repetitionCount,
       'restTime': restTime,
-      'expectedPerformance': expectedPerformance,
-      'realizedPerformance': realizedPerformance,
+      'tonnage': tonnage,
     };
   }
 
@@ -46,10 +46,10 @@ class Set {
   
     return Set(
       id: map['id'],
-      repetitionsCount: map['repetitionsCount'],
-      restTime: map['restTime'],
-      expectedPerformance: map['expectedPerformance'],
-      realizedPerformance: map['realizedPerformance'],
+      place: map['place'],
+      repetitionCount: map['repetitions_count'],
+      restTime: map['rest_time'],
+      tonnage: map['tonnage'],
     );
   }
 
@@ -59,7 +59,7 @@ class Set {
 
   @override
   String toString() {
-    return 'Set(id: $id, repetitionsCount: $repetitionsCount, restTime: $restTime, expectedPerformance: $expectedPerformance, realizedPerformance: $realizedPerformance)';
+    return 'Set(id: $id, place: $place, repetitionCount: $repetitionCount, restTime: $restTime, tonnage: $tonnage)';
   }
 
   @override
@@ -68,18 +68,18 @@ class Set {
   
     return o is Set &&
       o.id == id &&
-      o.repetitionsCount == repetitionsCount &&
+      o.place == place &&
+      o.repetitionCount == repetitionCount &&
       o.restTime == restTime &&
-      o.expectedPerformance == expectedPerformance &&
-      o.realizedPerformance == realizedPerformance;
+      o.tonnage == tonnage;
   }
 
   @override
   int get hashCode {
     return id.hashCode ^
-      repetitionsCount.hashCode ^
+      place.hashCode ^
+      repetitionCount.hashCode ^
       restTime.hashCode ^
-      expectedPerformance.hashCode ^
-      realizedPerformance.hashCode;
+      tonnage.hashCode;
   }
 }

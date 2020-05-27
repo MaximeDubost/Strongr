@@ -3,17 +3,17 @@ const { Pool } = require('pg')
 var clt = null;
 const controller = {};
 
-
 /**
+ * create exercise
+ * 
  * @param id_app_exercise
  * @param id_user
  * @param name
  * @param id_equipment
  */
 controller.createExercise = async (req, res) => {
-    let rows = await ExerciseRepository.createExercise(req)
-    //console.log(rows)
-    res.status(200).json(rows)
+    let status = await ExerciseRepository.createExercise(req)
+    res.sendStatus(status)
 }
 
 /**
@@ -21,6 +21,11 @@ controller.createExercise = async (req, res) => {
  */
 controller.readExercises = async (req, res) => {
     let rows = await ExerciseRepository.readExercises(req)
+    res.status(200).json(rows)
+}
+
+controller.detailExercise = async (req, res) => {
+    let rows = await ExerciseRepository.detailExercise(req)
     res.status(200).json(rows)
 }
 
@@ -32,13 +37,11 @@ controller.updateExercise = async (req, res) => {
     res.status(200).json(rows)
 }
 
+/**
+ * delete user exercise
+ */
 controller.deleteExercise = async (req, res) => {
     let rows = await ExerciseRepository.deleteExercise(req)
-    res.status(200).json(rows)
-}
-
-controller.detailExercise = async (req, res) => {
-    let rows = await ExerciseRepository.detailExercise(req)
     res.status(200).json(rows)
 }
 

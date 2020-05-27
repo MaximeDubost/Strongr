@@ -227,6 +227,7 @@ class _SignInViewState extends State<SignInView> {
                                   });
                                   isEmpty();
                                 },
+                                maxLength: 30,
                                 hint: "Mot de passe",
                                 textInputType: TextInputType.visiblePassword,
                                 suffixIcon: Icons.visibility_off,
@@ -253,6 +254,7 @@ class _SignInViewState extends State<SignInView> {
                                   setState(() => warning = null);
                                   isEmpty();
                                 },
+                                maxLength: 30,
                                 hint: "Confirmation mot de passe",
                                 textInputType: TextInputType.visiblePassword,
                                 suffixIcon: Icons.visibility_off,

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:strongr/services/user_service.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
-import 'package:strongr/utils/global.dart' as global;
+import 'package:strongr/utils/Global.dart';
 import 'package:strongr/widgets/strongr_raised_button.dart';
 import 'package:strongr/widgets/strongr_rounded_textformfield.dart';
 import 'package:strongr/widgets/strongr_text.dart';
@@ -102,7 +102,7 @@ class _LogInViewState extends State<LogInView> {
         password: password,
       );
       if (result == 200) {
-        print(global.token);
+        print(Global.token);
         setState(() {
           _validate = false;
           warning = null;
@@ -202,6 +202,7 @@ class _LogInViewState extends State<LogInView> {
                                   setState(() => warning = null);
                                   isEmpty();
                                 },
+                                maxLength: 30,
                                 hint: "Mot de passe",
                                 textInputType: TextInputType.visiblePassword,
                                 suffixIcon: Icons.visibility_off,

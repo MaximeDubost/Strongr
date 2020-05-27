@@ -1,24 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:strongr/models/app_exercise.dart';
+import 'package:strongr/models/AppExercise.dart';
 import 'package:strongr/services/app_exercise_service.dart';
+import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
+import 'package:strongr/views/exercise/exercise_create_view.dart';
 import 'package:strongr/widgets/dialogs/new_exercise_from_list_dialog.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
-class ExerciseView extends StatefulWidget {
+class AppExerciseView extends StatefulWidget {
   final int id;
   final String name;
   final bool isBelonged;
+  final bool fromExercises;
 
-  ExerciseView({this.id, this.name, this.isBelonged = false});
+  AppExerciseView(
+      {this.id,
+      this.name,
+      this.isBelonged = false,
+      this.fromExercises = false});
 
   @override
-  _ExerciseViewState createState() => _ExerciseViewState();
+  _AppExerciseViewState createState() => _AppExerciseViewState();
 }
 
-class _ExerciseViewState extends State<ExerciseView> {
+class _AppExerciseViewState extends State<AppExerciseView> {
   Future<AppExercise> futureAppExercise;
 
   @override
@@ -142,9 +149,18 @@ class _ExerciseViewState extends State<ExerciseView> {
                 color: Colors.white,
               ),
               backgroundColor: StrongrColors.blue,
-              onPressed: () => showDialog(
-                  context: context,
-                  builder: (context) => NewExerciseFromListDialog()),
+              onPressed: widget.fromExercises
+                  ? () => Navigator.pushNamed(
+                        context,
+                        EXERCISE_CREATE_ROUTE,
+                        arguments: ExerciseCreateView(
+                          id: widget.id,
+                          name: widget.name,
+                        ),
+                      )
+                  : () => showDialog(
+                      context: context,
+                      builder: (context) => NewExerciseFromListDialog()),
               label: StrongrText(
                 "Ajouter",
                 color: Colors.white,
