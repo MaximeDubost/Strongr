@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
+import 'package:strongr/views/app_exercise/app_exercise_view.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
 import 'package:strongr/widgets/strongr_rounded_textformfield.dart';
 import 'package:strongr/widgets/strongr_text.dart';
+
+import 'exercise_view.dart';
 
 class ExerciseCreateView extends StatefulWidget {
   final int id;
@@ -112,7 +116,17 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.info_outline),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pushNamed(
+                context,
+                APP_EXERCISE_ROUTE,
+                arguments: AppExerciseView(
+                  id: widget.id,
+                  name: widget.name,
+                  isBelonged: true,
+                ),
+              );
+            },
           )
         ],
       ),
