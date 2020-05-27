@@ -99,7 +99,7 @@ class _ExerciseViewState extends State<ExerciseView> {
                           snapshot.data.equipmentList.length == 0
                               ? Center(
                                   child: StrongrText(
-                                    "Aucun",
+                                    "Aucun équipement",
                                     color: Colors.grey,
                                   ),
                                 )
