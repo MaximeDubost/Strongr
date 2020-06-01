@@ -6,6 +6,7 @@ import AppExerciseController from "../controllers/AppExerciseController";
 import SessionController from "../controllers/SessionController";
 import ExerciseController from "../controllers/ExerciseController";
 import ProgramController from "../controllers/ProgramController";
+import ProgramGoalController from "../controllers/ProgramGoalController";
 let router = express.Router();
 
 /** CRUD + LOGIN user */
@@ -40,5 +41,8 @@ router.delete("/exercise/:id_exercise", middleware.checkAuth, ExerciseController
 
 /** CRUD Program */
 router.get("/program", middleware.checkAuth, ProgramController.readProgram);
+
+
+router.get("/program_goal", middleware.checkAuth, ProgramGoalController.readProgramGoal);
 
 export default router;
