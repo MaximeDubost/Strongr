@@ -20,8 +20,8 @@ router.post("/checkEmail", userController.checkEmail);
 //router.get()
 
 /**  CRUD Session */
-router.get("/session/:id_session", middleware.checkAuth, sessionController.getSessionByUserAndSession)
-router.get("/sessions", middleware.checkAuth, sessionController.getSessionsByUser)
+router.get("/session/:id_session", middleware.checkAuth, sessionController.getSessionDetail)
+router.get("/sessions", middleware.checkAuth, sessionController.getSessions)
 router.post("/session", middleware.checkAuth, sessionController.addSession)
 router.delete("/session/:id_session", middleware.checkAuth, sessionController.deleteSession)
 router.put("/session/:id_session", middleware.checkAuth, sessionController.updateSession)
