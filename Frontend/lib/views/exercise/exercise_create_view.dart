@@ -8,8 +8,6 @@ import 'package:strongr/widgets/strongr_rounded_container.dart';
 import 'package:strongr/widgets/strongr_rounded_textformfield.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
-import 'exercise_view.dart';
-
 class ExerciseCreateView extends StatefulWidget {
   final int id;
   final String name;

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:strongr/models/ExercisePreview.dart';
+import 'package:strongr/models/ProgramPreview.dart';
+import 'package:strongr/models/SessionPreview.dart';
 import 'package:strongr/services/exercise_service.dart';
+import 'package:strongr/services/session_service.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
@@ -28,6 +31,8 @@ class _HomepageState extends State<Homepage> {
       programsListCurrentPage;
 
   Future<List<ExercisePreview>> futureExercises;
+  Future<List<SessionPreview>> futureSessions;
+  Future<List<ProgramPreview>> futurePrograms;
 
   @override
   void initState() {
@@ -50,6 +55,8 @@ class _HomepageState extends State<Homepage> {
     );
 
     futureExercises = ExerciseService.getExercises();
+    futureSessions = SessionService.getSessions();
+    futurePrograms = null;
     super.initState();
   }
 
@@ -119,7 +126,10 @@ class _HomepageState extends State<Homepage> {
                                 children: <Widget>[
                                   Container(
                                     padding: EdgeInsets.only(
-                                        left: 10, top: 8, bottom: 8),
+                                      left: 10,
+                                      top: 8,
+                                      bottom: 8,
+                                    ),
                                     child: Column(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceAround,
@@ -328,122 +338,341 @@ class _HomepageState extends State<Homepage> {
             flex: 11,
             child: Container(
               // height: ScreenSize.height(context) / 5.5,
-              child: PageView(
-                physics: BouncingScrollPhysics(),
-                onPageChanged: (value) {
-                  setState(() {
-                    sessionsListCurrentPage = value;
-                  });
-                },
-                controller: sessionsListController,
-                children: <Widget>[
-                  for (int i = 1; i <= 3; i++)
-                    StrongrRoundedContainer(
-                      content: Stack(
+              // child: PageView(
+              //   physics: BouncingScrollPhysics(),
+              //   onPageChanged: (value) {
+              //     setState(() {
+              //       sessionsListCurrentPage = value;
+              //     });
+              //   },
+              //   controller: sessionsListController,
+              //   children: <Widget>[
+              //     for (int i = 1; i <= 3; i++)
+              //       StrongrRoundedContainer(
+              //         content: Stack(
+              //           children: <Widget>[
+              //             Container(
+              //               padding:
+              //                   EdgeInsets.only(left: 10, top: 8, bottom: 8),
+              //               child: Column(
+              //                 mainAxisAlignment: MainAxisAlignment.spaceAround,
+              //                 crossAxisAlignment: CrossAxisAlignment.start,
+              //                 children: <Widget>[
+              //                   Container(
+              //                     alignment: Alignment.centerLeft,
+              //                     child: StrongrText(
+              //                       "Séance perso. " + i.toString(),
+              //                       bold: true,
+              //                     ),
+              //                   ),
+              //                   Column(
+              //                     children: <Widget>[
+              //                       Container(
+              //                         height: 30,
+              //                         alignment: Alignment.centerLeft,
+              //                         child: Row(
+              //                           children: <Widget>[
+              //                             Icon(Icons.accessibility),
+              //                             Container(
+              //                               padding: EdgeInsets.only(left: 10),
+              //                               child: StrongrText(
+              //                                 "Full body",
+              //                               ),
+              //                             ),
+              //                           ],
+              //                         ),
+              //                       ),
+              //                       Container(
+              //                         height: 30,
+              //                         alignment: Alignment.centerLeft,
+              //                         child: Row(
+              //                           children: <Widget>[
+              //                             Icon(Icons.fitness_center),
+              //                             Container(
+              //                               padding: EdgeInsets.only(left: 10),
+              //                               child: StrongrText(
+              //                                 "5 exercices",
+              //                               ),
+              //                             ),
+              //                           ],
+              //                         ),
+              //                       ),
+              //                       Container(
+              //                         height: 30,
+              //                         alignment: Alignment.centerLeft,
+              //                         child: Row(
+              //                           children: <Widget>[
+              //                             Icon(
+              //                               Icons.show_chart,
+              //                               color: Colors.grey,
+              //                             ),
+              //                             Container(
+              //                               padding: EdgeInsets.only(left: 10),
+              //                               child: StrongrText(
+              //                                 "Tonnage non calculé",
+              //                                 color: Colors.grey,
+              //                               ),
+              //                             ),
+              //                           ],
+              //                         ),
+              //                       ),
+              //                     ],
+              //                   ),
+              //                 ],
+              //               ),
+              //             ),
+              //             Container(
+              //               padding: EdgeInsets.only(bottom: 10, right: 10),
+              //               alignment: Alignment.bottomRight,
+              //               child: Container(
+              //                 width: 35,
+              //                 height: 35,
+              //                 child: FloatingActionButton(
+              //                   elevation: 0,
+              //                   heroTag: 'session_play_fab_' + i.toString(),
+              //                   tooltip: "Démarrer",
+              //                   backgroundColor: StrongrColors.blue,
+              //                   child: Icon(
+              //                     Icons.play_arrow,
+              //                     color: Colors.white,
+              //                   ),
+              //                   onPressed: () {},
+              //                 ),
+              //               ),
+              //             ),
+              //           ],
+              //         ),
+              //         onPressed: () {
+              //           Navigator.pushNamed(
+              //             context,
+              //             SESSION_ROUTE,
+              //             arguments: SessionView(
+              //               id: i.toString(),
+              //               name: "Séance perso. " + i.toString(),
+              //             ),
+              //           );
+              //         },
+              //       ),
+              //   ],
+              // ),
+              child: FutureBuilder(
+                future: futureSessions,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    if (snapshot.data == null) {
+                      return Center(
+                        child: StrongrText(
+                          "Impossible d'afficher vos séances",
+                          color: Colors.grey,
+                        ),
+                      );
+                    } else if (snapshot.data.length == 0) {
+                      return Center(
+                        child: StrongrText(
+                          "Aucune séance à afficher",
+                          color: Colors.grey,
+                        ),
+                      );
+                    } else
+                      return PageView(
+                        physics: BouncingScrollPhysics(),
+                        onPageChanged: (value) {
+                          setState(() {
+                            sessionsListCurrentPage = value;
+                          });
+                        },
+                        controller: sessionsListController,
                         children: <Widget>[
-                          Container(
-                            padding:
-                                EdgeInsets.only(left: 10, top: 8, bottom: 8),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Container(
-                                  alignment: Alignment.centerLeft,
-                                  child: StrongrText(
-                                    "Séance perso. " + i.toString(),
-                                    bold: true,
+                          for (final item in snapshot.data)
+                            StrongrRoundedContainer(
+                              content: Stack(
+                                children: <Widget>[
+                                  Container(
+                                    padding: EdgeInsets.only(
+                                      left: 10,
+                                      top: 8,
+                                      bottom: 8,
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Container(
+                                          alignment: Alignment.centerLeft,
+                                          child: StrongrText(
+                                            item.name,
+                                            bold: true,
+                                          ),
+                                        ),
+                                        Column(
+                                          children: <Widget>[
+                                            Container(
+                                              height: 30,
+                                              alignment: Alignment.centerLeft,
+                                              child: Row(
+                                                children: <Widget>[
+                                                  Icon(
+                                                    Icons.accessibility,
+                                                    color:
+                                                        item.sessionTypeName !=
+                                                                null
+                                                            ? StrongrColors
+                                                                .black
+                                                            : Colors.grey,
+                                                  ),
+                                                  Container(
+                                                    padding: EdgeInsets.only(
+                                                        left: 10),
+                                                    child: StrongrText(
+                                                      item.sessionTypeName !=
+                                                              null
+                                                          ? item.sessionTypeName
+                                                          : "Aucune séance",
+                                                      color:
+                                                          item.sessionTypeName !=
+                                                                  null
+                                                              ? StrongrColors
+                                                                  .black
+                                                              : Colors.grey,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Container(
+                                              height: 30,
+                                              alignment: Alignment.centerLeft,
+                                              child: Row(
+                                                children: <Widget>[
+                                                  Icon(
+                                                    Icons.fitness_center,
+                                                    color: int.parse(item
+                                                                    .exerciseCount) >
+                                                                0 ||
+                                                            int.parse(item
+                                                                    .exerciseCount) !=
+                                                                null
+                                                        ? StrongrColors.black
+                                                        : Colors.grey,
+                                                  ),
+                                                  Container(
+                                                    padding: EdgeInsets.only(
+                                                        left: 10),
+                                                    child: StrongrText(
+                                                      int.parse(item.exerciseCount) >
+                                                                  0 ||
+                                                              int.parse(item
+                                                                      .exerciseCount) !=
+                                                                  null
+                                                          ? int.parse(item
+                                                                      .exerciseCount) <=
+                                                                  1
+                                                              ? item.exerciseCount +
+                                                                  " exercice"
+                                                              : item.exerciseCount +
+                                                                  " exercices"
+                                                          : "Aucune exercice",
+                                                      color: int.parse(item
+                                                                      .exerciseCount) >
+                                                                  0 ||
+                                                              int.parse(item
+                                                                      .exerciseCount) !=
+                                                                  null
+                                                          ? StrongrColors.black
+                                                          : Colors.grey,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Container(
+                                              height: 30,
+                                              alignment: Alignment.centerLeft,
+                                              child: Row(
+                                                children: <Widget>[
+                                                  Icon(
+                                                    Icons.show_chart,
+                                                    color: item.tonnage != null
+                                                        ? StrongrColors.black
+                                                        : Colors.grey,
+                                                  ),
+                                                  Container(
+                                                    padding: EdgeInsets.only(
+                                                        left: 10),
+                                                    child: StrongrText(
+                                                      item.tonnage != null
+                                                          ? "Tonnage de " +
+                                                              item.tonnage
+                                                                  .toString() +
+                                                              "kg"
+                                                          : "Tonnage non calculé",
+                                                      color: item.tonnage !=
+                                                              null
+                                                          ? StrongrColors.black
+                                                          : Colors.grey,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                Column(
-                                  children: <Widget>[
-                                    Container(
-                                      height: 30,
-                                      alignment: Alignment.centerLeft,
-                                      child: Row(
-                                        children: <Widget>[
-                                          Icon(Icons.accessibility),
-                                          Container(
-                                            padding: EdgeInsets.only(left: 10),
-                                            child: StrongrText(
-                                              "Full body",
-                                            ),
-                                          ),
-                                        ],
+                                  Container(
+                                    padding:
+                                        EdgeInsets.only(bottom: 10, right: 10),
+                                    alignment: Alignment.bottomRight,
+                                    child: Container(
+                                      width: 35,
+                                      height: 35,
+                                      child: FloatingActionButton(
+                                        elevation: 0,
+                                        heroTag: 'session_play_fab_' +
+                                            item.id.toString(),
+                                        tooltip: "Démarrer",
+                                        backgroundColor: StrongrColors.blue,
+                                        child: Icon(
+                                          Icons.play_arrow,
+                                          color: Colors.white,
+                                        ),
+                                        onPressed: () {},
                                       ),
                                     ),
-                                    Container(
-                                      height: 30,
-                                      alignment: Alignment.centerLeft,
-                                      child: Row(
-                                        children: <Widget>[
-                                          Icon(Icons.fitness_center),
-                                          Container(
-                                            padding: EdgeInsets.only(left: 10),
-                                            child: StrongrText(
-                                              "5 exercices",
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Container(
-                                      height: 30,
-                                      alignment: Alignment.centerLeft,
-                                      child: Row(
-                                        children: <Widget>[
-                                          Icon(
-                                            Icons.show_chart,
-                                            color: Colors.grey,
-                                          ),
-                                          Container(
-                                            padding: EdgeInsets.only(left: 10),
-                                            child: StrongrText(
-                                              "Tonnage non calculé",
-                                              color: Colors.grey,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            padding: EdgeInsets.only(bottom: 10, right: 10),
-                            alignment: Alignment.bottomRight,
-                            child: Container(
-                              width: 35,
-                              height: 35,
-                              child: FloatingActionButton(
-                                elevation: 0,
-                                heroTag: 'session_play_fab_' + i.toString(),
-                                tooltip: "Démarrer",
-                                backgroundColor: StrongrColors.blue,
-                                child: Icon(
-                                  Icons.play_arrow,
-                                  color: Colors.white,
-                                ),
-                                onPressed: () {},
+                                  ),
+                                ],
                               ),
+                              onPressed: () {
+                                Navigator.pushNamed(
+                                  context,
+                                  SESSION_ROUTE,
+                                  arguments: SessionView(
+                                    id: item.id.toString(),
+                                    name: item.name,
+                                    sessionTypeName: item.sessionTypeName,
+                                  ),
+                                );
+                              },
                             ),
-                          ),
                         ],
+                      );
+
+                    // return Center(child: StrongrText(snapshot.data.toString()),);
+                  } else if (snapshot.hasError) {
+                    return Text(snapshot.error, textAlign: TextAlign.center);
+                  } else
+                    return Container(
+                      alignment: Alignment.center,
+                      height: ScreenSize.height(context) / 1.75,
+                      child: CircularProgressIndicator(
+                        valueColor:
+                            AlwaysStoppedAnimation<Color>(StrongrColors.blue),
                       ),
-                      onPressed: () {
-                        Navigator.pushNamed(
-                          context,
-                          SESSION_ROUTE,
-                          arguments: SessionView(
-                            id: i.toString(),
-                            name: "Séance perso. " + i.toString(),
-                          ),
-                        );
-                      },
-                    ),
-                ],
+                    );
+                },
               ),
             ),
           ),

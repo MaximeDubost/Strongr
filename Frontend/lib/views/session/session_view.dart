@@ -9,9 +9,10 @@ import 'package:strongr/widgets/strongr_text.dart';
 class SessionView extends StatefulWidget {
   final String id;
   final String name;
+  final String sessionTypeName;
   final bool fromProgram;
 
-  SessionView({this.id, this.name, this.fromProgram = false});
+  SessionView({this.id, this.name, this.sessionTypeName, this.fromProgram = false});
 
   @override
   _SessionViewState createState() => _SessionViewState();
