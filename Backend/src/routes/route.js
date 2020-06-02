@@ -41,8 +41,9 @@ router.delete("/exercise/:id_exercise", middleware.checkAuth, ExerciseController
 
 /** CRUD Program */
 router.get("/program", middleware.checkAuth, ProgramController.readProgram);
-
-
 router.get("/program_goal", middleware.checkAuth, ProgramGoalController.readProgramGoal);
+
+/** CRUD ProgramsPreview */
+router.get("/programspreview", middleware.checkAuth, UserProgramController.getProgramsPreview)
 
 export default router;
