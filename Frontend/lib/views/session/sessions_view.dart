@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:strongr/models/muscle.dart';
-import 'package:strongr/models/AppExercise.dart';
-import 'package:strongr/services/app_exercise_service.dart';
+import 'package:strongr/models/SessionPreview.dart';
+import 'package:strongr/services/session_service.dart';
 import 'package:strongr/utils/app_exercises_filters.dart';
 import 'package:strongr/utils/diacritics.dart';
 import 'package:strongr/utils/routing_constants.dart';
@@ -28,45 +27,26 @@ class SessionsView extends StatefulWidget {
 
 class _SessionsViewState extends State<SessionsView> {
   TextEditingController searchbarController;
-  Future<List<AppExercise>> futureAppExercisesList;
-  bool sortedByAlpha;
+  Future<List<SessionPreview>> futureSessions;
+  bool sortedByRecent;
   List<String> popupMenuItems;
 
   @override
   void initState() {
     searchbarController = TextEditingController(text: "");
-    futureAppExercisesList = AppExerciseService.getAppExercises();
-    sortedByAlpha = true;
+    futureSessions = SessionService.getSessions();
+    sortedByRecent = true;
     popupMenuItems = ["Filtres", "Créer"];
     super.initState();
   }
 
-  /// Affiche une [muscleList] sous forme de chaîne de charactères.
-  String displayMuscleListToString(List muscleList) {
-    String result = "";
-    for (final item in muscleList) {
-      result += item.name;
-      if (muscleList.indexOf(item) != muscleList.length - 1) result += ", ";
-    }
-    return result;
-  }
-
-  /// Méthode vérifiant si un [muscleName] est compris dans la [muscleList] d'un exercice.
-  bool muscleListContains({
-    @required List<Muscle> muscleList,
-    @required String muscleName,
-  }) {
-    for (final item in muscleList) if (item.name == muscleName) return true;
-    return false;
-  }
-
-  /// Retourne le nombre de résultats d'une liste d'[appExercises] après recherche et filtres.
-  int resultCount(List<AppExercise> appExercises) {
+  /// Retourne le nombre de résultats d'une liste d'[exercises] après recherche et filtres.
+  int resultCount(List<SessionPreview> sessions) {
     int result = 0;
-    for (final appExercise in appExercises)
+    for (final appExercise in sessions)
       if ((searchbarController.text == "" ||
               Diacritics.remove(
-                appExercises[appExercises.indexOf(appExercise)]
+                sessions[sessions.indexOf(appExercise)]
                     .name
                     .toString()
                     .toLowerCase(),
@@ -74,38 +54,42 @@ class _SessionsViewState extends State<SessionsView> {
                 Diacritics.remove(
                   searchbarController.text.toLowerCase(),
                 ),
-              )) &&
-          (AppExercisesFilters.areAllDisabled() ||
-              compareMusclesWithFilters(
-                appExercise.muscleList,
-                AppExercisesFilters.allEnabledFiltersToList(),
-              ))) result++;
+              ))
+          //     &&
+          // (AppExercisesFilters.areAllDisabled() ||
+          //     compareMusclesWithFilters(
+          //       appExercise.muscleList,
+          //       AppExercisesFilters.allEnabledFiltersToList(),
+          //     ))
+          ) result++;
     return result;
   }
 
-  /// Affiche une liste d'[appExercises].
-  Widget buildAppExercisesList(List<AppExercise> appExercises) {
+  /// Affiche une liste d'[exercises].
+  Widget buildExercisesList(List<SessionPreview> exercises) {
     return Column(
       verticalDirection:
-          sortedByAlpha ? VerticalDirection.down : VerticalDirection.up,
+          sortedByRecent ? VerticalDirection.down : VerticalDirection.up,
       children: <Widget>[
-        for (final appExercise in appExercises)
+        for (final item in exercises)
           if ((searchbarController.text == "" ||
-                  Diacritics.remove(
-                    appExercises[appExercises.indexOf(appExercise)]
-                        .name
-                        .toString()
-                        .toLowerCase(),
-                  ).contains(
-                    Diacritics.remove(
-                      searchbarController.text.toLowerCase(),
-                    ),
-                  )) &&
-              (AppExercisesFilters.areAllDisabled() ||
-                  compareMusclesWithFilters(
-                    appExercise.muscleList,
-                    AppExercisesFilters.allEnabledFiltersToList(),
-                  )))
+              Diacritics.remove(
+                exercises[exercises.indexOf(item)]
+                    .name
+                    .toString()
+                    .toLowerCase(),
+              ).contains(
+                Diacritics.remove(
+                  searchbarController.text.toLowerCase(),
+                ),
+              ))
+          //     &&
+          // (AppExercisesFilters.areAllDisabled() ||
+          //     compareMusclesWithFilters(
+          //       appExercise.muscleList,
+          //       AppExercisesFilters.allEnabledFiltersToList(),
+          //     ))
+          )
             Container(
               padding: EdgeInsets.all(5),
               height: 140,
@@ -122,9 +106,7 @@ class _SessionsViewState extends State<SessionsView> {
                           Container(
                             alignment: Alignment.centerLeft,
                             child: StrongrText(
-                              "Séance perso. " +
-                                  (appExercises.indexOf(appExercise) + 1)
-                                      .toString(),
+                              item.name,
                               bold: true,
                             ),
                           ),
@@ -132,11 +114,21 @@ class _SessionsViewState extends State<SessionsView> {
                             alignment: Alignment.centerLeft,
                             child: Row(
                               children: <Widget>[
-                                Icon(Icons.accessibility),
+                                Icon(
+                                  Icons.fitness_center,
+                                  color: item.sessionTypeName != null
+                                      ? StrongrColors.black
+                                      : Colors.grey,
+                                ),
                                 Container(
                                   padding: EdgeInsets.only(left: 10),
                                   child: StrongrText(
-                                    "Full body",
+                                    item.sessionTypeName != null
+                                        ? item.sessionTypeName
+                                        : "Aucun type de séance",
+                                    color: item.sessionTypeName != null
+                                        ? StrongrColors.black
+                                        : Colors.grey,
                                   ),
                                 ),
                               ],
@@ -146,11 +138,26 @@ class _SessionsViewState extends State<SessionsView> {
                             alignment: Alignment.centerLeft,
                             child: Row(
                               children: <Widget>[
-                                Icon(Icons.fitness_center),
+                                Icon(
+                                  Icons.refresh,
+                                  color: int.parse(item.exerciseCount) > 0 ||
+                                          int.parse(item.exerciseCount) != null
+                                      ? StrongrColors.black
+                                      : Colors.grey,
+                                ),
                                 Container(
                                   padding: EdgeInsets.only(left: 10),
                                   child: StrongrText(
-                                    "5 exercices",
+                                    int.parse(item.exerciseCount) > 0 ||
+                                            int.parse(item.exerciseCount) != null
+                                        ? int.parse(item.exerciseCount) <= 1
+                                            ? item.exerciseCount + " exercice"
+                                            : item.exerciseCount + " exercices"
+                                        : "Aucun exercice",
+                                    color: int.parse(item.exerciseCount) > 0 ||
+                                            int.parse(item.exerciseCount) != null
+                                        ? StrongrColors.black
+                                        : Colors.grey,
                                   ),
                                 ),
                               ],
@@ -162,13 +169,21 @@ class _SessionsViewState extends State<SessionsView> {
                               children: <Widget>[
                                 Icon(
                                   Icons.show_chart,
-                                  color: Colors.grey,
+                                  color: item.tonnage != null
+                                      ? StrongrColors.black
+                                      : Colors.grey,
                                 ),
                                 Container(
                                   padding: EdgeInsets.only(left: 10),
                                   child: StrongrText(
-                                    "Tonnage non calculé",
-                                    color: Colors.grey,
+                                    item.tonnage != null
+                                        ? "Tonnage de " +
+                                            item.tonnage.toString() +
+                                            "kg"
+                                        : "Tonnage non calculé",
+                                    color: item.tonnage != null
+                                        ? StrongrColors.black
+                                        : Colors.grey,
                                   ),
                                 ),
                               ],
@@ -185,9 +200,7 @@ class _SessionsViewState extends State<SessionsView> {
                         height: 35,
                         child: FloatingActionButton(
                           elevation: 0,
-                          heroTag: 'exercise_play_fab_' +
-                              (appExercises.indexOf(appExercise) + 1)
-                                  .toString(),
+                          heroTag: 'session_play_fab_' + item.id.toString(),
                           tooltip: "Démarrer",
                           backgroundColor: StrongrColors.blue,
                           child: Icon(
@@ -205,9 +218,9 @@ class _SessionsViewState extends State<SessionsView> {
                     context,
                     SESSION_ROUTE,
                     arguments: SessionView(
-                      id: (appExercises.indexOf(appExercise) + 1).toString(),
-                      name: "Séance perso. " +
-                          (appExercises.indexOf(appExercise) + 1).toString(),
+                      id: item.id.toString(),
+                      name: item.name,
+                      sessionTypeName: item.sessionTypeName,
                     ),
                   );
                 },
@@ -215,14 +228,6 @@ class _SessionsViewState extends State<SessionsView> {
             ),
       ],
     );
-  }
-
-  /// Compare une liste de muscles [muscles] avec une liste de filtres [filters].
-  /// Retourne true s'il y a au moins une correspondance parmis leurs éléments, false sinon.
-  bool compareMusclesWithFilters(List<Muscle> muscles, List<String> filters) {
-    for (final muscle in muscles)
-      for (final filter in filters) if (muscle.name == filter) return true;
-    return false;
   }
 
   /// Actualise la page.
@@ -369,17 +374,17 @@ class _SessionsViewState extends State<SessionsView> {
                         width: 55,
                         child: InkWell(
                           onTap: () =>
-                              setState(() => sortedByAlpha = !sortedByAlpha),
+                              setState(() => sortedByRecent = !sortedByRecent),
                           child: Row(
                             children: <Widget>[
                               Icon(
-                                sortedByAlpha
+                                sortedByRecent
                                     ? Icons.keyboard_arrow_down
                                     : Icons.keyboard_arrow_up,
                                 color: Colors.black87,
                               ),
                               StrongrText(
-                                sortedByAlpha ? "A-Z" : "Z-A",
+                                sortedByRecent ? "A-Z" : "Z-A",
                                 color: Colors.black87,
                                 size: 14,
                               ),
@@ -392,7 +397,7 @@ class _SessionsViewState extends State<SessionsView> {
                 ),
               ),
               FutureBuilder(
-                future: futureAppExercisesList,
+                future: futureSessions,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return Column(
@@ -404,28 +409,28 @@ class _SessionsViewState extends State<SessionsView> {
                                 alignment: Alignment.center,
                                 height: ScreenSize.height(context) / 1.75,
                                 child: StrongrText(
-                                  "Impossible d'afficher vos séances",
+                                  "Aucun exercice à afficher",
                                   color: Colors.grey,
                                 ),
                               ),
-                        resultCount(snapshot.data) != 0
+                        resultCount(snapshot.data) != 0 || snapshot.data.length == 0
                             ? Container(
-                                child: buildAppExercisesList(snapshot.data),
+                                child: buildExercisesList(snapshot.data),
                               )
                             : Container(
                                 height: ScreenSize.height(context) / 1.75,
                                 child: Center(
                                   child: StrongrText(
-                                    "Aucune séance trouvée",
+                                    "Aucun exercice trouvé",
                                     color: Colors.grey,
                                   ),
                                 ),
                               ),
                       ],
                     );
-                  } else if (snapshot.hasError) {
+                  } else if (snapshot.hasError)
                     return Text(snapshot.error, textAlign: TextAlign.center);
-                  } else
+                  else
                     return Container(
                       alignment: Alignment.center,
                       height: ScreenSize.height(context) / 1.75,

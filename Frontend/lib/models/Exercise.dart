@@ -25,6 +25,7 @@ class Exercise {
 
   Exercise copyWith({
     int id,
+    int place,
     String name,
     AppExercise appExercise,
     List<Set> sets,

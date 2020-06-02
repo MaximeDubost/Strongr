@@ -1,26 +1,22 @@
 import SessionRepository from "../repository/SessionRepository"
 const controller = {};
 
-controller.getSessionByUserAndSession = async (req, res) => {
+controller.getSessions = async (req, res) => {
     try {
-        var session = await SessionRepository.getSessionByUserAndSession(req)
-        if (session === 404) {
-            res.sendStatus(session)
-        } else {
-            res.status(200).json({ session })
-        }
+        var session = await SessionRepository.getSessions(req)
+        res.status(200).json(session)
     } catch (error) {
         console.log(error)
     }
 }
 
-controller.getSessionsByUser = async (req, res) => {
+controller.getSessionDetail = async (req, res) => {
     try {
-        var sessions = await SessionRepository.getSessionsByUser(req)
+        var sessions = await SessionRepository.getSessionDetail(req)
         if (sessions === 404) {
             res.sendStatus(session)
         } else {
-            res.status(200).json({ sessions })
+            res.status(200).json(sessions)
         }
     } catch (error) {
         console.log(error)

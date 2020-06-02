@@ -7,6 +7,7 @@ import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/views/exercise/exercise_create_view.dart';
 import 'package:strongr/widgets/dialogs/new_exercise_from_list_dialog.dart';
+import 'package:strongr/widgets/strongr_rounded_container.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
 class AppExerciseView extends StatefulWidget {
@@ -42,89 +43,126 @@ class _AppExerciseViewState extends State<AppExerciseView> {
         title: Text(widget.name),
       ),
       body: Container(
-        padding: EdgeInsets.all(20),
+        padding: EdgeInsets.all(5),
         child: FutureBuilder(
           future: futureAppExercise,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return Container(
-                // color: Colors.red,
                 child: snapshot.data.id != null
-                    ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                    ? ListView(
+                        physics: BouncingScrollPhysics(),
                         children: <Widget>[
-                          Center(
+                          Container(
+                            padding: EdgeInsets.all(8),
                             child: StrongrText(
-                              snapshot.data.muscleList.length <= 1
-                                  ? "Muscle ciblé"
-                                  : "Muscles ciblés",
-                              size: 22,
-                              bold: true,
+                              "Muscles ciblés",
                               textAlign: TextAlign.start,
                             ),
                           ),
-                          Divider(
-                            color: Colors.grey[350],
-                            thickness: 1,
-                            indent: ScreenSize.width(context) / 4,
-                            endIndent: ScreenSize.width(context) / 4,
-                          ),
-                          SizedBox(height: 10),
                           snapshot.data.muscleList.length == 0
                               ? Center(
-                                  child: StrongrText(
-                                    "Aucun élément à afficher",
-                                    color: Colors.grey,
+                                  child: Container(
+                                    padding: EdgeInsets.all(10),
+                                    child: StrongrText(
+                                      "Aucun élément à afficher",
+                                      color: Colors.grey,
+                                    ),
                                   ),
                                 )
                               : SizedBox(),
                           for (final item in snapshot.data.muscleList)
                             Column(
                               children: <Widget>[
-                                StrongrText("• " + item.name),
-                                SizedBox(height: 10),
+                                StrongrRoundedContainer(
+                                  width: ScreenSize.width(context),
+                                  content: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Flexible(
+                                        child: Container(
+                                          height: 60,
+                                          child: Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: StrongrText(
+                                              item.name,
+                                              textAlign: TextAlign.start,
+                                              maxLines: 2,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Icon(
+                                        Icons.info_outline,
+                                        color: StrongrColors.blue,
+                                      ),
+                                    ],
+                                  ),
+                                  onPressed: () {},
+                                ),
                               ],
                             ),
-                          SizedBox(height: 20),
-                          Center(
+                          SizedBox(height: 10),
+                          Container(
+                            padding: EdgeInsets.all(8),
                             child: StrongrText(
-                              snapshot.data.equipmentList.length <= 1
-                                  ? "Équipement associé"
-                                  : "Équipements associés",
-                              size: 22,
-                              bold: true,
+                              "Équipements associés",
                               textAlign: TextAlign.start,
                             ),
                           ),
-                          Divider(
-                            color: Colors.grey[350],
-                            thickness: 1,
-                            indent: ScreenSize.width(context) / 4,
-                            endIndent: ScreenSize.width(context) / 4,
-                          ),
-                          SizedBox(height: 10),
                           snapshot.data.equipmentList.length == 0
                               ? Center(
-                                  child: StrongrText(
-                                    "Aucun équipement",
-                                    color: Colors.grey,
+                                  child: Container(
+                                    padding: EdgeInsets.all(10),
+                                    child: StrongrText(
+                                      "Aucun équipement",
+                                      color: Colors.grey,
+                                    ),
                                   ),
                                 )
                               : SizedBox(),
                           for (final item in snapshot.data.equipmentList)
                             Column(
                               children: <Widget>[
-                                // StrongrText(item.id.toString()),
-                                StrongrText("• " + item.name),
-                                SizedBox(height: 5),
+                                StrongrRoundedContainer(
+                                  width: ScreenSize.width(context),
+                                  content: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Flexible(
+                                        child: Container(
+                                          height: 60,
+                                          child: Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: StrongrText(
+                                              item.name,
+                                              textAlign: TextAlign.start,
+                                              maxLines: 2,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Icon(
+                                        Icons.info_outline,
+                                        color: StrongrColors.blue,
+                                      ),
+                                    ],
+                                  ),
+                                  onPressed: () {},
+                                ),
                               ],
                             )
                         ],
                       )
                     : Center(
-                        child: StrongrText(
-                          "Aucune donnée existante concernant cet exercice",
-                          color: Colors.grey,
+                        child: Padding(
+                          padding: EdgeInsets.all(10),
+                          child: StrongrText(
+                            "Aucune donnée existante concernant cet exercice",
+                            color: Colors.grey,
+                          ),
                         ),
                       ),
               );
@@ -159,8 +197,12 @@ class _AppExerciseViewState extends State<AppExerciseView> {
                         ),
                       )
                   : () => showDialog(
-                      context: context,
-                      builder: (context) => NewExerciseFromListDialog()),
+                        context: context,
+                        builder: (context) => NewExerciseFromListDialog(
+                          id: widget.id,
+                          name: widget.name,
+                        ),
+                      ),
               label: StrongrText(
                 "Ajouter",
                 color: Colors.white,

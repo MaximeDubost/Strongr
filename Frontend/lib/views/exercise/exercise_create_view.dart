@@ -8,8 +8,6 @@ import 'package:strongr/widgets/strongr_rounded_container.dart';
 import 'package:strongr/widgets/strongr_rounded_textformfield.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
-import 'exercise_view.dart';
-
 class ExerciseCreateView extends StatefulWidget {
   final int id;
   final String name;
@@ -26,7 +24,7 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
   GlobalKey<FormState> _key = GlobalKey();
   bool _unique, _validate, _visibility;
   TextEditingController _seriesCountController;
-  int linesCount = 1;
+  int linesCount = 1, setCount;
   String errorText = "";
 
   @override
@@ -133,6 +131,7 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: ListView(
+          physics: BouncingScrollPhysics(),
           children: <Widget>[
             Form(
               key: _key,
@@ -140,8 +139,21 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
+                  FlatButton(
+                    onPressed: null,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        StrongrText("Nom"),
+                        Container(
+                          height: 24,
+                          width: 24,
+                        ),
+                      ],
+                    ),
+                  ),
                   Container(
-                    padding: EdgeInsets.all(10),
+                    padding: EdgeInsets.only(left: 15, right: 15),
                     child: StrongrRoundedTextFormField(
                       controller: null,
                       validator: null,
@@ -157,23 +169,33 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
                       inputFormatters: [
                         LengthLimitingTextInputFormatter(30),
                       ],
-                      hint: "Nom de votre exercice (facultatif)",
+                      hint: widget.name,
                       textInputType: TextInputType.emailAddress,
                     ),
                   ),
-                  Container(
-                    // color: Colors.blue,
-                    padding: EdgeInsets.all(10),
-                    child: StrongrText("Équipement"),
+                  FlatButton(
+                    onPressed: () {},
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        StrongrText("Équipement"),
+                        Container(
+                          height: 24,
+                          width: 24,
+                          child: Icon(Icons.keyboard_arrow_right),
+                        )
+                      ],
+                    ),
                   ),
                   Container(
                     // color: Colors.red,
-                    height: 100,
+                    height: 80,
                     width: ScreenSize.width(context),
                     child: ListView(
                       scrollDirection: Axis.horizontal,
                       physics: BouncingScrollPhysics(),
-                      padding: EdgeInsets.all(10),
+                      // padding: EdgeInsets.all(10),
+                      padding: EdgeInsets.only(left: 10, right: 10),
                       children: <Widget>[
                         StrongrRoundedContainer(
                           width: ScreenSize.width(context) / 1.5,
@@ -196,9 +218,12 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
                                 endIndent: 10,
                               ),
                               IconButton(
-                                icon: Icon(Icons.info_outline),
+                                icon: Icon(
+                                  Icons.info_outline,
+                                  color: StrongrColors.blue,
+                                ),
                                 onPressed: () {},
-                              )
+                              ),
                             ],
                           ),
                           onPressed: () {},
@@ -224,9 +249,12 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
                                 endIndent: 10,
                               ),
                               IconButton(
-                                icon: Icon(Icons.info_outline),
+                                icon: Icon(
+                                  Icons.info_outline,
+                                  color: StrongrColors.blue,
+                                ),
                                 onPressed: () {},
-                              )
+                              ),
                             ],
                           ),
                           onPressed: () {},
@@ -234,13 +262,27 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
                       ],
                     ),
                   ),
-                  Container(
-                    // color: Colors.blue,
-                    padding: EdgeInsets.all(10),
-                    child: StrongrText("Séries"),
+                  // Container(
+                  //   // color: Colors.blue,
+                  //   padding: EdgeInsets.all(10),
+                  //   child: StrongrText("Séries"),
+                  // ),
+                  FlatButton(
+                    onPressed: null,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        StrongrText("Séries"),
+                        Container(
+                          height: 24,
+                          width: 24,
+                        ),
+                      ],
+                    ),
                   ),
                   Container(
-                    padding: EdgeInsets.all(10),
+                    // padding: EdgeInsets.all(10),
+                    padding: EdgeInsets.only(left: 10, right: 10),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
@@ -252,17 +294,19 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
                                 Container(
+                                  // color: Colors.red,
                                   height: 35,
                                   width: 35,
                                   child: RawMaterialButton(
                                     child: StrongrText(
                                       "-",
-                                      color: _seriesCountController.text != "1"
-                                          ? StrongrColors.black
-                                          : Colors.grey,
+                                      color: int.parse(_seriesCountController.text) <= 1 || int.parse(_seriesCountController.text) > 10 || _seriesCountController.text == "" || _seriesCountController.text == null
+                                          ? Colors.grey
+                                          : StrongrColors.black,
                                     ),
                                     shape: CircleBorder(),
-                                    onPressed: _seriesCountController.text !=
+                                    onPressed: int.parse(_seriesCountController.text) <= 1 || int.parse(_seriesCountController.text) > 10 || _seriesCountController.text == "" || _seriesCountController.text == null ? null :
+                                    _seriesCountController.text !=
                                             "1"
                                         ? () {
                                             FocusScope.of(context).unfocus();
@@ -297,6 +341,21 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
                                                               .text))
                                                   : setState(
                                                       () => linesCount = 1);
+                                            } else {
+                                              if (_seriesCountController.text != "01")
+                                                setState(() {
+                                                linesCount = (int.parse(_seriesCountController
+                                                              .text
+                                                              .substring(1))-1);
+                                                _seriesCountController.text = linesCount.toString();
+                                              });
+                                              else
+                                              setState(() {
+                                                linesCount = (int.parse(_seriesCountController
+                                                              .text
+                                                              .substring(1)));
+                                                _seriesCountController.text = linesCount.toString();
+                                              });
                                             }
                                           }
                                         : null,
@@ -318,51 +377,8 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
                                         : null,
                                   ),
                                 ),
-                                // StrongrText("10"),
                                 Flexible(
-                                  child: TextFormField(
-                                    textAlign: TextAlign.center,
-                                    validator: validateSeriesCount,
-                                    keyboardType: TextInputType.number,
-                                    inputFormatters: <TextInputFormatter>[
-                                      LengthLimitingTextInputFormatter(2),
-                                      WhitelistingTextInputFormatter.digitsOnly
-                                    ],
-                                    controller: _seriesCountController,
-                                    decoration: InputDecoration(
-                                      border: InputBorder.none,
-                                      contentPadding: EdgeInsets.all(5),
-                                    ),
-                                    onSaved: (String value) {
-                                      linesCount = int.parse(value);
-                                    },
-                                    onChanged: (newValue) {
-                                      if (_seriesCountController.text == "" ||
-                                          _seriesCountController.text
-                                              .startsWith("0") ||
-                                          int.parse(
-                                                  _seriesCountController.text) <
-                                              1 ||
-                                          int.parse(
-                                                  _seriesCountController.text) >
-                                              10) {
-                                        setState(() {
-                                          _visibility = false;
-                                          linesCount = 0;
-                                          // print(linesCount);
-                                        });
-                                      } else {
-                                        setState(() => _visibility = true);
-                                        if (_unique) {
-                                          linesCount = int.parse(newValue);
-                                          // print(linesCount);
-                                        } else {
-                                          linesCount = 1;
-                                          // print(linesCount);
-                                        }
-                                      }
-                                    },
-                                  ),
+                                  child: StrongrText(_seriesCountController.text),
                                 ),
                                 Container(
                                   height: 35,
@@ -370,12 +386,13 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
                                   child: RawMaterialButton(
                                     child: StrongrText(
                                       "+",
-                                      color: _seriesCountController.text != "10"
-                                          ? StrongrColors.black
-                                          : Colors.grey,
+                                      color: int.parse(_seriesCountController.text) >= 10 || int.parse(_seriesCountController.text) < 1 || _seriesCountController.text == "" || _seriesCountController.text == null
+                                          ? Colors.grey
+                                          : StrongrColors.black,
                                     ),
                                     shape: CircleBorder(),
-                                    onPressed: _seriesCountController.text !=
+                                    onPressed: int.parse(_seriesCountController.text) >= 10 || int.parse(_seriesCountController.text) < 1 || _seriesCountController.text == null ? null :
+                                    _seriesCountController.text !=
                                             "10"
                                         ? () {
                                             FocusScope.of(context).unfocus();
@@ -510,23 +527,25 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
                       ],
                     ),
                   ),
-                  Visibility(
-                    visible: _unique && linesCount != 1,
-                    child: Divider(
-                      thickness: 0.5,
-                      color: Colors.grey,
-                    ),
-                  ),
+                  // Visibility(
+                  //   visible: _unique && linesCount != 1,
+                  //   child: Divider(
+                  //     thickness: 0.5,
+                  //     color: Colors.grey,
+                  //   ),
+                  // ),
                   Center(
                     child: Container(
                       // color: Colors.blue,
-                      height: _unique ? ScreenSize.height(context) / 3.8 : 65,
+                      height: _unique
+                          ? 65 * double.parse(linesCount.toString())
+                          : 65,
                       child: Visibility(
                         visible: _visibility,
                         child: Container(
                           // color: Colors.red[100],
-                          child: ListView(
-                            physics: BouncingScrollPhysics(),
+                          child: Column(
+                            // physics: BouncingScrollPhysics(),
                             children: <Widget>[
                               for (int i = 0; i < linesCount; i++)
                                 Container(
@@ -684,13 +703,12 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
                                         ),
                                       ),
                                       Container(
-                                        // color: Colors.yellow,
                                         height: 35,
                                         width: 35,
                                         child: RawMaterialButton(
                                           child: Icon(
                                             Icons.tune,
-                                            color: StrongrColors.black,
+                                            color: StrongrColors.blue,
                                           ),
                                           onPressed: () {},
                                           shape: CircleBorder(),
@@ -705,13 +723,13 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
                       ),
                     ),
                   ),
-                  Visibility(
-                    visible: _unique && linesCount != 1,
-                    child: Divider(
-                      thickness: 0.5,
-                      color: Colors.grey,
-                    ),
-                  ),
+                  // Visibility(
+                  //   visible: _unique && linesCount != 1,
+                  //   child: Divider(
+                  //     thickness: 0.5,
+                  //     color: Colors.grey,
+                  //   ),
+                  // ),
                 ],
               ),
             ),
@@ -719,22 +737,35 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
         ),
       ),
       bottomNavigationBar: Container(
+        // color: Colors.red,
         height: 80,
-        child: Center(
-          child: FloatingActionButton.extended(
-            // heroTag: 'program_fab_' + widget.id.toString(),
-            backgroundColor:
-                validSet(strict: true) ? StrongrColors.blue : Colors.grey,
-            icon: Icon(
-              Icons.check,
-              color: Colors.white,
+        child: Stack(
+          children: <Widget>[
+            Divider(
+              thickness: 0.5,
+              color: Colors.grey,
+              height: 1,
             ),
-            onPressed: validSet() ? () {} : null,
-            label: StrongrText(
-              "Créer",
-              color: Colors.white,
+            Center(
+              child: FloatingActionButton.extended(
+                backgroundColor:
+                    validSet(strict: true) ? StrongrColors.blue : Colors.grey,
+                icon: Icon(
+                  Icons.check,
+                  color: Colors.white,
+                ),
+                onPressed: validSet()
+                    ? () {
+                        sendToServer();
+                      }
+                    : null,
+                label: StrongrText(
+                  "Créer",
+                  color: Colors.white,
+                ),
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );

@@ -134,6 +134,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         builder: (context) => SessionView(
           id: args.id,
           name: args.name,
+          sessionTypeName: args.sessionTypeName,
           fromProgram: args.fromProgram,
         ),
       );

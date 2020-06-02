@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:strongr/models/ExercisePreview.dart';
-import 'package:strongr/models/muscle.dart';
 import 'package:strongr/services/exercise_service.dart';
 import 'package:strongr/utils/app_exercises_filters.dart';
 import 'package:strongr/utils/diacritics.dart';
@@ -41,32 +40,13 @@ class _ExercisesViewState extends State<ExercisesView> {
     super.initState();
   }
 
-  /// Affiche une [muscleList] sous forme de chaîne de charactères.
-  String displayMuscleListToString(List muscleList) {
-    String result = "";
-    for (final item in muscleList) {
-      result += item.name;
-      if (muscleList.indexOf(item) != muscleList.length - 1) result += ", ";
-    }
-    return result;
-  }
-
-  /// Méthode vérifiant si un [muscleName] est compris dans la [muscleList] d'un exercice.
-  bool muscleListContains({
-    @required List<Muscle> muscleList,
-    @required String muscleName,
-  }) {
-    for (final item in muscleList) if (item.name == muscleName) return true;
-    return false;
-  }
-
-  /// Retourne le nombre de résultats d'une liste d'[appExercises] après recherche et filtres.
-  int resultCount(List<ExercisePreview> appExercises) {
+  /// Retourne le nombre de résultats d'une liste d'[exercises] après recherche et filtres.
+  int resultCount(List<ExercisePreview> exercises) {
     int result = 0;
-    for (final appExercise in appExercises)
+    for (final appExercise in exercises)
       if ((searchbarController.text == "" ||
               Diacritics.remove(
-                appExercises[appExercises.indexOf(appExercise)]
+                exercises[exercises.indexOf(appExercise)]
                     .name
                     .toString()
                     .toLowerCase(),
@@ -248,14 +228,6 @@ class _ExercisesViewState extends State<ExercisesView> {
             ),
       ],
     );
-  }
-
-  /// Compare une liste de muscles [muscles] avec une liste de filtres [filters].
-  /// Retourne true s'il y a au moins une correspondance parmis leurs éléments, false sinon.
-  bool compareMusclesWithFilters(List<Muscle> muscles, List<String> filters) {
-    for (final muscle in muscles)
-      for (final filter in filters) if (muscle.name == filter) return true;
-    return false;
   }
 
   /// Actualise la page.

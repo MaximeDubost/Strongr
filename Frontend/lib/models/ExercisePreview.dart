@@ -2,6 +2,7 @@ import 'dart:convert';
 
 class ExercisePreview {
  int id;
+ int place;
  String name;
  String appExerciseName;
  String setCount;
@@ -9,6 +10,7 @@ class ExercisePreview {
 
   ExercisePreview({
     this.id,
+    this.place,
     this.name,
     this.appExerciseName,
     this.setCount,
@@ -17,6 +19,7 @@ class ExercisePreview {
 
   ExercisePreview copyWith({
     int id,
+    int place,
     String name,
     String appExerciseName,
     int setCount,
@@ -24,6 +27,7 @@ class ExercisePreview {
   }) {
     return ExercisePreview(
       id: id ?? this.id,
+      place: place ?? this.place,
       name: name ?? this.name,
       appExerciseName: appExerciseName ?? this.appExerciseName,
       setCount: setCount ?? this.setCount,
@@ -34,6 +38,7 @@ class ExercisePreview {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
+      'place': place,
       'name': name,
       'appExerciseName': appExerciseName,
       'setCount': setCount,
@@ -43,14 +48,37 @@ class ExercisePreview {
 
   static ExercisePreview fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
-  
+
     return ExercisePreview(
       id: map['id'],
+      place: map['place'],
       name: map['name'],
       appExerciseName: map['app_exercise_name'],
       setCount: map['set_count'],
       tonnage: map['tonnage'],
     );
+    // try
+    // {
+    //   return ExercisePreview(
+    //     id: map['id'],
+    //     place: map['place'],
+    //     name: null,
+    //     appExerciseName: map['app_exercise_name'],
+    //     setCount: map['set_count'],
+    //     tonnage: map['tonnage'],
+    //   );
+    // } 
+    // catch(e)
+    // {
+    //   return ExercisePreview(
+    //     id: map['id'],
+    //     place: null,
+    //     name: map['name'],
+    //     appExerciseName: map['app_exercise_name'],
+    //     setCount: map['set_count'],
+    //     tonnage: map['tonnage'],
+    //   );
+    // }
   }
 
   String toJson() => json.encode(toMap());
@@ -59,7 +87,7 @@ class ExercisePreview {
 
   @override
   String toString() {
-    return 'ExercisePreview(id: $id, name: $name, appExerciseName: $appExerciseName, setCount: $setCount, tonnage: $tonnage)';
+    return 'ExercisePreview(id: $id, place: $place, name: $name, appExerciseName: $appExerciseName, setCount: $setCount, tonnage: $tonnage)';
   }
 
   @override
@@ -68,6 +96,7 @@ class ExercisePreview {
   
     return o is ExercisePreview &&
       o.id == id &&
+      o.place == place &&
       o.name == name &&
       o.appExerciseName == appExerciseName &&
       o.setCount == setCount &&
@@ -77,6 +106,7 @@ class ExercisePreview {
   @override
   int get hashCode {
     return id.hashCode ^
+      place.hashCode ^
       name.hashCode ^
       appExerciseName.hashCode ^
       setCount.hashCode ^

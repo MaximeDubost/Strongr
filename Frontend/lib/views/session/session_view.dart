@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:strongr/models/Session.dart';
+import 'package:strongr/services/session_service.dart';
+import 'package:strongr/utils/date_formater.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
@@ -9,9 +12,11 @@ import 'package:strongr/widgets/strongr_text.dart';
 class SessionView extends StatefulWidget {
   final String id;
   final String name;
+  final String sessionTypeName;
   final bool fromProgram;
 
-  SessionView({this.id, this.name, this.fromProgram = false});
+  SessionView(
+      {this.id, this.name, this.sessionTypeName, this.fromProgram = false});
 
   @override
   _SessionViewState createState() => _SessionViewState();
@@ -19,200 +24,241 @@ class SessionView extends StatefulWidget {
 
 class _SessionViewState extends State<SessionView> {
   bool isEditMode;
+  Future<Session> futureSession;
 
   @override
   void initState() {
     isEditMode = false;
+    futureSession = SessionService.getSession(id: int.parse(widget.id));
     super.initState();
   }
 
-  Container buildListViewItem(int i) {
-    return Container(
-      margin: i == 1 ? EdgeInsets.only(top: 5) : null,
-      key: ValueKey(i),
-      padding: EdgeInsets.all(5),
-      height: 110,
-      child: StrongrRoundedContainer(
-        width: ScreenSize.width(context),
-        content: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            // Container(
-            //   // color: Colors.blue,
-            //   width: 35,
-            //   child: Center(
-            //     child: StrongrText(
-            //       i.toString(),
-            //       bold: true,
-            //     ),
-            //   ),
-            // ),
-            Container(
-              // color: Colors.red,
-              width: 35,
-              height: 110,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Container(
-                    height: 30,
-                    // color: Colors.blue,
-                    child: RawMaterialButton(
-                      onPressed: isEditMode ? () {} : null,
-                      child: Icon(
-                        Icons.keyboard_arrow_up,
-                        color: isEditMode
-                            ? StrongrColors.black
-                            : Colors.transparent,
-                      ),
-                      shape: CircleBorder(),
-                    ),
-                  ),
-                  Container(
-                    // color: Colors.yellow,
-                    width: 30,
-                    child: Center(
-                      child: StrongrText(
-                        i.toString(),
-                        bold: true,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    height: 30,
-                    // color: Colors.blue,
-                    child: RawMaterialButton(
-                      onPressed: isEditMode ? () {} : null,
-                      child: Icon(
-                        Icons.keyboard_arrow_down,
-                        color: isEditMode
-                            ? StrongrColors.black
-                            : Colors.transparent,
-                      ),
-                      shape: CircleBorder(),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Flexible(
-              child: Container(
-                // color: Colors.red,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        Container(
-                          padding: EdgeInsets.only(left: 5, right: 5),
-                          child: Icon(Icons.fitness_center),
-                        ),
-                        Flexible(
-                          child: Container(
-                            // color: Colors.blue,
-                            child: StrongrText(
-                              "app_exercise_name",
-                              color: isEditMode ? Colors.grey : StrongrColors.black,
-                              textAlign: TextAlign.start,
-                              maxLines: 2,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: <Widget>[
-                        Container(
-                          padding: EdgeInsets.only(left: 5, right: 5),
-                          child: Icon(Icons.refresh),
-                        ),
-                        Flexible(
-                          child: Container(
-                            // width: 185,
-                            child: StrongrText(
-                              "set_count",
-                              color: isEditMode ? Colors.grey : StrongrColors.black,
-                              textAlign: TextAlign.start,
-                              maxLines: 1,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: <Widget>[
-                        Container(
-                          padding: EdgeInsets.only(left: 5, right: 5),
+  List<Widget> buildExerciseList({List exerciseList}) {
+    List<Widget> builtexerciseList = [];
+    for (final item in exerciseList)
+      builtexerciseList.add(
+        Container(
+          margin:
+              exerciseList.indexOf(item) == 0 ? EdgeInsets.only(top: 5) : null,
+          key: ValueKey(exerciseList.indexOf(item)),
+          padding: EdgeInsets.all(5),
+          height: 110,
+          child: StrongrRoundedContainer(
+            width: ScreenSize.width(context),
+            content: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Container(
+                  // color: Colors.red,
+                  width: 35,
+                  height: 110,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Container(
+                        height: 30,
+                        // color: Colors.blue,
+                        child: RawMaterialButton(
+                          onPressed: isEditMode ? () {} : null,
                           child: Icon(
-                            Icons.show_chart,
-                            color: Colors.grey,
+                            Icons.keyboard_arrow_up,
+                            color: isEditMode
+                                ? StrongrColors.black
+                                : Colors.transparent,
+                          ),
+                          shape: CircleBorder(),
+                        ),
+                      ),
+                      Container(
+                        // color: Colors.yellow,
+                        width: 30,
+                        child: Center(
+                          child: StrongrText(
+                            item.place != null || item.place >= 1
+                                ? item.place.toString()
+                                : "-",
+                            color: isEditMode ||
+                                    item.place != null ||
+                                    item.place >= 1
+                                ? StrongrColors.black
+                                : Colors.grey,
+                            bold: true,
                           ),
                         ),
-                        Flexible(
-                          child: Container(
-                            // width: 185,
-                            child: StrongrText(
-                              "Tonnage non calculé",
-                              color: Colors.grey,
-                              textAlign: TextAlign.start,
-                              maxLines: 1,
-                            ),
+                      ),
+                      Container(
+                        height: 30,
+                        // color: Colors.blue,
+                        child: RawMaterialButton(
+                          onPressed: isEditMode ? () {} : null,
+                          child: Icon(
+                            Icons.keyboard_arrow_down,
+                            color: isEditMode
+                                ? StrongrColors.black
+                                : Colors.transparent,
                           ),
+                          shape: CircleBorder(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Flexible(
+                  child: Container(
+                    // color: Colors.red,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Container(
+                              padding: EdgeInsets.only(left: 5, right: 5),
+                              child: Icon(
+                                Icons.fitness_center,
+                                color:
+                                    isEditMode || item.appExerciseName == null
+                                        ? Colors.grey
+                                        : StrongrColors.black,
+                              ),
+                            ),
+                            Flexible(
+                              child: Container(
+                                // color: Colors.blue,
+                                child: StrongrText(
+                                  item.appExerciseName ?? "Aucun exercice",
+                                  color:
+                                      isEditMode || item.appExerciseName == null
+                                          ? Colors.grey
+                                          : StrongrColors.black,
+                                  textAlign: TextAlign.start,
+                                  maxLines: 2,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: <Widget>[
+                            Container(
+                              padding: EdgeInsets.only(left: 5, right: 5),
+                              child: Icon(
+                                Icons.refresh,
+                                color: isEditMode ||
+                                        item.setCount == null ||
+                                        int.parse(item.setCount) < 1
+                                    ? Colors.grey
+                                    : StrongrColors.black,
+                              ),
+                            ),
+                            Flexible(
+                              child: Container(
+                                // width: 185,
+                                child: StrongrText(
+                                  item.setCount == null ||
+                                          int.parse(item.setCount) < 1
+                                      ? "Aucune série"
+                                      : item.setCount == 1
+                                          ? item.setCount + " série"
+                                          : item.setCount + " séries",
+                                  color: isEditMode ||
+                                          item.setCount == null ||
+                                          int.parse(item.setCount) < 1
+                                      ? Colors.grey
+                                      : StrongrColors.black,
+                                  textAlign: TextAlign.start,
+                                  maxLines: 1,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: <Widget>[
+                            Container(
+                              padding: EdgeInsets.only(left: 5, right: 5),
+                              child: Icon(
+                                Icons.show_chart,
+                                color: item.tonnage == null
+                                    ? Colors.grey
+                                    : StrongrColors.black,
+                              ),
+                            ),
+                            Flexible(
+                              child: Container(
+                                // width: 185,
+                                child: StrongrText(
+                                  item.tonnage != null
+                                      ? "Tonnage de " + item.tonnage.toString()
+                                      : "Tonnage non calculé",
+                                  color: item.tonnage == null
+                                      ? Colors.grey
+                                      : StrongrColors.black,
+                                  textAlign: TextAlign.start,
+                                  maxLines: 1,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
+                !isEditMode
+                    ? Container(
+                        width: 35,
+                        height: 35,
+                        child: FloatingActionButton(
+                          elevation: 0,
+                          heroTag: "fs_exercise_play_fab_" + item.id.toString(),
+                          tooltip: !isEditMode ? "Démarrer" : "Supprimer",
+                          backgroundColor: !isEditMode
+                              ? StrongrColors.blue
+                              : Colors.red[800],
+                          child: Icon(
+                            !isEditMode
+                                ? Icons.play_arrow
+                                : Icons.delete_outline,
+                            color: Colors.white,
+                          ),
+                          onPressed: () {},
+                        ),
+                      )
+                    : Container(
+                        width: 35,
+                        height: 35,
+                        child: RawMaterialButton(
+                          child: Icon(
+                            Icons.close,
+                            color: Colors.red[800],
+                          ),
+                          shape: CircleBorder(),
+                          onPressed: () {},
+                        ),
+                      ),
+              ],
             ),
-            !isEditMode
-                ? Container(
-                    width: 35,
-                    height: 35,
-                    child: FloatingActionButton(
-                      elevation: 0,
-                      heroTag: "fs_exercise_play_fab_" + i.toString(),
-                      tooltip: !isEditMode ? "Démarrer" : "Supprimer",
-                      backgroundColor:
-                          !isEditMode ? StrongrColors.blue : Colors.red[800],
-                      child: Icon(
-                        !isEditMode ? Icons.play_arrow : Icons.delete_outline,
-                        color: Colors.white,
+            onPressed: !isEditMode
+                ? () {
+                    Navigator.pushNamed(
+                      context,
+                      EXERCISE_ROUTE,
+                      arguments: ExerciseView(
+                        id: item.id.toString(),
+                        name: item.name.toString(),
+                        appExerciseName: item.appExerciseName,
+                        fromSession: true,
                       ),
-                      onPressed: () {},
-                    ),
-                  )
-                : Container(
-                    width: 35,
-                    height: 35,
-                    child: RawMaterialButton(
-                      child: Icon(
-                        Icons.close,
-                        color: Colors.red[800],
-                      ),
-                      shape: CircleBorder(),
-                      onPressed: () {},
-                    ),
-                  ),
-          ],
+                    );
+                  }
+                : null,
+            onLongPressed:
+                !isEditMode ? () => setState(() => isEditMode = true) : null,
+          ),
         ),
-        onPressed: !isEditMode
-            ? () {
-                Navigator.pushNamed(
-                  context,
-                  EXERCISE_ROUTE,
-                  arguments: ExerciseView(
-                    id: i.toString(),
-                    name: "name (" + i.toString() + ")",
-                    fromSession: true,
-                  ),
-                );
-              }
-            : null,
-        onLongPressed: !isEditMode ? () => setState(() => isEditMode = true) : null,
-      ),
-    );
+      );
+    return builtexerciseList;
   }
 
   @override
@@ -242,21 +288,32 @@ class _SessionViewState extends State<SessionView> {
       body: Container(
         child: Column(
           children: <Widget>[
-            InkWell(
-              onTap: isEditMode ? null : () {},
-              child: Stack(
+            FutureBuilder(
+              future: futureSession,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  print(snapshot.data);
+                  return Container(
+                    // color: Colors.red,
+                    child: InkWell(
+                      onTap: isEditMode ? null : () {},
+                      child: Stack(
                         children: <Widget>[
                           Container(
                             width: ScreenSize.width(context),
                             padding: EdgeInsets.all(20),
                             child: StrongrText(
-                              "session_type_name",
+                              widget.sessionTypeName,
                               bold: true,
                             ),
                           ),
                           Container(
                             padding: EdgeInsets.only(
-                                top: 20, bottom: 20, left: 15, right: 15),
+                              top: 20,
+                              bottom: 20,
+                              left: 15,
+                              right: 15,
+                            ),
                             alignment: Alignment.centerRight,
                             child: Opacity(
                               opacity: isEditMode ? 0 : 1,
@@ -267,6 +324,22 @@ class _SessionViewState extends State<SessionView> {
                           ),
                         ],
                       ),
+                    ),
+                  );
+                }
+                if (snapshot.hasError) {
+                  return Text(snapshot.error, textAlign: TextAlign.center);
+                } else {
+                  return Container(
+                    width: ScreenSize.width(context),
+                    padding: EdgeInsets.all(20),
+                    child: StrongrText(
+                      widget.sessionTypeName,
+                      bold: true,
+                    ),
+                  );
+                }
+              },
             ),
             Container(
               width: ScreenSize.width(context),
@@ -274,25 +347,33 @@ class _SessionViewState extends State<SessionView> {
               color: Colors.grey[350],
             ),
             Container(
-              // margin: EdgeInsets.only(top: 10),
+              // color: Colors.red,
               height: ScreenSize.height(context) / 1.6,
-              // child: isEditMode
-              //     ? ReorderableListView(
-              //         onReorder: (oldIndex, newIndex) {},
-              //         children: <Widget>[
-              //           for (int i = 1; i <= 4; i++) buildListViewItem(i),
-              //         ],
-              //       )
-              //     : ListView(
-              //         children: <Widget>[
-              //           for (int i = 1; i <= 4; i++) buildListViewItem(i),
-              //         ],
-              //       ),
-              child: ListView(
-                physics: BouncingScrollPhysics(),
-                children: <Widget>[
-                  for (int i = 1; i <= 5; i++) buildListViewItem(i),
-                ],
+              child: FutureBuilder(
+                future: futureSession,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return ListView(
+                      physics: BouncingScrollPhysics(),
+                      children: buildExerciseList(
+                          exerciseList: snapshot.data.exercises),
+                    );
+                    // return Center(
+                    //   child: Text(snapshot.data.toString()),
+                    // );
+                  }
+                  if (snapshot.hasError)
+                    return Text(snapshot.error, textAlign: TextAlign.center);
+                  else
+                    return Container(
+                      alignment: Alignment.center,
+                      height: ScreenSize.height(context) / 1.75,
+                      child: CircularProgressIndicator(
+                        valueColor:
+                            AlwaysStoppedAnimation<Color>(StrongrColors.blue),
+                      ),
+                    );
+                },
               ),
             ),
             Container(
@@ -300,27 +381,55 @@ class _SessionViewState extends State<SessionView> {
               height: 1,
               color: Colors.grey[350],
             ),
-            Visibility(
-              visible: !isEditMode,
-              child: Container(
-                padding: EdgeInsets.all(10),
-                width: ScreenSize.width(context),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    StrongrText(
-                      "Créé le 01/01/2020 à 00:00.",
-                      color: Colors.grey,
-                      size: 16,
+            FutureBuilder(
+              future: futureSession,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Visibility(
+                    visible: !isEditMode,
+                    child: Container(
+                      padding: EdgeInsets.all(10),
+                      width: ScreenSize.width(context),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          StrongrText(
+                            "Créé le " +
+                                DateFormater.format(
+                                    snapshot.data.creationDate.toString()) +
+                                " à " +
+                                DateFormater.format(
+                                  snapshot.data.creationDate.toString(),
+                                  timeOnly: true,
+                                ),
+                            color: Colors.grey,
+                            size: 16,
+                          ),
+                          StrongrText(
+                            snapshot.data.creationDate !=
+                                    snapshot.data.lastUpdate
+                                ? "Mis à jour le " +
+                                    DateFormater.format(
+                                        snapshot.data.lastUpdate.toString()) +
+                                    " à " +
+                                    DateFormater.format(
+                                      snapshot.data.lastUpdate.toString(),
+                                      timeOnly: true,
+                                    )
+                                : "",
+                            color: Colors.grey,
+                            size: 16,
+                          ),
+                        ],
+                      ),
                     ),
-                    StrongrText(
-                      "Mis à jour le 01/01/2020 à 00:00.",
-                      color: Colors.grey,
-                      size: 16,
-                    ),
-                  ],
-                ),
-              ),
+                  );
+                }
+                if (snapshot.hasError)
+                  return Text(snapshot.error, textAlign: TextAlign.center);
+                else
+                  return Container();
+              },
             ),
             Visibility(
               visible: isEditMode,
@@ -341,7 +450,9 @@ class _SessionViewState extends State<SessionView> {
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        heroTag: !widget.fromProgram ? 'session_play_fab_' + widget.id.toString() : 'fp_session_play_fab_' + widget.id.toString(),
+        heroTag: !widget.fromProgram
+            ? 'session_play_fab_' + widget.id.toString()
+            : 'fp_session_play_fab_' + widget.id.toString(),
         backgroundColor: isEditMode ? Colors.red[800] : StrongrColors.blue,
         icon: Icon(
           isEditMode ? Icons.delete_outline : Icons.play_arrow,
