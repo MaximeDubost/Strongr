@@ -2,20 +2,9 @@ import Session from '../models/Session';
 import SessionDetail from '../models/SessionDetail';
 import SessionType from '../models/SessionType';
 import ExerciseSession from '../models/ExerciseSession';
+import clt from '../core/config/database';
 
-const { Pool } = require('pg')
-var clt = null;
 const repository = {};
-
-
-pool.connect((err, client, release) => {
-    console.log("In pool connect");
-    if (err) {
-        return console.error("Error acquiring client", err.stack);
-    } else {
-        clt = client;
-    }
-});
 
 repository.getSessions = async (req) => {
     let sessionList = []

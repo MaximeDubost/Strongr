@@ -3,8 +3,6 @@ import AppExercise from "../Models/AppExercise"
 import Equipment from "../Models/Equipment"
 import clt from "../core/config/database";
 
-
-
 const repository = {};
 
 repository.getAllAppExercises = async () => {

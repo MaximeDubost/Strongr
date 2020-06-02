@@ -3,7 +3,7 @@ const controller = {};
 
 controller.getSessions = async (req, res) => {
     try {
-        var session = await sessionRepository.getSessions(req)
+        var session = await SessionRepository.getSessions(req)
         res.status(200).json(session)
     } catch (error) {
         console.log(error)
@@ -12,7 +12,7 @@ controller.getSessions = async (req, res) => {
 
 controller.getSessionDetail = async (req, res) => {
     try {
-        var sessions = await sessionRepository.getSessionDetail(req)
+        var sessions = await SessionRepository.getSessionDetail(req)
         if (sessions === 404) {
             res.sendStatus(session)
         } else {

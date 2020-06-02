@@ -3,9 +3,6 @@ import clt from "../core/config/database";
 
 const repository = {};
 
-
-
-
 /**
  * @param id_user int
  */

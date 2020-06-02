@@ -135,55 +135,99 @@ class _AppExercisesPageState extends State<AppExercisesPage> {
                     ),
                     Container(
                       alignment: Alignment.centerRight,
-                      child: Container(
-                        width: 35,
-                        height: 35,
-                        child: FloatingActionButton(
-                          elevation: 0,
-                          heroTag: 'fab_' +
-                              (appExercises.indexOf(appExercise) + 1)
-                                  .toString(),
-                          tooltip: "Ajouter",
-                          backgroundColor: StrongrColors.blue,
-                          child: Icon(
-                            Icons.add,
-                            color: Colors.white,
-                          ),
-                          onPressed: widget.fromExercises
-                              ? () => Navigator.pushNamed(
-                                    context,
-                                    EXERCISE_CREATE_ROUTE,
-                                    arguments: ExerciseCreateView(
-                                      id: appExercises[
-                                              appExercises.indexOf(appExercise)]
-                                          .id,
-                                      name: appExercises[
-                                              appExercises.indexOf(appExercise)]
-                                          .name,
-                                    ),
-                                  )
-                              : () => showDialog(
-                                    context: context,
-                                    builder: (context) =>
-                                        NewExerciseFromListDialog(),
+                      child: !widget.fromExercises
+                          ? Container(
+                              width: 35,
+                              height: 35,
+                              child: FloatingActionButton(
+                                elevation: 0,
+                                heroTag: 'fab_' +
+                                    (appExercises.indexOf(appExercise) + 1)
+                                        .toString(),
+                                tooltip: "Ajouter",
+                                backgroundColor: StrongrColors.blue,
+                                child: Icon(
+                                  Icons.add,
+                                  color: Colors.white,
+                                ),
+                                onPressed: () => showDialog(
+                                  context: context,
+                                  builder: (context) =>
+                                      NewExerciseFromListDialog(),
+                                ),
+                              ),
+                            )
+                          : Container(
+                              // color: Colors.red,
+                              width: 75,
+                              height: 75,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  VerticalDivider(
+                                    thickness: 1,
+                                    indent: 10,
+                                    endIndent: 10,
                                   ),
-                        ),
-                      ),
+                                  Container(
+                                    width: 50,
+                                    height: 50,
+                                    child: RawMaterialButton(
+                                      shape: CircleBorder(),
+                                      child: Icon(
+                                        Icons.info_outline,
+                                        color: StrongrColors.blue,
+                                      ),
+                                      onPressed: () {
+                                        Navigator.pushNamed(
+                                          context,
+                                          APP_EXERCISE_ROUTE,
+                                          arguments: AppExerciseView(
+                                            id: appExercises[appExercises
+                                                    .indexOf(appExercise)]
+                                                .id,
+                                            name: appExercises[appExercises
+                                                    .indexOf(appExercise)]
+                                                .name,
+                                            fromExercises: widget.fromExercises,
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                     ),
                   ],
                 ),
                 onPressed: () {
                   FocusScope.of(context).unfocus();
-                  Navigator.pushNamed(
-                    context,
-                    APP_EXERCISE_ROUTE,
-                    arguments: AppExerciseView(
-                      id: appExercises[appExercises.indexOf(appExercise)].id,
-                      name:
-                          appExercises[appExercises.indexOf(appExercise)].name,
-                      fromExercises: widget.fromExercises,
-                    ),
-                  );
+                  !widget.fromExercises
+                      ? Navigator.pushNamed(
+                          context,
+                          APP_EXERCISE_ROUTE,
+                          arguments: AppExerciseView(
+                            id: appExercises[appExercises.indexOf(appExercise)]
+                                .id,
+                            name:
+                                appExercises[appExercises.indexOf(appExercise)]
+                                    .name,
+                            fromExercises: widget.fromExercises,
+                          ),
+                        )
+                      : Navigator.pushNamed(
+                          context,
+                          EXERCISE_CREATE_ROUTE,
+                          arguments: ExerciseCreateView(
+                            id: appExercises[appExercises.indexOf(appExercise)]
+                                .id,
+                            name:
+                                appExercises[appExercises.indexOf(appExercise)]
+                                    .name,
+                          ),
+                        );
                 },
               ),
             ),

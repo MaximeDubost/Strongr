@@ -6,7 +6,6 @@ import clt from "../core/config/database";
 
 const repository = {};
 
-
 /**
  * create exercises 
  */

@@ -3,7 +3,6 @@ import clt from "../core/config/database";
 
 const repository = {};
 
-
 repository.readProgram = async (req) => {
     let program_list = []
     let sql = `

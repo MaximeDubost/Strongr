@@ -72,7 +72,7 @@ class _StrongrRoundedTextFormFieldState
           ) : null,
           hintText: widget.hint,
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(20),
           ),
           fillColor: Colors.white,
           filled: true,

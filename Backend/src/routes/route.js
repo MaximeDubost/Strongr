@@ -25,11 +25,11 @@ router.get("/appexercises", AppExerciseController.getAllAppExercises);
 router.get("/appexercise/:id_app_exercise", AppExerciseController.getDetailAppExercise);
 
 /**  CRUD Session */
-router.get("/session/:id_session", middleware.checkAuth, sessionController.getSessionDetail)
-router.get("/sessions", middleware.checkAuth, sessionController.getSessions)
-router.post("/session", middleware.checkAuth, sessionController.addSession)
-router.delete("/session/:id_session", middleware.checkAuth, sessionController.deleteSession)
-router.put("/session/:id_session", middleware.checkAuth, sessionController.updateSession)
+router.get("/session/:id_session", middleware.checkAuth, SessionController.getSessionDetail)
+router.get("/sessions", middleware.checkAuth, SessionController.getSessions)
+router.post("/session", middleware.checkAuth, SessionController.addSession)
+router.delete("/session/:id_session", middleware.checkAuth, SessionController.deleteSession)
+router.put("/session/:id_session", middleware.checkAuth, SessionController.updateSession)
 
 /**  CRUD Exercise */
 router.post("/exercise", middleware.checkAuth, ExerciseController.createExercise);
