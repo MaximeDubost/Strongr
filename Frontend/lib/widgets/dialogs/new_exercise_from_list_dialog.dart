@@ -1,9 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
+import 'package:strongr/views/exercise/exercise_create_view.dart';
 import '../strongr_text.dart';
 
-class NewExerciseFromListDialog extends StatelessWidget {
+class NewExerciseFromListDialog extends StatefulWidget {
+  final int id;
+  final String name;
+
+  NewExerciseFromListDialog({@required this.id, @required this.name});
+
+  @override
+  _NewExerciseFromListDialogState createState() =>
+      _NewExerciseFromListDialogState();
+}
+
+class _NewExerciseFromListDialogState extends State<NewExerciseFromListDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -13,11 +26,17 @@ class NewExerciseFromListDialog extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
-            FlatButton(
-              onPressed: () {},
-              child: StrongrText(
-                "Ajouter cet exercice à une séance existante",
+            RawMaterialButton(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
               ),
+              child: Padding(
+                padding: EdgeInsets.all(10),
+                child: StrongrText(
+                  "Ajouter cet exercice à une séance existante",
+                ),
+              ),
+              onPressed: () {},
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -39,12 +58,29 @@ class NewExerciseFromListDialog extends StatelessWidget {
                 ),
               ],
             ),
-            FlatButton(
-              onPressed: () {},
-              child: StrongrText(
-                "Personnaliser cet exercice seul",
+            RawMaterialButton(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
               ),
-            )
+              child: Padding(
+                padding: EdgeInsets.all(10),
+                child: StrongrText(
+                  "Personnaliser cet exercice seul",
+                ),
+              ),
+              onPressed: () {
+                Navigator.pushNamed(
+                  context,
+                  EXERCISE_CREATE_ROUTE,
+                  arguments: ExerciseCreateView(
+                    id: widget.id,
+                    name: widget.name,
+                  ),
+                ).then((result) {
+                  Navigator.of(context).pop();
+                });
+              },
+            ),
           ],
         ),
       ),

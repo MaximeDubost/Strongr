@@ -24,7 +24,6 @@ class SessionService {
       List<SessionPreview> sessions = List<SessionPreview>();
       for (final session in jsonDecode(response.body))
         sessions.add(SessionPreview.fromMap(session));
-      print(sessions.toString());
       return sessions;
     } catch (e) {
       return [];

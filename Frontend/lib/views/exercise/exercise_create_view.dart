@@ -748,7 +748,6 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
             ),
             Center(
               child: FloatingActionButton.extended(
-                // heroTag: 'program_fab_' + widget.id.toString(),
                 backgroundColor:
                     validSet(strict: true) ? StrongrColors.blue : Colors.grey,
                 icon: Icon(

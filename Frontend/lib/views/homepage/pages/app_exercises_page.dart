@@ -141,9 +141,7 @@ class _AppExercisesPageState extends State<AppExercisesPage> {
                               height: 35,
                               child: FloatingActionButton(
                                 elevation: 0,
-                                heroTag: 'fab_' +
-                                    (appExercises.indexOf(appExercise) + 1)
-                                        .toString(),
+                                heroTag: 'fab_' + appExercise.id.toString(),
                                 tooltip: "Ajouter",
                                 backgroundColor: StrongrColors.blue,
                                 child: Icon(
@@ -153,7 +151,10 @@ class _AppExercisesPageState extends State<AppExercisesPage> {
                                 onPressed: () => showDialog(
                                   context: context,
                                   builder: (context) =>
-                                      NewExerciseFromListDialog(),
+                                      NewExerciseFromListDialog(
+                                    id: appExercise.id,
+                                    name: appExercise.name,
+                                  ),
                                 ),
                               ),
                             )
