@@ -1,8 +1,9 @@
 class SessionType {
-    constructor(id, name) {
+    constructor(id, name, description) {
         this.id = id
         this.name = name
+        this.description = description
     }
 }
 
-export default SessionType
+export default SessionType;
