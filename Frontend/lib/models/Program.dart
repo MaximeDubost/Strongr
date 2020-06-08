@@ -2,42 +2,61 @@ import 'dart:convert';
 
 import 'package:collection/collection.dart';
 
-import 'session.dart';
+import 'SessionPreview.dart';
 
 class Program {
   int id;
-  int userId;
+  int place;
   String name;
-  List<Session> sessionsList;
-  
+  String programGoalName;
+  List<SessionPreview> exercises;
+  double tonnage;
+  DateTime creationDate;
+  DateTime lastUpdate;
+
   Program({
     this.id,
-    this.userId,
+    this.place,
     this.name,
-    this.sessionsList,
+    this.programGoalName,
+    this.exercises,
+    this.tonnage,
+    this.creationDate,
+    this.lastUpdate,
   });
-
 
   Program copyWith({
     int id,
-    int userId,
+    int place,
     String name,
-    List<Session> sessionsList,
+    String programGoalName,
+    List<SessionPreview> exercises,
+    double tonnage,
+    DateTime creationDate,
+    DateTime lastUpdate,
   }) {
     return Program(
       id: id ?? this.id,
-      userId: userId ?? this.userId,
+      place: place ?? this.place,
       name: name ?? this.name,
-      sessionsList: sessionsList ?? this.sessionsList,
+      programGoalName: programGoalName ?? this.programGoalName,
+      exercises: exercises ?? this.exercises,
+      tonnage: tonnage ?? this.tonnage,
+      creationDate: creationDate ?? this.creationDate,
+      lastUpdate: lastUpdate ?? this.lastUpdate,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'userId': userId,
+      'place': place,
       'name': name,
-      'sessionsList': List<dynamic>.from(sessionsList.map((x) => x.toMap())),
+      'programGoalName': programGoalName,
+      'exercises': exercises?.map((x) => x?.toMap())?.toList(),
+      'tonnage': tonnage,
+      'creationDate': creationDate?.millisecondsSinceEpoch,
+      'lastUpdate': lastUpdate?.millisecondsSinceEpoch,
     };
   }
 
@@ -46,9 +65,13 @@ class Program {
   
     return Program(
       id: map['id'],
-      userId: map['userId'],
+      place: map['place'],
       name: map['name'],
-      sessionsList: List<Session>.from(map['sessionsList']?.map((x) => Session.fromMap(x))),
+      programGoalName: map['program_goal_name'],
+      exercises: List<SessionPreview>.from(map['exercises']?.map((x) => SessionPreview.fromMap(x))),
+      tonnage: map['tonnage'],
+      creationDate: DateTime.parse(map['creation_date']),
+      lastUpdate: DateTime.parse(map['last_update']),
     );
   }
 
@@ -58,7 +81,7 @@ class Program {
 
   @override
   String toString() {
-    return 'Program(id: $id, userId: $userId, name: $name, sessionsList: $sessionsList)';
+    return 'Program(id: $id, place: $place, name: $name, programGoalName: $programGoalName, exercises: $exercises, tonnage: $tonnage, creationDate: $creationDate, lastUpdate: $lastUpdate)';
   }
 
   @override
@@ -68,16 +91,24 @@ class Program {
   
     return o is Program &&
       o.id == id &&
-      o.userId == userId &&
+      o.place == place &&
       o.name == name &&
-      listEquals(o.sessionsList, sessionsList);
+      o.programGoalName == programGoalName &&
+      listEquals(o.exercises, exercises) &&
+      o.tonnage == tonnage &&
+      o.creationDate == creationDate &&
+      o.lastUpdate == lastUpdate;
   }
 
   @override
   int get hashCode {
     return id.hashCode ^
-      userId.hashCode ^
+      place.hashCode ^
       name.hashCode ^
-      sessionsList.hashCode;
+      programGoalName.hashCode ^
+      exercises.hashCode ^
+      tonnage.hashCode ^
+      creationDate.hashCode ^
+      lastUpdate.hashCode;
   }
 }

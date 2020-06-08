@@ -42,7 +42,7 @@ router.put("/exercise/:id_exercise", middleware.checkAuth, ExerciseController.up
 router.delete("/exercise/:id_exercise", middleware.checkAuth, ExerciseController.deleteExercise);
 
 /** CRUD Program */
-router.get("/program", middleware.checkAuth, ProgramController.readProgram);
+router.get("/programs", middleware.checkAuth, ProgramController.readProgram);
 router.get("/program_goal", middleware.checkAuth, ProgramGoalController.readProgramGoal);
 
 /** CRUD ProgramsPreview */
