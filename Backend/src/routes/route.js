@@ -43,6 +43,6 @@ router.delete("/exercise/:id_exercise", middleware.checkAuth, ExerciseController
 
 /** CRUD Program */
 router.get("/programs", middleware.checkAuth, ProgramController.readProgram);
-router.get("/programDetails/:id_program", middleware.checkAuth, ProgramController.readDetailProgram);
+router.get("/program/:id_program", middleware.checkAuth, ProgramController.readDetailProgram);
 router.get("/program_goal", middleware.checkAuth, ProgramGoalController.readProgramGoal);
 export default router;
