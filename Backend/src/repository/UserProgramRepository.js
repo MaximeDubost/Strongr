@@ -24,7 +24,7 @@ repository.createUserProgram = async (req) => {
 repository.getProgramsPreview = async (req) => {
     let sql = `
     SELECT p.id_program as id, p.name as name ,pg.name as program_goal,
-    COUNT(DISTINCT ps.id_session) as session_count, 1 as Tonnage
+    COUNT(DISTINCT ps.id_session) as session_count, null as Tonnage
     FROM _program p 
     JOIN _program_goal pg ON p.id_program_goal = pg.id_program_goal
     JOIN _program_session ps ON p.id_program = ps.id_program

@@ -9,8 +9,9 @@ import 'package:strongr/widgets/strongr_text.dart';
 class ProgramView extends StatefulWidget {
   final String id;
   final String name;
+  final String programGoalName;
 
-  ProgramView({this.id, this.name});
+  ProgramView({this.id, this.name, this.programGoalName});
 
   @override
   _ProgramViewState createState() => _ProgramViewState();

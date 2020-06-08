@@ -162,6 +162,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         builder: (context) => ProgramView(
           id: args.id,
           name: args.name,
+          programGoalName: args.programGoalName,
         ),
       );
 

@@ -4,6 +4,7 @@ import 'package:strongr/models/ExercisePreview.dart';
 import 'package:strongr/models/ProgramPreview.dart';
 import 'package:strongr/models/SessionPreview.dart';
 import 'package:strongr/services/exercise_service.dart';
+import 'package:strongr/services/program_service.dart';
 import 'package:strongr/services/session_service.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
@@ -56,7 +57,7 @@ class _HomepageState extends State<Homepage> {
 
     futureExercises = ExerciseService.getExercises();
     futureSessions = SessionService.getSessions();
-    futurePrograms = null;
+    futurePrograms = ProgramService.getPrograms();
     super.initState();
   }
 
@@ -411,7 +412,7 @@ class _HomepageState extends State<Homepage> {
                                                       item.sessionTypeName !=
                                                               null
                                                           ? item.sessionTypeName
-                                                          : "Aucune séance",
+                                                          : "Aucune type",
                                                       color:
                                                           item.sessionTypeName !=
                                                                   null
@@ -455,7 +456,7 @@ class _HomepageState extends State<Homepage> {
                                                                   " exercice"
                                                               : item.exerciseCount +
                                                                   " exercices"
-                                                          : "Aucune exercice",
+                                                          : "Aucun exercice",
                                                       color: int.parse(item
                                                                       .exerciseCount) >
                                                                   0 ||
@@ -582,127 +583,224 @@ class _HomepageState extends State<Homepage> {
           Flexible(
             flex: 11,
             child: Container(
-              // height: ScreenSize.height(context) / 5.5,
-              child: PageView(
-                physics: BouncingScrollPhysics(),
-                onPageChanged: (value) {
-                  setState(() {
-                    programsListCurrentPage = value;
-                  });
-                },
-                controller: programsListController,
-                children: <Widget>[
-                  for (int i = 1; i <= 3; i++)
-                    StrongrRoundedContainer(
-                      content: Stack(
+              child: FutureBuilder(
+                future: futurePrograms,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    if (snapshot.data == null) {
+                      return Center(
+                        child: StrongrText(
+                          "Impossible d'afficher vos programmes",
+                          color: Colors.grey,
+                        ),
+                      );
+                    } else if (snapshot.data.length == 0) {
+                      return Center(
+                        child: StrongrText(
+                          "Aucun programme à afficher",
+                          color: Colors.grey,
+                        ),
+                      );
+                    } else
+                      return PageView(
+                        physics: BouncingScrollPhysics(),
+                        onPageChanged: (value) {
+                          setState(() {
+                            sessionsListCurrentPage = value;
+                          });
+                        },
+                        controller: sessionsListController,
                         children: <Widget>[
-                          Container(
-                            padding:
-                                EdgeInsets.only(left: 10, top: 8, bottom: 8),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Container(
-                                  alignment: Alignment.centerLeft,
-                                  child: StrongrText(
-                                    "Programme perso. " + i.toString(),
-                                    bold: true,
+                          for (final item in snapshot.data)
+                            StrongrRoundedContainer(
+                              content: Stack(
+                                children: <Widget>[
+                                  Container(
+                                    padding: EdgeInsets.only(
+                                      left: 10,
+                                      top: 8,
+                                      bottom: 8,
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Container(
+                                          alignment: Alignment.centerLeft,
+                                          child: StrongrText(
+                                            item.name,
+                                            bold: true,
+                                          ),
+                                        ),
+                                        Column(
+                                          children: <Widget>[
+                                            Container(
+                                              height: 30,
+                                              alignment: Alignment.centerLeft,
+                                              child: Row(
+                                                children: <Widget>[
+                                                  Icon(
+                                                    Icons.star_border,
+                                                    color:
+                                                        item.programGoalName !=
+                                                                null
+                                                            ? StrongrColors
+                                                                .black
+                                                            : Colors.grey,
+                                                  ),
+                                                  Container(
+                                                    padding: EdgeInsets.only(
+                                                        left: 10),
+                                                    child: StrongrText(
+                                                      item.programGoalName !=
+                                                              null
+                                                          ? item.programGoalName
+                                                          : "Aucun objectif",
+                                                      color:
+                                                          item.programGoalName !=
+                                                                  null
+                                                              ? StrongrColors
+                                                                  .black
+                                                              : Colors.grey,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Container(
+                                              height: 30,
+                                              alignment: Alignment.centerLeft,
+                                              child: Row(
+                                                children: <Widget>[
+                                                  Icon(
+                                                    Icons.calendar_today,
+                                                    color: int.parse(item
+                                                                    .sessionCount) >
+                                                                0 ||
+                                                            int.parse(item
+                                                                    .sessionCount) !=
+                                                                null
+                                                        ? StrongrColors.black
+                                                        : Colors.grey,
+                                                  ),
+                                                  Container(
+                                                    padding: EdgeInsets.only(
+                                                        left: 10),
+                                                    child: StrongrText(
+                                                      int.parse(item.sessionCount) >
+                                                                  0 ||
+                                                              int.parse(item
+                                                                      .sessionCount) !=
+                                                                  null
+                                                          ? int.parse(item
+                                                                      .sessionCount) <=
+                                                                  1
+                                                              ? item.sessionCount +
+                                                                  " séance"
+                                                              : item.sessionCount +
+                                                                  " séance"
+                                                          : "Aucune séance",
+                                                      color: int.parse(item
+                                                                      .sessionCount) >
+                                                                  0 ||
+                                                              int.parse(item
+                                                                      .sessionCount) !=
+                                                                  null
+                                                          ? StrongrColors.black
+                                                          : Colors.grey,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Container(
+                                              height: 30,
+                                              alignment: Alignment.centerLeft,
+                                              child: Row(
+                                                children: <Widget>[
+                                                  Icon(
+                                                    Icons.show_chart,
+                                                    color: item.tonnage != null
+                                                        ? StrongrColors.black
+                                                        : Colors.grey,
+                                                  ),
+                                                  Container(
+                                                    padding: EdgeInsets.only(
+                                                        left: 10),
+                                                    child: StrongrText(
+                                                      item.tonnage != null
+                                                          ? "Tonnage de " +
+                                                              item.tonnage
+                                                                  .toString() +
+                                                              "kg"
+                                                          : "Tonnage non calculé",
+                                                      color: item.tonnage !=
+                                                              null
+                                                          ? StrongrColors.black
+                                                          : Colors.grey,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                Column(
-                                  children: <Widget>[
-                                    Container(
-                                      height: 30,
-                                      alignment: Alignment.centerLeft,
-                                      child: Row(
-                                        children: <Widget>[
-                                          Icon(Icons.star_border),
-                                          Container(
-                                            padding: EdgeInsets.only(left: 10),
-                                            child: StrongrText(
-                                              "Prise de masse",
-                                            ),
-                                          ),
-                                        ],
+                                  Container(
+                                    padding:
+                                        EdgeInsets.only(bottom: 10, right: 10),
+                                    alignment: Alignment.bottomRight,
+                                    child: Container(
+                                      width: 35,
+                                      height: 35,
+                                      child: FloatingActionButton(
+                                        elevation: 0,
+                                        heroTag: 'program_play_fab_' +
+                                            item.id.toString(),
+                                        tooltip: "Démarrer",
+                                        backgroundColor: StrongrColors.blue,
+                                        child: Icon(
+                                          Icons.play_arrow,
+                                          color: Colors.white,
+                                        ),
+                                        onPressed: () {},
                                       ),
                                     ),
-                                    Container(
-                                      height: 30,
-                                      alignment: Alignment.centerLeft,
-                                      child: Row(
-                                        children: <Widget>[
-                                          Icon(Icons.calendar_today),
-                                          Container(
-                                            padding: EdgeInsets.only(left: 10),
-                                            child: StrongrText(
-                                              "5 séances",
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Container(
-                                      height: 30,
-                                      alignment: Alignment.centerLeft,
-                                      child: Row(
-                                        children: <Widget>[
-                                          Icon(
-                                            Icons.show_chart,
-                                            color: Colors.grey,
-                                          ),
-                                          Container(
-                                            padding: EdgeInsets.only(left: 10),
-                                            child: StrongrText(
-                                              "Tonnage non calculé",
-                                              color: Colors.grey,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            padding: EdgeInsets.only(bottom: 10, right: 10),
-                            alignment: Alignment.bottomRight,
-                            child: Container(
-                              width: 35,
-                              height: 35,
-                              child: FloatingActionButton(
-                                elevation: 0,
-                                heroTag: 'program_play_fab_' + i.toString(),
-                                tooltip: "Démarrer",
-                                backgroundColor: DateTime.now().weekday % 3 != 0
-                                    ? StrongrColors.blue
-                                    : Colors.grey,
-                                child: Icon(
-                                  Icons.play_arrow,
-                                  color: Colors.white,
-                                ),
-                                onPressed: DateTime.now().weekday % 3 != 0
-                                    ? () {}
-                                    : null,
+                                  ),
+                                ],
                               ),
+                              onPressed: () {
+                                Navigator.pushNamed(
+                                  context,
+                                  PROGRAM_ROUTE,
+                                  arguments: ProgramView(
+                                    id: item.id.toString(),
+                                    name: item.name,
+                                    programGoalName: item.programGoalName,
+                                  ),
+                                );
+                              },
                             ),
-                          ),
                         ],
+                      );
+
+                    // return Center(child: StrongrText(snapshot.data.toString()),);
+                  } else if (snapshot.hasError) {
+                    return Text(snapshot.error, textAlign: TextAlign.center);
+                  } else
+                    return Container(
+                      alignment: Alignment.center,
+                      height: ScreenSize.height(context) / 1.75,
+                      child: CircularProgressIndicator(
+                        valueColor:
+                            AlwaysStoppedAnimation<Color>(StrongrColors.blue),
                       ),
-                      onPressed: () {
-                        Navigator.pushNamed(
-                          context,
-                          PROGRAM_ROUTE,
-                          arguments: ProgramView(
-                            id: i.toString(),
-                            name: "Programme perso. " + i.toString(),
-                          ),
-                        );
-                      },
-                    ),
-                ],
+                    );
+                },
               ),
             ),
           ),

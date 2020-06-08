@@ -6,7 +6,7 @@ const repository = {};
 repository.readProgram = async (req) => {
     let program_list = []
     let sql = `
-        SELECT p.id_program, p.name, pg.name as program_goal_name, COUNT(ps.id_program) as session_count, 0 as tonnage
+        SELECT p.id_program, p.name, pg.name as program_goal_name, COUNT(ps.id_program) as session_count, null as tonnage
         FROM _program p
         JOIN _program_goal pg ON pg.id_program_goal = p.id_program_goal
         JOIN _program_session ps ON ps.id_program = p.id_program
