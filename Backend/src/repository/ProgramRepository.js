@@ -67,7 +67,7 @@ repository.readDetailProgram = async (req) => {
 repository.readSessionDetailProgram = async (req) => {
 
     let sql = `
-    SELECT s.id_session as id, s.place, s.name, st.name as session_type_name,  
+    SELECT s.id_session as id, ps.place, s.name, st.name as session_type_name,  
     (
         SELECT COUNT(se.id_session) as exercise_count  
         FROM _session s

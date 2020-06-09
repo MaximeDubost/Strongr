@@ -60,11 +60,11 @@ router.delete("/session/:id_session", middleware.checkAuth, SessionController.de
 /**
  * Program
  */
-router.post("/program", middleware.checkAuth, null); // TODO
+//router.post("/program", middleware.checkAuth, null); // TODO
 router.get("/programs", middleware.checkAuth, ProgramController.readProgram);
 router.get("/program/:id_program", middleware.checkAuth, ProgramController.readDetailProgram);
-router.put("/session/:id_session", middleware.checkAuth, null); // TODO
-router.delete("/session/:id_session", middleware.checkAuth, null); // TODO
+//router.put("/session/:id_session", middleware.checkAuth, null); // TODO
+//router.delete("/session/:id_session", middleware.checkAuth, null); // TODO
 
 /**
  * Program Goal
