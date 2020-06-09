@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:strongr/models/muscle.dart';
-import 'package:strongr/models/AppExercise.dart';
-import 'package:strongr/services/app_exercise_service.dart';
+import 'package:strongr/models/ProgramPreview.dart';
+import 'package:strongr/services/program_service.dart';
 import 'package:strongr/utils/app_exercises_filters.dart';
 import 'package:strongr/utils/diacritics.dart';
 import 'package:strongr/utils/routing_constants.dart';
@@ -28,45 +27,26 @@ class ProgramsView extends StatefulWidget {
 
 class _ProgramsViewState extends State<ProgramsView> {
   TextEditingController searchbarController;
-  Future<List<AppExercise>> futureAppExercisesList;
-  bool sortedByAlpha;
+  Future<List<ProgramPreview>> futurePrograms;
+  bool sortedByRecent;
   List<String> popupMenuItems;
 
   @override
   void initState() {
     searchbarController = TextEditingController(text: "");
-    futureAppExercisesList = AppExerciseService.getAppExercises();
-    sortedByAlpha = true;
+    futurePrograms = ProgramService.getPrograms();
+    sortedByRecent = true;
     popupMenuItems = ["Filtres", "Créer"];
     super.initState();
   }
 
-  /// Affiche une [muscleList] sous forme de chaîne de charactères.
-  String displayMuscleListToString(List muscleList) {
-    String result = "";
-    for (final item in muscleList) {
-      result += item.name;
-      if (muscleList.indexOf(item) != muscleList.length - 1) result += ", ";
-    }
-    return result;
-  }
-
-  /// Méthode vérifiant si un [muscleName] est compris dans la [muscleList] d'un exercice.
-  bool muscleListContains({
-    @required List<Muscle> muscleList,
-    @required String muscleName,
-  }) {
-    for (final item in muscleList) if (item.name == muscleName) return true;
-    return false;
-  }
-
-  /// Retourne le nombre de résultats d'une liste d'[appExercises] après recherche et filtres.
-  int resultCount(List<AppExercise> appExercises) {
+  /// Retourne le nombre de résultats d'une liste de [programs] après recherche et filtres.
+  int resultCount(List<ProgramPreview> programs) {
     int result = 0;
-    for (final appExercise in appExercises)
+    for (final appExercise in programs)
       if ((searchbarController.text == "" ||
               Diacritics.remove(
-                appExercises[appExercises.indexOf(appExercise)]
+                programs[programs.indexOf(appExercise)]
                     .name
                     .toString()
                     .toLowerCase(),
@@ -74,38 +54,39 @@ class _ProgramsViewState extends State<ProgramsView> {
                 Diacritics.remove(
                   searchbarController.text.toLowerCase(),
                 ),
-              )) &&
-          (AppExercisesFilters.areAllDisabled() ||
-              compareMusclesWithFilters(
-                appExercise.muscleList,
-                AppExercisesFilters.allEnabledFiltersToList(),
-              ))) result++;
+              ))
+          //     &&
+          // (AppExercisesFilters.areAllDisabled() ||
+          //     compareMusclesWithFilters(
+          //       appExercise.muscleList,
+          //       AppExercisesFilters.allEnabledFiltersToList(),
+          //     ))
+          ) result++;
     return result;
   }
 
-  /// Affiche une liste d'[appExercises].
-  Widget buildAppExercisesList(List<AppExercise> appExercises) {
+  /// Affiche une liste d'[exercises].
+  Widget buildProgramsList(List<ProgramPreview> programs) {
     return Column(
       verticalDirection:
-          sortedByAlpha ? VerticalDirection.down : VerticalDirection.up,
+          sortedByRecent ? VerticalDirection.down : VerticalDirection.up,
       children: <Widget>[
-        for (final appExercise in appExercises)
+        for (final item in programs)
           if ((searchbarController.text == "" ||
-                  Diacritics.remove(
-                    appExercises[appExercises.indexOf(appExercise)]
-                        .name
-                        .toString()
-                        .toLowerCase(),
-                  ).contains(
-                    Diacritics.remove(
-                      searchbarController.text.toLowerCase(),
-                    ),
-                  )) &&
-              (AppExercisesFilters.areAllDisabled() ||
-                  compareMusclesWithFilters(
-                    appExercise.muscleList,
-                    AppExercisesFilters.allEnabledFiltersToList(),
-                  )))
+              Diacritics.remove(
+                programs[programs.indexOf(item)].name.toString().toLowerCase(),
+              ).contains(
+                Diacritics.remove(
+                  searchbarController.text.toLowerCase(),
+                ),
+              ))
+          //     &&
+          // (AppExercisesFilters.areAllDisabled() ||
+          //     compareMusclesWithFilters(
+          //       appExercise.muscleList,
+          //       AppExercisesFilters.allEnabledFiltersToList(),
+          //     ))
+          )
             Container(
               padding: EdgeInsets.all(5),
               height: 140,
@@ -122,9 +103,7 @@ class _ProgramsViewState extends State<ProgramsView> {
                           Container(
                             alignment: Alignment.centerLeft,
                             child: StrongrText(
-                              "Programme perso. " +
-                                  (appExercises.indexOf(appExercise) + 1)
-                                      .toString(),
+                              item.name,
                               bold: true,
                             ),
                           ),
@@ -132,11 +111,21 @@ class _ProgramsViewState extends State<ProgramsView> {
                             alignment: Alignment.centerLeft,
                             child: Row(
                               children: <Widget>[
-                                Icon(Icons.star_border),
+                                Icon(
+                                  Icons.star_border,
+                                  color: item.programGoalName != null
+                                      ? StrongrColors.black
+                                      : Colors.grey,
+                                ),
                                 Container(
                                   padding: EdgeInsets.only(left: 10),
                                   child: StrongrText(
-                                    "Prise de masse",
+                                    item.programGoalName != null
+                                        ? item.programGoalName
+                                        : "Aucun objectif",
+                                    color: item.programGoalName != null
+                                        ? StrongrColors.black
+                                        : Colors.grey,
                                   ),
                                 ),
                               ],
@@ -146,11 +135,26 @@ class _ProgramsViewState extends State<ProgramsView> {
                             alignment: Alignment.centerLeft,
                             child: Row(
                               children: <Widget>[
-                                Icon(Icons.calendar_today),
+                                Icon(
+                                  Icons.calendar_today,
+                                  color: int.parse(item.sessionCount) > 0 ||
+                                          int.parse(item.sessionCount) != null
+                                      ? StrongrColors.black
+                                      : Colors.grey,
+                                ),
                                 Container(
                                   padding: EdgeInsets.only(left: 10),
                                   child: StrongrText(
-                                    "5 séances",
+                                    int.parse(item.sessionCount) > 0 ||
+                                            int.parse(item.sessionCount) != null
+                                        ? int.parse(item.sessionCount) <= 1
+                                            ? item.sessionCount + " séance"
+                                            : item.sessionCount + " séances"
+                                        : "Aucune séance",
+                                    color: int.parse(item.sessionCount) > 0 ||
+                                            int.parse(item.sessionCount) != null
+                                        ? StrongrColors.black
+                                        : Colors.grey,
                                   ),
                                 ),
                               ],
@@ -162,13 +166,21 @@ class _ProgramsViewState extends State<ProgramsView> {
                               children: <Widget>[
                                 Icon(
                                   Icons.show_chart,
-                                  color: Colors.grey,
+                                  color: item.tonnage != null
+                                      ? StrongrColors.black
+                                      : Colors.grey,
                                 ),
                                 Container(
                                   padding: EdgeInsets.only(left: 10),
                                   child: StrongrText(
-                                    "Tonnage non calculé",
-                                    color: Colors.grey,
+                                    item.tonnage != null
+                                        ? "Tonnage de " +
+                                            item.tonnage.toString() +
+                                            "kg"
+                                        : "Tonnage non calculé",
+                                    color: item.tonnage != null
+                                        ? StrongrColors.black
+                                        : Colors.grey,
                                   ),
                                 ),
                               ],
@@ -185,9 +197,7 @@ class _ProgramsViewState extends State<ProgramsView> {
                         height: 35,
                         child: FloatingActionButton(
                           elevation: 0,
-                          heroTag: 'exercise_play_fab_' +
-                              (appExercises.indexOf(appExercise) + 1)
-                                  .toString(),
+                          heroTag: 'program_play_fab_' + item.id.toString(),
                           tooltip: "Démarrer",
                           backgroundColor: StrongrColors.blue,
                           child: Icon(
@@ -205,9 +215,9 @@ class _ProgramsViewState extends State<ProgramsView> {
                     context,
                     PROGRAM_ROUTE,
                     arguments: ProgramView(
-                      id: (appExercises.indexOf(appExercise) + 1).toString(),
-                      name: "Programme perso. " +
-                          (appExercises.indexOf(appExercise) + 1).toString(),
+                      id: item.id.toString(),
+                      name: item.name,
+                      programGoalName: item.programGoalName,
                     ),
                   );
                 },
@@ -215,14 +225,6 @@ class _ProgramsViewState extends State<ProgramsView> {
             ),
       ],
     );
-  }
-
-  /// Compare une liste de muscles [muscles] avec une liste de filtres [filters].
-  /// Retourne true s'il y a au moins une correspondance parmis leurs éléments, false sinon.
-  bool compareMusclesWithFilters(List<Muscle> muscles, List<String> filters) {
-    for (final muscle in muscles)
-      for (final filter in filters) if (muscle.name == filter) return true;
-    return false;
   }
 
   /// Actualise la page.
@@ -366,22 +368,28 @@ class _ProgramsViewState extends State<ProgramsView> {
                       alignment: Alignment.centerLeft,
                       child: Container(
                         margin: EdgeInsets.only(left: 25),
-                        width: 55,
-                        child: InkWell(
-                          onTap: () =>
-                              setState(() => sortedByAlpha = !sortedByAlpha),
+                        width: 70,
+                        child: RawMaterialButton(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          onPressed: () =>
+                              setState(() => sortedByRecent = !sortedByRecent),
                           child: Row(
                             children: <Widget>[
                               Icon(
-                                sortedByAlpha
+                                sortedByRecent
                                     ? Icons.keyboard_arrow_down
                                     : Icons.keyboard_arrow_up,
                                 color: Colors.black87,
                               ),
-                              StrongrText(
-                                sortedByAlpha ? "A-Z" : "Z-A",
-                                color: Colors.black87,
-                                size: 14,
+                              Container(
+                                // color: Colors.red,
+                                child: StrongrText(
+                                  sortedByRecent ? "Récent" : "Ancien",
+                                  color: Colors.black87,
+                                  size: 14,
+                                ),
                               ),
                             ],
                           ),
@@ -392,7 +400,7 @@ class _ProgramsViewState extends State<ProgramsView> {
                 ),
               ),
               FutureBuilder(
-                future: futureAppExercisesList,
+                future: futurePrograms,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return Column(
@@ -410,13 +418,13 @@ class _ProgramsViewState extends State<ProgramsView> {
                               ),
                         resultCount(snapshot.data) != 0
                             ? Container(
-                                child: buildAppExercisesList(snapshot.data),
+                                child: buildProgramsList(snapshot.data),
                               )
                             : Container(
                                 height: ScreenSize.height(context) / 1.75,
                                 child: Center(
                                   child: StrongrText(
-                                    "Aucune programme trouvé",
+                                    "Aucun programme trouvé",
                                     color: Colors.grey,
                                   ),
                                 ),

@@ -367,15 +367,16 @@ class _ExercisesViewState extends State<ExercisesView> {
                         endIndent: ScreenSize.width(context) / 4,
                       ),
                     ),
-                    Container(
-                      // color: Colors.blue,
+                    Align(
                       alignment: Alignment.centerLeft,
                       child: Container(
-                        // color: Colors.green,
                         margin: EdgeInsets.only(left: 25),
                         width: 70,
-                        child: InkWell(
-                          onTap: () =>
+                        child: RawMaterialButton(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          onPressed: () =>
                               setState(() => sortedByRecent = !sortedByRecent),
                           child: Row(
                             children: <Widget>[

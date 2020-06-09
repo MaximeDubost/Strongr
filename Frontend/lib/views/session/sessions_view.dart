@@ -40,7 +40,7 @@ class _SessionsViewState extends State<SessionsView> {
     super.initState();
   }
 
-  /// Retourne le nombre de résultats d'une liste d'[exercises] après recherche et filtres.
+  /// Retourne le nombre de résultats d'une liste de [sessions] après recherche et filtres.
   int resultCount(List<SessionPreview> sessions) {
     int result = 0;
     for (final appExercise in sessions)
@@ -66,15 +66,15 @@ class _SessionsViewState extends State<SessionsView> {
   }
 
   /// Affiche une liste d'[exercises].
-  Widget buildExercisesList(List<SessionPreview> exercises) {
+  Widget buildSessionsList(List<SessionPreview> sessions) {
     return Column(
       verticalDirection:
           sortedByRecent ? VerticalDirection.down : VerticalDirection.up,
       children: <Widget>[
-        for (final item in exercises)
+        for (final item in sessions)
           if ((searchbarController.text == "" ||
               Diacritics.remove(
-                exercises[exercises.indexOf(item)]
+                sessions[sessions.indexOf(item)]
                     .name
                     .toString()
                     .toLowerCase(),
@@ -125,7 +125,7 @@ class _SessionsViewState extends State<SessionsView> {
                                   child: StrongrText(
                                     item.sessionTypeName != null
                                         ? item.sessionTypeName
-                                        : "Aucun type de séance",
+                                        : "Aucun type",
                                     color: item.sessionTypeName != null
                                         ? StrongrColors.black
                                         : Colors.grey,
@@ -371,9 +371,12 @@ class _SessionsViewState extends State<SessionsView> {
                       alignment: Alignment.centerLeft,
                       child: Container(
                         margin: EdgeInsets.only(left: 25),
-                        width: 55,
-                        child: InkWell(
-                          onTap: () =>
+                        width: 70,
+                        child: RawMaterialButton(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          onPressed: () =>
                               setState(() => sortedByRecent = !sortedByRecent),
                           child: Row(
                             children: <Widget>[
@@ -383,10 +386,13 @@ class _SessionsViewState extends State<SessionsView> {
                                     : Icons.keyboard_arrow_up,
                                 color: Colors.black87,
                               ),
-                              StrongrText(
-                                sortedByRecent ? "A-Z" : "Z-A",
-                                color: Colors.black87,
-                                size: 14,
+                              Container(
+                                // color: Colors.red,
+                                child: StrongrText(
+                                  sortedByRecent ? "Récent" : "Ancien",
+                                  color: Colors.black87,
+                                  size: 14,
+                                ),
                               ),
                             ],
                           ),
@@ -409,19 +415,19 @@ class _SessionsViewState extends State<SessionsView> {
                                 alignment: Alignment.center,
                                 height: ScreenSize.height(context) / 1.75,
                                 child: StrongrText(
-                                  "Aucun exercice à afficher",
+                                  "Aucune séance à afficher",
                                   color: Colors.grey,
                                 ),
                               ),
                         resultCount(snapshot.data) != 0 || snapshot.data.length == 0
                             ? Container(
-                                child: buildExercisesList(snapshot.data),
+                                child: buildSessionsList(snapshot.data),
                               )
                             : Container(
                                 height: ScreenSize.height(context) / 1.75,
                                 child: Center(
                                   child: StrongrText(
-                                    "Aucun exercice trouvé",
+                                    "Aucune séance trouvée",
                                     color: Colors.grey,
                                   ),
                                 ),

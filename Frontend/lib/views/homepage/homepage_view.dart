@@ -156,7 +156,7 @@ class _HomepageViewState extends State<HomepageView> {
             size: 26.0,
           ),
           title: Text(
-            'Stratistiques',
+            'Statistiques',
             style: TextStyle(
               color: currentPage != 2 ? Colors.white54 : Colors.white,
             ),

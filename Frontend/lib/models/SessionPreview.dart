@@ -2,6 +2,7 @@ import 'dart:convert';
 
 class SessionPreview {
   int id;
+  int place;
   String name;
   String sessionTypeName;
   String exerciseCount;
@@ -9,6 +10,7 @@ class SessionPreview {
 
   SessionPreview({
     this.id,
+    this.place,
     this.name,
     this.sessionTypeName,
     this.exerciseCount,
@@ -17,6 +19,7 @@ class SessionPreview {
 
   SessionPreview copyWith({
     int id,
+    int place,
     String name,
     String sessionTypeName,
     String exerciseCount,
@@ -24,6 +27,7 @@ class SessionPreview {
   }) {
     return SessionPreview(
       id: id ?? this.id,
+      place: place ?? this.place,
       name: name ?? this.name,
       sessionTypeName: sessionTypeName ?? this.sessionTypeName,
       exerciseCount: exerciseCount ?? this.exerciseCount,
@@ -34,6 +38,7 @@ class SessionPreview {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
+      'place': place,
       'name': name,
       'sessionTypeName': sessionTypeName,
       'exerciseCount': exerciseCount,
@@ -46,6 +51,7 @@ class SessionPreview {
   
     return SessionPreview(
       id: map['id'],
+      place: map['place'],
       name: map['name'],
       sessionTypeName: map['session_type_name'],
       exerciseCount: map['exercise_count'],
@@ -59,7 +65,7 @@ class SessionPreview {
 
   @override
   String toString() {
-    return 'SessionPreview(id: $id, name: $name, sessionTypeName: $sessionTypeName, exerciseCount: $exerciseCount, tonnage: $tonnage)';
+    return 'SessionPreview(id: $id, place: $place, name: $name, sessionTypeName: $sessionTypeName, exerciseCount: $exerciseCount, tonnage: $tonnage)';
   }
 
   @override
@@ -68,6 +74,7 @@ class SessionPreview {
   
     return o is SessionPreview &&
       o.id == id &&
+      o.place == place &&
       o.name == name &&
       o.sessionTypeName == sessionTypeName &&
       o.exerciseCount == exerciseCount &&
@@ -77,6 +84,7 @@ class SessionPreview {
   @override
   int get hashCode {
     return id.hashCode ^
+      place.hashCode ^
       name.hashCode ^
       sessionTypeName.hashCode ^
       exerciseCount.hashCode ^
