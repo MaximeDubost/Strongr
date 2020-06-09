@@ -74,7 +74,7 @@ repository.deleteExercise = async (req) => {
 repository.detailExercise = async (req) => {
     let set_list = []
     let sql = `
-    SELECT id_set, 1 as place, repetitions_count, rest_time, null as tonnage
+    SELECT id_set, place, repetitions_count, rest_time, null as tonnage
     FROM _set s 
     WHERE s.id_exercise = $1;
     `

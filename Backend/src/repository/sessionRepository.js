@@ -33,9 +33,10 @@ repository.getSessions = async (req) => {
 repository.getSessionDetail = async (req) => {
     let exercises_list = []
     let sql = `
-    SELECT s.id_session, st.id_session_type, s.name as session_name, st.name as session_type_name, s.creation_date, s.last_update
+    SELECT s.id_session, st.id_session_type, se.place as place, s.name as session_name, st.name as session_type_name, s.creation_date, s.last_update
     FROM _session s
     JOIN _session_type st ON s.id_session_type = st.id_session_type
+    JOIN _session_exercise se ON s.id_session = se.id_session
     WHERE s.id_user = $1 AND s.id_session = $2
     `
     try {
@@ -44,18 +45,20 @@ repository.getSessionDetail = async (req) => {
         let sessionType = new SessionType(resultSessionType.rows[0].id_session_type, resultSessionType.rows[0].session_type_name)
 
         sql = `
-        SELECT e.id_exercise, e.name as name_exercise, e.place, ae.name as app_exercise_name, COUNT(sett.id_set) as set_count, null as tonnage 
+        SELECT e.id_exercise, se.place, e.name as name_exercise, ae.name as app_exercise_name, COUNT(sett.id_set) as set_count, null as tonnage 
         FROM _session s
         JOIN _session_exercise se on s.id_session = se.id_session 
         JOIN _exercise e on se.id_exercise = e.id_exercise 
         JOIN _app_exercise ae on e.id_app_exercise = ae.id_app_exercise
         JOIN _set sett ON e.id_exercise = sett.id_exercise
         WHERE s.id_user = $1 and s.id_session = $2
-        GROUP BY e.id_exercise, ae.name, e.place, e.name;
+        GROUP BY e.id_exercise, se.place, ae.name, e.name
+        ORDER BY se.place;
         `
         let resultExercises = await clt.query(sql, [req.user.id, req.params.id_session])
         if (resultExercises.rowCount > 0) {
             resultExercises.rows.map(row => {
+                console.log("ROW : " + row)
                 let exercise = new ExerciseSession(row.id_exercise, row.place, row.name_exercise, row.app_exercise_name, row.set_count, row.tonnage)
                 exercises_list.push(exercise)
             })

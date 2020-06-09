@@ -1,20 +1,15 @@
--- INSERT INTO public._user (id_user, email, password, firstname, lastname, phonenumber, birthdate, username, weight, signeddate, recoverycode)
--- VALUES
--- (
--- 	1, 
--- 	'strongr@test.org', 
--- 	'test', 
--- 	'Joe', 
--- 	'Laporte', 
--- 	'01 37 86 70 61 12', 
--- 	'1970-01-01 00:00:00', 
--- 	'Username', 
--- 	75, 
--- 	NOW(), 
--- 	'azerty'
--- );
+--
+-- DATABASE: StrongrDB
+-- VERSION: 3.1
+-- DATE: 09/06/2020
+--
 
-INSERT INTO public._muscle(name)
+-- 
+-- Tables
+--
+
+-- Muscle --
+INSERT INTO _muscle (name)
 VALUES
 	('Abdominaux'),
 	('Avant-bras'),
@@ -27,213 +22,490 @@ VALUES
 	('Quadriceps'),
 	('Triceps');
 
-INSERT INTO public._app_exercise(name)
-VALUES 
+-- AppExercise --
+INSERT INTO _app_exercise (name)
+VALUES
+	('Back Squat'),
 	('Crunch'),
-	('Crunch à la poulie'),
-	('Curls à la barre'),
-	('Curls haltères'),
-	('Curls poulie'),
-	('Développés à la barre'),
-	('Développés couché'),
-	('Développés décliné'),
-	('Développés épaules'),
-	('Développés incliné'),
+	('Curls'),
+	('Développés épaules/militaire'),
+	('Développés "pecs"'),
 	('Dips'),
-	('Dips entre deux bancs'),
-	('Écartés haltères'),
-	('Écartés poulies'),
-	('Élévation à 45°'),
-	('Élévation buste penché'),
+	('Écartés "pecs"'),
 	('Élévation frontale'),
-	('Élévation latérale'),
 	('Élévations frontales incliné'),
-	('Extension à la poulie'),
-	('Extension assis'),
-	('Extension couché'),
+	('Élévation latérale'),
+	('Extension à la poulie "triceps"'),
+	('Extension assis "triceps"'),
+	('Extension couché/bar au front'),
 	('Extension lombaire'),
+	('Extension mollets assis'),
+	('Extension mollets debout'),
+	('Front Squat'),
 	('Fentes'),
-	('Flexion aux haltères'),
-	('Flexion barre pronation'),
-	('Flexion barre supination'),
+	('Fentes sautées'),
+	('Flexion aux haltères "Avant-bras"'),
+	('Flexion barre pronation "Avant-bras"'),
+	('Flexion barre supination "Avant-bras"'),
 	('Flexions latérales'),
 	('Gainage'),
 	('Good morning'),
 	('Hack squat'),
 	('Kickback'),
-	('Leg curl assis'),
+	('Leg curl'),
 	('Leg curl debout'),
 	('Leg extension'),
-	('Mollets à la presse'),
-	('Mollets assis'),
-	('Mollets debout'),
-	('Montée sur banc'),
-	('Oiseau à la poulie'),
+	('Mollets à la presse/mollets chameau'),
+	('Montées sur banc'),
+	('Oiseau "épaules"'),
 	('Pec-deck'),
 	('Pompe'),
 	('Presse à cuisse'),
 	('Pullover'),
+	('Pistol Squat'),
 	('Relevés de jambes'),
 	('Rotation avec bâton'),
 	('Rowing'),
-	('Rowing assis'),
-	('Rowing barre T'),
-	('Rowing deux haltères'),
-	('Rowing haltère'),
+	('Rowing unilatéral'),
 	('Shrug'),
-	('Shrug incliné haltères'),
 	('Sissy squat'),
 	('Soulevé de terre'),
 	('Soulevé de terre jambes tendues'),
 	('Squat'),
-	('Squat barre guidée'),
+	('Squat Bulgare'),
+	('Squat du prisonnier'),
+	('Squat sautées'),
 	('Tirage horizontal'),
 	('Tirage horizontal haut'),
 	('Tirage menton'),
-	('Tirage verticaux'),
+	('Tirage vertical'),
+	('Tirage nuque'),
 	('Traction');
 
-INSERT INTO public._app_exercise_muscle(id_app_exercise, id_muscle)
+-- Equipment --
+INSERT INTO _equipment (name)
 VALUES
-	(1,	1),
-	(2,	1),
-	(3,	3),
-	(4,	3),
-	(5,	3),
-	(6,	10),
-	(7,	8),
-	(8, 8),
-	(9, 5),
-	(10, 8),
-	(11, 10),
-	(12, 10),
-	(13, 8),
-	(14, 8),
-	(15, 7),
-	(16, 5),
-	(17, 5),
-	(18, 5),
-	(19, 5),
-	(20, 10),
-	(21, 10),
-	(22, 10),
-	(23, 4),
-	(24, 6),
-	(25, 2),
-	(26, 2),
-	(27, 2),
-	(28, 1),
-	(29, 1),
-	(30, 6),
-	(31, 9),
-	(32, 10),
-	(33, 6),
-	(34, 6),
-	(35, 9),
-	(36, 7),
-	(37, 7),
-	(38, 7),
-	(39, 9),
-	(40, 5),
-	(41, 8),
-	(42, 8),
-	(43, 9),
-	(44, 4),
-	(45, 1),
-	(46, 1),
-	(47, 4),
-	(48, 4),
-	(49, 4),
-	(50, 4),
-	(51, 4),
-	(52, 4),
-	(53, 4),
-	(54, 9),
-	(55, 4),
-	(56, 6),
-	(57, 9),
-	(58, 9),
-	(59, 4),
-	(60, 4),
-	(61, 5),
-	(62, 4),
-	(63, 4);
+	('Banc 90° (position "chaise")'),
+	('Banc à lombaire'),
+	('Banc couché'),
+	('Banc incliné ~35°'),
+	('Barre EZ'),
+	('Barre de traction'),
+	('Barre olympique'),
+	('Barres parallèles'),
+	('Combiné Pec/Delt'),
+	('Corde à sauter'),
+	('Développé épaules convergent'),
+	('Développé horizontal convergent'),
+	('Développé couché'),
+	('Développé décliné'),
+	('Développé incliné'),
+	('Dips assis'),
+	('Élastique'),
+	('Gilet lesté'),
+	('Hack squat'),
+	('Haltère(s)'),
+	('Ischios couché'),
+	('Kettlebell'),
+	('Machine à abdominaux'),
+	('Machine à abducteurs'),
+	('Machine à adducteurs'),
+	('Machine à triceps'),
+	('Poulie hauteur d''oeil'),
+	('Poulie position basse'),
+	('Poulie position haute'),
+	('Poulie vis à vis'),
+	('Power Rack'),
+	('Presse à cuisses'),
+	('Presse à fessiers'),
+	('Presse à ischios'),
+	('Presse à jambes'),
+	('Presse à quadriceps'),
+	('Presse à mollets'),
+	('Smith Machine'),
+	('Sissy Squat Machine'),
+	('T-bar inclinée'),
+	('Tirage biceps'),
+	('Tirage horizontal'),
+	('Tirage vertical');
 
-INSERT INTO public._session_type(name, description)
-VALUES 
+-- SessionType --
+INSERT INTO _session_type (name, description)
+VALUES
 	('Split body', 'Le split body met la priorité sur l''intensité du training et non sur la fréquence d''entrainement, il s''agit d''entraîner chaque muscle une unique fois par semaine, on va donc pouvoir aller à l''échec et utiliser des techniques d''intensification. Il faut cependant un bon niveau pour employer ces méthodes d''intensification de manière efficace.
 
-	En compensant la réduction de la fréquence d''entrainement par l''intensité on peut s''assurer des gains aussi élevés qu''avec les autres méthodes.
-	Les personnes ayant une mauvaise récupération doivent donc éviter le full body et préférer le split body, cependant si vous n''aimez pas le split ou n''arrivez pas à mettre beaucoup d''intensité en une séance il vaut mieux opter pour du half body ou du fullbody.'),
+En compensant la réduction de la fréquence d''entrainement par l''intensité on peut s''assurer des gains aussi élevés qu''avec les autres méthodes.
+Les personnes ayant une mauvaise récupération doivent donc éviter le full body et préférer le split body, cependant si vous n''aimez pas le split ou n''arrivez pas à mettre beaucoup d''intensité en une séance il vaut mieux opter pour du half body ou du fullbody.'),
 	('Half body', 'Le half body consiste quant à lui à entraîner le haut et le bas du corps séparément, en général 2 fois chacun par semaine. On va donc pouvoir mettre plus d''intensité qu''en full body, car les différentes parties du corps auront un peu plus de temps pour récupérer.
 
-	Les personnes ayant une mauvaise récupération peuvent entraîner chaque moitié du corps tous les 5 jours, ce qui leurs permet de garder une bonne intensité tout en favorisant leur récupération.'),
+Les personnes ayant une mauvaise récupération peuvent entraîner chaque moitié du corps tous les 5 jours, ce qui leurs permet de garder une bonne intensité tout en favorisant leur récupération.'),
 	('Full body', 'Le full body est conseillé aux débutants en musculation car la répétition fréquente des exercices leur permet une adaptation nerveuse ainsi qu''un apprentissage des mouvements plus rapide. Il n''est cependant pas réservé qu''aux débutants, car ils ne peuvent pas mettre beaucoup d''intensité dans leurs séances, ce qui leur permet de travailler chaque muscle souvent.');
 
-
-INSERT INTO _equipment (name) 
-VALUES 
-	('Banc'),
-	('Presse horizontale'),
-	('V Squat'),
-	('Barre EZ'),
-	('Machine guidée, tirage vertical'),
-	('Machine guidée, tirage horizontal'),
-	('Machine guidée, presse épaule'),
-	('Barre de traction');
-
-INSERT INTO public._exercise(id_app_exercise, id_user, name, id_equipment, creation_date, last_update)
-VALUES 
-	(1, 1, 'Exercice 1', 1, NOW(), NOW()),
-	(1, 1, 'Exercice 2', 2, NOW() , NOW()),
-	(1, 1, 'Exercice 3', 3, NOW() , NOW()),
-	(1, 1, 'Exercice 4', null, NOW() , NOW()),
-	(1, 1, 'Exercice 5', null, NOW() , NOW()),
-	(1, 1, 'Exercice 6', null, NOW() , NOW());
-
-INSERT INTO _session (id_user, id_session_type, name, creation_date, last_update)
-VALUES 
-	(1, 1, 'Séance 1', NOW(), NOW()),
-	(1, 3, 'Séance 2', NOW(), NOW()),
-	(1, 2, 'Séance 3', NOW(), NOW()),
-	(1, null, 'Séance 4', NOW(), NOW()),
-	(1, null, 'Séance 5', NOW(), NOW()),
-	(1, null, 'Séance 6', NOW(), NOW());
-
-INSERT INTO _session_exercise (id_app_exercise, id_user, id_exercise, id_user_1, id_session)
-VALUES
-	(1, 1, 1, 1, 1),
-	(1, 1, 2, 1, 1),
-	(1, 1, 3, 1, 1),
-	(1, 1, 4, 1, 1),
-	(1, 1, 5, 1, 1),
-	(1, 1, 6, 1, 2);
-
-
+-- ProgramGoal --
 INSERT INTO _program_goal (name, description)
-VALUES 
-	('Program goal 1', 'Description goal 1'),
-	('Program goal 2', 'Description goal 2'),
-	('Program goal 3', 'Description goal 3'),
-	('Program goal 4', 'Description goal 4'),
-	('Program goal 5', 'Description goal 5');
-
-
-INSERT INTO _program (id_user, id_program_goal, name, creation_date, last_update)
-VALUES 
-	(1, 1, 'Programme 1', NOW(), NOW()),
-	(1, 1, 'Programme 2', NOW(), NOW()),
-	(1, 2, 'Programme 3', NOW(), NOW()),
-	(1, 3, 'Programme 4', NOW(), NOW()),
-	(1, 1, 'Programme 5', NOW(), NOW()),
-	(1, 4, 'Programme 6', NOW(), NOW());
-
-
-INSERT INTO _program_session (id_user, id_program, id_user_1, id_session)
 VALUES
-	(1, 1, 1, 1),
-	(1, 2, 1, 1),
-	(1, 3, 1, 1),
-	(1, 1, 1, 3),
-	(1, 2, 1, 2),
-	(1, 4, 1, 2);
+	('Gain de force', 'La force musculaire est la capacité du muscle à fournir une contraction intense pour exercer la tension la plus importante possible. Pour y parvenir, le corps va recruter le plus de fibres possible, et les soumettre à un influx nerveux très puissant (environ 120 hertz, contre 80 hertz pour une série classique), de manière à forcer chaque fibre à se contracter le plus fortement possible. Mais notez bien que nous n''utilisons jamais 100% de nos fibres musculaires. Seule une petite partie est sollicitée en temps normal, et une partie un peu plus grande lors du travail de force. On parle aussi de force maximale. La force maximale représente 100% de la force disponible, elle permet de faire une seule répétition du mouvement (on parle de 1RM). On parle d''entraînement de force si on utilise plus de 77% de notre force maximale pour l''entraînement (c''est-à-dire s''entraîner avec des poids de plus de 77 kg si le 1RM est de 100kg, donc si vous pouvez au maximum soulever 100 kg sur cet exercice, pour une seule série et une seule répétition ). A noter que si ce type d''entraînement est bon pour augmenter sa force, il l''est bien moins pour la masse … en tout cas de manière directe. Mais inclure de temps en temps ce type de travail permet de « réveiller » des fibres musculaires non utilisées et donc par la suite de les faire grossir. Donc cela revient à vous permettre de travailler un plus grand nombre de fibres musculaires, donc plus de gains potentiel lors de votre prise de muscle.'),
+	('Gain d''endurance', 'L''endurance est la capacité du muscle à résister à des efforts de longue durée. Le muscle déploie une force moyenne à faible, mais il est capable de maintenir cet effort sur une longue période. L''endurance se travaille en condition aérobie et se situe avec une intensité d''effort entre 20% et 60%. C''est un excellent moyen d''améliorer sa qualité musculaire et notamment l''aspect veineux du muscle, et sa capacité à apporter des nutriments tout en éliminant les déchets métaboliques. Ce type de travail est aussi une bonne source de congestion, favorise la récupération, la circulation sanguine... Incorporer régulièrement ce type de travail en endurance est donc très important car il vous permettra ensuite de tenir un peu plus longtemps sur votre travail de force, et donc de faire quelques répétitions supplémentaires, gages de futurs gains en masse !'),
+	('Gain d''explosivité', 'L''explosivité est la capacité à mobiliser ses très rapidement et intensivement. Style de travail conseillé: pliométrie.'),
+	('Brûleur de calories', 'https://www.espace-musculation.com/atomiser-1000-calories.html');
+
+-- Exercise --
+INSERT INTO _exercise (id_app_exercise, id_user, id_equipment, name, creation_date, last_update)
+VALUES
+	(1, 1, NULL, 'Exercice 1', NOW(), NOW()),
+	(2, 1, NULL, 'Exercice 2', NOW(), NOW()),
+	(3, 1, NULL, 'Exercice 3', NOW(), NOW()),
+	(4, 1, NULL, 'Exercice 4', NOW(), NOW()),
+	(5, 1, NULL, 'Exercice 5', NOW(), NOW()),
+	(6, 1, NULL, 'Exercice 6', NOW(), NOW());
+
+-- Session --
+INSERT INTO _session (id_user, id_session_type, name, creation_date, last_update)
+VALUES
+	(1, 1, 'Séance 1', NOW(), NOW()),
+	(1, 2, 'Séance 2', NOW(), NOW()),
+	(1, 3, 'Séance 3', NOW(), NOW());
+
+-- Program --
+INSERT INTO _program (id_user, id_program_goal, name, creation_date, last_update)
+VALUES
+	(1, 1, 'Programme 1', NOW(), NOW()),
+	(1, 2, 'Programme 2', NOW(), NOW()),
+	(1, 3, 'Programme 3', NOW(), NOW()),
+	(1, 4, 'Programme 4', NOW(), NOW());
+
+-- Set --
+INSERT INTO _set(id_user, id_exercise, id_app_exercise, place, repetitions_count, rest_time, expected_performance, realized_performance)
+VALUES
+	-- Exercise 1 --
+	(1, 1, 1, 1, 10, 60, NULL, NULL),
+	(1, 1, 1, 2, 10, 60, NULL, NULL),
+	(1, 1, 1, 3, 8, 90, NULL, NULL),
+	(1, 1, 1, 4, 8, 90, NULL, NULL),
+	-- Exercise 2 --
+	(1, 2, 2, 1, 8, 45, NULL, NULL),
+	(1, 2, 2, 2, 10, 60, NULL, NULL),
+	(1, 2, 2, 3, 12, 75, NULL, NULL),
+	-- Exercise 3 --
+	(1, 3, 3, 1, 12, 60, NULL, NULL),
+	(1, 3, 3, 2, 8, 60, NULL, NULL),
+	(1, 3, 3, 3, 4, 60, NULL, NULL),
+	(1, 3, 3, 4, 8, 60, NULL, NULL),
+	(1, 3, 3, 5, 12, 60, NULL, NULL),
+	-- Exercise 4 --
+	(1, 4, 4, 1, 16, 45, NULL, NULL),
+	(1, 4, 4, 2, 12, 45, NULL, NULL),
+	-- Exercise 5 --
+	(1, 5, 5, 1, 8, 45, NULL, NULL),
+	(1, 5, 5, 2, 8, 45, NULL, NULL),
+	(1, 5, 5, 3, 6, 60, NULL, NULL),
+	(1, 5, 5, 4, 6, 60, NULL, NULL),
+	-- Exercise 6 --
+	(1, 6, 6, 1, 30, 30, NULL, NULL),
+	(1, 6, 6, 2, 25, 30, NULL, NULL),
+	(1, 6, 6, 3, 20, 30, NULL, NULL);
+
+-- 
+-- Contrainte d’Intégrité Multiple (CIM)
+--
+
+-- Session <> Exercise --
+INSERT INTO _session_exercise (id_user, id_user_1, id_session, id_exercise, id_app_exercise, place)
+VALUES
+	-- Session 1 --
+	(1, 1, 1, 1, 1, 1),
+	(1, 1, 1, 2, 2, 2),
+	-- Session 2 --
+	(1, 1, 2, 3, 3, 1),
+	(1, 1, 2, 4, 4, 2),
+	-- Session 3 --
+	(1, 1, 3, 5, 5, 1),
+	(1, 1, 3, 6, 6, 2);
+
+-- Program <> Session --
+INSERT INTO _program_session (id_user, id_user_1, id_program, id_session, place)
+VALUES
+	-- Program 1 --
+	(1, 1, 1, 1, 1),
+	(1, 1, 1, 2, 2),
+	-- Program 2 --
+	(1, 1, 2, 2, 1),
+	(1, 1, 2, 3, 2),
+	-- Program 3 --
+	(1, 1, 3, 1, 1),
+	(1, 1, 3, 3, 2),
+	-- Program 4 --
+	(1, 1, 4, 1, 1),
+	(1, 1, 4, 2, 2),
+	(1, 1, 4, 3, 3);
+
+-- AppExercise <> Equipment --
+INSERT INTO _app_exercise_equipment (id_app_exercise, id_equipment)
+VALUES
+	(1, 7),
+	(1, 31),
+	(1, 38),
+	(2, 20),
+	(2, 22),
+	(3, 5),
+	(3, 7),
+	(3, 17),
+	(3, 20),
+	(3, 41),
+	(4, 7),
+	(4, 11),
+	(4, 17),
+	(4, 20),
+	(4, 31),
+	(4, 38),
+	(5, 12),
+	(5, 13),
+	(5, 14),
+	(5, 15),
+	(5, 30),
+	(5, 38),
+	(6, 3),
+	(6, 8),
+	(6, 18),
+	(7, 9),
+	(7, 17),
+	(7, 20),
+	(7, 30),
+	(8, 5),
+	(8, 7),
+	(8, 17),
+	(8, 20),
+	(8, 22),
+	(8, 28),
+	(9, 5),
+	(9, 7),
+	(9, 17),
+	(9, 20),
+	(9, 22),
+	(10, 17),
+	(10, 20),
+	(10, 28),
+	(11, 26),
+	(11, 29),
+	(12, 17),
+	(12, 20),
+	(13, 5),
+	(13, 7),
+	(13, 17),
+	(13, 20),
+	(14, 2),
+	(15, 37),
+	(16, 17),
+	(16, 39),
+	(17, 7),
+	(18, 17),
+	(18, 18),
+	(18, 20),
+	(18, 22),
+	(18, 37),
+	(19, 18),
+	(19, 20),
+	(20, 20),
+	(21, 5),
+	(21, 7),
+	(21, 17),
+	(22, 5),
+	(22, 7),
+	(22, 17),
+	(23, 2),
+	(23, 17),
+	(23, 20),
+	(23, 22),
+	(24, 17),
+	(24, 18),
+	(25, 7),
+	(26, 19),
+	(27, 17),
+	(27, 20),
+	(28, 17),
+	(28, 20),
+	(28, 21),
+	(28, 28),
+	(28, 34),
+	(29, 28),
+	(30, 36),
+	(31, 32),
+	(32, 18),
+	(32, 20),
+	(32, 22),
+	(33, 20),
+	(33, 28),
+	(33, 30),
+	(34, 9),
+	(34, 17),
+	(35, 17),
+	(35, 18),
+	(36, 36),
+	(37, 5),
+	(37, 7),
+	(37, 20),
+	(37, 22),
+	(38, 18),
+	(38, 20),
+	(38, 22),
+	(39, 6),
+	(39, 8),
+	(39, 17),
+	(39, 20),
+	(40, 7),
+	(41, 2),
+	(41, 8),
+	(41, 17),
+	(41, 20),
+	(41, 22),
+	(41, 28),
+	(41, 31),
+	(41, 38),
+	(41, 40),
+	(41, 42),
+	(42, 17),
+	(42, 20),
+	(42, 22),
+	(42, 28),
+	(43, 5),
+	(43, 7),
+	(43, 17),
+	(43, 20),
+	(43, 22),
+	(43, 28),
+	(43, 38),
+	(44, 39),
+	(45, 7),
+	(45, 17),
+	(45, 20),
+	(45, 22),
+	(45, 32),
+	(45, 38),
+	(46, 7),
+	(46, 17),
+	(46, 20),
+	(46, 22),
+	(46, 32),
+	(46, 38),
+	(47, 17),
+	(47, 18),
+	(48, 7),
+	(48, 17),
+	(48, 18),
+	(48, 20),
+	(49, 18),
+	(50, 18),
+	(50, 20),
+	(50, 22),
+	(51, 42),
+	(52, 17),
+	(52, 27),
+	(53, 5),
+	(53, 7),
+	(53, 17),
+	(53, 20),
+	(53, 22),
+	(53, 28),
+	(53, 31),
+	(53, 38),
+	(54, 17),
+	(54, 43),
+	(55, 43),
+	(56, 6);
+
+-- AppExercise <> Muscle --
+INSERT INTO _app_exercise_muscle (id_app_exercise, id_muscle)
+VALUES
+	(1, 1),
+	(2, 3),
+	(3, 8),
+	(4, 10),
+	(5, 8),
+	(6, 5),
+	(7, 5),
+	(8, 8),
+	(9, 5),
+	(10, 10),
+	(11, 10),
+	(12, 4),
+	(13, 7),
+	(14, 7),
+	(15, 9),
+	(16, 9),
+	(17, 2),
+	(18, 2),
+	(19, 2),
+	(20, 1),
+	(21, 2),
+	(22, 4),
+	(22, 6),
+	(23, 1),
+	(23, 6),
+	(23, 7),
+	(23, 9),
+	(24, 10),
+	(25, 6),
+	(26, 6),
+	(27, 9),
+	(28, 7),
+	(29, 1),
+	(29, 6),
+	(29, 7),
+	(29, 9),
+	(30, 5),
+	(31, 8),
+	(32, 8),
+	(33, 6),
+	(33, 7),
+	(33, 9),
+	(34, 1),
+	(34, 4),
+	(35, 1),
+	(36, 1),
+	(37, 4),
+	(38, 4),
+	(39, 4),
+	(40, 4),
+	(40, 6),
+	(40, 7),
+	(41, 4),
+	(41, 6),
+	(41, 7),
+	(42, 9),
+	(43, 1),
+	(43, 6),
+	(43, 7),
+	(43, 9),
+	(44, 1),
+	(44, 6),
+	(44, 7),
+	(44, 9),
+	(45, 1),
+	(45, 6),
+	(45, 7),
+	(45, 9),
+	(46, 1),
+	(46, 6),
+	(46, 7),
+	(46, 9),
+	(47, 1),
+	(47, 6),
+	(47, 7),
+	(47, 9),
+	(48, 1),
+	(48, 6),
+	(48, 7),
+	(48, 9),
+	(49, 1),
+	(49, 6),
+	(49, 7),
+	(49, 9),
+	(50, 4),
+	(51, 4),
+	(51, 10),
+	(52, 5),
+	(53, 4),
+	(54, 4),
+	(55, 4),
+	(56, 1),
+	(56, 4);

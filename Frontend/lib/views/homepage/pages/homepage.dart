@@ -160,20 +160,24 @@ class _HomepageState extends State<Homepage> {
                                                                 .black
                                                             : Colors.grey,
                                                   ),
-                                                  Container(
-                                                    padding: EdgeInsets.only(
-                                                        left: 10),
-                                                    child: StrongrText(
-                                                      item.appExerciseName !=
-                                                              null
-                                                          ? item.appExerciseName
-                                                          : "Aucun exercice",
-                                                      color:
-                                                          item.appExerciseName !=
-                                                                  null
-                                                              ? StrongrColors
-                                                                  .black
-                                                              : Colors.grey,
+                                                  Flexible(
+                                                    child: Container(
+                                                      padding: EdgeInsets.only(
+                                                          left: 10),
+                                                      child: StrongrText(
+                                                        item.appExerciseName !=
+                                                                null
+                                                            ? item.appExerciseName
+                                                            : "Aucun exercice",
+                                                        color:
+                                                            item.appExerciseName !=
+                                                                    null
+                                                                ? StrongrColors
+                                                                    .black
+                                                                : Colors.grey,
+                                                        textAlign: TextAlign.start,
+                                                        maxLines: 1,
+                                                      ),
                                                     ),
                                                   ),
                                                 ],
@@ -405,20 +409,24 @@ class _HomepageState extends State<Homepage> {
                                                                 .black
                                                             : Colors.grey,
                                                   ),
-                                                  Container(
-                                                    padding: EdgeInsets.only(
-                                                        left: 10),
-                                                    child: StrongrText(
-                                                      item.sessionTypeName !=
-                                                              null
-                                                          ? item.sessionTypeName
-                                                          : "Aucune type",
-                                                      color:
-                                                          item.sessionTypeName !=
-                                                                  null
-                                                              ? StrongrColors
-                                                                  .black
-                                                              : Colors.grey,
+                                                  Flexible(
+                                                    child: Container(
+                                                      padding: EdgeInsets.only(
+                                                          left: 10),
+                                                      child: StrongrText(
+                                                        item.sessionTypeName !=
+                                                                null
+                                                            ? item.sessionTypeName
+                                                            : "Aucune type",
+                                                        color:
+                                                            item.sessionTypeName !=
+                                                                    null
+                                                                ? StrongrColors
+                                                                    .black
+                                                                : Colors.grey,
+                                                      textAlign: TextAlign.start,
+                                                      maxLines: 1,
+                                                      ),
                                                     ),
                                                   ),
                                                 ],
@@ -650,20 +658,24 @@ class _HomepageState extends State<Homepage> {
                                                                 .black
                                                             : Colors.grey,
                                                   ),
-                                                  Container(
-                                                    padding: EdgeInsets.only(
-                                                        left: 10),
-                                                    child: StrongrText(
-                                                      item.programGoalName !=
-                                                              null
-                                                          ? item.programGoalName
-                                                          : "Aucun objectif",
-                                                      color:
-                                                          item.programGoalName !=
-                                                                  null
-                                                              ? StrongrColors
-                                                                  .black
-                                                              : Colors.grey,
+                                                  Flexible(
+                                                    child: Container(
+                                                      padding: EdgeInsets.only(
+                                                          left: 10),
+                                                      child: StrongrText(
+                                                        item.programGoalName !=
+                                                                null
+                                                            ? item.programGoalName
+                                                            : "Aucun objectif",
+                                                        color:
+                                                            item.programGoalName !=
+                                                                    null
+                                                                ? StrongrColors
+                                                                    .black
+                                                                : Colors.grey,
+                                                        textAlign: TextAlign.start,
+                                                        maxLines: 1,
+                                                      ),
                                                     ),
                                                   ),
                                                 ],
