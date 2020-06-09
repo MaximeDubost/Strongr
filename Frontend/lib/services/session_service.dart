@@ -43,7 +43,6 @@ class SessionService {
           'Authorization': 'Bearer ' + Global.token
         },
       );
-      var test = Session.fromJson(response.body);
       return Session.fromJson(response.body);
     } catch (e) {
       return Session();
