@@ -11,38 +11,64 @@ import SessionTypeController from "../controllers/SessionTypeController"
 import UserProgramPreviewController from "../controllers/UserProgramController";
 let router = express.Router();
 
-/** CRUD + LOGIN user */
-router.post("/user/add", UserController.register);
-router.get("/user/:id_user", UserController.getUser)
-router.put("/user/update/:id_user", UserController.updateUser);
-router.delete("/user/delete/:id_user", UserController.deleteUser);
+/**
+ * User (Login/Logout)
+ */
 router.post("/login", UserController.login);
 router.post("/logout", middleware.checkAuth, UserController.logout);
+
+/**
+ * User (Reset password)
+ */
 router.post("/sendCode", UserController.sendCode);
 router.post("/checkCode", UserController.checkCode);
 router.put("/resetPassword", UserController.resetPassword);
 router.post("/checkEmail", UserController.checkEmail);
 
-/** Read only AppExercise */
+/**
+ * User
+ */
+router.post("/user/add", UserController.register);
+router.get("/user/:id_user", UserController.getUser)
+router.put("/user/update/:id_user", UserController.updateUser);
+router.delete("/user/delete/:id_user", UserController.deleteUser);
+
+/**
+ * AppExercise
+ */
 router.get("/appexercises", AppExerciseController.getAllAppExercises);
 router.get("/appexercise/:id_app_exercise", AppExerciseController.getDetailAppExercise);
 
-/**  CRUD Session */
-router.get("/session/:id_session", middleware.checkAuth, SessionController.getSessionDetail);
-router.get("/sessions", middleware.checkAuth, SessionController.getSessions);
-router.post("/session", middleware.checkAuth, SessionController.addSession);
-router.delete("/session/:id_session", middleware.checkAuth, SessionController.deleteSession);
-router.put("/session/:id_session", middleware.checkAuth, SessionController.updateSession);
-
-/**  CRUD Exercise */
+/**
+ * Exercise
+ */
 router.post("/exercise", middleware.checkAuth, ExerciseController.createExercise);
 router.get("/exercises", middleware.checkAuth, ExerciseController.readExercises);
 router.get("/exercise/:id_exercise", middleware.checkAuth, ExerciseController.detailExercise);
 router.put("/exercise/:id_exercise", middleware.checkAuth, ExerciseController.updateExercise);
 router.delete("/exercise/:id_exercise", middleware.checkAuth, ExerciseController.deleteExercise);
 
-/** CRUD Program */
+/**
+ * Session
+ */
+router.post("/session", middleware.checkAuth, SessionController.addSession);
+router.get("/sessions", middleware.checkAuth, SessionController.getSessions);
+router.get("/session/:id_session", middleware.checkAuth, SessionController.getSessionDetail);
+router.put("/session/:id_session", middleware.checkAuth, SessionController.updateSession);
+router.delete("/session/:id_session", middleware.checkAuth, SessionController.deleteSession);
+
+/**
+ * Program
+ */
+router.post("/program", middleware.checkAuth, null); // TODO
 router.get("/programs", middleware.checkAuth, ProgramController.readProgram);
 router.get("/program/:id_program", middleware.checkAuth, ProgramController.readDetailProgram);
-router.get("/program_goal", middleware.checkAuth, ProgramGoalController.readProgramGoal);
+router.put("/session/:id_session", middleware.checkAuth, null); // TODO
+router.delete("/session/:id_session", middleware.checkAuth, null); // TODO
+
+/**
+ * Program Goal
+ */
+router.get("/programgoal", middleware.checkAuth, ProgramGoalController.readProgramGoal);
+
 export default router;
