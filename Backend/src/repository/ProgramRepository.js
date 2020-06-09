@@ -32,6 +32,10 @@ repository.readProgram = async (req) => {
 }
 
 repository.readDetailProgram = async (req) => {
+
+    //console.log('req user id = '+req.user.id)
+    //console.log('id_program = '+req.params.id_program)
+    
     let sql = `
     SELECT p.id_program as id, p.name, p.creation_date, p.last_update
     FROM _program p
@@ -68,15 +72,17 @@ repository.readSessionDetailProgram = async (req) => {
         SELECT COUNT(se.id_session) as exercise_count  
         FROM _session s
         JOIN _session_exercise se ON se.id_session = s.id_session
-        WHERE s.id_user = $1
+		JOIN _program_session ps ON ps.id_session = s.id_session
+        WHERE s.id_user = $1 AND ps.id_program = $2
     ),  null as tonnage
     FROM _session s
     JOIN _session_type st ON st.id_session_type = s.id_session_type
-    WHERE s.id_user = $1
+	JOIN _program_session ps ON ps.id_session = s.id_session
+    WHERE s.id_user = $1 AND ps.id_program = $2
     ORDER BY place
     `
     try {
-        var result = await clt.query(sql, [req.user.id])
+        var result = await clt.query(sql, [req.user.id, req.params.id_program])
         return result.rows
     } catch (error) {
         console.log(error)
