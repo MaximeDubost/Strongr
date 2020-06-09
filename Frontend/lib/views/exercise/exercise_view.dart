@@ -266,7 +266,7 @@ class _ExerciseViewState extends State<ExerciseView> {
               future: futureExercise,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  print(snapshot.data);
+                  // print(snapshot.data);
                   return Container(
                     // color: Colors.red,
                     child: InkWell(

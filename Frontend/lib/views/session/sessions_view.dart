@@ -125,7 +125,7 @@ class _SessionsViewState extends State<SessionsView> {
                                   child: StrongrText(
                                     item.sessionTypeName != null
                                         ? item.sessionTypeName
-                                        : "Aucun type de séance",
+                                        : "Aucun type",
                                     color: item.sessionTypeName != null
                                         ? StrongrColors.black
                                         : Colors.grey,

@@ -63,7 +63,7 @@ repository.readDetailProgram = async (req) => {
 repository.readSessionDetailProgram = async (req) => {
 
     let sql = `
-    SELECT s.id_session, s.place, st.name as session_type_name,  
+    SELECT s.id_session as id, s.place, s.name, st.name as session_type_name,  
     (
         SELECT COUNT(se.id_session) as exercise_count  
         FROM _session s
@@ -73,6 +73,7 @@ repository.readSessionDetailProgram = async (req) => {
     FROM _session s
     JOIN _session_type st ON st.id_session_type = s.id_session_type
     WHERE s.id_user = $1
+    ORDER BY place
     `
     try {
         var result = await clt.query(sql, [req.user.id])

@@ -34,9 +34,9 @@ class _SessionViewState extends State<SessionView> {
   }
 
   List<Widget> buildExerciseList({List exerciseList}) {
-    List<Widget> builtexerciseList = [];
+    List<Widget> builtExerciseList = [];
     for (final item in exerciseList)
-      builtexerciseList.add(
+      builtExerciseList.add(
         Container(
           margin:
               exerciseList.indexOf(item) == 0 ? EdgeInsets.only(top: 5) : null,
@@ -179,7 +179,7 @@ class _SessionViewState extends State<SessionView> {
                               padding: EdgeInsets.only(left: 5, right: 5),
                               child: Icon(
                                 Icons.show_chart,
-                                color: item.tonnage == null
+                                color: isEditMode || item.tonnage == null
                                     ? Colors.grey
                                     : StrongrColors.black,
                               ),
@@ -191,7 +191,7 @@ class _SessionViewState extends State<SessionView> {
                                   item.tonnage != null
                                       ? "Tonnage de " + item.tonnage.toString()
                                       : "Tonnage non calculé",
-                                  color: item.tonnage == null
+                                  color: isEditMode || item.tonnage == null
                                       ? Colors.grey
                                       : StrongrColors.black,
                                   textAlign: TextAlign.start,
@@ -258,7 +258,7 @@ class _SessionViewState extends State<SessionView> {
           ),
         ),
       );
-    return builtexerciseList;
+    return builtExerciseList;
   }
 
   @override
@@ -292,7 +292,7 @@ class _SessionViewState extends State<SessionView> {
               future: futureSession,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  print(snapshot.data);
+                  // print(snapshot.data);
                   return Container(
                     // color: Colors.red,
                     child: InkWell(

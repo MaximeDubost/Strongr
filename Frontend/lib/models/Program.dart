@@ -9,7 +9,7 @@ class Program {
   int place;
   String name;
   String programGoalName;
-  List<SessionPreview> exercises;
+  List<SessionPreview> sessions;
   double tonnage;
   DateTime creationDate;
   DateTime lastUpdate;
@@ -19,7 +19,7 @@ class Program {
     this.place,
     this.name,
     this.programGoalName,
-    this.exercises,
+    this.sessions,
     this.tonnage,
     this.creationDate,
     this.lastUpdate,
@@ -30,7 +30,7 @@ class Program {
     int place,
     String name,
     String programGoalName,
-    List<SessionPreview> exercises,
+    List<SessionPreview> sessions,
     double tonnage,
     DateTime creationDate,
     DateTime lastUpdate,
@@ -40,7 +40,7 @@ class Program {
       place: place ?? this.place,
       name: name ?? this.name,
       programGoalName: programGoalName ?? this.programGoalName,
-      exercises: exercises ?? this.exercises,
+      sessions: sessions ?? this.sessions,
       tonnage: tonnage ?? this.tonnage,
       creationDate: creationDate ?? this.creationDate,
       lastUpdate: lastUpdate ?? this.lastUpdate,
@@ -53,7 +53,7 @@ class Program {
       'place': place,
       'name': name,
       'programGoalName': programGoalName,
-      'exercises': exercises?.map((x) => x?.toMap())?.toList(),
+      'sessions': sessions?.map((x) => x?.toMap())?.toList(),
       'tonnage': tonnage,
       'creationDate': creationDate?.millisecondsSinceEpoch,
       'lastUpdate': lastUpdate?.millisecondsSinceEpoch,
@@ -68,7 +68,7 @@ class Program {
       place: map['place'],
       name: map['name'],
       programGoalName: map['program_goal_name'],
-      exercises: List<SessionPreview>.from(map['exercises']?.map((x) => SessionPreview.fromMap(x))),
+      sessions: List<SessionPreview>.from(map['sessions']?.map((x) => SessionPreview.fromMap(x))),
       tonnage: map['tonnage'],
       creationDate: DateTime.parse(map['creation_date']),
       lastUpdate: DateTime.parse(map['last_update']),
@@ -81,7 +81,7 @@ class Program {
 
   @override
   String toString() {
-    return 'Program(id: $id, place: $place, name: $name, programGoalName: $programGoalName, exercises: $exercises, tonnage: $tonnage, creationDate: $creationDate, lastUpdate: $lastUpdate)';
+    return 'Program(id: $id, place: $place, name: $name, programGoalName: $programGoalName, sessions: $sessions, tonnage: $tonnage, creationDate: $creationDate, lastUpdate: $lastUpdate)';
   }
 
   @override
@@ -94,7 +94,7 @@ class Program {
       o.place == place &&
       o.name == name &&
       o.programGoalName == programGoalName &&
-      listEquals(o.exercises, exercises) &&
+      listEquals(o.sessions, sessions) &&
       o.tonnage == tonnage &&
       o.creationDate == creationDate &&
       o.lastUpdate == lastUpdate;
@@ -106,7 +106,7 @@ class Program {
       place.hashCode ^
       name.hashCode ^
       programGoalName.hashCode ^
-      exercises.hashCode ^
+      sessions.hashCode ^
       tonnage.hashCode ^
       creationDate.hashCode ^
       lastUpdate.hashCode;
