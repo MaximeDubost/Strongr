@@ -9,6 +9,7 @@ import ProgramController from "../controllers/ProgramController";
 import ProgramGoalController from "../controllers/ProgramGoalController";
 import SessionTypeController from "../controllers/SessionTypeController"
 import UserProgramPreviewController from "../controllers/UserProgramController";
+import AppExerciseEquipementController from "../controllers/AppExerciseEquipementController";
 let router = express.Router();
 
 /**
@@ -70,5 +71,11 @@ router.get("/program/:id_program", middleware.checkAuth, ProgramController.readD
  * Program Goal
  */
 router.get("/programgoal", middleware.checkAuth, ProgramGoalController.readProgramGoal);
+
+
+/**
+ * Equipement
+ */
+router.get("/equipment/:id_app_exercise", middleware.checkAuth, AppExerciseEquipementController.getEquipementByIDAppExercice);
 
 export default router;
