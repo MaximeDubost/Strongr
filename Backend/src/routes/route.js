@@ -61,21 +61,17 @@ router.delete("/session/:id_session", middleware.checkAuth, SessionController.de
 /**
  * Program
  */
-//router.post("/program", middleware.checkAuth, null); // TODO
 router.get("/programs", middleware.checkAuth, ProgramController.readProgram);
 router.get("/program/:id_program", middleware.checkAuth, ProgramController.readDetailProgram);
-//router.put("/session/:id_session", middleware.checkAuth, null); // TODO
-//router.delete("/session/:id_session", middleware.checkAuth, null); // TODO
 
 /**
  * Program Goal
  */
-router.get("/programgoal", middleware.checkAuth, ProgramGoalController.readProgramGoal);
-
+router.get("/programgoal", ProgramGoalController.readProgramGoal);
 
 /**
  * Equipement
  */
-router.get("/equipment/:id_app_exercise", middleware.checkAuth, AppExerciseEquipementController.getEquipementByIDAppExercice);
+router.get("/equipments/:id_app_exercise", AppExerciseEquipementController.getEquipementByIDAppExercice);
 
 export default router;

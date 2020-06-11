@@ -3,19 +3,27 @@ import 'dart:convert';
 class Equipment {
   int id;
   String name;
+  String description;
+  String image;
   
   Equipment({
     this.id,
     this.name,
+    this.description,
+    this.image,
   });
 
   Equipment copyWith({
     int id,
     String name,
+    String description,
+    String image,
   }) {
     return Equipment(
       id: id ?? this.id,
       name: name ?? this.name,
+      description: description ?? this.description,
+      image: image ?? this.image,
     );
   }
 
@@ -23,6 +31,8 @@ class Equipment {
     return {
       'id': id,
       'name': name,
+      'description': description,
+      'image': image,
     };
   }
 
@@ -32,6 +42,8 @@ class Equipment {
     return Equipment(
       id: map['id'],
       name: map['name'],
+      description: map['description'],
+      image: map['image'],
     );
   }
 
@@ -40,7 +52,9 @@ class Equipment {
   static Equipment fromJson(String source) => fromMap(json.decode(source));
 
   @override
-  String toString() => 'Equipment(id: $id, name: $name)';
+  String toString() {
+    return 'Equipment(id: $id, name: $name, description: $description, image: $image)';
+  }
 
   @override
   bool operator ==(Object o) {
@@ -48,9 +62,16 @@ class Equipment {
   
     return o is Equipment &&
       o.id == id &&
-      o.name == name;
+      o.name == name &&
+      o.description == description &&
+      o.image == image;
   }
 
   @override
-  int get hashCode => id.hashCode ^ name.hashCode;
+  int get hashCode {
+    return id.hashCode ^
+      name.hashCode ^
+      description.hashCode ^
+      image.hashCode;
+  }
 }
