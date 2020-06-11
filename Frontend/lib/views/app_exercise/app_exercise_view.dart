@@ -43,7 +43,7 @@ class _AppExerciseViewState extends State<AppExerciseView> {
         title: Text(widget.name),
       ),
       body: Container(
-        padding: EdgeInsets.all(5),
+        padding: EdgeInsets.only(left: 5, right: 5),
         child: FutureBuilder(
           future: futureAppExercise,
           builder: (context, snapshot) {
@@ -56,7 +56,9 @@ class _AppExerciseViewState extends State<AppExerciseView> {
                           Container(
                             padding: EdgeInsets.all(8),
                             child: StrongrText(
-                              "Muscles ciblés",
+                              snapshot.data.muscleList.length == 1
+                                  ? "Zone ciblée"
+                                  : "Zones ciblées",
                               textAlign: TextAlign.start,
                             ),
                           ),
@@ -76,13 +78,13 @@ class _AppExerciseViewState extends State<AppExerciseView> {
                               children: <Widget>[
                                 StrongrRoundedContainer(
                                   width: ScreenSize.width(context),
-                                  content: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      Flexible(
-                                        child: Container(
-                                          height: 60,
+                                  content: Container(
+                                    height: 60,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        Flexible(
                                           child: Align(
                                             alignment: Alignment.centerLeft,
                                             child: StrongrText(
@@ -92,22 +94,28 @@ class _AppExerciseViewState extends State<AppExerciseView> {
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      Icon(
-                                        Icons.info_outline,
-                                        color: StrongrColors.blue,
-                                      ),
-                                    ],
+                                        Container(
+                                          width: 35,
+                                          child: Icon(
+                                            Icons.info_outline,
+                                            color: StrongrColors.blue,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                   onPressed: () {},
                                 ),
+                                SizedBox(height: 5),
                               ],
                             ),
-                          SizedBox(height: 10),
+                          SizedBox(height: 5),
                           Container(
                             padding: EdgeInsets.all(8),
                             child: StrongrText(
-                              "Équipements associés",
+                              snapshot.data.equipmentList.length == 1
+                                  ? "Équipement associé"
+                                  : "Équipements associés",
                               textAlign: TextAlign.start,
                             ),
                           ),
@@ -127,13 +135,13 @@ class _AppExerciseViewState extends State<AppExerciseView> {
                               children: <Widget>[
                                 StrongrRoundedContainer(
                                   width: ScreenSize.width(context),
-                                  content: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      Flexible(
-                                        child: Container(
-                                          height: 60,
+                                  content: Container(
+                                    height: 60,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        Flexible(
                                           child: Align(
                                             alignment: Alignment.centerLeft,
                                             child: StrongrText(
@@ -143,17 +151,22 @@ class _AppExerciseViewState extends State<AppExerciseView> {
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      Icon(
-                                        Icons.info_outline,
-                                        color: StrongrColors.blue,
-                                      ),
-                                    ],
+                                        Container(
+                                          width: 35,
+                                          child: Icon(
+                                            Icons.info_outline,
+                                            color: StrongrColors.blue,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                   onPressed: () {},
                                 ),
+                                SizedBox(height: 5),
                               ],
-                            )
+                            ),
+                          SizedBox(height: 75),
                         ],
                       )
                     : Center(

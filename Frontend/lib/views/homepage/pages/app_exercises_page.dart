@@ -110,27 +110,32 @@ class _AppExercisesPageState extends State<AppExercisesPage> {
               height: 90,
               child: StrongrRoundedContainer(
                 width: ScreenSize.width(context),
-                content: Stack(
+                content: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          StrongrText(
-                            appExercises[appExercises.indexOf(appExercise)]
-                                .name,
-                            textAlign: TextAlign.start,
-                            bold: true,
-                          ),
-                          StrongrText(
-                            displayMuscleListToString(
+                    Flexible(
+                      child: Container(
+                        alignment: Alignment.centerLeft,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            Container(
+                              child: StrongrText(
                                 appExercises[appExercises.indexOf(appExercise)]
-                                    .muscleList),
-                            textAlign: TextAlign.start,
-                          ),
-                        ],
+                                    .name,
+                                textAlign: TextAlign.start,
+                                bold: true,
+                              ),
+                            ),
+                            StrongrText(
+                              displayMuscleListToString(appExercises[
+                                      appExercises.indexOf(appExercise)]
+                                  .muscleList),
+                              textAlign: TextAlign.start,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                     Container(
