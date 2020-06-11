@@ -7,6 +7,8 @@ import 'package:strongr/views/app_exercise/app_exercise_view.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
 import 'package:strongr/widgets/strongr_rounded_textformfield.dart';
 import 'package:strongr/widgets/strongr_text.dart';
+import 'package:strongr/models/Equipment.dart';
+import 'package:strongr/services/equipment_service.dart';
 
 class ExerciseCreateView extends StatefulWidget {
   final int id;
@@ -26,6 +28,7 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
   TextEditingController _seriesCountController;
   int linesCount = 1, setCount;
   String errorText = "";
+  Future<List<Equipment>> futureEquipments;
 
   @override
   void initState() {
@@ -33,6 +36,8 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
     _seriesCountController = TextEditingController(text: "1");
     _visibility = !validSet();
     _unique = _validate = false;
+    futureEquipments =
+        EquipmentService.getEquipmentsOfAppExercise(idAppExercise: widget.id);
   }
 
   @override
@@ -178,7 +183,7 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        StrongrText("Équipement"),
+                        StrongrText("Équipement à utiliser"),
                         Container(
                           height: 24,
                           width: 24,
@@ -188,80 +193,158 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
                     ),
                   ),
                   Container(
-                    // color: Colors.red,
-                    height: 80,
-                    width: ScreenSize.width(context),
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      physics: BouncingScrollPhysics(),
-                      // padding: EdgeInsets.all(10),
-                      padding: EdgeInsets.only(left: 10, right: 10),
-                      children: <Widget>[
-                        StrongrRoundedContainer(
-                          width: ScreenSize.width(context) / 1.5,
-                          content: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: <Widget>[
-                              Container(
-                                // color: Colors.red,
-                                width: ScreenSize.width(context) / 2.8,
-                                child: Center(
-                                  child: StrongrText(
-                                    "Banc décliné",
-                                    size: 18,
-                                  ),
+                      // color: Colors.red,
+                      height: 80,
+                      width: ScreenSize.width(context),
+                      child: FutureBuilder(
+                        future: futureEquipments,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            if (snapshot.data == null) {
+                              return Center(
+                                child: StrongrText(
+                                  "Impossible d'afficher les équipements associés",
+                                  color: Colors.grey,
+                                ),
+                              );
+                            } else if (snapshot.data.length == 0) {
+                              return Center(
+                                child: StrongrText(
+                                  "Aucun équipement associé",
+                                  color: Colors.grey,
+                                ),
+                              );
+                            } else
+                              return ListView(
+                                scrollDirection: Axis.horizontal,
+                                physics: BouncingScrollPhysics(),
+                                // padding: EdgeInsets.all(10),
+                                padding: EdgeInsets.only(left: 10, right: 10),
+                                children: <Widget>[
+                                  for (final item in snapshot.data)
+                                    StrongrRoundedContainer(
+                                      width: ScreenSize.width(context) / 1.5,
+                                      content: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: <Widget>[
+                                          Container(
+                                            // color: Colors.red,
+                                            width:
+                                                ScreenSize.width(context) / 2.8,
+                                            child: Center(
+                                              child: StrongrText(
+                                                item.name,
+                                                size: 18,
+                                              ),
+                                            ),
+                                          ),
+                                          VerticalDivider(
+                                            thickness: 1,
+                                            indent: 10,
+                                            endIndent: 10,
+                                          ),
+                                          IconButton(
+                                            icon: Icon(
+                                              Icons.info_outline,
+                                              color: StrongrColors.blue,
+                                            ),
+                                            onPressed: () {},
+                                          ),
+                                        ],
+                                      ),
+                                      onPressed: () {},
+                                    ),
+                                ],
+                              );
+                          } else if (snapshot.hasError) {
+                            return Text(
+                              snapshot.error,
+                              textAlign: TextAlign.center,
+                            );
+                          } else
+                            return Container(
+                              alignment: Alignment.center,
+                              height: ScreenSize.height(context) / 1.25,
+                              child: CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  StrongrColors.blue,
                                 ),
                               ),
-                              VerticalDivider(
-                                thickness: 1,
-                                indent: 10,
-                                endIndent: 10,
-                              ),
-                              IconButton(
-                                icon: Icon(
-                                  Icons.info_outline,
-                                  color: StrongrColors.blue,
-                                ),
-                                onPressed: () {},
-                              ),
-                            ],
-                          ),
-                          onPressed: () {},
-                        ),
-                        StrongrRoundedContainer(
-                          width: ScreenSize.width(context) / 1.5,
-                          content: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: <Widget>[
-                              Container(
-                                // color: Colors.red,
-                                width: ScreenSize.width(context) / 2.8,
-                                child: Center(
-                                  child: StrongrText(
-                                    "Poulie position haute",
-                                    size: 18,
-                                  ),
-                                ),
-                              ),
-                              VerticalDivider(
-                                thickness: 1,
-                                indent: 10,
-                                endIndent: 10,
-                              ),
-                              IconButton(
-                                icon: Icon(
-                                  Icons.info_outline,
-                                  color: StrongrColors.blue,
-                                ),
-                                onPressed: () {},
-                              ),
-                            ],
-                          ),
-                          onPressed: () {},
-                        ),
-                      ],
-                    ),
-                  ),
+                            );
+                        },
+                      )
+                      // child: ListView(
+                      //   scrollDirection: Axis.horizontal,
+                      //   physics: BouncingScrollPhysics(),
+                      //   // padding: EdgeInsets.all(10),
+                      //   padding: EdgeInsets.only(left: 10, right: 10),
+                      //   children: <Widget>[
+                      //     StrongrRoundedContainer(
+                      //       width: ScreenSize.width(context) / 1.5,
+                      //       content: Row(
+                      //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      //         children: <Widget>[
+                      //           Container(
+                      //             // color: Colors.red,
+                      //             width: ScreenSize.width(context) / 2.8,
+                      //             child: Center(
+                      //               child: StrongrText(
+                      //                 "Banc décliné",
+                      //                 size: 18,
+                      //               ),
+                      //             ),
+                      //           ),
+                      //           VerticalDivider(
+                      //             thickness: 1,
+                      //             indent: 10,
+                      //             endIndent: 10,
+                      //           ),
+                      //           IconButton(
+                      //             icon: Icon(
+                      //               Icons.info_outline,
+                      //               color: StrongrColors.blue,
+                      //             ),
+                      //             onPressed: () {},
+                      //           ),
+                      //         ],
+                      //       ),
+                      //       onPressed: () {},
+                      //     ),
+                      //     StrongrRoundedContainer(
+                      //       width: ScreenSize.width(context) / 1.5,
+                      //       content: Row(
+                      //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      //         children: <Widget>[
+                      //           Container(
+                      //             // color: Colors.red,
+                      //             width: ScreenSize.width(context) / 2.8,
+                      //             child: Center(
+                      //               child: StrongrText(
+                      //                 "Poulie position haute",
+                      //                 size: 18,
+                      //               ),
+                      //             ),
+                      //           ),
+                      //           VerticalDivider(
+                      //             thickness: 1,
+                      //             indent: 10,
+                      //             endIndent: 10,
+                      //           ),
+                      //           IconButton(
+                      //             icon: Icon(
+                      //               Icons.info_outline,
+                      //               color: StrongrColors.blue,
+                      //             ),
+                      //             onPressed: () {},
+                      //           ),
+                      //         ],
+                      //       ),
+                      //       onPressed: () {},
+                      //     ),
+                      //   ],
+                      // ),
+                      ),
                   // Container(
                   //   // color: Colors.blue,
                   //   padding: EdgeInsets.all(10),
@@ -272,7 +355,7 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        StrongrText("Séries"),
+                        StrongrText("Nombre de séries"),
                         Container(
                           height: 24,
                           width: 24,
@@ -300,65 +383,92 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
                                   child: RawMaterialButton(
                                     child: StrongrText(
                                       "-",
-                                      color: int.parse(_seriesCountController.text) <= 1 || int.parse(_seriesCountController.text) > 10 || _seriesCountController.text == "" || _seriesCountController.text == null
+                                      color: int.parse(_seriesCountController
+                                                      .text) <=
+                                                  1 ||
+                                              int.parse(_seriesCountController
+                                                      .text) >
+                                                  10 ||
+                                              _seriesCountController.text ==
+                                                  "" ||
+                                              _seriesCountController.text ==
+                                                  null
                                           ? Colors.grey
                                           : StrongrColors.black,
                                     ),
                                     shape: CircleBorder(),
-                                    onPressed: int.parse(_seriesCountController.text) <= 1 || int.parse(_seriesCountController.text) > 10 || _seriesCountController.text == "" || _seriesCountController.text == null ? null :
-                                    _seriesCountController.text !=
-                                            "1"
-                                        ? () {
-                                            FocusScope.of(context).unfocus();
-                                            if (!_seriesCountController.text
-                                                .startsWith("0")) {
-                                              try {
-                                                if (int.parse(
+                                    onPressed: int.parse(_seriesCountController
+                                                    .text) <=
+                                                1 ||
+                                            int.parse(_seriesCountController
+                                                    .text) >
+                                                10 ||
+                                            _seriesCountController.text == "" ||
+                                            _seriesCountController.text == null
+                                        ? null
+                                        : _seriesCountController.text != "1"
+                                            ? () {
+                                                FocusScope.of(context)
+                                                    .unfocus();
+                                                if (!_seriesCountController.text
+                                                    .startsWith("0")) {
+                                                  try {
+                                                    if (int.parse(
+                                                            _seriesCountController
+                                                                .text) >
+                                                        1) {
+                                                      int count = int.parse(
+                                                          _seriesCountController
+                                                              .text);
+                                                      count--;
+                                                      setState(() =>
+                                                          _seriesCountController
+                                                                  .text =
+                                                              count.toString());
+                                                    } else
+                                                      setState(() =>
+                                                          _seriesCountController
+                                                              .text = "1");
+                                                  } catch (e) {
+                                                    setState(() =>
                                                         _seriesCountController
-                                                            .text) >
-                                                    1) {
-                                                  int count = int.parse(
-                                                      _seriesCountController
-                                                          .text);
-                                                  count--;
-                                                  setState(() =>
+                                                            .text = "1");
+                                                  }
+                                                  _unique
+                                                      ? setState(() =>
+                                                          linesCount = int.parse(
+                                                              _seriesCountController
+                                                                  .text))
+                                                      : setState(
+                                                          () => linesCount = 1);
+                                                } else {
+                                                  if (_seriesCountController
+                                                          .text !=
+                                                      "01")
+                                                    setState(() {
+                                                      linesCount = (int.parse(
+                                                              _seriesCountController
+                                                                  .text
+                                                                  .substring(
+                                                                      1)) -
+                                                          1);
                                                       _seriesCountController
                                                               .text =
-                                                          count.toString());
-                                                } else
-                                                  setState(() =>
-                                                      _seriesCountController
-                                                          .text = "1");
-                                              } catch (e) {
-                                                setState(() =>
-                                                    _seriesCountController
-                                                        .text = "1");
-                                              }
-                                              _unique
-                                                  ? setState(() => linesCount =
-                                                      int.parse(
+                                                          linesCount.toString();
+                                                    });
+                                                  else
+                                                    setState(() {
+                                                      linesCount = (int.parse(
                                                           _seriesCountController
-                                                              .text))
-                                                  : setState(
-                                                      () => linesCount = 1);
-                                            } else {
-                                              if (_seriesCountController.text != "01")
-                                                setState(() {
-                                                linesCount = (int.parse(_seriesCountController
-                                                              .text
-                                                              .substring(1))-1);
-                                                _seriesCountController.text = linesCount.toString();
-                                              });
-                                              else
-                                              setState(() {
-                                                linesCount = (int.parse(_seriesCountController
                                                               .text
                                                               .substring(1)));
-                                                _seriesCountController.text = linesCount.toString();
-                                              });
-                                            }
-                                          }
-                                        : null,
+                                                      _seriesCountController
+                                                              .text =
+                                                          linesCount.toString();
+                                                    });
+                                                }
+                                              }
+                                            : null,
                                     onLongPress: _seriesCountController.text !=
                                             "1"
                                         ? () {
@@ -378,7 +488,8 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
                                   ),
                                 ),
                                 Flexible(
-                                  child: StrongrText(_seriesCountController.text),
+                                  child:
+                                      StrongrText(_seriesCountController.text),
                                 ),
                                 Container(
                                   height: 35,
@@ -386,50 +497,66 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
                                   child: RawMaterialButton(
                                     child: StrongrText(
                                       "+",
-                                      color: int.parse(_seriesCountController.text) >= 10 || int.parse(_seriesCountController.text) < 1 || _seriesCountController.text == "" || _seriesCountController.text == null
+                                      color: int.parse(_seriesCountController
+                                                      .text) >=
+                                                  10 ||
+                                              int.parse(_seriesCountController
+                                                      .text) <
+                                                  1 ||
+                                              _seriesCountController.text ==
+                                                  "" ||
+                                              _seriesCountController.text ==
+                                                  null
                                           ? Colors.grey
                                           : StrongrColors.black,
                                     ),
                                     shape: CircleBorder(),
-                                    onPressed: int.parse(_seriesCountController.text) >= 10 || int.parse(_seriesCountController.text) < 1 || _seriesCountController.text == null ? null :
-                                    _seriesCountController.text !=
-                                            "10"
-                                        ? () {
-                                            FocusScope.of(context).unfocus();
-                                            if (!_seriesCountController.text
-                                                .startsWith("0")) {
-                                              try {
-                                                if (int.parse(
-                                                        _seriesCountController
-                                                            .text) <
-                                                    10) {
-                                                  int count = int.parse(
-                                                      _seriesCountController
-                                                          .text);
-                                                  count++;
-                                                  setState(() =>
-                                                      _seriesCountController
-                                                              .text =
-                                                          count.toString());
-                                                } else
-                                                  setState(() =>
-                                                      _seriesCountController
-                                                          .text = "10");
-                                              } catch (e) {
-                                                setState(() =>
-                                                    _seriesCountController
-                                                        .text = "1");
-                                              }
-                                              _unique
-                                                  ? setState(() => linesCount =
-                                                      int.parse(
+                                    onPressed: int.parse(_seriesCountController
+                                                    .text) >=
+                                                10 ||
+                                            int.parse(_seriesCountController
+                                                    .text) <
+                                                1 ||
+                                            _seriesCountController.text == null
+                                        ? null
+                                        : _seriesCountController.text != "10"
+                                            ? () {
+                                                FocusScope.of(context)
+                                                    .unfocus();
+                                                if (!_seriesCountController.text
+                                                    .startsWith("0")) {
+                                                  try {
+                                                    if (int.parse(
+                                                            _seriesCountController
+                                                                .text) <
+                                                        10) {
+                                                      int count = int.parse(
                                                           _seriesCountController
-                                                              .text))
-                                                  : setState(
-                                                      () => linesCount = 1);
-                                            }
-                                          }
-                                        : null,
+                                                              .text);
+                                                      count++;
+                                                      setState(() =>
+                                                          _seriesCountController
+                                                                  .text =
+                                                              count.toString());
+                                                    } else
+                                                      setState(() =>
+                                                          _seriesCountController
+                                                              .text = "10");
+                                                  } catch (e) {
+                                                    setState(() =>
+                                                        _seriesCountController
+                                                            .text = "1");
+                                                  }
+                                                  _unique
+                                                      ? setState(() =>
+                                                          linesCount = int.parse(
+                                                              _seriesCountController
+                                                                  .text))
+                                                      : setState(
+                                                          () => linesCount = 1);
+                                                }
+                                              }
+                                            : null,
                                     onLongPress: _seriesCountController.text !=
                                             "10"
                                         ? () {
