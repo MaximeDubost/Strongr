@@ -107,7 +107,7 @@ class _AppExercisesPageState extends State<AppExercisesPage> {
                   )))
             Container(
               padding: EdgeInsets.all(5),
-              height: 90,
+              height: 110,
               child: StrongrRoundedContainer(
                 width: ScreenSize.width(context),
                 content: Row(
@@ -165,11 +165,10 @@ class _AppExercisesPageState extends State<AppExercisesPage> {
                             )
                           : Container(
                               // color: Colors.red,
-                              width: 75,
-                              height: 75,
+                              width: 80,
                               child: Row(
                                 mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceAround,
                                 children: <Widget>[
                                   VerticalDivider(
                                     thickness: 1,
@@ -177,11 +176,10 @@ class _AppExercisesPageState extends State<AppExercisesPage> {
                                     endIndent: 10,
                                   ),
                                   Container(
+                                    // color: Colors.white,
                                     width: 50,
-                                    height: 50,
-                                    child: RawMaterialButton(
-                                      shape: CircleBorder(),
-                                      child: Icon(
+                                    child: IconButton(
+                                      icon: Icon(
                                         Icons.info_outline,
                                         color: StrongrColors.blue,
                                       ),

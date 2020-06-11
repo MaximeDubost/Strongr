@@ -29,14 +29,14 @@ class _SessionsViewState extends State<SessionsView> {
   TextEditingController searchbarController;
   Future<List<SessionPreview>> futureSessions;
   bool sortedByRecent;
-  List<String> popupMenuItems;
+  // List<String> popupMenuItems;
 
   @override
   void initState() {
     searchbarController = TextEditingController(text: "");
     futureSessions = SessionService.getSessions();
     sortedByRecent = true;
-    popupMenuItems = ["Filtres", "Créer"];
+    // popupMenuItems = ["Filtres", "Créer"];
     super.initState();
   }
 
@@ -246,33 +246,46 @@ class _SessionsViewState extends State<SessionsView> {
           leading: BackButton(),
           title: Text("Vos séances"),
           actions: <Widget>[
-            PopupMenuButton<String>(
-              tooltip: "Menu",
-              onSelected: (value) async {
-                switch (value) {
-                  case "Filtres":
-                    break;
-                  case "Créer":
-                    await Navigator.pushNamed(
-                      context,
-                      SESSION_CREATE_ROUTE,
-                    ).then((val) {
-                      if (val == true) {
-                        setState(() {});
-                      }
-                    });
-                    break;
-                }
-              },
-              itemBuilder: (BuildContext context) {
-                return popupMenuItems.map(
-                  (String choice) {
-                    return PopupMenuItem<String>(
-                      value: choice,
-                      child: Text(choice),
-                    );
-                  },
-                ).toList();
+            // PopupMenuButton<String>(
+            //   tooltip: "Menu",
+            //   onSelected: (value) async {
+            //     switch (value) {
+            //       case "Filtres":
+            //         break;
+            //       case "Créer":
+            //         await Navigator.pushNamed(
+            //           context,
+            //           SESSION_CREATE_ROUTE,
+            //         ).then((val) {
+            //           if (val == true) {
+            //             setState(() {});
+            //           }
+            //         });
+            //         break;
+            //     }
+            //   },
+            //   itemBuilder: (BuildContext context) {
+            //     return popupMenuItems.map(
+            //       (String choice) {
+            //         return PopupMenuItem<String>(
+            //           value: choice,
+            //           child: Text(choice),
+            //         );
+            //       },
+            //     ).toList();
+            //   },
+            // ),
+            IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () async {
+                await Navigator.pushNamed(
+                  context,
+                  SESSION_CREATE_ROUTE,
+                ).then((val) {
+                  if (val == true) {
+                    setState(() {});
+                  }
+                });
               },
             ),
           ],

@@ -12,7 +12,7 @@ class ProgramCreateView extends StatefulWidget {
 
 class _ProgramCreateViewState extends State<ProgramCreateView> {
   GlobalKey<FormState> _key = GlobalKey();
-  bool _unique, _validate;
+  bool _validate;
   TextEditingController _seriesCountController;
   int linesCount = 1;
   String errorText = "";
@@ -21,32 +21,13 @@ class _ProgramCreateViewState extends State<ProgramCreateView> {
   void initState() {
     super.initState();
     _seriesCountController = TextEditingController(text: "1");
-    _unique = _validate = false;
+    _validate = false;
   }
 
   @override
   void dispose() {
     super.dispose();
     _seriesCountController.dispose();
-  }
-
-  String validateSeriesCount(String value) {
-    // if (value.length == 0)
-    //   return "Vous devez renseigner un nombre de séries";
-    // if (value.startsWith("0"))
-    //   return "Format incorrect";
-    // if (int.parse(value) < 1)
-    //   return "Vous ne pouvez pas effectuer moins d'une série";
-    // if (int.parse(value) > 10)
-    //   return "Vous ne pouvez pas effectuer plus de 10 séries";
-
-    if (value.length == 0 ||
-        value.startsWith("0") ||
-        int.parse(value) < 1 ||
-        int.parse(value) > 10)
-      return "";
-    else
-      return null;
   }
 
   void sendToServer() {
@@ -62,37 +43,6 @@ class _ProgramCreateViewState extends State<ProgramCreateView> {
     }
   }
 
-  /// Détermine si le champ "Séries" est valide ou non.
-  /// Retourne true s'il est valide, false sinon.
-  bool validSet({bool strict = false}) {
-    bool res = strict
-        ? !(_seriesCountController.text == "" ||
-            _seriesCountController.text.startsWith("0") ||
-            int.parse(_seriesCountController.text) < 1 ||
-            int.parse(_seriesCountController.text) > 10)
-        : !(_seriesCountController.text == "" ||
-            _seriesCountController.text.startsWith("0") ||
-            int.parse(_seriesCountController.text) <= 1 ||
-            int.parse(_seriesCountController.text) > 10);
-    return res;
-  }
-
-  void changeSetCount() {
-    if (_unique == false) {
-      linesCount = 1;
-      // print(linesCount);
-    } else if (_seriesCountController.text == "" ||
-        _seriesCountController.text.startsWith("0") ||
-        int.parse(_seriesCountController.text) < 1 ||
-        int.parse(_seriesCountController.text) > 10) {
-      linesCount = 0;
-      // print(linesCount);
-    } else {
-      linesCount = int.parse(_seriesCountController.text);
-      // print(linesCount);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -100,12 +50,12 @@ class _ProgramCreateViewState extends State<ProgramCreateView> {
         centerTitle: true,
         leading: BackButton(),
         title: Text("Nouveau programme"),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.edit),
-            onPressed: () {},
-          )
-        ],
+        // actions: <Widget>[
+        //   IconButton(
+        //     icon: Icon(Icons.edit),
+        //     onPressed: () {},
+        //   )
+        // ],
       ),
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
@@ -152,90 +102,6 @@ class _ProgramCreateViewState extends State<ProgramCreateView> {
                       physics: BouncingScrollPhysics(),
                       padding: EdgeInsets.all(10),
                       children: <Widget>[
-                        StrongrRoundedContainer(
-                          width: ScreenSize.width(context) / 1.5,
-                          content: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: <Widget>[
-                              Container(
-                                // color: Colors.red,
-                                width: ScreenSize.width(context) / 2.8,
-                                child: Center(
-                                  child: StrongrText(
-                                    "Perte de poids",
-                                    size: 18,
-                                  ),
-                                ),
-                              ),
-                              VerticalDivider(
-                                thickness: 1,
-                                indent: 10,
-                                endIndent: 10,
-                              ),
-                              IconButton(
-                                icon: Icon(Icons.info_outline),
-                                onPressed: () {},
-                              )
-                            ],
-                          ),
-                          onPressed: () {},
-                        ),
-                        StrongrRoundedContainer(
-                          width: ScreenSize.width(context) / 1.5,
-                          content: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: <Widget>[
-                              Container(
-                                // color: Colors.red,
-                                width: ScreenSize.width(context) / 2.8,
-                                child: Center(
-                                  child: StrongrText(
-                                    "Sèche",
-                                    size: 18,
-                                  ),
-                                ),
-                              ),
-                              VerticalDivider(
-                                thickness: 1,
-                                indent: 10,
-                                endIndent: 10,
-                              ),
-                              IconButton(
-                                icon: Icon(Icons.info_outline),
-                                onPressed: () {},
-                              )
-                            ],
-                          ),
-                          onPressed: () {},
-                        ),
-                        StrongrRoundedContainer(
-                          width: ScreenSize.width(context) / 1.5,
-                          content: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: <Widget>[
-                              Container(
-                                // color: Colors.red,
-                                width: ScreenSize.width(context) / 2.8,
-                                child: Center(
-                                  child: StrongrText(
-                                    "Prise de masse",
-                                    size: 18,
-                                  ),
-                                ),
-                              ),
-                              VerticalDivider(
-                                thickness: 1,
-                                indent: 10,
-                                endIndent: 10,
-                              ),
-                              IconButton(
-                                icon: Icon(Icons.info_outline),
-                                onPressed: () {},
-                              )
-                            ],
-                          ),
-                          onPressed: () {},
-                        ),
                         StrongrRoundedContainer(
                           width: ScreenSize.width(context) / 1.5,
                           content: Row(
@@ -320,6 +186,34 @@ class _ProgramCreateViewState extends State<ProgramCreateView> {
                           ),
                           onPressed: () {},
                         ),
+                        StrongrRoundedContainer(
+                          width: ScreenSize.width(context) / 1.5,
+                          content: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: <Widget>[
+                              Container(
+                                // color: Colors.red,
+                                width: ScreenSize.width(context) / 2.8,
+                                child: Center(
+                                  child: StrongrText(
+                                    "Brûleur de calories",
+                                    size: 18,
+                                  ),
+                                ),
+                              ),
+                              VerticalDivider(
+                                thickness: 1,
+                                indent: 10,
+                                endIndent: 10,
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.info_outline),
+                                onPressed: () {},
+                              )
+                            ],
+                          ),
+                          onPressed: () {},
+                        ),
                       ],
                     ),
                   ),
@@ -328,26 +222,26 @@ class _ProgramCreateViewState extends State<ProgramCreateView> {
                     padding: EdgeInsets.all(10),
                     child: StrongrText("Séances"),
                   ),
-                  Container(
-                    // color: Colors.red,
-                    height: 50,
-                    child: Center(
-                      child: StrongrText(
-                        "Aucune séance",
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ),
+                  // Container(
+                  //   // color: Colors.red,
+                  //   height: 50,
+                  //   child: Center(
+                  //     child: StrongrText(
+                  //       "Aucune séance",
+                  //       color: Colors.grey,
+                  //     ),
+                  //   ),
+                  // ),
                   Container(
                     padding: EdgeInsets.all(10),
                     width: ScreenSize.width(context),
                     child: Center(
-                      child: FloatingActionButton(
+                      child: FloatingActionButton.extended(
                         heroTag: "add_fab",
-                        mini: true,
-                        backgroundColor: StrongrColors.blue,
+                        backgroundColor: StrongrColors.black,
                         onPressed: () {},
-                        child: Icon(Icons.add, color: Colors.white),
+                        label: StrongrText("Ajouter", color: Colors.white,),
+                        icon: Icon(Icons.add, color: Colors.white,),
                       ),
                     ),
                   ),
@@ -358,21 +252,30 @@ class _ProgramCreateViewState extends State<ProgramCreateView> {
         ),
       ),
       bottomNavigationBar: Container(
+        // color: Colors.red,
         height: 80,
-        child: Center(
-          child: FloatingActionButton.extended(
-            // heroTag: 'program_fab_' + widget.id.toString(),
-            backgroundColor: Colors.grey,
-            icon: Icon(
-              Icons.check,
-              color: Colors.white,
+        child: Stack(
+          children: <Widget>[
+            Divider(
+              thickness: 0.5,
+              color: Colors.grey,
+              height: 1,
             ),
-            onPressed: null,
-            label: StrongrText(
-              "Créer",
-              color: Colors.white,
+            Center(
+              child: FloatingActionButton.extended(
+                backgroundColor: Colors.grey,
+                icon: Icon(
+                  Icons.check,
+                  color: Colors.white,
+                ),
+                onPressed: null,
+                label: StrongrText(
+                  "Créer",
+                  color: Colors.white,
+                ),
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );

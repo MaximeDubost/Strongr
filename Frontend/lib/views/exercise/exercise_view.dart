@@ -418,11 +418,18 @@ class _ExerciseViewState extends State<ExerciseView> {
                 padding: EdgeInsets.all(10),
                 width: ScreenSize.width(context),
                 child: Center(
-                  child: FloatingActionButton(
-                    mini: true,
-                    backgroundColor: StrongrColors.blue,
+                  child: FloatingActionButton.extended(
+                    heroTag: "add_fab",
+                    backgroundColor: StrongrColors.black,
+                    label: StrongrText(
+                      "Nouvelle série",
+                      color: Colors.white,
+                    ),
+                    icon: Icon(
+                      Icons.add,
+                      color: Colors.white,
+                    ),
                     onPressed: () {},
-                    child: Icon(Icons.add, color: Colors.white),
                   ),
                 ),
               ),
