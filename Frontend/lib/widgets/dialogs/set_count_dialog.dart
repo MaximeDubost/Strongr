@@ -2,21 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
-class RepetitionCountDialog extends StatefulWidget {
-  final int repetitionCount;
+class SetCountDialog extends StatefulWidget {
+  final int setCount;
 
-  RepetitionCountDialog({this.repetitionCount});
+  SetCountDialog({this.setCount});
 
   @override
-  _RepetitionCountDialogState createState() => _RepetitionCountDialogState();
+  _SetCountDialogState createState() => _SetCountDialogState();
 }
 
-class _RepetitionCountDialogState extends State<RepetitionCountDialog> {
+class _SetCountDialogState extends State<SetCountDialog> {
   int initialValue;
 
   @override
   void initState() {
-    initialValue = widget.repetitionCount ?? 1;
+    initialValue = widget.setCount ?? 1;
     super.initState();
   }
 
@@ -30,7 +30,7 @@ class _RepetitionCountDialogState extends State<RepetitionCountDialog> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              StrongrText("Nombre de répétitions"),
+              StrongrText("Nombre de séries"),
               Column(
                 children: <Widget>[
                   Divider(
@@ -39,10 +39,9 @@ class _RepetitionCountDialogState extends State<RepetitionCountDialog> {
                     height: 1,
                   ),
                   NumberPicker.integer(
-                    infiniteLoop: true,
                     initialValue: initialValue,
                     minValue: 1,
-                    maxValue: 100,
+                    maxValue: 10,
                     onChanged: (newValue) => setState(
                       () => initialValue = newValue,
                     ),

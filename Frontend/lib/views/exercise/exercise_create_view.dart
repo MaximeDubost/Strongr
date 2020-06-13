@@ -5,11 +5,14 @@ import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/views/app_exercise/app_exercise_view.dart';
 import 'package:strongr/widgets/dialogs/repetition_count_dialog.dart';
+import 'package:strongr/widgets/dialogs/rest_time_dialog.dart';
+import 'package:strongr/widgets/dialogs/set_count_dialog.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
 import 'package:strongr/widgets/strongr_rounded_textformfield.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 import 'package:strongr/models/Equipment.dart';
 import 'package:strongr/services/equipment_service.dart';
+import 'package:strongr/utils/time_formater.dart';
 
 class ExerciseCreateView extends StatefulWidget {
   final int id;
@@ -25,8 +28,11 @@ class ExerciseCreateView extends StatefulWidget {
 
 class _ExerciseCreateViewState extends State<ExerciseCreateView> {
   GlobalKey<FormState> _key = GlobalKey();
-  bool _unique, _validate, _visibility;
-  int _serieCount,
+  bool _specific, _validate, _visibility;
+  TextEditingController exerciseNameController;
+  int selectedEquipmentId,
+      setCount,
+      linesCount,
       _repetitionCount1,
       _repetitionCount2,
       _repetitionCount3,
@@ -49,16 +55,16 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
       _restTime9,
       _restTime10;
   List<Duration> restTimeList;
-  int linesCount = 1, setCount;
   String errorText = "";
   Future<List<Equipment>> futureEquipments;
   List<bool> equipmentSelection;
-  int selectedEquipmentId;
 
   @override
   void initState() {
     super.initState();
-    _serieCount = 1;
+    exerciseNameController = TextEditingController(text: "");
+    setCount = 1;
+    linesCount = 1;
     _repetitionCount1 = _repetitionCount2 = _repetitionCount3 =
         _repetitionCount4 = _repetitionCount5 = _repetitionCount6 =
             _repetitionCount7 =
@@ -76,16 +82,16 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
       _repetitionCount9,
       _repetitionCount10
     ]);
-    _restTime1 = Duration(seconds: 60);
-    _restTime2 = Duration(seconds: 60);
-    _restTime3 = Duration(seconds: 60);
-    _restTime4 = Duration(seconds: 60);
-    _restTime5 = Duration(seconds: 60);
-    _restTime6 = Duration(seconds: 60);
-    _restTime7 = Duration(seconds: 60);
-    _restTime8 = Duration(seconds: 60);
-    _restTime9 = Duration(seconds: 60);
-    _restTime10 = Duration(seconds: 60);
+    _restTime1 = Duration(seconds: 90);
+    _restTime2 = Duration(seconds: 90);
+    _restTime3 = Duration(seconds: 90);
+    _restTime4 = Duration(seconds: 90);
+    _restTime5 = Duration(seconds: 90);
+    _restTime6 = Duration(seconds: 90);
+    _restTime7 = Duration(seconds: 90);
+    _restTime8 = Duration(seconds: 90);
+    _restTime9 = Duration(seconds: 90);
+    _restTime10 = Duration(seconds: 90);
     restTimeList = List<Duration>();
     restTimeList.addAll([
       _restTime1,
@@ -100,7 +106,7 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
       _restTime10
     ]);
     _visibility = !validSet();
-    _unique = _validate = false;
+    _specific = _validate = false;
     futureEquipments =
         EquipmentService.getEquipmentsOfAppExercise(idAppExercise: widget.id);
     equipmentSelection = List<bool>();
@@ -129,7 +135,7 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
     if (_key.currentState.validate()) {
       _key.currentState.save();
       setState(() {
-        linesCount = _serieCount;
+        linesCount = setCount;
       });
     } else {
       setState(() {
@@ -142,21 +148,78 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
   /// Retourne true s'il est valide, false sinon.
   bool validSet({bool strict = false}) {
     bool res = strict
-        ? !(_serieCount < 1 || _serieCount > 10)
-        : !(_serieCount <= 1 || _serieCount > 10);
+        ? !(setCount < 1 || setCount > 10)
+        : !(setCount <= 1 || setCount > 10);
     return res;
   }
 
-  void changeSetCount() {
-    if (_unique == false) {
+  /// Change le nombre de ligne affichées.
+  void changeLineCount() {
+    if (_specific == false) {
       linesCount = 1;
       // print(linesCount);
-    } else if (_serieCount < 1 || _serieCount > 10) {
+    } else if (setCount < 1 || setCount > 10) {
       linesCount = 0;
       // print(linesCount);
     } else {
-      linesCount = _serieCount;
+      linesCount = setCount;
       // print(linesCount);
+    }
+  }
+
+  /// Retourne le nombre de répétition de la série [i] + 1.
+  int repCountOfRow(int i) {
+    switch (i + 1) {
+      case 1:
+        return _repetitionCount1;
+      case 2:
+        return _repetitionCount2;
+      case 3:
+        return _repetitionCount3;
+      case 4:
+        return _repetitionCount4;
+      case 5:
+        return _repetitionCount5;
+      case 6:
+        return _repetitionCount6;
+      case 7:
+        return _repetitionCount7;
+      case 8:
+        return _repetitionCount8;
+      case 9:
+        return _repetitionCount9;
+      case 10:
+        return _repetitionCount10;
+      default:
+        return 0;
+    }
+  }
+
+  /// Retourne le temps de repos de la série [i] + 1.
+  Duration restTimeOfRow(int i) {
+    switch (i + 1) {
+      case 1:
+        return _restTime1;
+      case 2:
+        return _restTime2;
+      case 3:
+        return _restTime3;
+      case 4:
+        return _restTime4;
+      case 5:
+        return _restTime5;
+      case 6:
+        return _restTime6;
+      case 7:
+        return _restTime7;
+      case 8:
+        return _restTime8;
+      case 9:
+        return _restTime9;
+      case 10:
+        return _restTime10;
+      default:
+        return Duration(seconds: 0);
     }
   }
 
@@ -211,17 +274,8 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
                   Container(
                     padding: EdgeInsets.only(left: 15, right: 15),
                     child: StrongrRoundedTextFormField(
-                      controller: null,
-                      validator: null,
-                      // onSaved: (String value) => setState(
-                      // () => connectId = value.toLowerCase()),
-                      onSaved: (value) {},
-
-                      // onChanged: (String value) {
-                      //   setState(() => warning = null);
-                      //   isEmpty();
-                      // },
-                      onChanged: (value) {},
+                      controller: exerciseNameController,
+                      // onChanged: (value) => print(exerciseNameController.text),
                       inputFormatters: [
                         LengthLimitingTextInputFormatter(30),
                       ],
@@ -315,6 +369,7 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
                                         ? 2
                                         : 1,
                                     onPressed: () {
+                                      FocusScope.of(context).unfocus();
                                       setState(() {
                                         for (int i = 0;
                                             i < equipmentSelection.length;
@@ -368,125 +423,168 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
                         Container(
                           height: 50,
                           child: StrongrRoundedContainer(
-                            width: 135,
-                            content: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Container(
-                                  // color: Colors.red,
-                                  height: 35,
-                                  width: 35,
-                                  child: RawMaterialButton(
-                                    child: StrongrText(
-                                      "-",
-                                      color:
-                                          _serieCount <= 1 || _serieCount > 10
-                                              ? Colors.grey
-                                              : StrongrColors.black,
-                                    ),
-                                    shape: CircleBorder(),
-                                    onPressed: _serieCount <= 1 ||
-                                            _serieCount > 10
-                                        ? null
-                                        : _serieCount != 1
-                                            ? () {
-                                                FocusScope.of(context)
-                                                    .unfocus();
+                              width: 135,
+                              content: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Container(
+                                    // color: Colors.red,
+                                    height: 35,
+                                    width: 35,
+                                    child: RawMaterialButton(
+                                      child: StrongrText(
+                                        "-",
+                                        color: setCount <= 1 || setCount > 10
+                                            ? Colors.grey
+                                            : StrongrColors.black,
+                                      ),
+                                      shape: CircleBorder(),
+                                      onPressed: setCount <= 1 || setCount > 10
+                                          ? null
+                                          : setCount != 1
+                                              ? () {
+                                                  FocusScope.of(context)
+                                                      .unfocus();
 
-                                                try {
-                                                  if (_serieCount > 1) {
-                                                    int count = _serieCount;
-                                                    count--;
-                                                    setState(() =>
-                                                        _serieCount = count);
-                                                  } else
+                                                  try {
+                                                    if (setCount > 1) {
+                                                      int count = setCount;
+                                                      count--;
+                                                      setState(() =>
+                                                          setCount = count);
+                                                    } else
+                                                      setState(
+                                                          () => setCount = 1);
+                                                  } catch (e) {
                                                     setState(
-                                                        () => _serieCount = 1);
-                                                } catch (e) {
-                                                  setState(
-                                                      () => _serieCount = 1);
+                                                        () => setCount = 1);
+                                                  }
+                                                  _specific
+                                                      ? setState(() =>
+                                                          linesCount = setCount)
+                                                      : setState(
+                                                          () => linesCount = 1);
                                                 }
-                                                _unique
-                                                    ? setState(() =>
-                                                        linesCount =
-                                                            _serieCount)
-                                                    : setState(
-                                                        () => linesCount = 1);
-                                              }
-                                            : null,
-                                    onLongPress: _serieCount != 1
-                                        ? () {
-                                            FocusScope.of(context).unfocus();
-                                            setState(() => _serieCount = 1);
-                                            _unique
-                                                ? setState(() =>
-                                                    linesCount = _serieCount)
-                                                : setState(
-                                                    () => linesCount = 1);
-                                          }
-                                        : null,
-                                  ),
-                                ),
-                                Flexible(
-                                  child: StrongrText(_serieCount.toString()),
-                                ),
-                                Container(
-                                  height: 35,
-                                  width: 35,
-                                  child: RawMaterialButton(
-                                    child: StrongrText(
-                                      "+",
-                                      color:
-                                          _serieCount >= 10 || _serieCount < 1
-                                              ? Colors.grey
-                                              : StrongrColors.black,
+                                              : null,
+                                      onLongPress: setCount != 1
+                                          ? () {
+                                              FocusScope.of(context).unfocus();
+                                              setState(() => setCount = 1);
+                                              _specific
+                                                  ? setState(() =>
+                                                      linesCount = setCount)
+                                                  : setState(
+                                                      () => linesCount = 1);
+                                            }
+                                          : null,
                                     ),
-                                    shape: CircleBorder(),
-                                    onPressed: _serieCount >= 10 ||
-                                            _serieCount < 1
-                                        ? null
-                                        : _serieCount != 10
-                                            ? () {
-                                                FocusScope.of(context)
-                                                    .unfocus();
-                                                try {
-                                                  if (_serieCount < 10) {
-                                                    int count = _serieCount;
-                                                    count++;
-                                                    setState(() =>
-                                                        _serieCount = count);
-                                                  } else
-                                                    setState(
-                                                        () => _serieCount = 10);
-                                                } catch (e) {
-                                                  setState(
-                                                      () => _serieCount = 1);
-                                                }
-                                                _unique
-                                                    ? setState(() =>
-                                                        linesCount =
-                                                            _serieCount)
-                                                    : setState(
-                                                        () => linesCount = 1);
-                                              }
-                                            : null,
-                                    onLongPress: _serieCount != 10
-                                        ? () {
-                                            FocusScope.of(context).unfocus();
-                                            setState(() => _serieCount = 10);
-                                            _unique
-                                                ? setState(() =>
-                                                    linesCount = _serieCount)
-                                                : setState(
-                                                    () => linesCount = 1);
-                                          }
-                                        : null,
                                   ),
-                                ),
-                              ],
-                            ),
-                            onPressed: null,
-                          ),
+                                  Flexible(
+                                    child: StrongrText(setCount.toString()),
+                                  ),
+                                  Container(
+                                    height: 35,
+                                    width: 35,
+                                    child: RawMaterialButton(
+                                      child: StrongrText(
+                                        "+",
+                                        color: setCount >= 10 || setCount < 1
+                                            ? Colors.grey
+                                            : StrongrColors.black,
+                                      ),
+                                      shape: CircleBorder(),
+                                      onPressed: setCount >= 10 || setCount < 1
+                                          ? null
+                                          : setCount != 10
+                                              ? () {
+                                                  FocusScope.of(context)
+                                                      .unfocus();
+                                                  if (_specific &&
+                                                      setCount == 1)
+                                                    setState(() {
+                                                      _repetitionCount10 = _repetitionCount9 =
+                                                          _repetitionCount8 = _repetitionCount7 =
+                                                              _repetitionCount6 =
+                                                                  _repetitionCount5 =
+                                                                      _repetitionCount4 =
+                                                                          _repetitionCount3 =
+                                                                              _repetitionCount2 = _repetitionCount1;
+                                                      _restTime10 = _restTime9 =
+                                                          _restTime8 = _restTime7 =
+                                                              _restTime6 = _restTime5 =
+                                                                  _restTime4 =
+                                                                      _restTime3 =
+                                                                          _restTime2 =
+                                                                              _restTime1;
+                                                    });
+                                                  try {
+                                                    if (setCount < 10) {
+                                                      int count = setCount;
+                                                      count++;
+                                                      setState(() =>
+                                                          setCount = count);
+                                                    } else
+                                                      setState(
+                                                          () => setCount = 10);
+                                                  } catch (e) {
+                                                    setState(
+                                                        () => setCount = 1);
+                                                  }
+                                                  _specific
+                                                      ? setState(() =>
+                                                          linesCount = setCount)
+                                                      : setState(
+                                                          () => linesCount = 1);
+                                                }
+                                              : null,
+                                      onLongPress: setCount != 10
+                                          ? () {
+                                              FocusScope.of(context).unfocus();
+                                              if (_specific && setCount == 1)
+                                                setState(() {
+                                                  _repetitionCount10 = _repetitionCount9 =
+                                                      _repetitionCount8 = _repetitionCount7 =
+                                                          _repetitionCount6 = _repetitionCount5 =
+                                                              _repetitionCount4 =
+                                                                  _repetitionCount3 =
+                                                                      _repetitionCount2 =
+                                                                          _repetitionCount1;
+                                                  _restTime10 = _restTime9 =
+                                                      _restTime8 = _restTime7 =
+                                                          _restTime6 = _restTime5 =
+                                                              _restTime4 =
+                                                                  _restTime3 =
+                                                                      _restTime2 =
+                                                                          _restTime1;
+                                                });
+                                              setState(() => setCount = 10);
+                                              _specific
+                                                  ? setState(() =>
+                                                      linesCount = setCount)
+                                                  : setState(
+                                                      () => linesCount = 1);
+                                            }
+                                          : null,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              onPressed: () {
+                                FocusScope.of(context).unfocus();
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => SetCountDialog(
+                                    setCount: setCount,
+                                  ),
+                                ).then((newSetCount) {
+                                  if (newSetCount != null)
+                                    setState(() => setCount = newSetCount);
+                                  _specific
+                                      ? setState(() => linesCount = setCount)
+                                      : setState(() => linesCount = 1);
+                                });
+                              }),
                         ),
                         Flexible(
                           child: Row(
@@ -498,9 +596,26 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
                                       ? () {
                                           FocusScope.of(context).unfocus();
                                           setState(() {
-                                            _unique = !_unique;
+                                            _specific = !_specific;
                                           });
-                                          changeSetCount();
+                                          if (_specific)
+                                            setState(() {
+                                              _repetitionCount10 = _repetitionCount9 =
+                                                  _repetitionCount8 = _repetitionCount7 =
+                                                      _repetitionCount6 = _repetitionCount5 =
+                                                          _repetitionCount4 =
+                                                              _repetitionCount3 =
+                                                                  _repetitionCount2 =
+                                                                      _repetitionCount1;
+                                              _restTime10 = _restTime9 =
+                                                  _restTime8 = _restTime7 =
+                                                      _restTime6 = _restTime5 =
+                                                          _restTime4 =
+                                                              _restTime3 =
+                                                                  _restTime2 =
+                                                                      _restTime1;
+                                            });
+                                          changeLineCount();
                                         }
                                       : null,
                                   child: StrongrText(
@@ -515,14 +630,31 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
                               ),
                               Switch(
                                 activeColor: StrongrColors.blue,
-                                value: _unique,
+                                value: _specific,
                                 onChanged: validSet()
                                     ? (newValue) {
                                         FocusScope.of(context).unfocus();
                                         setState(() {
-                                          _unique = newValue;
+                                          _specific = newValue;
                                         });
-                                        changeSetCount();
+                                        if (_specific)
+                                          setState(() {
+                                            _repetitionCount10 = _repetitionCount9 =
+                                                _repetitionCount8 = _repetitionCount7 =
+                                                    _repetitionCount6 = _repetitionCount5 =
+                                                        _repetitionCount4 =
+                                                            _repetitionCount3 =
+                                                                _repetitionCount2 =
+                                                                    _repetitionCount1;
+                                            _restTime10 = _restTime9 =
+                                                _restTime8 = _restTime7 =
+                                                    _restTime6 = _restTime5 =
+                                                        _restTime4 =
+                                                            _restTime3 =
+                                                                _restTime2 =
+                                                                    _restTime1;
+                                          });
+                                        changeLineCount();
                                       }
                                     : null,
                               ),
@@ -565,7 +697,7 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
                   Center(
                     child: Container(
                       // color: Colors.blue,
-                      height: _unique
+                      height: _specific
                           ? 65 * double.parse(linesCount.toString())
                           : 65,
                       child: Visibility(
@@ -589,7 +721,7 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
                                         // color: Colors.red,
                                         child: Center(
                                           child: Text(
-                                            _unique
+                                            _specific
                                                 ? linesCount == 1
                                                     ? "•"
                                                     : (i + 1).toString()
@@ -603,138 +735,158 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
                                         ),
                                       ),
                                       Container(
-                                        // color: Colors.blue,
-                                        height: 50,
-                                        child: StrongrRoundedContainer(
-                                          width: 135,
-                                          content: Container(),
-                                          // Row(
-                                          //   mainAxisAlignment:
-                                          //       MainAxisAlignment.spaceBetween,
-                                          //   children: <Widget>[
-                                          //     Container(
-                                          //       height: 35,
-                                          //       width: 35,
-                                          //       child: RawMaterialButton(
-                                          //         child: StrongrText(
-                                          //           "-",
-                                          //           color: StrongrColors.black,
-                                          //         ),
-                                          //         shape: CircleBorder(),
-                                          //         onPressed: null,
-                                          //         onLongPress: null,
-                                          //       ),
-                                          //     ),
-                                          //     Flexible(
-                                          //       child: TextFormField(
-                                          //         key: Key("rep_" +
-                                          //             (i + 1).toString()),
-                                          //         textAlign: TextAlign.center,
-                                          //         validator: validate,
-                                          //         keyboardType:
-                                          //             TextInputType.number,
-                                          //         inputFormatters: <
-                                          //             TextInputFormatter>[
-                                          //           LengthLimitingTextInputFormatter(
-                                          //               2),
-                                          //           WhitelistingTextInputFormatter
-                                          //               .digitsOnly
-                                          //         ],
-                                          //         controller: null,
-                                          //         decoration: InputDecoration(
-                                          //           border: InputBorder.none,
-                                          //           contentPadding:
-                                          //               EdgeInsets.all(5),
-                                          //         ),
-                                          //         onSaved: (String value) {},
-                                          //         onChanged: (newValue) {},
-                                          //       ),
-                                          //     ),
-                                          //     Container(
-                                          //       height: 35,
-                                          //       width: 35,
-                                          //       child: RawMaterialButton(
-                                          //         child: StrongrText(
-                                          //           "+",
-                                          //           color: StrongrColors.black,
-                                          //         ),
-                                          //         shape: CircleBorder(),
-                                          //         onPressed: null,
-                                          //         onLongPress: null,
-                                          //       ),
-                                          //     ),
-                                          //   ],
-                                          // ),
-                                          onPressed: () => showDialog(
-                                            context: context,
-                                            builder: (context) => RepetitionCountDialog(),
-                                          ),
-                                        ),
-                                      ),
-                                      Container(
                                         // color: Colors.green,
                                         height: 50,
                                         child: StrongrRoundedContainer(
-                                          width: 135,
-                                          content: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: <Widget>[
-                                              Container(
-                                                height: 35,
-                                                width: 35,
-                                                child: RawMaterialButton(
-                                                  child: StrongrText(
-                                                    "-",
-                                                    color: StrongrColors.black,
-                                                  ),
-                                                  shape: CircleBorder(),
-                                                  onPressed: null,
-                                                  onLongPress: null,
+                                            width: 135,
+                                            content: StrongrText(
+                                              repCountOfRow(i) != 0
+                                                  ? repCountOfRow(i).toString()
+                                                  : "",
+                                            ),
+                                            onPressed: () {
+                                              FocusScope.of(context).unfocus();
+                                              showDialog(
+                                                context: context,
+                                                builder: (context) =>
+                                                    RepetitionCountDialog(
+                                                  repetitionCount:
+                                                      repCountOfRow(i),
                                                 ),
-                                              ),
-                                              Flexible(
-                                                child: TextFormField(
-                                                  key: Key("rest_" +
-                                                      (i + 1).toString()),
-                                                  textAlign: TextAlign.center,
-                                                  validator: validate,
-                                                  keyboardType:
-                                                      TextInputType.number,
-                                                  inputFormatters: <
-                                                      TextInputFormatter>[
-                                                    LengthLimitingTextInputFormatter(
-                                                        2),
-                                                    WhitelistingTextInputFormatter
-                                                        .digitsOnly
-                                                  ],
-                                                  controller: null,
-                                                  decoration: InputDecoration(
-                                                    border: InputBorder.none,
-                                                    contentPadding:
-                                                        EdgeInsets.all(5),
-                                                  ),
-                                                  onSaved: (String value) {},
-                                                  onChanged: (newValue) {},
+                                              ).then((repetitionCount) {
+                                                if (repetitionCount != null)
+                                                  switch (i + 1) {
+                                                    case 1:
+                                                      setState(() =>
+                                                          _repetitionCount1 =
+                                                              repetitionCount);
+                                                      break;
+                                                    case 2:
+                                                      setState(() =>
+                                                          _repetitionCount2 =
+                                                              repetitionCount);
+                                                      break;
+                                                    case 3:
+                                                      setState(() =>
+                                                          _repetitionCount3 =
+                                                              repetitionCount);
+                                                      break;
+                                                    case 4:
+                                                      setState(() =>
+                                                          _repetitionCount4 =
+                                                              repetitionCount);
+                                                      break;
+                                                    case 5:
+                                                      setState(() =>
+                                                          _repetitionCount5 =
+                                                              repetitionCount);
+                                                      break;
+                                                    case 6:
+                                                      setState(() =>
+                                                          _repetitionCount6 =
+                                                              repetitionCount);
+                                                      break;
+                                                    case 7:
+                                                      setState(() =>
+                                                          _repetitionCount7 =
+                                                              repetitionCount);
+                                                      break;
+                                                    case 8:
+                                                      setState(() =>
+                                                          _repetitionCount8 =
+                                                              repetitionCount);
+                                                      break;
+                                                    case 9:
+                                                      setState(() =>
+                                                          _repetitionCount9 =
+                                                              repetitionCount);
+                                                      break;
+                                                    case 10:
+                                                      setState(() =>
+                                                          _repetitionCount10 =
+                                                              repetitionCount);
+                                                      break;
+                                                  }
+                                              });
+                                            }),
+                                      ),
+                                      Container(
+                                        // color: Colors.blue,
+                                        height: 50,
+                                        child: StrongrRoundedContainer(
+                                            width: 135,
+                                            content: StrongrText(
+                                              restTimeOfRow(i) !=
+                                                      Duration(seconds: 0)
+                                                  ? TimeFormater.getDuration(
+                                                          restTimeOfRow(i))
+                                                      .toString()
+                                                  : "",
+                                            ),
+                                            onPressed: () {
+                                              FocusScope.of(context).unfocus();
+                                              showDialog(
+                                                context: context,
+                                                builder: (context) =>
+                                                    RestTimeDialog(
+                                                  restTime: restTimeOfRow(i),
                                                 ),
-                                              ),
-                                              Container(
-                                                height: 35,
-                                                width: 35,
-                                                child: RawMaterialButton(
-                                                  child: StrongrText(
-                                                    "+",
-                                                    color: StrongrColors.black,
-                                                  ),
-                                                  shape: CircleBorder(),
-                                                  onPressed: null,
-                                                  onLongPress: null,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          onPressed: null,
-                                        ),
+                                              ).then((restTime) {
+                                                if (restTime != null)
+                                                  switch (i + 1) {
+                                                    case 1:
+                                                      setState(() =>
+                                                          _restTime1 =
+                                                              restTime);
+                                                      break;
+                                                    case 2:
+                                                      setState(() =>
+                                                          _restTime2 =
+                                                              restTime);
+                                                      break;
+                                                    case 3:
+                                                      setState(() =>
+                                                          _restTime3 =
+                                                              restTime);
+                                                      break;
+                                                    case 4:
+                                                      setState(() =>
+                                                          _restTime4 =
+                                                              restTime);
+                                                      break;
+                                                    case 5:
+                                                      setState(() =>
+                                                          _restTime5 =
+                                                              restTime);
+                                                      break;
+                                                    case 6:
+                                                      setState(() =>
+                                                          _restTime6 =
+                                                              restTime);
+                                                      break;
+                                                    case 7:
+                                                      setState(() =>
+                                                          _restTime7 =
+                                                              restTime);
+                                                      break;
+                                                    case 8:
+                                                      setState(() =>
+                                                          _restTime8 =
+                                                              restTime);
+                                                      break;
+                                                    case 9:
+                                                      setState(() =>
+                                                          _restTime9 =
+                                                              restTime);
+                                                      break;
+                                                    case 10:
+                                                      setState(() =>
+                                                          _restTime10 =
+                                                              restTime);
+                                                      break;
+                                                  }
+                                              });
+                                            }),
                                       ),
                                       Container(
                                         height: 35,
@@ -781,7 +933,7 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
                   Icons.check,
                   color: Colors.white,
                 ),
-                onPressed: validSet()
+                onPressed: validSet(strict: true)
                     ? () {
                         sendToServer();
                       }
