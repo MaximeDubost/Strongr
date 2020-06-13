@@ -4,6 +4,7 @@ import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/views/app_exercise/app_exercise_view.dart';
+import 'package:strongr/widgets/dialogs/repetition_count_dialog.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
 import 'package:strongr/widgets/strongr_rounded_textformfield.dart';
 import 'package:strongr/widgets/strongr_text.dart';
@@ -100,7 +101,8 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
     ]);
     _visibility = !validSet();
     _unique = _validate = false;
-    futureEquipments = EquipmentService.getEquipmentsOfAppExercise(idAppExercise: widget.id);
+    futureEquipments =
+        EquipmentService.getEquipmentsOfAppExercise(idAppExercise: widget.id);
     equipmentSelection = List<bool>();
   }
 
@@ -264,7 +266,7 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
                               ),
                             );
                           } else {
-                            for(int i = 0; i < snapshot.data.length; i++)
+                            for (int i = 0; i < snapshot.data.length; i++)
                               equipmentSelection.add(false);
                             return ListView(
                               scrollDirection: Axis.horizontal,
@@ -304,19 +306,21 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
                                         ),
                                       ],
                                     ),
-                                    borderColor:
-                                        equipmentSelection[snapshot.data.indexOf(item)]
-                                            ? StrongrColors.blue80
-                                            : StrongrColors.greyD,
-                                    borderWidth:
-                                        equipmentSelection[snapshot.data.indexOf(item)]
-                                            ? 2
-                                            : 1,
+                                    borderColor: equipmentSelection[
+                                            snapshot.data.indexOf(item)]
+                                        ? StrongrColors.blue80
+                                        : StrongrColors.greyD,
+                                    borderWidth: equipmentSelection[
+                                            snapshot.data.indexOf(item)]
+                                        ? 2
+                                        : 1,
                                     onPressed: () {
                                       setState(() {
-                                        for(int i = 0; i < equipmentSelection.length; i++)
-                                          equipmentSelection[i] = false;
-                                        equipmentSelection[snapshot.data.indexOf(item)] = true;
+                                        for (int i = 0;
+                                            i < equipmentSelection.length;
+                                            i++) equipmentSelection[i] = false;
+                                        equipmentSelection[
+                                            snapshot.data.indexOf(item)] = true;
                                         selectedEquipmentId = item.id;
                                       });
                                     },
@@ -603,64 +607,68 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
                                         height: 50,
                                         child: StrongrRoundedContainer(
                                           width: 135,
-                                          content: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: <Widget>[
-                                              Container(
-                                                height: 35,
-                                                width: 35,
-                                                child: RawMaterialButton(
-                                                  child: StrongrText(
-                                                    "-",
-                                                    color: StrongrColors.black,
-                                                  ),
-                                                  shape: CircleBorder(),
-                                                  onPressed: null,
-                                                  onLongPress: null,
-                                                ),
-                                              ),
-                                              Flexible(
-                                                child: TextFormField(
-                                                  key: Key("rep_" +
-                                                      (i + 1).toString()),
-                                                  textAlign: TextAlign.center,
-                                                  validator: validate,
-                                                  keyboardType:
-                                                      TextInputType.number,
-                                                  inputFormatters: <
-                                                      TextInputFormatter>[
-                                                    LengthLimitingTextInputFormatter(
-                                                        2),
-                                                    WhitelistingTextInputFormatter
-                                                        .digitsOnly
-                                                  ],
-                                                  controller: null,
-                                                  decoration: InputDecoration(
-                                                    border: InputBorder.none,
-                                                    contentPadding:
-                                                        EdgeInsets.all(5),
-                                                  ),
-                                                  onSaved: (String value) {},
-                                                  onChanged: (newValue) {},
-                                                ),
-                                              ),
-                                              Container(
-                                                height: 35,
-                                                width: 35,
-                                                child: RawMaterialButton(
-                                                  child: StrongrText(
-                                                    "+",
-                                                    color: StrongrColors.black,
-                                                  ),
-                                                  shape: CircleBorder(),
-                                                  onPressed: null,
-                                                  onLongPress: null,
-                                                ),
-                                              ),
-                                            ],
+                                          content: Container(),
+                                          // Row(
+                                          //   mainAxisAlignment:
+                                          //       MainAxisAlignment.spaceBetween,
+                                          //   children: <Widget>[
+                                          //     Container(
+                                          //       height: 35,
+                                          //       width: 35,
+                                          //       child: RawMaterialButton(
+                                          //         child: StrongrText(
+                                          //           "-",
+                                          //           color: StrongrColors.black,
+                                          //         ),
+                                          //         shape: CircleBorder(),
+                                          //         onPressed: null,
+                                          //         onLongPress: null,
+                                          //       ),
+                                          //     ),
+                                          //     Flexible(
+                                          //       child: TextFormField(
+                                          //         key: Key("rep_" +
+                                          //             (i + 1).toString()),
+                                          //         textAlign: TextAlign.center,
+                                          //         validator: validate,
+                                          //         keyboardType:
+                                          //             TextInputType.number,
+                                          //         inputFormatters: <
+                                          //             TextInputFormatter>[
+                                          //           LengthLimitingTextInputFormatter(
+                                          //               2),
+                                          //           WhitelistingTextInputFormatter
+                                          //               .digitsOnly
+                                          //         ],
+                                          //         controller: null,
+                                          //         decoration: InputDecoration(
+                                          //           border: InputBorder.none,
+                                          //           contentPadding:
+                                          //               EdgeInsets.all(5),
+                                          //         ),
+                                          //         onSaved: (String value) {},
+                                          //         onChanged: (newValue) {},
+                                          //       ),
+                                          //     ),
+                                          //     Container(
+                                          //       height: 35,
+                                          //       width: 35,
+                                          //       child: RawMaterialButton(
+                                          //         child: StrongrText(
+                                          //           "+",
+                                          //           color: StrongrColors.black,
+                                          //         ),
+                                          //         shape: CircleBorder(),
+                                          //         onPressed: null,
+                                          //         onLongPress: null,
+                                          //       ),
+                                          //     ),
+                                          //   ],
+                                          // ),
+                                          onPressed: () => showDialog(
+                                            context: context,
+                                            builder: (context) => RepetitionCountDialog(),
                                           ),
-                                          onPressed: null,
                                         ),
                                       ),
                                       Container(

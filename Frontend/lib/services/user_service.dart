@@ -59,7 +59,7 @@ class UserService {
     }
   }
 
-  /// TODO : [GET] /user/[id]
+  /// WIP : [GET] /user/[id]
   ///
   /// Retourne l'utilisateur [id].
   static Future<dynamic> getUser({@required int id}) async {
@@ -74,7 +74,7 @@ class UserService {
       throw HttpException('');
   }
 
-  /// TODO : [PUT] /user/update/[id]
+  /// WIP : [PUT] /user/update/[id]
   ///
   /// Modifie l'utilisateur [id].
   static Future<int> putUser({@required int id}) async {
@@ -92,7 +92,7 @@ class UserService {
       throw HttpException('');
   }
 
-  /// TODO : [DELETE] /user/delete/[id]
+  /// WIP : [DELETE] /user/delete/[id]
   ///
   /// Supprime l'utilisateur [id].
   static Future<int> deleteUser({@required int id}) async {
@@ -133,7 +133,7 @@ class UserService {
     }
   }
 
-  /// TODO : [POST] /logout
+  /// WIP : [POST] /logout
   ///
   /// Demande la déconnexion d'un utilisateur.
   static Future<int> postLogOut() async {

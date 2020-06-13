@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         canvasColor: StrongrColors.canvas,
         primaryColor: StrongrColors.black,
-        accentColor: StrongrColors.greyA,
+        accentColor: StrongrColors.blue,
         cursorColor: StrongrColors.black,
         fontFamily: 'Futura',
       ),
