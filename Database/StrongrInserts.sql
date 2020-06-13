@@ -9,7 +9,8 @@
 --
 
 -- Muscle --
-INSERT INTO _muscle (name)
+INSERT INTO _muscle
+	(name)
 VALUES
 	('Abdominaux'),
 	('Avant-bras'),
@@ -23,7 +24,8 @@ VALUES
 	('Triceps');
 
 -- AppExercise --
-INSERT INTO _app_exercise (name)
+INSERT INTO _app_exercise
+	(name)
 VALUES
 	('Back Squat'),
 	('Crunch'),
@@ -83,7 +85,8 @@ VALUES
 	('Traction');
 
 -- Equipment --
-INSERT INTO _equipment (name)
+INSERT INTO _equipment
+	(name)
 VALUES
 	('Banc 90° (position "chaise")'),
 	('Banc à lombaire'),
@@ -130,7 +133,8 @@ VALUES
 	('Tirage vertical');
 
 -- SessionType --
-INSERT INTO _session_type (name, description)
+INSERT INTO _session_type
+	(name, description)
 VALUES
 	('Split body', 'Le split body met la priorité sur l''intensité du training et non sur la fréquence d''entrainement, il s''agit d''entraîner chaque muscle une unique fois par semaine, on va donc pouvoir aller à l''échec et utiliser des techniques d''intensification. Il faut cependant un bon niveau pour employer ces méthodes d''intensification de manière efficace.
 
@@ -142,7 +146,8 @@ Les personnes ayant une mauvaise récupération peuvent entraîner chaque moiti�
 	('Full body', 'Le full body est conseillé aux débutants en musculation car la répétition fréquente des exercices leur permet une adaptation nerveuse ainsi qu''un apprentissage des mouvements plus rapide. Il n''est cependant pas réservé qu''aux débutants, car ils ne peuvent pas mettre beaucoup d''intensité dans leurs séances, ce qui leur permet de travailler chaque muscle souvent.');
 
 -- ProgramGoal --
-INSERT INTO _program_goal (name, description)
+INSERT INTO _program_goal
+	(name, description)
 VALUES
 	('Gain de force', 'La force musculaire est la capacité du muscle à fournir une contraction intense pour exercer la tension la plus importante possible. Pour y parvenir, le corps va recruter le plus de fibres possible, et les soumettre à un influx nerveux très puissant (environ 120 hertz, contre 80 hertz pour une série classique), de manière à forcer chaque fibre à se contracter le plus fortement possible. Mais notez bien que nous n''utilisons jamais 100% de nos fibres musculaires. Seule une petite partie est sollicitée en temps normal, et une partie un peu plus grande lors du travail de force. On parle aussi de force maximale. La force maximale représente 100% de la force disponible, elle permet de faire une seule répétition du mouvement (on parle de 1RM). On parle d''entraînement de force si on utilise plus de 77% de notre force maximale pour l''entraînement (c''est-à-dire s''entraîner avec des poids de plus de 77 kg si le 1RM est de 100kg, donc si vous pouvez au maximum soulever 100 kg sur cet exercice, pour une seule série et une seule répétition ). A noter que si ce type d''entraînement est bon pour augmenter sa force, il l''est bien moins pour la masse … en tout cas de manière directe. Mais inclure de temps en temps ce type de travail permet de « réveiller » des fibres musculaires non utilisées et donc par la suite de les faire grossir. Donc cela revient à vous permettre de travailler un plus grand nombre de fibres musculaires, donc plus de gains potentiel lors de votre prise de muscle.'),
 	('Gain d''endurance', 'L''endurance est la capacité du muscle à résister à des efforts de longue durée. Le muscle déploie une force moyenne à faible, mais il est capable de maintenir cet effort sur une longue période. L''endurance se travaille en condition aérobie et se situe avec une intensité d''effort entre 20% et 60%. C''est un excellent moyen d''améliorer sa qualité musculaire et notamment l''aspect veineux du muscle, et sa capacité à apporter des nutriments tout en éliminant les déchets métaboliques. Ce type de travail est aussi une bonne source de congestion, favorise la récupération, la circulation sanguine... Incorporer régulièrement ce type de travail en endurance est donc très important car il vous permettra ensuite de tenir un peu plus longtemps sur votre travail de force, et donc de faire quelques répétitions supplémentaires, gages de futurs gains en masse !'),
@@ -150,7 +155,8 @@ VALUES
 	('Brûleur de calories', 'https://www.espace-musculation.com/atomiser-1000-calories.html');
 
 -- Exercise --
-INSERT INTO _exercise (id_app_exercise, id_user, id_equipment, name, creation_date, last_update)
+INSERT INTO _exercise
+	(id_app_exercise, id_user, id_equipment, name, creation_date, last_update)
 VALUES
 	(1, 1, NULL, 'Exercice 1', NOW(), NOW()),
 	(2, 1, NULL, 'Exercice 2', NOW(), NOW()),
@@ -160,14 +166,16 @@ VALUES
 	(6, 1, NULL, 'Exercice 6', NOW(), NOW());
 
 -- Session --
-INSERT INTO _session (id_user, id_session_type, name, creation_date, last_update)
+INSERT INTO _session
+	(id_user, id_session_type, name, creation_date, last_update)
 VALUES
 	(1, 1, 'Séance 1', NOW(), NOW()),
 	(1, 2, 'Séance 2', NOW(), NOW()),
 	(1, 3, 'Séance 3', NOW(), NOW());
 
 -- Program --
-INSERT INTO _program (id_user, id_program_goal, name, creation_date, last_update)
+INSERT INTO _program
+	(id_user, id_program_goal, name, creation_date, last_update)
 VALUES
 	(1, 1, 'Programme 1', NOW(), NOW()),
 	(1, 2, 'Programme 2', NOW(), NOW()),
@@ -175,7 +183,8 @@ VALUES
 	(1, 4, 'Programme 4', NOW(), NOW());
 
 -- Set --
-INSERT INTO _set(id_user, id_exercise, id_app_exercise, place, repetitions_count, rest_time, expected_performance, realized_performance)
+INSERT INTO _set
+	(id_user, id_exercise, id_app_exercise, place, repetitions_count, rest_time, expected_performance, realized_performance)
 VALUES
 	-- Exercise 1 --
 	(1, 1, 1, 1, 10, 60, NULL, NULL),
@@ -210,7 +219,8 @@ VALUES
 --
 
 -- Session <> Exercise --
-INSERT INTO _session_exercise (id_user, id_user_1, id_session, id_exercise, id_app_exercise, place)
+INSERT INTO _session_exercise
+	(id_user, id_user_1, id_session, id_exercise, id_app_exercise, place)
 VALUES
 	-- Session 1 --
 	(1, 1, 1, 1, 1, 1),
@@ -223,7 +233,8 @@ VALUES
 	(1, 1, 3, 6, 6, 2);
 
 -- Program <> Session --
-INSERT INTO _program_session (id_user, id_user_1, id_program, id_session, place)
+INSERT INTO _program_session
+	(id_user, id_user_1, id_program, id_session, place)
 VALUES
 	-- Program 1 --
 	(1, 1, 1, 1, 1),
@@ -240,7 +251,8 @@ VALUES
 	(1, 1, 4, 3, 3);
 
 -- AppExercise <> Equipment --
-INSERT INTO _app_exercise_equipment (id_app_exercise, id_equipment)
+INSERT INTO _app_exercise_equipment
+	(id_app_exercise, id_equipment)
 VALUES
 	(1, 7),
 	(1, 31),
@@ -414,68 +426,97 @@ VALUES
 	(56, 6);
 
 -- AppExercise <> Muscle --
-INSERT INTO _app_exercise_muscle (id_app_exercise, id_muscle)
+INSERT INTO _app_exercise_muscle
+	(id_app_exercise, id_muscle)
 VALUES
 	(1, 1),
-	(2, 3),
-	(3, 8),
-	(4, 10),
+	(1, 4),
+	(1, 6),
+	(1, 7),
+	(1, 9),
+	(2, 1),
+	(3, 3),
+	(4, 5),
 	(5, 8),
 	(6, 5),
-	(7, 5),
-	(8, 8),
+	(6, 8),
+	(6, 10),
+	(7, 8),
+	(8, 5),
 	(9, 5),
-	(10, 10),
+	(10, 5),
 	(11, 10),
-	(12, 4),
-	(13, 7),
-	(14, 7),
-	(15, 9),
-	(16, 9),
-	(17, 2),
-	(18, 2),
-	(19, 2),
-	(20, 1),
+	(12, 10),
+	(13, 10),
+	(14, 4),
+	(14, 6),
+	(15, 7),
+	(16, 7),
+	(17, 1),
+	(17, 4),
+	(17, 6),
+	(17, 7),
+	(17, 9),
+	(18, 1),
+	(18, 6),
+	(18, 7),
+	(18, 9),
+	(19, 1),
+	(19, 6),
+	(19, 7),
+	(19, 9),
+	(20, 2),
 	(21, 2),
-	(22, 4),
-	(22, 6),
+	(22, 2),
 	(23, 1),
-	(23, 6),
-	(23, 7),
-	(23, 9),
-	(24, 10),
+	(24, 1),
+	(25, 1),
+	(25, 4),
 	(25, 6),
+	(26, 1),
+	(26, 4),
 	(26, 6),
-	(27, 9),
-	(28, 7),
+	(26, 7),
+	(26, 9),
+	(27, 10),
+	(28, 6),
 	(29, 1),
 	(29, 6),
-	(29, 7),
-	(29, 9),
-	(30, 5),
-	(31, 8),
-	(32, 8),
-	(33, 6),
-	(33, 7),
-	(33, 9),
-	(34, 1),
-	(34, 4),
+	(30, 9),
+	(31, 7),
+	(32, 1),
+	(32, 6),
+	(32, 7),
+	(32, 9),
+	(33, 5),
+	(34, 8),
 	(35, 1),
+	(35, 2),
+	(35, 8),
 	(36, 1),
+	(36, 4),
+	(36, 6),
+	(36, 7),
+	(36, 9),
 	(37, 4),
+	(38, 1),
 	(38, 4),
-	(39, 4),
+	(38, 6),
+	(38, 7),
+	(38, 9),
+	(39, 1),
+	(40, 1),
 	(40, 4),
-	(40, 6),
-	(40, 7),
+	(41, 1),
+	(41, 3),
 	(41, 4),
-	(41, 6),
-	(41, 7),
-	(42, 9),
-	(43, 1),
-	(43, 6),
-	(43, 7),
-	(43, 9),
+	(41, 5),
+	(42, 1),
+	(42, 3),
+	(42, 4),
+	(42, 5),
+	(43, 2),
+	(43, 4),
 	(44, 1),
 	(44, 6),
 	(44, 7),
@@ -483,7 +524,6 @@ VALUES
 	(45, 1),
 	(45, 6),
 	(45, 7),
-	(45, 9),
 	(46, 1),
 	(46, 6),
 	(46, 7),
@@ -500,12 +540,27 @@ VALUES
 	(49, 6),
 	(49, 7),
 	(49, 9),
-	(50, 4),
+	(50, 1),
+	(50, 6),
+	(50, 7),
+	(50, 9),
+	(51, 1),
+	(51, 2),
 	(51, 4),
 	(51, 10),
+	(52, 1),
+	(52, 2),
+	(52, 3),
+	(52, 4),
 	(52, 5),
-	(53, 4),
+	(53, 2),
+	(53, 5),
+	(54, 1),
+	(54, 2),
 	(54, 4),
+	(55, 1),
+	(55, 2),
 	(55, 4),
 	(56, 1),
+	(56, 2),
 	(56, 4);
