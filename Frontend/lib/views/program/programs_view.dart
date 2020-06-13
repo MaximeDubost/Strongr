@@ -29,14 +29,14 @@ class _ProgramsViewState extends State<ProgramsView> {
   TextEditingController searchbarController;
   Future<List<ProgramPreview>> futurePrograms;
   bool sortedByRecent;
-  List<String> popupMenuItems;
+  // List<String> popupMenuItems;
 
   @override
   void initState() {
     searchbarController = TextEditingController(text: "");
     futurePrograms = ProgramService.getPrograms();
     sortedByRecent = true;
-    popupMenuItems = ["Filtres", "Créer"];
+    // popupMenuItems = ["Filtres", "Créer"];
     super.initState();
   }
 
@@ -243,33 +243,46 @@ class _ProgramsViewState extends State<ProgramsView> {
           leading: BackButton(),
           title: Text("Vos programmes"),
           actions: <Widget>[
-            PopupMenuButton<String>(
-              tooltip: "Menu",
-              onSelected: (value) async {
-                switch (value) {
-                  case "Filtres":
-                    break;
-                  case "Créer":
-                    await Navigator.pushNamed(
-                      context,
-                      PROGRAM_CREATE_ROUTE,
-                    ).then((val) {
-                      if (val == true) {
-                        setState(() {});
-                      }
-                    });
-                    break;
-                }
-              },
-              itemBuilder: (BuildContext context) {
-                return popupMenuItems.map(
-                  (String choice) {
-                    return PopupMenuItem<String>(
-                      value: choice,
-                      child: Text(choice),
-                    );
-                  },
-                ).toList();
+            // PopupMenuButton<String>(
+            //   tooltip: "Menu",
+            //   onSelected: (value) async {
+            //     switch (value) {
+            //       case "Filtres":
+            //         break;
+            //       case "Créer":
+            //         await Navigator.pushNamed(
+            //           context,
+            //           PROGRAM_CREATE_ROUTE,
+            //         ).then((val) {
+            //           if (val == true) {
+            //             setState(() {});
+            //           }
+            //         });
+            //         break;
+            //     }
+            //   },
+            //   itemBuilder: (BuildContext context) {
+            //     return popupMenuItems.map(
+            //       (String choice) {
+            //         return PopupMenuItem<String>(
+            //           value: choice,
+            //           child: Text(choice),
+            //         );
+            //       },
+            //     ).toList();
+            //   },
+            // ),
+            IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () async {
+                await Navigator.pushNamed(
+                  context,
+                  PROGRAM_CREATE_ROUTE,
+                ).then((val) {
+                  if (val == true) {
+                    setState(() {});
+                  }
+                });
               },
             ),
           ],

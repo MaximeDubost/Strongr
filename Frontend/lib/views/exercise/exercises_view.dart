@@ -29,14 +29,14 @@ class _ExercisesViewState extends State<ExercisesView> {
   TextEditingController searchbarController;
   Future<List<ExercisePreview>> futureExercises;
   bool sortedByRecent;
-  List<String> popupMenuItems;
+  // List<String> popupMenuItems;
 
   @override
   void initState() {
     searchbarController = TextEditingController(text: "");
     futureExercises = ExerciseService.getExercises();
     sortedByRecent = true;
-    popupMenuItems = ["Filtres", "Créer"];
+    // popupMenuItems = ["Filtres", "Créer"];
     super.initState();
   }
 
@@ -246,33 +246,46 @@ class _ExercisesViewState extends State<ExercisesView> {
           leading: BackButton(),
           title: Text("Vos exerices"),
           actions: <Widget>[
-            PopupMenuButton<String>(
-              tooltip: "Menu",
-              onSelected: (value) async {
-                switch (value) {
-                  case "Filtres":
-                    break;
-                  case "Créer":
-                    await Navigator.pushNamed(
-                      context,
-                      EXERCISE_ADD_ROUTE,
-                    ).then((val) {
-                      if (val == true) {
-                        setState(() {});
-                      }
-                    });
-                    break;
-                }
-              },
-              itemBuilder: (BuildContext context) {
-                return popupMenuItems.map(
-                  (String choice) {
-                    return PopupMenuItem<String>(
-                      value: choice,
-                      child: Text(choice),
-                    );
-                  },
-                ).toList();
+            // PopupMenuButton<String>(
+            //   tooltip: "Menu",
+            //   onSelected: (value) async {
+            //     switch (value) {
+            //       case "Filtres":
+            //         break;
+            //       case "Créer":
+            //         await Navigator.pushNamed(
+            //           context,
+            //           EXERCISE_ADD_ROUTE,
+            //         ).then((val) {
+            //           if (val == true) {
+            //             setState(() {});
+            //           }
+            //         });
+            //         break;
+            //     }
+            //   },
+            //   itemBuilder: (BuildContext context) {
+            //     return popupMenuItems.map(
+            //       (String choice) {
+            //         return PopupMenuItem<String>(
+            //           value: choice,
+            //           child: Text(choice),
+            //         );
+            //       },
+            //     ).toList();
+            //   },
+            // ),
+            IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () async {
+                await Navigator.pushNamed(
+                  context,
+                  EXERCISE_ADD_ROUTE,
+                ).then((val) {
+                  if (val == true) {
+                    setState(() {});
+                  }
+                });
               },
             ),
           ],
@@ -419,7 +432,8 @@ class _ExercisesViewState extends State<ExercisesView> {
                                   color: Colors.grey,
                                 ),
                               ),
-                        resultCount(snapshot.data) != 0 || snapshot.data.length == 0
+                        resultCount(snapshot.data) != 0 ||
+                                snapshot.data.length == 0
                             ? Container(
                                 child: buildExercisesList(snapshot.data),
                               )

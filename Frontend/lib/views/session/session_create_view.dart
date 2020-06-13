@@ -11,7 +11,7 @@ class SessionCreateView extends StatefulWidget {
 
 class _SessionCreateViewState extends State<SessionCreateView> {
   GlobalKey<FormState> _key = GlobalKey();
-  bool _unique, _validate;
+  bool _validate;
   TextEditingController _seriesCountController;
   int linesCount = 1;
   String errorText = "";
@@ -20,32 +20,13 @@ class _SessionCreateViewState extends State<SessionCreateView> {
   void initState() {
     super.initState();
     _seriesCountController = TextEditingController(text: "1");
-    _unique = _validate = false;
+    _validate = false;
   }
 
   @override
   void dispose() {
     super.dispose();
     _seriesCountController.dispose();
-  }
-
-  String validateSeriesCount(String value) {
-    // if (value.length == 0)
-    //   return "Vous devez renseigner un nombre de séries";
-    // if (value.startsWith("0"))
-    //   return "Format incorrect";
-    // if (int.parse(value) < 1)
-    //   return "Vous ne pouvez pas effectuer moins d'une série";
-    // if (int.parse(value) > 10)
-    //   return "Vous ne pouvez pas effectuer plus de 10 séries";
-
-    if (value.length == 0 ||
-        value.startsWith("0") ||
-        int.parse(value) < 1 ||
-        int.parse(value) > 10)
-      return "";
-    else
-      return null;
   }
 
   void sendToServer() {
@@ -61,37 +42,6 @@ class _SessionCreateViewState extends State<SessionCreateView> {
     }
   }
 
-  /// Détermine si le champ "Séries" est valide ou non.
-  /// Retourne true s'il est valide, false sinon.
-  bool validSet({bool strict = false}) {
-    bool res = strict
-        ? !(_seriesCountController.text == "" ||
-            _seriesCountController.text.startsWith("0") ||
-            int.parse(_seriesCountController.text) < 1 ||
-            int.parse(_seriesCountController.text) > 10)
-        : !(_seriesCountController.text == "" ||
-            _seriesCountController.text.startsWith("0") ||
-            int.parse(_seriesCountController.text) <= 1 ||
-            int.parse(_seriesCountController.text) > 10);
-    return res;
-  }
-
-  void changeSetCount() {
-    if (_unique == false) {
-      linesCount = 1;
-      // print(linesCount);
-    } else if (_seriesCountController.text == "" ||
-        _seriesCountController.text.startsWith("0") ||
-        int.parse(_seriesCountController.text) < 1 ||
-        int.parse(_seriesCountController.text) > 10) {
-      linesCount = 0;
-      // print(linesCount);
-    } else {
-      linesCount = int.parse(_seriesCountController.text);
-      // print(linesCount);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -99,12 +49,12 @@ class _SessionCreateViewState extends State<SessionCreateView> {
         centerTitle: true,
         leading: BackButton(),
         title: Text("Nouvelle séance"),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.edit),
-            onPressed: () {},
-          )
-        ],
+        // actions: <Widget>[
+        //   IconButton(
+        //     icon: Icon(Icons.edit),
+        //     onPressed: () {},
+        //   )
+        // ],
       ),
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
@@ -137,86 +87,30 @@ class _SessionCreateViewState extends State<SessionCreateView> {
                       textInputType: TextInputType.emailAddress,
                     ),
                   ),
-                  // Container(
-                  //   // color: Colors.blue,
-                  //   padding: EdgeInsets.all(10),
-                  //   child: StrongrText("Équipequipement"),
-                  // ),
-                  // Container(
-                  //   // color: Colors.red,
-                  //   height: 100,
-                  //   width: ScreenSize.width(context),
-                  //   child: ListView(
-                  //     scrollDirection: Axis.horizontal,
-                  //     physics: BouncingScrollPhysics(),
-                  //     padding: EdgeInsets.all(10),
-                  //     children: <Widget>[
-                  //       StrongrRoundedContainer(
-                  //         width: ScreenSize.width(context) / 1.5,
-                  //         content: Row(
-                  //           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  //           children: <Widget>[
-                  //             Container(
-                  //               // color: Colors.red,
-                  //               width: ScreenSize.width(context) / 2.8,
-                  //               child: Center(
-                  //                 child: StrongrText(
-                  //                   "Machine guidée, tirage horizontal",
-                  //                   size: 18,
-                  //                 ),
-                  //               ),
-                  //             ),
-                  //             VerticalDivider(
-                  //               thickness: 1,
-                  //               indent: 10,
-                  //               endIndent: 10,
-                  //             ),
-                  //             IconButton(
-                  //               icon: Icon(Icons.info_outline),
-                  //               onPressed: () {},
-                  //             )
-                  //           ],
-                  //         ),
-                  //         onPressed: () {},
-                  //       ),
-                  //       StrongrRoundedContainer(
-                  //         width: ScreenSize.width(context) / 1.5,
-                  //         content: null,
-                  //         onPressed: () {},
-                  //       ),
-                  //       StrongrRoundedContainer(
-                  //         width: ScreenSize.width(context) / 1.5,
-                  //         content: null,
-                  //         onPressed: () {},
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
                   Container(
-                    // color: Colors.blue,
                     padding: EdgeInsets.all(10),
                     child: StrongrText("Exercices"),
                   ),
-                  Container(
-                    // color: Colors.red,
-                    height: 50,
-                    child: Center(
-                      child: StrongrText(
-                        "Aucun exercice",
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ),
+                  // Container(
+                  //   // color: Colors.red,
+                  //   height: 50,
+                  //   child: Center(
+                  //     child: StrongrText(
+                  //       "Aucun exercice",
+                  //       color: Colors.grey,
+                  //     ),
+                  //   ),
+                  // ),
                   Container(
                     padding: EdgeInsets.all(10),
                     width: ScreenSize.width(context),
                     child: Center(
-                      child: FloatingActionButton(
+                      child: FloatingActionButton.extended(
                         heroTag: "add_fab",
-                        mini: true,
-                        backgroundColor: StrongrColors.blue,
+                        backgroundColor: StrongrColors.black,
                         onPressed: () {},
-                        child: Icon(Icons.add, color: Colors.white),
+                        label: StrongrText("Ajouter", color: Colors.white,),
+                        icon: Icon(Icons.add, color: Colors.white,),
                       ),
                     ),
                   ),
@@ -227,21 +121,30 @@ class _SessionCreateViewState extends State<SessionCreateView> {
         ),
       ),
       bottomNavigationBar: Container(
+        // color: Colors.red,
         height: 80,
-        child: Center(
-          child: FloatingActionButton.extended(
-            // heroTag: 'program_fab_' + widget.id.toString(),
-            backgroundColor: Colors.grey,
-            icon: Icon(
-              Icons.check,
-              color: Colors.white,
+        child: Stack(
+          children: <Widget>[
+            Divider(
+              thickness: 0.5,
+              color: Colors.grey,
+              height: 1,
             ),
-            onPressed: null,
-            label: StrongrText(
-              "Créer",
-              color: Colors.white,
+            Center(
+              child: FloatingActionButton.extended(
+                backgroundColor: Colors.grey,
+                icon: Icon(
+                  Icons.check,
+                  color: Colors.white,
+                ),
+                onPressed: null,
+                label: StrongrText(
+                  "Créer",
+                  color: Colors.white,
+                ),
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );
