@@ -8,7 +8,7 @@ repository.getEquipmentByID = async (req) => {
     WHERE id_equipment = $1    
     `;
     try {
-        let result = await clt.query(sql, [req.params.id_app_exercise]);
+        let result = await clt.query(sql, [req.params.id_equipment]);
         return result.rows;
     } catch (error) {
         console.log(error);
