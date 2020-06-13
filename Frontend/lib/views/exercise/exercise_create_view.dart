@@ -51,6 +51,8 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
   int linesCount = 1, setCount;
   String errorText = "";
   Future<List<Equipment>> futureEquipments;
+  List<bool> equipmentSelection;
+  int selectedEquipmentId;
 
   @override
   void initState() {
@@ -98,8 +100,8 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
     ]);
     _visibility = !validSet();
     _unique = _validate = false;
-    futureEquipments =
-        EquipmentService.getEquipmentsOfAppExercise(idAppExercise: widget.id);
+    futureEquipments = EquipmentService.getEquipmentsOfAppExercise(idAppExercise: widget.id);
+    equipmentSelection = List<bool>();
   }
 
   String validate(String value) {
@@ -226,7 +228,7 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
                     ),
                   ),
                   FlatButton(
-                    onPressed: () {},
+                    onPressed: null,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
@@ -234,7 +236,7 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
                         Container(
                           height: 24,
                           width: 24,
-                          child: Icon(Icons.keyboard_arrow_right),
+                          // child: Icon(Icons.keyboard_arrow_right),
                         )
                       ],
                     ),
@@ -261,7 +263,9 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
                                 color: Colors.grey,
                               ),
                             );
-                          } else
+                          } else {
+                            for(int i = 0; i < snapshot.data.length; i++)
+                              equipmentSelection.add(false);
                             return ListView(
                               scrollDirection: Axis.horizontal,
                               physics: BouncingScrollPhysics(),
@@ -300,10 +304,26 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
                                         ),
                                       ],
                                     ),
-                                    onPressed: () {},
+                                    borderColor:
+                                        equipmentSelection[snapshot.data.indexOf(item)]
+                                            ? StrongrColors.blue80
+                                            : StrongrColors.greyD,
+                                    borderWidth:
+                                        equipmentSelection[snapshot.data.indexOf(item)]
+                                            ? 2
+                                            : 1,
+                                    onPressed: () {
+                                      setState(() {
+                                        for(int i = 0; i < equipmentSelection.length; i++)
+                                          equipmentSelection[i] = false;
+                                        equipmentSelection[snapshot.data.indexOf(item)] = true;
+                                        selectedEquipmentId = item.id;
+                                      });
+                                    },
                                   ),
                               ],
                             );
+                          }
                         } else if (snapshot.hasError) {
                           return Text(
                             snapshot.error,
