@@ -30,7 +30,7 @@ class ExerciseCreateView extends StatefulWidget {
 
 class _ExerciseCreateViewState extends State<ExerciseCreateView> {
   GlobalKey<FormState> _key = GlobalKey();
-  bool _specific, _validate, _visibility;
+  bool _specific, _validate;
   TextEditingController exerciseNameController;
   int selectedEquipmentId,
       setCount,
@@ -107,7 +107,6 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
       _restTime9,
       _restTime10
     ]);
-    _visibility = !validSet();
     _specific = _validate = false;
     futureEquipments =
         EquipmentService.getEquipmentsOfAppExercise(idAppExercise: widget.id);
@@ -739,249 +738,209 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
                       ],
                     ),
                   ),
-                  Container(
-                    // color: Colors.red,
-                    height: 35,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: <Widget>[
-                        Container(
-                          width: 35,
-                        ),
-                        Container(
-                          width: 135,
-                          child: StrongrText(
-                            "Répétitions",
-                            size: 18,
+                  Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Table(
+                      columnWidths: {
+                        0: FractionColumnWidth(0.15),
+                        3: FractionColumnWidth(0.10),
+                      },
+                      children: [
+                        TableRow(children: [
+                          Container(
+                            height: 35,
+                            // color: Colors.red,
                           ),
-                        ),
-                        Container(
-                          width: 135,
-                          child: StrongrText(
-                            "Repos",
-                            size: 18,
+                          Container(
+                            height: 35,
+                            // color: Colors.green,
+                            child: Center(
+                              child: StrongrText(
+                                "Répétitions",
+                                size: 18,
+                              ),
+                            ),
                           ),
-                        ),
-                        // Container(
-                        //   width: 35,
-                        // ),
-                      ],
-                    ),
-                  ),
-                  Center(
-                    child: Container(
-                      // color: Colors.blue,
-                      height: _specific
-                          ? 65 * double.parse(linesCount.toString())
-                          : 65,
-                      child: Visibility(
-                        visible: _visibility,
-                        child: Container(
-                          // color: Colors.red[100],
-                          child: Column(
-                            // physics: BouncingScrollPhysics(),
-                            children: <Widget>[
-                              for (int i = 0; i < linesCount; i++)
-                                Container(
-                                  height: 65,
-                                  // color: Colors.green,
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: <Widget>[
-                                      Container(
-                                        height: 35,
-                                        width: 35,
-                                        // color: Colors.red,
-                                        child: Center(
-                                          child: Text(
-                                            _specific
-                                                ? linesCount == 1
-                                                    ? "•"
-                                                    : (i + 1).toString()
-                                                : "•",
-                                            style: TextStyle(
-                                              color: StrongrColors.blue,
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Container(
-                                        // color: Colors.green,
-                                        height: 50,
-                                        child: StrongrRoundedContainer(
-                                            width: 135,
-                                            content: StrongrText(
-                                              repCountOfRow(i) != 0
-                                                  ? repCountOfRow(i).toString()
-                                                  : "",
-                                            ),
-                                            onPressed: () {
-                                              FocusScope.of(context).unfocus();
-                                              showDialog(
-                                                context: context,
-                                                builder: (context) =>
-                                                    RepetitionCountDialog(
-                                                  repetitionCount:
-                                                      repCountOfRow(i),
-                                                ),
-                                              ).then((repetitionCount) {
-                                                if (repetitionCount != null)
-                                                  switch (i + 1) {
-                                                    case 1:
-                                                      setState(() =>
-                                                          _repetitionCount1 =
-                                                              repetitionCount);
-                                                      break;
-                                                    case 2:
-                                                      setState(() =>
-                                                          _repetitionCount2 =
-                                                              repetitionCount);
-                                                      break;
-                                                    case 3:
-                                                      setState(() =>
-                                                          _repetitionCount3 =
-                                                              repetitionCount);
-                                                      break;
-                                                    case 4:
-                                                      setState(() =>
-                                                          _repetitionCount4 =
-                                                              repetitionCount);
-                                                      break;
-                                                    case 5:
-                                                      setState(() =>
-                                                          _repetitionCount5 =
-                                                              repetitionCount);
-                                                      break;
-                                                    case 6:
-                                                      setState(() =>
-                                                          _repetitionCount6 =
-                                                              repetitionCount);
-                                                      break;
-                                                    case 7:
-                                                      setState(() =>
-                                                          _repetitionCount7 =
-                                                              repetitionCount);
-                                                      break;
-                                                    case 8:
-                                                      setState(() =>
-                                                          _repetitionCount8 =
-                                                              repetitionCount);
-                                                      break;
-                                                    case 9:
-                                                      setState(() =>
-                                                          _repetitionCount9 =
-                                                              repetitionCount);
-                                                      break;
-                                                    case 10:
-                                                      setState(() =>
-                                                          _repetitionCount10 =
-                                                              repetitionCount);
-                                                      break;
-                                                  }
-                                              });
-                                            }),
-                                      ),
-                                      Container(
-                                        // color: Colors.blue,
-                                        height: 50,
-                                        child: StrongrRoundedContainer(
-                                            width: 135,
-                                            content: StrongrText(
-                                              restTimeOfRow(i) !=
-                                                      Duration(seconds: 0)
-                                                  ? TimeFormater.getDuration(
-                                                          restTimeOfRow(i))
-                                                      .toString()
-                                                  : "",
-                                            ),
-                                            onPressed: () {
-                                              FocusScope.of(context).unfocus();
-                                              showDialog(
-                                                context: context,
-                                                builder: (context) =>
-                                                    RestTimeDialog(
-                                                  restTime: restTimeOfRow(i),
-                                                ),
-                                              ).then((restTime) {
-                                                if (restTime != null)
-                                                  switch (i + 1) {
-                                                    case 1:
-                                                      setState(() =>
-                                                          _restTime1 =
-                                                              restTime);
-                                                      break;
-                                                    case 2:
-                                                      setState(() =>
-                                                          _restTime2 =
-                                                              restTime);
-                                                      break;
-                                                    case 3:
-                                                      setState(() =>
-                                                          _restTime3 =
-                                                              restTime);
-                                                      break;
-                                                    case 4:
-                                                      setState(() =>
-                                                          _restTime4 =
-                                                              restTime);
-                                                      break;
-                                                    case 5:
-                                                      setState(() =>
-                                                          _restTime5 =
-                                                              restTime);
-                                                      break;
-                                                    case 6:
-                                                      setState(() =>
-                                                          _restTime6 =
-                                                              restTime);
-                                                      break;
-                                                    case 7:
-                                                      setState(() =>
-                                                          _restTime7 =
-                                                              restTime);
-                                                      break;
-                                                    case 8:
-                                                      setState(() =>
-                                                          _restTime8 =
-                                                              restTime);
-                                                      break;
-                                                    case 9:
-                                                      setState(() =>
-                                                          _restTime9 =
-                                                              restTime);
-                                                      break;
-                                                    case 10:
-                                                      setState(() =>
-                                                          _restTime10 =
-                                                              restTime);
-                                                      break;
-                                                  }
-                                              });
-                                            }),
-                                      ),
-                                      // Container(
-                                      //   height: 35,
-                                      //   width: 35,
-                                      //   child: RawMaterialButton(
-                                      //     // child: Icon(
-                                      //     //   Icons.tune,
-                                      //     //   color: StrongrColors.blue,
-                                      //     // ),
-                                      //     onPressed: () {},
-                                      //     shape: CircleBorder(),
-                                      //   ),
-                                      // ),
-                                    ],
+                          Container(
+                            height: 35,
+                            // color: Colors.blue,
+                            child: Center(
+                              child: StrongrText(
+                                "Repos",
+                                size: 18,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            height: 35,
+                            // color: Colors.red,
+                          ),
+                        ]),
+                        // SizedBox(height: 5,),
+                        for (int i = 0; i < linesCount; i++)
+                          TableRow(children: [
+                            Container(
+                              // color: Colors.red,
+                              height: 55,
+                              child: Center(
+                                child: Text(
+                                  _specific
+                                      ? linesCount == 1
+                                          ? "•"
+                                          : (i + 1).toString()
+                                      : "•",
+                                  style: TextStyle(
+                                    color: StrongrColors.blue,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                            ],
-                          ),
-                        ),
-                      ),
+                              ),
+                            ),
+                            Container(
+                              // color: Colors.green,
+                              height: 55,
+                              child: Padding(
+                                padding: EdgeInsets.only(top: 5, bottom: 5),
+                                child: StrongrRoundedContainer(
+                                    width: 135,
+                                    content: StrongrText(
+                                      repCountOfRow(i) != 0
+                                          ? repCountOfRow(i).toString()
+                                          : "",
+                                    ),
+                                    onPressed: () {
+                                      FocusScope.of(context).unfocus();
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) =>
+                                            RepetitionCountDialog(
+                                          repetitionCount: repCountOfRow(i),
+                                        ),
+                                      ).then((repetitionCount) {
+                                        if (repetitionCount != null)
+                                          switch (i + 1) {
+                                            case 1:
+                                              setState(() => _repetitionCount1 =
+                                                  repetitionCount);
+                                              break;
+                                            case 2:
+                                              setState(() => _repetitionCount2 =
+                                                  repetitionCount);
+                                              break;
+                                            case 3:
+                                              setState(() => _repetitionCount3 =
+                                                  repetitionCount);
+                                              break;
+                                            case 4:
+                                              setState(() => _repetitionCount4 =
+                                                  repetitionCount);
+                                              break;
+                                            case 5:
+                                              setState(() => _repetitionCount5 =
+                                                  repetitionCount);
+                                              break;
+                                            case 6:
+                                              setState(() => _repetitionCount6 =
+                                                  repetitionCount);
+                                              break;
+                                            case 7:
+                                              setState(() => _repetitionCount7 =
+                                                  repetitionCount);
+                                              break;
+                                            case 8:
+                                              setState(() => _repetitionCount8 =
+                                                  repetitionCount);
+                                              break;
+                                            case 9:
+                                              setState(() => _repetitionCount9 =
+                                                  repetitionCount);
+                                              break;
+                                            case 10:
+                                              setState(() =>
+                                                  _repetitionCount10 =
+                                                      repetitionCount);
+                                              break;
+                                          }
+                                      });
+                                    }),
+                              ),
+                            ),
+                            Container(
+                              // color: Colors.blue,
+                              height: 55,
+                              child: Padding(
+                                padding: EdgeInsets.only(top: 5, bottom: 5),
+                                child: StrongrRoundedContainer(
+                                    width: 135,
+                                    content: StrongrText(
+                                      restTimeOfRow(i) != Duration(seconds: 0)
+                                          ? TimeFormater.getDuration(
+                                                  restTimeOfRow(i))
+                                              .toString()
+                                          : "",
+                                    ),
+                                    onPressed: () {
+                                      FocusScope.of(context).unfocus();
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) => RestTimeDialog(
+                                          restTime: restTimeOfRow(i),
+                                        ),
+                                      ).then((restTime) {
+                                        if (restTime != null)
+                                          switch (i + 1) {
+                                            case 1:
+                                              setState(
+                                                  () => _restTime1 = restTime);
+                                              break;
+                                            case 2:
+                                              setState(
+                                                  () => _restTime2 = restTime);
+                                              break;
+                                            case 3:
+                                              setState(
+                                                  () => _restTime3 = restTime);
+                                              break;
+                                            case 4:
+                                              setState(
+                                                  () => _restTime4 = restTime);
+                                              break;
+                                            case 5:
+                                              setState(
+                                                  () => _restTime5 = restTime);
+                                              break;
+                                            case 6:
+                                              setState(
+                                                  () => _restTime6 = restTime);
+                                              break;
+                                            case 7:
+                                              setState(
+                                                  () => _restTime7 = restTime);
+                                              break;
+                                            case 8:
+                                              setState(
+                                                  () => _restTime8 = restTime);
+                                              break;
+                                            case 9:
+                                              setState(
+                                                  () => _restTime9 = restTime);
+                                              break;
+                                            case 10:
+                                              setState(
+                                                  () => _restTime10 = restTime);
+                                              break;
+                                          }
+                                      });
+                                    }),
+                              ),
+                            ),
+                            Container(
+                              height: 55,
+                              // color: Colors.red,
+                            ),
+                          ]),
+                      ],
                     ),
                   ),
                 ],

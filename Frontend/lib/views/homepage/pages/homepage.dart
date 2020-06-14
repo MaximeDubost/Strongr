@@ -97,18 +97,22 @@ class _HomepageState extends State<Homepage> {
                 future: futureExercises,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    if (snapshot.data == null) {
+                    if (snapshot.data.length == 0) {
                       return Center(
-                        child: StrongrText(
-                          "Impossible d'afficher vos exercices",
-                          color: Colors.grey,
-                        ),
-                      );
-                    } else if (snapshot.data.length == 0) {
-                      return Center(
-                        child: StrongrText(
-                          "Aucun exercice à afficher",
-                          color: Colors.grey,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            StrongrText(
+                              "Aucun exercice à afficher",
+                              color: Colors.grey,
+                            ),
+                            FloatingActionButton.extended(
+                              heroTag: "exercise_create_fab",
+                              icon: Icon(Icons.add),
+                              label: StrongrText("Créer", color: Colors.white,),
+                              onPressed: () => Navigator.pushNamed(context, EXERCISE_ADD_ROUTE),
+                            ),
+                          ],
                         ),
                       );
                     } else
@@ -167,15 +171,16 @@ class _HomepageState extends State<Homepage> {
                                                       child: StrongrText(
                                                         item.appExerciseName !=
                                                                 null
-                                                            ? item.appExerciseName
+                                                            ? item
+                                                                .appExerciseName
                                                             : "Aucun exercice",
-                                                        color:
-                                                            item.appExerciseName !=
-                                                                    null
-                                                                ? StrongrColors
-                                                                    .black
-                                                                : Colors.grey,
-                                                        textAlign: TextAlign.start,
+                                                        color: item.appExerciseName !=
+                                                                null
+                                                            ? StrongrColors
+                                                                .black
+                                                            : Colors.grey,
+                                                        textAlign:
+                                                            TextAlign.start,
                                                         maxLines: 1,
                                                       ),
                                                     ),
@@ -346,18 +351,22 @@ class _HomepageState extends State<Homepage> {
                 future: futureSessions,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    if (snapshot.data == null) {
+                    if (snapshot.data.length == 0) {
                       return Center(
-                        child: StrongrText(
-                          "Impossible d'afficher vos séances",
-                          color: Colors.grey,
-                        ),
-                      );
-                    } else if (snapshot.data.length == 0) {
-                      return Center(
-                        child: StrongrText(
-                          "Aucune séance à afficher",
-                          color: Colors.grey,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            StrongrText(
+                              "Aucune séance à afficher",
+                              color: Colors.grey,
+                            ),
+                            FloatingActionButton.extended(
+                              heroTag: "session_create_fab",
+                              icon: Icon(Icons.add),
+                              label: StrongrText("Créer", color: Colors.white,),
+                              onPressed: () => Navigator.pushNamed(context, SESSION_CREATE_ROUTE),
+                            ),
+                          ],
                         ),
                       );
                     } else
@@ -416,16 +425,17 @@ class _HomepageState extends State<Homepage> {
                                                       child: StrongrText(
                                                         item.sessionTypeName !=
                                                                 null
-                                                            ? item.sessionTypeName
+                                                            ? item
+                                                                .sessionTypeName
                                                             : "Aucune type",
-                                                        color:
-                                                            item.sessionTypeName !=
-                                                                    null
-                                                                ? StrongrColors
-                                                                    .black
-                                                                : Colors.grey,
-                                                      textAlign: TextAlign.start,
-                                                      maxLines: 1,
+                                                        color: item.sessionTypeName !=
+                                                                null
+                                                            ? StrongrColors
+                                                                .black
+                                                            : Colors.grey,
+                                                        textAlign:
+                                                            TextAlign.start,
+                                                        maxLines: 1,
                                                       ),
                                                     ),
                                                   ),
@@ -595,18 +605,22 @@ class _HomepageState extends State<Homepage> {
                 future: futurePrograms,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    if (snapshot.data == null) {
+                    if (snapshot.data.length == 0) {
                       return Center(
-                        child: StrongrText(
-                          "Impossible d'afficher vos programmes",
-                          color: Colors.grey,
-                        ),
-                      );
-                    } else if (snapshot.data.length == 0) {
-                      return Center(
-                        child: StrongrText(
-                          "Aucun programme à afficher",
-                          color: Colors.grey,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            StrongrText(
+                              "Aucun programme à afficher",
+                              color: Colors.grey,
+                            ),
+                            FloatingActionButton.extended(
+                              heroTag: "program_create_fab",
+                              icon: Icon(Icons.add),
+                              label: StrongrText("Créer", color: Colors.white,),
+                              onPressed: () => Navigator.pushNamed(context, PROGRAM_CREATE_ROUTE),
+                            ),
+                          ],
                         ),
                       );
                     } else
@@ -665,15 +679,16 @@ class _HomepageState extends State<Homepage> {
                                                       child: StrongrText(
                                                         item.programGoalName !=
                                                                 null
-                                                            ? item.programGoalName
+                                                            ? item
+                                                                .programGoalName
                                                             : "Aucun objectif",
-                                                        color:
-                                                            item.programGoalName !=
-                                                                    null
-                                                                ? StrongrColors
-                                                                    .black
-                                                                : Colors.grey,
-                                                        textAlign: TextAlign.start,
+                                                        color: item.programGoalName !=
+                                                                null
+                                                            ? StrongrColors
+                                                                .black
+                                                            : Colors.grey,
+                                                        textAlign:
+                                                            TextAlign.start,
                                                         maxLines: 1,
                                                       ),
                                                     ),

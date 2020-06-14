@@ -57,33 +57,27 @@ class ExerciseService {
     @required List<Set> sets,
   }) async {
     List<String> setsToJson = List<String>();
-    for(Set item in sets)
-    {
+    for (Set item in sets) 
       setsToJson.add(item.toJson());
+    try {
+      Response response = await http.post(
+        Uri.encodeFull(
+          Global.SERVER_URL + '/exercise',
+        ),
+        headers: {
+          'Authorization': 'Bearer ' + Global.token,
+        },
+        body: {
+          'id_app_exercise': appExerciseId.toString(),
+          'id_equipment': equipmentId.toString(),
+          'name': name,
+          'sets': setsToJson.toString(),
+        },
+      );
+      return response.statusCode;
+    } catch (e) {
+      return 503;
     }
-    print(appExerciseId);
-    print(equipmentId);
-    print(name);
-    for(final item in setsToJson)
-      print(item);
-    // try {
-    //   Response response = await http.post(
-    //     Uri.encodeFull(
-    //       Global.SERVER_URL + '/exercise',
-    //     ),
-    //     headers: {'Authorization': 'Bearer ' + Global.token},
-    //     body: {
-    //       'name': name,
-    //       'id_app_exercise': appExerciseId,
-    //       'id_equipment': equipmentId,
-    //       'sets': sets,
-    //     },
-    //   );
-    //   return response.statusCode;
-    // } catch (e) {
-    //   return 503;
-    // }
-    return 201;
   }
 
   /// [PUT] /exercise/[id]

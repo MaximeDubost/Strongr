@@ -59,6 +59,7 @@ class _SessionCreateViewState extends State<SessionCreateView> {
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: ListView(
+          physics: BouncingScrollPhysics(),
           children: <Widget>[
             Form(
               key: _key,
@@ -68,13 +69,16 @@ class _SessionCreateViewState extends State<SessionCreateView> {
                 children: <Widget>[
                   Container(
                     padding: EdgeInsets.all(10),
+                    child: StrongrText("Nom"),
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(left: 15, right: 15),
                     child: StrongrRoundedTextFormField(
                       controller: null,
                       validator: null,
                       // onSaved: (String value) => setState(
                       // () => connectId = value.toLowerCase()),
                       onSaved: (value) {},
-
                       // onChanged: (String value) {
                       //   setState(() => warning = null);
                       //   isEmpty();
@@ -83,7 +87,7 @@ class _SessionCreateViewState extends State<SessionCreateView> {
                       inputFormatters: [
                         LengthLimitingTextInputFormatter(30),
                       ],
-                      hint: "Nom de votre séance (facultatif)",
+                      hint: "Séance perso.",
                       textInputType: TextInputType.emailAddress,
                     ),
                   ),
