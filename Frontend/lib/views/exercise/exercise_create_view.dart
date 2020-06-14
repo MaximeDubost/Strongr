@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:strongr/services/exercise_service.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
@@ -11,6 +12,7 @@ import 'package:strongr/widgets/strongr_rounded_container.dart';
 import 'package:strongr/widgets/strongr_rounded_textformfield.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 import 'package:strongr/models/Equipment.dart';
+import 'package:strongr/models/Set.dart';
 import 'package:strongr/services/equipment_service.dart';
 import 'package:strongr/utils/time_formater.dart';
 
@@ -134,14 +136,75 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
   void sendToServer() {
     if (_key.currentState.validate()) {
       _key.currentState.save();
-      setState(() {
-        linesCount = setCount;
-      });
+      // setState(() {
+      //   linesCount = setCount;
+      // });
+      ExerciseService.postExercise(
+        appExerciseId: widget.id,
+        equipmentId: selectedEquipmentId,
+        name: exerciseNameController.text == ""
+            ? widget.name
+            : exerciseNameController.text,
+        sets: createSets(),
+      );
     } else {
       setState(() {
         _validate = true;
       });
     }
+  }
+
+  /// Crée la liste des séries
+  List<Set> createSets() {
+    List<Set> sets = List<Set>();
+    if (!_specific) {
+      for (int i = 1; i <= setCount; i++) {
+        sets.add(
+          Set(
+            place: i,
+            repetitionCount: _repetitionCount1,
+            restTime: _restTime1.inSeconds,
+          ),
+        );
+      }
+    } else {
+      List<int> repCountList = List<int>();
+      repCountList.addAll([
+        _repetitionCount1,
+        _repetitionCount2,
+        _repetitionCount3,
+        _repetitionCount4,
+        _repetitionCount5,
+        _repetitionCount6,
+        _repetitionCount7,
+        _repetitionCount8,
+        _repetitionCount9,
+        _repetitionCount10
+      ]);
+      List<Duration> restTimeList = List<Duration>();
+      restTimeList.addAll([
+        _restTime1,
+        _restTime2,
+        _restTime3,
+        _restTime4,
+        _restTime5,
+        _restTime6,
+        _restTime7,
+        _restTime8,
+        _restTime9,
+        _restTime10
+      ]);
+      for (int i = 1; i <= setCount; i++) {
+        sets.add(
+          Set(
+            place: i,
+            repetitionCount: repCountList[i - 1],
+            restTime: restTimeList[i - 1].inSeconds,
+          ),
+        );
+      }
+    }
+    return sets;
   }
 
   /// Détermine si le champ "Séries" est valide ou non.
@@ -258,18 +321,22 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  FlatButton(
-                    onPressed: null,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        StrongrText("Nom"),
-                        Container(
-                          height: 24,
-                          width: 24,
-                        ),
-                      ],
-                    ),
+                  // FlatButton(
+                  //   onPressed: null,
+                  //   child: Row(
+                  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //     children: <Widget>[
+                  //       StrongrText("Nom"),
+                  //       Container(
+                  //         height: 24,
+                  //         width: 24,
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
+                  Container(
+                    padding: EdgeInsets.all(10),
+                    child: StrongrText("Nom"),
                   ),
                   Container(
                     padding: EdgeInsets.only(left: 15, right: 15),
@@ -283,19 +350,23 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
                       textInputType: TextInputType.emailAddress,
                     ),
                   ),
-                  FlatButton(
-                    onPressed: null,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        StrongrText("Équipement à utiliser"),
-                        Container(
-                          height: 24,
-                          width: 24,
-                          // child: Icon(Icons.keyboard_arrow_right),
-                        )
-                      ],
-                    ),
+                  // FlatButton(
+                  //   onPressed: null,
+                  //   child: Row(
+                  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //     children: <Widget>[
+                  //       StrongrText("Équipement à utiliser"),
+                  //       Container(
+                  //         height: 24,
+                  //         width: 24,
+                  //         // child: Icon(Icons.keyboard_arrow_right),
+                  //       )
+                  //     ],
+                  //   ),
+                  // ),
+                  Container(
+                    padding: EdgeInsets.all(10),
+                    child: StrongrText("Équipement à utiliser"),
                   ),
                   Container(
                     // color: Colors.red,
@@ -401,18 +472,22 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
                       },
                     ),
                   ),
-                  FlatButton(
-                    onPressed: null,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        StrongrText("Nombre de séries"),
-                        Container(
-                          height: 24,
-                          width: 24,
-                        ),
-                      ],
-                    ),
+                  // FlatButton(
+                  //   onPressed: null,
+                  //   child: Row(
+                  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //     children: <Widget>[
+                  //       StrongrText("Nombre de séries"),
+                  //       Container(
+                  //         height: 24,
+                  //         width: 24,
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
+                  Container(
+                    padding: EdgeInsets.all(10),
+                    child: StrongrText("Nombre de séries"),
                   ),
                   Container(
                     // padding: EdgeInsets.all(10),
@@ -688,9 +763,9 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
                             size: 18,
                           ),
                         ),
-                        Container(
-                          width: 35,
-                        ),
+                        // Container(
+                        //   width: 35,
+                        // ),
                       ],
                     ),
                   ),
@@ -888,18 +963,18 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
                                               });
                                             }),
                                       ),
-                                      Container(
-                                        height: 35,
-                                        width: 35,
-                                        child: RawMaterialButton(
-                                          child: Icon(
-                                            Icons.tune,
-                                            color: StrongrColors.blue,
-                                          ),
-                                          onPressed: () {},
-                                          shape: CircleBorder(),
-                                        ),
-                                      ),
+                                      // Container(
+                                      //   height: 35,
+                                      //   width: 35,
+                                      //   child: RawMaterialButton(
+                                      //     // child: Icon(
+                                      //     //   Icons.tune,
+                                      //     //   color: StrongrColors.blue,
+                                      //     // ),
+                                      //     onPressed: () {},
+                                      //     shape: CircleBorder(),
+                                      //   ),
+                                      // ),
                                     ],
                                   ),
                                 ),
