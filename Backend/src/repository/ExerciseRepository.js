@@ -12,8 +12,21 @@ const repository = {};
 repository.createExercise = async (req) => {
     let date = new Date();
     let sqlCreateExercise = "INSERT INTO _exercise (id_app_exercise, id_user, name, id_equipment, creation_date, last_update) VALUES ($1, $2, $3, $4, $5, $6)"
+    let sqlGetIdExercise = "SELECT id_exercise FROM _exercise WHERE id_user = $1 ORDER BY creation_date DESC LIMIT 1"
     try {
         await clt.query(sqlCreateExercise, [req.body.id_app_exercise, req.user.id, req.body.name, req.body.id_equipment, date, date])
+        let result = await clt.query(sqlGetIdExercise, [req.user.id])
+        //console.log("id_exercise = "+result.rows[0].id_exercise)
+        req.body.sets.forEach(async set => {
+            let sqlAddSet = `INSERT INTO _set (id_app_exercise, id_user, id_exercise, repetitions_count, rest_time) VALUES ($1, $2, $3, $4, $5)`
+            try {
+                //console.log(" dguzidg zo = "+set.id_app_exercise)
+                await clt.query(sqlAddSet, [req.body.id_app_exercise, req.user.id, result.rows[0].id_exercise, set.repetitions_count, set.rest_time])
+            }
+            catch (error) {
+                console.error(error)
+            }
+        })
         return 201;
     }
     catch (error) {
