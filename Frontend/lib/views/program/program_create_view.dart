@@ -60,6 +60,7 @@ class _ProgramCreateViewState extends State<ProgramCreateView> {
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: ListView(
+          physics: BouncingScrollPhysics(),
           children: <Widget>[
             Form(
               key: _key,
@@ -69,6 +70,10 @@ class _ProgramCreateViewState extends State<ProgramCreateView> {
                 children: <Widget>[
                   Container(
                     padding: EdgeInsets.all(10),
+                    child: StrongrText("Nom"),
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(left: 15, right: 15),
                     child: StrongrRoundedTextFormField(
                       controller: null,
                       validator: null,
@@ -84,7 +89,7 @@ class _ProgramCreateViewState extends State<ProgramCreateView> {
                       inputFormatters: [
                         LengthLimitingTextInputFormatter(30),
                       ],
-                      hint: "Nom de votre programme (facultatif)",
+                      hint: "Programme perso.",
                       textInputType: TextInputType.emailAddress,
                     ),
                   ),

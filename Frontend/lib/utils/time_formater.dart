@@ -10,4 +10,22 @@ class TimeFormater {
     return "$twoDigitMinutes:$twoDigitSeconds";
     // return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
   }
+
+  static int getMinutes(Duration duration) {
+    int twoDigits(int n) {
+      if (n >= 10) return n;
+      return n;
+    }
+
+    return twoDigits(duration.inMinutes.remainder(60));
+  }
+
+  static int getSeconds(Duration duration) {
+    int twoDigits(int n) {
+      if (n >= 10) return n;
+      return n;
+    }
+
+    return twoDigits(duration.inSeconds.remainder(60));
+  }
 }

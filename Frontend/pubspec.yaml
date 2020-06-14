@@ -26,6 +26,7 @@ dependencies:
   # intl: ^0.16.0
   flutter_auth_buttons: ^0.7.0
   flutter_cupertino_date_picker: ^1.0.12
+  numberpicker: ^1.2.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
