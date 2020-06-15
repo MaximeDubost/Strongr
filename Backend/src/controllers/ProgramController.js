@@ -14,4 +14,9 @@ controller.readDetailProgram = async (req, res) => {
     res.status(200).json(rows)
 }
 
+controller.addProgram = async (req, res) => {
+    let status = await ProgramRepository.addProgram(req)
+    res.sendStatus(status)
+}
+
 export default controller;

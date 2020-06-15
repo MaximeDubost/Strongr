@@ -35,7 +35,7 @@ repository.readDetailProgram = async (req) => {
 
     //console.log('req user id = '+req.user.id)
     //console.log('id_program = '+req.params.id_program)
-    
+
     let sql = `
     SELECT p.id_program as id, p.name, p.creation_date, p.last_update
     FROM _program p
@@ -61,7 +61,7 @@ repository.readDetailProgram = async (req) => {
         console.log(error)
     }
 
-    
+
 }
 
 repository.readSessionDetailProgram = async (req) => {
@@ -84,6 +84,23 @@ repository.readSessionDetailProgram = async (req) => {
     try {
         var result = await clt.query(sql, [req.user.id, req.params.id_program])
         return result.rows
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+repository.addProgram = async (req) => {
+    let sqlAddProgram = "INSERT INTO _program (id_user, id_program_goal, name, creation_date, last_update) VALUES ($1, $2, $3, $4, $5)"
+    try {
+        await clt.query(sqlAddProgram, [req.user.id, req.body.id_program_goal, req.body.name, new Date(), new Date()])
+        let sqlLastProgramCreated = "SELECT id_program FROM _program WHERE id_user = $1 ORDER BY creation_date DESC"
+        let getIdProgram = await clt.query(sqlLastProgramCreated, [req.user.id])
+        req.body.sessions = [JSON.parse(req.body.sessions)]
+        req.body.sessions.forEach(async session => {
+            let insertInProgramSession = "INSERT INTO _program_session (id_user, id_user_1, id_program, id_session, place) VALUES ($1, $2, $3, $4, $5)"
+            await clt.query(insertInProgramSession, [req.user.id, req.user.id, getIdProgram.rows[0].id_program, session.id, session.place])
+        })
+        return 201
     } catch (error) {
         console.log(error)
     }
