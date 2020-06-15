@@ -206,7 +206,7 @@ class _AppExercisesPageState extends State<AppExercisesPage> {
                     ),
                   ],
                 ),
-                onPressed: () {
+                onPressed: () async {
                   FocusScope.of(context).unfocus();
                   !widget.fromExercises
                       ? Navigator.pushNamed(
@@ -221,7 +221,7 @@ class _AppExercisesPageState extends State<AppExercisesPage> {
                             fromExercises: widget.fromExercises,
                           ),
                         )
-                      : Navigator.pushNamed(
+                      : await Navigator.pushNamed(
                           context,
                           EXERCISE_CREATE_ROUTE,
                           arguments: ExerciseCreateView(
@@ -231,7 +231,11 @@ class _AppExercisesPageState extends State<AppExercisesPage> {
                                 appExercises[appExercises.indexOf(appExercise)]
                                     .name,
                           ),
-                        );
+                        ).then((val) {
+                          if (val == true) {
+                            Navigator.pop(context, val);
+                          }
+                        });
                 },
               ),
             ),

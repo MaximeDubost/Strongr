@@ -13,7 +13,7 @@ class EquipmentService {
     try {
       Response response = await get(
         Uri.encodeFull(
-          Global.SERVER_URL + '/equipments/' + idAppExercise.toString(),
+          Global.SERVER_URL + '/equipments/appexercise/' + idAppExercise.toString(),
         ),
       );
       List<Equipment> equipmentList = List<Equipment>();

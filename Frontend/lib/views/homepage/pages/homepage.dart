@@ -6,6 +6,7 @@ import 'package:strongr/models/SessionPreview.dart';
 import 'package:strongr/services/exercise_service.dart';
 import 'package:strongr/services/program_service.dart';
 import 'package:strongr/services/session_service.dart';
+import 'package:strongr/utils/app_exercises_filters.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
@@ -16,14 +17,15 @@ import 'package:strongr/widgets/strongr_rounded_container.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
 class Homepage extends StatefulWidget {
+  // final GlobalKey<dynamic> key;
+
+  // Homepage({this.key});
+
   @override
   _HomepageState createState() => _HomepageState();
 }
 
 class _HomepageState extends State<Homepage> {
-  List<Widget> exercisesList;
-  List<Widget> sessionsList;
-  List<Widget> programsList;
   PageController exercisesListController,
       sessionsListController,
       programsListController;
@@ -61,6 +63,45 @@ class _HomepageState extends State<Homepage> {
     super.initState();
   }
 
+  /// Actualise la liste des exercices.
+  void refreshExercises() async {
+    setState(() {
+      futureExercises = ExerciseService.getExercises();
+      exercisesListCurrentPage = 0;
+      exercisesListController = PageController(
+        initialPage: exercisesListCurrentPage,
+        keepPage: false,
+        viewportFraction: 0.85,
+      );
+    });
+  }
+
+  /// Actualise la liste des séances.
+  void refreshSessions() async {
+    setState(() {
+      futureSessions = SessionService.getSessions();
+      sessionsListCurrentPage = 0;
+      sessionsListController = PageController(
+        initialPage: sessionsListCurrentPage,
+        keepPage: false,
+        viewportFraction: 0.85,
+      );
+    });
+  }
+
+  /// Actualise la liste des programmes.
+  void refreshPrograms() async {
+    setState(() {
+      futurePrograms = ProgramService.getPrograms();
+      programsListCurrentPage = 0;
+      programsListController = PageController(
+        initialPage: programsListCurrentPage,
+        keepPage: false,
+        viewportFraction: 0.85,
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -71,8 +112,14 @@ class _HomepageState extends State<Homepage> {
             flex: 4,
             child: Container(
               child: FlatButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, EXERCISES_ROUTE);
+                onPressed: () async {
+                  AppExercisesFilters.disableAll();
+                  await Navigator.pushNamed(context, EXERCISES_ROUTE)
+                      .then((val) {
+                    if (val == true) {
+                      refreshExercises();
+                    }
+                  });
                 },
                 child: Container(
                   // height: ScreenSize.height(context) / 12,
@@ -96,7 +143,8 @@ class _HomepageState extends State<Homepage> {
               child: FutureBuilder(
                 future: futureExercises,
                 builder: (context, snapshot) {
-                  if (snapshot.hasData) {
+                  if (snapshot.hasData &&
+                      snapshot.connectionState == ConnectionState.done) {
                     if (snapshot.data.length == 0) {
                       return Center(
                         child: Column(
@@ -109,8 +157,12 @@ class _HomepageState extends State<Homepage> {
                             FloatingActionButton.extended(
                               heroTag: "exercise_create_fab",
                               icon: Icon(Icons.add),
-                              label: StrongrText("Créer", color: Colors.white,),
-                              onPressed: () => Navigator.pushNamed(context, EXERCISE_ADD_ROUTE),
+                              label: StrongrText(
+                                "Créer",
+                                color: Colors.white,
+                              ),
+                              onPressed: () => Navigator.pushNamed(
+                                  context, EXERCISE_ADD_ROUTE),
                             ),
                           ],
                         ),
@@ -308,7 +360,8 @@ class _HomepageState extends State<Homepage> {
                       );
 
                     // return Center(child: StrongrText(snapshot.data.toString()),);
-                  } else if (snapshot.hasError) {
+                  } else if (snapshot.hasError &&
+                      snapshot.connectionState == ConnectionState.done) {
                     return Text(snapshot.error, textAlign: TextAlign.center);
                   } else
                     return Container(
@@ -363,8 +416,12 @@ class _HomepageState extends State<Homepage> {
                             FloatingActionButton.extended(
                               heroTag: "session_create_fab",
                               icon: Icon(Icons.add),
-                              label: StrongrText("Créer", color: Colors.white,),
-                              onPressed: () => Navigator.pushNamed(context, SESSION_CREATE_ROUTE),
+                              label: StrongrText(
+                                "Créer",
+                                color: Colors.white,
+                              ),
+                              onPressed: () => Navigator.pushNamed(
+                                  context, SESSION_CREATE_ROUTE),
                             ),
                           ],
                         ),
@@ -617,8 +674,12 @@ class _HomepageState extends State<Homepage> {
                             FloatingActionButton.extended(
                               heroTag: "program_create_fab",
                               icon: Icon(Icons.add),
-                              label: StrongrText("Créer", color: Colors.white,),
-                              onPressed: () => Navigator.pushNamed(context, PROGRAM_CREATE_ROUTE),
+                              label: StrongrText(
+                                "Créer",
+                                color: Colors.white,
+                              ),
+                              onPressed: () => Navigator.pushNamed(
+                                  context, PROGRAM_CREATE_ROUTE),
                             ),
                           ],
                         ),

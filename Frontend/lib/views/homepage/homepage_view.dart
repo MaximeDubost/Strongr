@@ -11,7 +11,8 @@ class HomepageView extends StatefulWidget {
 }
 
 class _HomepageViewState extends State<HomepageView> {
-  GlobalKey<dynamic> _appExercisesPageKey = GlobalKey();
+  GlobalKey<dynamic> _appExercisesPageKey;
+  // GlobalKey<dynamic> _homepageKey;
   List<Widget> pagesList;
   List<String> popupMenuItems,
       homepagePopupMenuItems,
@@ -20,6 +21,8 @@ class _HomepageViewState extends State<HomepageView> {
 
   @override
   void initState() {
+    _appExercisesPageKey = GlobalKey();
+    // _homepageKey = GlobalKey();
     currentPage = 1;
     pagesList = [
       AppExercisesPage(key: _appExercisesPageKey),

@@ -29,8 +29,9 @@ class ExerciseCreateView extends StatefulWidget {
 }
 
 class _ExerciseCreateViewState extends State<ExerciseCreateView> {
+  final globalKey = GlobalKey<ScaffoldState>();
   GlobalKey<FormState> _key = GlobalKey();
-  bool _specific, _validate;
+  bool _specific, _validate, createButtonEnabled;
   TextEditingController exerciseNameController;
   int selectedEquipmentId,
       setCount,
@@ -108,6 +109,7 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
       _restTime10
     ]);
     _specific = _validate = false;
+    createButtonEnabled = true;
     futureEquipments =
         EquipmentService.getEquipmentsOfAppExercise(idAppExercise: widget.id);
     equipmentSelection = List<bool>();
@@ -132,13 +134,11 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
       return null;
   }
 
-  void sendToServer() {
+  void sendToServer() async {
     if (_key.currentState.validate()) {
       _key.currentState.save();
-      // setState(() {
-      //   linesCount = setCount;
-      // });
-      ExerciseService.postExercise(
+      setState(() => createButtonEnabled = false);
+      int statusCode = await ExerciseService.postExercise(
         appExerciseId: widget.id,
         equipmentId: selectedEquipmentId,
         name: exerciseNameController.text == ""
@@ -146,6 +146,45 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
             : exerciseNameController.text,
         sets: createSets(),
       );
+      if (statusCode == 201) {
+        Navigator.pop(context, true);
+      } else {
+        globalKey.currentState.showSnackBar(
+          SnackBar(
+            content: Container(
+              height: 35,
+              child: Stack(
+                children: <Widget>[
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    child: Icon(
+                      Icons.close,
+                      color: Colors.white,
+                    ),
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    child: StrongrText(
+                      "Impossible de créer l'exercice",
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            backgroundColor: Colors.red.withOpacity(0.8),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(15),
+                topRight: Radius.circular(15),
+                bottomLeft: Radius.circular(15),
+                bottomRight: Radius.circular(15),
+              ),
+            ),
+          ),
+        );
+        setState(() => createButtonEnabled = true);
+      }
     } else {
       setState(() {
         _validate = true;
@@ -288,6 +327,7 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: globalKey,
       appBar: AppBar(
         centerTitle: true,
         leading: BackButton(),
@@ -385,7 +425,7 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
                           } else if (snapshot.data.length == 0) {
                             return Center(
                               child: StrongrText(
-                                "Aucun équipement associé",
+                                "Aucun équipement à afficher",
                                 color: Colors.grey,
                               ),
                             );
@@ -961,13 +1001,14 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
             ),
             Center(
               child: FloatingActionButton.extended(
-                backgroundColor:
-                    validSet(strict: true) ? StrongrColors.blue : Colors.grey,
+                backgroundColor: createButtonEnabled && validSet(strict: true)
+                    ? StrongrColors.blue
+                    : Colors.grey,
                 icon: Icon(
                   Icons.check,
                   color: Colors.white,
                 ),
-                onPressed: validSet(strict: true)
+                onPressed: createButtonEnabled && validSet(strict: true)
                     ? () {
                         sendToServer();
                       }

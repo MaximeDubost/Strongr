@@ -26,6 +26,7 @@ class ExercisesView extends StatefulWidget {
 }
 
 class _ExercisesViewState extends State<ExercisesView> {
+  final globalKey = GlobalKey<ScaffoldState>();
   TextEditingController searchbarController;
   Future<List<ExercisePreview>> futureExercises;
   bool sortedByRecent;
@@ -230,9 +231,17 @@ class _ExercisesViewState extends State<ExercisesView> {
     );
   }
 
-  /// Actualise la page.
-  void refresh() {
-    setState(() {});
+  /// Actualise la liste des exercices.
+  void refreshExercises() async {
+    setState(() {
+      futureExercises = ExerciseService.getExercises();
+      // exercisesListCurrentPage = 0;
+      // exercisesListController = PageController(
+      //   initialPage: exercisesListCurrentPage,
+      //   keepPage: false,
+      //   viewportFraction: 0.85,
+      // );
+    });
   }
 
   @override
@@ -240,10 +249,13 @@ class _ExercisesViewState extends State<ExercisesView> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
+        key: globalKey,
         resizeToAvoidBottomPadding: false,
         appBar: AppBar(
           centerTitle: true,
-          leading: BackButton(),
+          leading: BackButton(
+            onPressed: () => Navigator.pop(context, true),
+          ),
           title: Text("Vos exerices"),
           actions: <Widget>[
             // PopupMenuButton<String>(
@@ -281,11 +293,45 @@ class _ExercisesViewState extends State<ExercisesView> {
                 await Navigator.pushNamed(
                   context,
                   EXERCISE_ADD_ROUTE,
-                ).then((val) {
-                  if (val == true) {
-                    setState(() {});
-                  }
-                });
+                ).then(
+                  (val) {
+                    if (val == true) {
+                      refreshExercises();
+                      globalKey.currentState.showSnackBar(
+                        SnackBar(
+                          content: Container(
+                            height: 35,
+                            child: Stack(
+                              children: <Widget>[
+                                Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: Icon(
+                                    Icons.check,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                Container(
+                                  alignment: Alignment.center,
+                                  child: StrongrText(
+                                    "Exercice créé avec succès",
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          backgroundColor: StrongrColors.blue80,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(15),
+                              topRight: Radius.circular(15),
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                );
               },
             ),
           ],
@@ -343,9 +389,10 @@ class _ExercisesViewState extends State<ExercisesView> {
                       await showDialog(
                         context: context,
                         builder: (context) => FiltersDialog(),
-                      ).then((val) {
-                        if (val == true) refresh();
-                      });
+                      );
+                      // .then((val) {
+                      //   if (val == true) refresh();
+                      // });
                     },
                     child: StrongrText(
                       !AppExercisesFilters.filterMode

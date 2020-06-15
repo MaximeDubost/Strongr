@@ -70,12 +70,12 @@ router.get("/program/:id_program", middleware.checkAuth, ProgramController.readD
 /**
  * Program Goal
  */
-router.get("/programgoal", middleware.checkAuth, ProgramGoalController.readProgramGoal);
+router.get("/programgoals", ProgramGoalController.readProgramGoal);
 
 /**
  * Equipement
  */
-router.get("/equipment/:id_equipment", middleware.checkAuth, EquipmentController.getEquipmentByID);
-router.get("/equipments/:id_app_exercise", middleware.checkAuth, AppExerciseEquipementController.getEquipementByIDAppExercice);
+router.get("/equipments/appexercise/:id_app_exercise", AppExerciseEquipementController.getEquipementByIDAppExercice);
+router.get("/equipment/:id_equipment", EquipmentController.getEquipmentByID);
 
 export default router;

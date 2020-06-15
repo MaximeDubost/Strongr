@@ -15,22 +15,22 @@ const String WELCOME_ROUTE = "welcome";
 // Homepage
 const String HOMEPAGE_ROUTE = "homepage";
 
-// Exercise
+// App Exercise
 const String APP_EXERCISE_ROUTE = "app_exercise";
 
-// User Exercises
+// Exercises
 const String EXERCISES_ROUTE = "exercises";
 const String EXERCISE_ROUTE = "exercise";
 const String EXERCISE_ADD_ROUTE = "exercise_add";
 const String EXERCISE_CREATE_ROUTE = "exercise_create";
 
-// User Sessions
+// Sessions
 const String SESSIONS_ROUTE = "sessions";
 const String SESSION_ROUTE = "session";
 const String SESSION_ADD_ROUTE = "session_add";
 const String SESSION_CREATE_ROUTE = "session_create";
 
-// User Programs
+// Programs
 const String PROGRAMS_ROUTE = "programs";
 const String PROGRAM_ROUTE = "program";
 const String PROGRAM_ADD_ROUTE = "program_add";
