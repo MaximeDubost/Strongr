@@ -3,6 +3,7 @@ import Exercise from "../Models/Exercise"
 import Set from "../Models/Set"
 import DetailExercise from "../Models/DetailExercise"
 import clt from "../core/config/database";
+import { json } from "express";
 
 const repository = {};
 
@@ -10,13 +11,16 @@ const repository = {};
  * create exercises 
  */
 repository.createExercise = async (req) => {
+
     let date = new Date();
     let sqlCreateExercise = "INSERT INTO _exercise (id_app_exercise, id_user, name, id_equipment, creation_date, last_update) VALUES ($1, $2, $3, $4, $5, $6)"
     let sqlGetIdExercise = "SELECT id_exercise FROM _exercise WHERE id_user = $1 ORDER BY creation_date DESC LIMIT 1"
     try {
         await clt.query(sqlCreateExercise, [req.body.id_app_exercise, req.user.id, req.body.name, req.body.id_equipment, date, date])
         let result = await clt.query(sqlGetIdExercise, [req.user.id])
+        req.body.sets = [JSON.parse(req.body.sets)]
         req.body.sets.forEach(async set => {
+            console.log(req.body);
             let sqlAddSet = `INSERT INTO _set (id_app_exercise, id_user, id_exercise, repetitions_count, rest_time, place) VALUES ($1, $2, $3, $4, $5, $6)`
             try {
                 await clt.query(sqlAddSet, [req.body.id_app_exercise, req.user.id, result.rows[0].id_exercise, set.repetitions_count, set.rest_time, set.place])
@@ -31,7 +35,6 @@ repository.createExercise = async (req) => {
         console.error(error)
     }
 }
-
 /// READ
 repository.readExercises = async (req) => {
     let exercise_list = []
