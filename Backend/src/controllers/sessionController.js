@@ -25,11 +25,12 @@ controller.getSessionDetail = async (req, res) => {
 
 controller.addSession = async (req, res) => {
     try {
+        console.log(req.body)
         var result = await SessionRepository.addSession(req)
         if (result == 501) {
-            res.sendStatus(501)
+            res.sendStatus(result)
         } else {
-            res.sendStatus(200)
+            res.sendStatus(result)
         }
     } catch (error) {
         console.log(error)

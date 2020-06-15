@@ -73,9 +73,18 @@ repository.getSessionDetail = async (req) => {
 }
 
 repository.addSession = async (req) => {
-    var sqlAddSession = "INSERT INTO _session (id_user, name, creation_date, last_update) VALUES ($1, $2, $3, $4)"
+    let sqlAddSession = "INSERT INTO _session (id_user, id_session_type, name, creation_date, last_update) VALUES ($1, $2, $3, $4, $5)"
     try {
-        await clt.query(sqlAddSession, [req.user.id, req.body.session_name, new Date(), new Date()])
+        await clt.query(sqlAddSession, [req.user.id, req.body.id_session_type, req.body.name, new Date(), new Date()])
+        let sqlGetLastSessionCreated = "SELECT id_session FROM _session WHERE id_user = $1 ORDER BY creation_date DESC"
+        let getIdSession = await clt.query(sqlGetLastSessionCreated, [req.user.id])
+        req.body.exercises = [JSON.parse(req.body.exercises)]
+        req.body.exercises.forEach(async exercise => {
+            let sqlGetIdAppExercise = "SELECT id_app_exercise FROM _exercise WHERE id_exercise = $1"
+            let getIdAppExercise = await clt.query(sqlGetIdAppExercise, [exercise.id])
+            let insertInSessionExercise = "INSERT INTO _session_exercise (id_user, id_user_1, id_session, id_exercise, id_app_exercise, place) VALUES ($1, $2, $3, $4, $5, $6)"
+            await clt.query(insertInSessionExercise, [req.user.id, req.user.id, getIdSession.rows[0].id_session, exercise.id, getIdAppExercise.rows[0].id_app_exercise, exercise.place])
+        })
         return 200
     } catch (error) {
         console.log(error)
