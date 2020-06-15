@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:js';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
@@ -56,23 +57,23 @@ class ExerciseService {
     @required String name,
     @required List<Set> sets,
   }) async {
-    List<String> setsToJson = List<String>();
-    for (Set item in sets) 
-      setsToJson.add(item.toJson());
+    var body = {
+      'id_app_exercise': appExerciseId,
+      'id_equipment': equipmentId,
+      'name': name,
+      'sets': JsObject.jsify(sets)
+    };
+
     try {
       Response response = await http.post(
         Uri.encodeFull(
           Global.SERVER_URL + '/exercise',
         ),
         headers: {
+          "Content-Type": "application/json",
           'Authorization': 'Bearer ' + Global.token,
         },
-        body: {
-          'id_app_exercise': appExerciseId.toString(),
-          'id_equipment': equipmentId.toString(),
-          'name': name,
-          'sets': setsToJson.toString(),
-        },
+        body: jsonEncode(body),
       );
       return response.statusCode;
     } catch (e) {

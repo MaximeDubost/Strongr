@@ -33,17 +33,17 @@ class Set {
 
   Map<String, dynamic> toMap() {
     return {
-      // 'id': id,
+      //'id': id
       'place': place,
       'repetitions_count': repetitionCount,
       'rest_time': restTime,
-      // 'tonnage': tonnage,
+      //'tonnage': 'tonnage'
     };
   }
 
   static Set fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
-  
+
     return Set(
       id: map['id'],
       place: map['place'],
@@ -59,27 +59,31 @@ class Set {
 
   @override
   String toString() {
-    return 'Set(id: $id, place: $place, repetitionCount: $repetitionCount, restTime: $restTime, tonnage: $tonnage)';
+    if (id != null) {
+      return 'Set(id: $id, place: $place, repetitionCount: $repetitionCount, restTime: $restTime, tonnage: $tonnage)';
+    } else {
+      return 'Set(place: $place, repetitionCount: $repetitionCount, restTime: $restTime)';
+    }
   }
 
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
-  
+
     return o is Set &&
-      o.id == id &&
-      o.place == place &&
-      o.repetitionCount == repetitionCount &&
-      o.restTime == restTime &&
-      o.tonnage == tonnage;
+        o.id == id &&
+        o.place == place &&
+        o.repetitionCount == repetitionCount &&
+        o.restTime == restTime &&
+        o.tonnage == tonnage;
   }
 
   @override
   int get hashCode {
     return id.hashCode ^
-      place.hashCode ^
-      repetitionCount.hashCode ^
-      restTime.hashCode ^
-      tonnage.hashCode;
+        place.hashCode ^
+        repetitionCount.hashCode ^
+        restTime.hashCode ^
+        tonnage.hashCode;
   }
 }

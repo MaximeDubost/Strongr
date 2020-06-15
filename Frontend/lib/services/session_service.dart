@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
 import 'package:strongr/models/Session.dart';
+import 'package:strongr/models/SessionExercise.dart';
 import 'package:strongr/models/SessionPreview.dart';
 import 'package:strongr/utils/global.dart';
 
@@ -17,9 +18,7 @@ class SessionService {
         Uri.encodeFull(
           Global.SERVER_URL + '/sessions',
         ),
-        headers: {
-          'Authorization': 'Bearer ' + Global.token
-        },
+        headers: {'Authorization': 'Bearer ' + Global.token},
       );
       List<SessionPreview> sessions = List<SessionPreview>();
       for (final session in jsonDecode(response.body))
@@ -39,9 +38,7 @@ class SessionService {
         Uri.encodeFull(
           Global.SERVER_URL + '/session/' + id.toString(),
         ),
-        headers: {
-          'Authorization': 'Bearer ' + Global.token
-        },
+        headers: {'Authorization': 'Bearer ' + Global.token},
       );
       return Session.fromJson(response.body);
     } catch (e) {
@@ -49,3 +46,36 @@ class SessionService {
     }
   }
 }
+
+/* /// [POST] /session
+  ///
+  /// Crée une seance pour un utilisateur.
+  static Future<int> postSession({
+    @required int sessionTypeId,
+    @required String name,
+    @required List<SessionExercise> exercises,
+  }) async {
+    print(exercises);
+
+    var body = {
+      'sessionTypeId':sessionTypeId,
+      'name': name,
+      'exercises': exercises
+    };
+
+    try {
+      Response response = await http.post(
+        Uri.encodeFull(
+          Global.SERVER_URL + '/session',
+        ),
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer ' + Global.token,
+        },
+        body: jsonEncode(body),
+      );
+      return response.statusCode;
+    } catch (e) {
+      return 503;
+    }
+  } */
