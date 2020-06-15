@@ -64,6 +64,7 @@ router.delete("/session/:id_session", middleware.checkAuth, SessionController.de
 /**
  * Program
  */
+router.post("/program", middleware.checkAuth, ProgramController.addProgram);
 router.get("/programs", middleware.checkAuth, ProgramController.readProgram);
 router.get("/program/:id_program", middleware.checkAuth, ProgramController.readDetailProgram);
 
