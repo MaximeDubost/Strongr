@@ -56,23 +56,21 @@ class ExerciseService {
     @required String name,
     @required List<Set> sets,
   }) async {
-    List<String> setsToJson = List<String>();
-    for (Set item in sets) 
-      setsToJson.add(item.toJson());
     try {
       Response response = await http.post(
         Uri.encodeFull(
           Global.SERVER_URL + '/exercise',
         ),
         headers: {
-          'Authorization': 'Bearer ' + Global.token,
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + Global.token
         },
-        body: {
-          'id_app_exercise': appExerciseId.toString(),
-          'id_equipment': equipmentId.toString(),
+        body: jsonEncode({
+          'id_app_exercise': appExerciseId,
+          'id_equipment': equipmentId,
           'name': name,
-          'sets': setsToJson.toString(),
-        },
+          'sets': sets
+        }),
       );
       return response.statusCode;
     } catch (e) {
