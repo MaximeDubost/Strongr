@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
 import 'package:strongr/models/Session.dart';
-import 'package:strongr/models/SessionExercise.dart';
 import 'package:strongr/models/SessionPreview.dart';
 import 'package:strongr/utils/global.dart';
 
