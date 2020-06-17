@@ -15,9 +15,15 @@ class ExerciseView extends StatefulWidget {
   final String name;
   final String appExerciseName;
   final bool fromSession;
+  final bool fromSessionAddExercise;
 
-  ExerciseView(
-      {this.id, this.name, this.appExerciseName, this.fromSession = false});
+  ExerciseView({
+    this.id,
+    this.name,
+    this.appExerciseName,
+    this.fromSession = false,
+    this.fromSessionAddExercise = false,
+  });
 
   @override
   _ExerciseViewState createState() => _ExerciseViewState();
@@ -227,8 +233,10 @@ class _ExerciseViewState extends State<ExerciseView> {
                 ),
               ],
             ),
-            onPressed: !isEditMode ? () {} : null,
-            onLongPressed: !isEditMode ? () => setState(() => isEditMode = true) : null,
+            onPressed: !isEditMode && !widget.fromSessionAddExercise ? () {} : null,
+            onLongPressed: !isEditMode && !widget.fromSessionAddExercise
+                ? () => setState(() => isEditMode = true)
+                : null,
           ),
         ),
       );
@@ -248,15 +256,17 @@ class _ExerciseViewState extends State<ExerciseView> {
               )
             : BackButton(),
         actions: <Widget>[
-          isEditMode
-              ? IconButton(
-                  icon: Icon(Icons.check),
-                  onPressed: () {},
-                )
-              : IconButton(
-                  icon: Icon(Icons.edit),
-                  onPressed: () => setState(() => isEditMode = true),
-                ),
+          !widget.fromSessionAddExercise
+              ? isEditMode
+                  ? IconButton(
+                      icon: Icon(Icons.check),
+                      onPressed: () {},
+                    )
+                  : IconButton(
+                      icon: Icon(Icons.edit),
+                      onPressed: () => setState(() => isEditMode = true),
+                    )
+              : SizedBox(),
         ],
       ),
       body: Container(
@@ -437,21 +447,24 @@ class _ExerciseViewState extends State<ExerciseView> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        heroTag: !widget.fromSession
-            ? 'exercise_play_fab_' + widget.id.toString()
-            : 'fs_exercise_play_fab_' + widget.id.toString(),
-        backgroundColor: isEditMode ? Colors.red[800] : StrongrColors.blue,
-        icon: Icon(
-          isEditMode ? Icons.delete_outline : Icons.play_arrow,
-          color: Colors.white,
-        ),
-        onPressed: isEditMode ? () {} : () {},
-        label: StrongrText(
-          isEditMode ? "Supprimer" : "Démarrer",
-          color: Colors.white,
-        ),
-      ),
+      floatingActionButton: !widget.fromSessionAddExercise
+          ? FloatingActionButton.extended(
+              heroTag: !widget.fromSession
+                  ? 'exercise_play_fab_' + widget.id.toString()
+                  : 'fs_exercise_play_fab_' + widget.id.toString(),
+              backgroundColor:
+                  isEditMode ? Colors.red[800] : StrongrColors.blue,
+              icon: Icon(
+                isEditMode ? Icons.delete_outline : Icons.play_arrow,
+                color: Colors.white,
+              ),
+              onPressed: isEditMode ? () {} : () {},
+              label: StrongrText(
+                isEditMode ? "Supprimer" : "Démarrer",
+                color: Colors.white,
+              ),
+            )
+          : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }

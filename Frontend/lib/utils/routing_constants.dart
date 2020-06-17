@@ -29,12 +29,14 @@ const String SESSIONS_ROUTE = "sessions";
 const String SESSION_ROUTE = "session";
 const String SESSION_ADD_ROUTE = "session_add";
 const String SESSION_CREATE_ROUTE = "session_create";
+const String SESSION_NEW_EXERCISE_ROUTE = "session_new_exercise";
 
 // Programs
 const String PROGRAMS_ROUTE = "programs";
 const String PROGRAM_ROUTE = "program";
 const String PROGRAM_ADD_ROUTE = "program_add";
 const String PROGRAM_CREATE_ROUTE = "program_create";
+const String PROGRAM_NEW_SESSION_ROUTE = "program_new_session";
 
 // Profile
 const String PROFILE_ROUTE = "profile";

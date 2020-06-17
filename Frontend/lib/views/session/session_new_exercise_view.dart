@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:strongr/views/homepage/pages/app_exercises_page.dart';
+import 'package:strongr/views/exercise/exercises_view.dart';
 
-class ExerciseAddView extends StatefulWidget {
-  _ExerciseAddViewState createState() => _ExerciseAddViewState();
+class SessionNewExerciseView extends StatefulWidget {
+  _SessionNewExerciseViewState createState() => _SessionNewExerciseViewState();
 }
 
-class _ExerciseAddViewState extends State<ExerciseAddView> {
+class _SessionNewExerciseViewState extends State<SessionNewExerciseView> {
   final List<String> popupMenuItems = ["Filtres"];
 
   @override
@@ -14,7 +14,7 @@ class _ExerciseAddViewState extends State<ExerciseAddView> {
       appBar: AppBar(
         centerTitle: true,
         leading: BackButton(),
-        title: Text("Nouvel exercice"),
+        title: Text("Ajouter un exercice"),
         // actions: <Widget>[
         //   PopupMenuButton<String>(
         //     tooltip: "Menu",
@@ -37,7 +37,7 @@ class _ExerciseAddViewState extends State<ExerciseAddView> {
         //   ),
         // ],
       ),
-      body: AppExercisesPage(fromExercises: true,)
+      body: ExercisesView(fromSessionCreation: true)
     );
   }
 }

@@ -17,9 +17,10 @@ class ExercisesView extends StatefulWidget {
   final GlobalKey<dynamic> key;
   final int id;
   final String name;
-  final bool fromExercises;
+  final bool fromSessionCreation;
 
-  ExercisesView({this.key, this.id, this.name, this.fromExercises = false});
+  ExercisesView(
+      {this.key, this.id, this.name, this.fromSessionCreation = false});
 
   @override
   _ExercisesViewState createState() => _ExercisesViewState();
@@ -194,36 +195,77 @@ class _ExercisesViewState extends State<ExercisesView> {
                       ),
                     ),
                     Container(
-                      padding: EdgeInsets.only(bottom: 10, right: 10),
-                      alignment: Alignment.bottomRight,
-                      child: Container(
-                        width: 35,
-                        height: 35,
-                        child: FloatingActionButton(
-                          elevation: 0,
-                          heroTag: 'exercise_play_fab_' + item.id.toString(),
-                          tooltip: "Démarrer",
-                          backgroundColor: StrongrColors.blue,
-                          child: Icon(
-                            Icons.play_arrow,
-                            color: Colors.white,
-                          ),
-                          onPressed: () {},
-                        ),
-                      ),
+                      // color: Colors.black12,
+                      padding: EdgeInsets.all(10),
+                      alignment: !widget.fromSessionCreation
+                          ? Alignment.bottomRight
+                          : Alignment.centerRight,
+                      child: !widget.fromSessionCreation
+                          ? Container(
+                              // color: Colors.red,
+                              width: 35,
+                              height: 35,
+                              child: FloatingActionButton(
+                                elevation: 0,
+                                heroTag:
+                                    'exercise_play_fab_' + item.id.toString(),
+                                tooltip: "Démarrer",
+                                backgroundColor: StrongrColors.blue,
+                                child: Icon(
+                                  Icons.play_arrow,
+                                  color: Colors.white,
+                                ),
+                                onPressed: () {},
+                              ),
+                            )
+                          : Container(
+                              // color: Colors.red,
+                              width: 35,
+                              height: 35,
+                              child: RawMaterialButton(
+                                shape: CircleBorder(),
+                                onPressed: () {
+                                  Navigator.pushNamed(
+                                    context,
+                                    EXERCISE_ROUTE,
+                                    arguments: ExerciseView(
+                                      id: item.id.toString(),
+                                      name: item.name,
+                                      appExerciseName: item.appExerciseName,
+                                      fromSessionAddExercise: true,
+                                    ),
+                                  );
+                                },
+                                child: Icon(
+                                  Icons.info_outline,
+                                  color: StrongrColors.blue,
+                                ),
+                              ),
+                            ),
                     ),
                   ],
                 ),
                 onPressed: () {
-                  Navigator.pushNamed(
-                    context,
-                    EXERCISE_ROUTE,
-                    arguments: ExerciseView(
-                      id: item.id.toString(),
-                      name: item.name,
-                      appExerciseName: item.appExerciseName,
-                    ),
-                  );
+                  !widget.fromSessionCreation
+                      ? Navigator.pushNamed(
+                          context,
+                          EXERCISE_ROUTE,
+                          arguments: ExerciseView(
+                            id: item.id.toString(),
+                            name: item.name,
+                            appExerciseName: item.appExerciseName,
+                          ),
+                        )
+                      : Navigator.pop(
+                          context,
+                          ExercisePreview(
+                            id: item.id,
+                            name: item.name,
+                            appExerciseName: item.appExerciseName,
+                            setCount: item.setCount,
+                            tonnage: item.tonnage,
+                          ),
+                        );
                 },
               ),
             ),
@@ -251,91 +293,93 @@ class _ExercisesViewState extends State<ExercisesView> {
       child: Scaffold(
         key: globalKey,
         resizeToAvoidBottomPadding: false,
-        appBar: AppBar(
-          centerTitle: true,
-          leading: BackButton(
-            onPressed: () => Navigator.pop(context, true),
-          ),
-          title: Text("Vos exerices"),
-          actions: <Widget>[
-            // PopupMenuButton<String>(
-            //   tooltip: "Menu",
-            //   onSelected: (value) async {
-            //     switch (value) {
-            //       case "Filtres":
-            //         break;
-            //       case "Créer":
-            //         await Navigator.pushNamed(
-            //           context,
-            //           EXERCISE_ADD_ROUTE,
-            //         ).then((val) {
-            //           if (val == true) {
-            //             setState(() {});
-            //           }
-            //         });
-            //         break;
-            //     }
-            //   },
-            //   itemBuilder: (BuildContext context) {
-            //     return popupMenuItems.map(
-            //       (String choice) {
-            //         return PopupMenuItem<String>(
-            //           value: choice,
-            //           child: Text(choice),
-            //         );
-            //       },
-            //     ).toList();
-            //   },
-            // ),
-            IconButton(
-              icon: Icon(Icons.add),
-              onPressed: () async {
-                await Navigator.pushNamed(
-                  context,
-                  EXERCISE_ADD_ROUTE,
-                ).then(
-                  (val) {
-                    if (val == true) {
-                      refreshExercises();
-                      globalKey.currentState.showSnackBar(
-                        SnackBar(
-                          content: Container(
-                            height: 35,
-                            child: Stack(
-                              children: <Widget>[
-                                Container(
-                                  alignment: Alignment.centerLeft,
-                                  child: Icon(
-                                    Icons.check,
-                                    color: Colors.white,
+        appBar: !widget.fromSessionCreation
+            ? AppBar(
+                centerTitle: true,
+                leading: BackButton(
+                  onPressed: () => Navigator.pop(context, true),
+                ),
+                title: Text("Vos exerices"),
+                actions: <Widget>[
+                  // PopupMenuButton<String>(
+                  //   tooltip: "Menu",
+                  //   onSelected: (value) async {
+                  //     switch (value) {
+                  //       case "Filtres":
+                  //         break;
+                  //       case "Créer":
+                  //         await Navigator.pushNamed(
+                  //           context,
+                  //           EXERCISE_ADD_ROUTE,
+                  //         ).then((val) {
+                  //           if (val == true) {
+                  //             setState(() {});
+                  //           }
+                  //         });
+                  //         break;
+                  //     }
+                  //   },
+                  //   itemBuilder: (BuildContext context) {
+                  //     return popupMenuItems.map(
+                  //       (String choice) {
+                  //         return PopupMenuItem<String>(
+                  //           value: choice,
+                  //           child: Text(choice),
+                  //         );
+                  //       },
+                  //     ).toList();
+                  //   },
+                  // ),
+                  IconButton(
+                    icon: Icon(Icons.add),
+                    onPressed: () async {
+                      await Navigator.pushNamed(
+                        context,
+                        EXERCISE_ADD_ROUTE,
+                      ).then(
+                        (val) {
+                          if (val == true) {
+                            refreshExercises();
+                            globalKey.currentState.showSnackBar(
+                              SnackBar(
+                                content: Container(
+                                  height: 35,
+                                  child: Stack(
+                                    children: <Widget>[
+                                      Container(
+                                        alignment: Alignment.centerLeft,
+                                        child: Icon(
+                                          Icons.check,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      Container(
+                                        alignment: Alignment.center,
+                                        child: StrongrText(
+                                          "Exercice créé avec succès",
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                Container(
-                                  alignment: Alignment.center,
-                                  child: StrongrText(
-                                    "Exercice créé avec succès",
-                                    color: Colors.white,
+                                backgroundColor: StrongrColors.blue80,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(15),
+                                    topRight: Radius.circular(15),
                                   ),
                                 ),
-                              ],
-                            ),
-                          ),
-                          backgroundColor: StrongrColors.blue80,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(15),
-                              topRight: Radius.circular(15),
-                            ),
-                          ),
-                        ),
+                              ),
+                            );
+                          }
+                        },
                       );
-                    }
-                  },
-                );
-              },
-            ),
-          ],
-        ),
+                    },
+                  ),
+                ],
+              )
+            : null,
         body: Container(
           child: ListView(
             physics: BouncingScrollPhysics(),

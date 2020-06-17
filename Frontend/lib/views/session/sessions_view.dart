@@ -17,9 +17,9 @@ class SessionsView extends StatefulWidget {
   final GlobalKey<dynamic> key;
   final int id;
   final String name;
-  final bool fromExercises;
+  final bool fromProgramCreation;
 
-  SessionsView({this.key, this.id, this.name, this.fromExercises = false});
+  SessionsView({this.key, this.id, this.name, this.fromProgramCreation = false});
 
   @override
   _SessionsViewState createState() => _SessionsViewState();

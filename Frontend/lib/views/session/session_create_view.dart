@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:strongr/models/ExercisePreview.dart';
+import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
+import 'package:strongr/views/exercise/exercise_view.dart';
+import 'package:strongr/widgets/strongr_rounded_container.dart';
 import 'package:strongr/widgets/strongr_rounded_textformfield.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
@@ -15,12 +19,14 @@ class _SessionCreateViewState extends State<SessionCreateView> {
   TextEditingController _seriesCountController;
   int linesCount = 1;
   String errorText = "";
+  List<ExercisePreview> exercisesOfSession;
 
   @override
   void initState() {
     super.initState();
     _seriesCountController = TextEditingController(text: "1");
     _validate = false;
+    exercisesOfSession = List<ExercisePreview>();
   }
 
   @override
@@ -40,6 +46,285 @@ class _SessionCreateViewState extends State<SessionCreateView> {
         _validate = true;
       });
     }
+  }
+
+  void getReturnedExercise(Object returnedExercise) {
+    if (returnedExercise != null) {
+      setState(() {
+        exercisesOfSession.add(returnedExercise);
+      });
+      exercisesOfSession[exercisesOfSession.length - 1].place =
+          exercisesOfSession.length;
+    }
+  }
+
+  void deleteExercise(int index) {
+    setState(() {
+      exercisesOfSession.removeAt(index);
+      for (final item in exercisesOfSession)
+        item.place = exercisesOfSession.indexOf(item) + 1;
+    });
+  }
+
+  void changePlaceOfExercise(int index, AxisDirection direction) {
+    switch (direction) {
+      case AxisDirection.up:
+      case AxisDirection.left:
+        if (index > 0) {
+          ExercisePreview transition = exercisesOfSession[index - 1];
+          setState(() {
+            exercisesOfSession[index - 1] = exercisesOfSession[index];
+            exercisesOfSession[index] = transition;
+            for (final item in exercisesOfSession)
+              item.place = exercisesOfSession.indexOf(item) + 1;
+          });
+        }
+        break;
+      case AxisDirection.right:
+      case AxisDirection.down:
+        if (index < exercisesOfSession.indexOf(exercisesOfSession.last)) {
+          ExercisePreview transition = exercisesOfSession[index + 1];
+          setState(() {
+            exercisesOfSession[index + 1] = exercisesOfSession[index];
+            exercisesOfSession[index] = transition;
+            for (final item in exercisesOfSession)
+              item.place = exercisesOfSession.indexOf(item) + 1;
+          });
+        }
+        break;
+    }
+  }
+
+  List<Widget> buildExerciseList({List exerciseList}) {
+    List<Widget> builtExerciseList = [];
+    for (final item in exerciseList)
+      builtExerciseList.add(
+        Container(
+          margin:
+              exerciseList.indexOf(item) == 0 ? EdgeInsets.only(top: 5) : null,
+          key: ValueKey(item.id),
+          padding: EdgeInsets.all(5),
+          height: 110,
+          child: StrongrRoundedContainer(
+            width: ScreenSize.width(context),
+            content: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Container(
+                  // color: Colors.red,
+                  width: 35,
+                  height: 110,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Container(
+                        height: 30,
+                        // color: Colors.blue,
+                        child: RawMaterialButton(
+                          onPressed: exerciseList.indexOf(item) == 0
+                              ? () {}
+                              : () {
+                                  changePlaceOfExercise(
+                                      exerciseList.indexOf(item),
+                                      AxisDirection.up);
+                                },
+                          hoverColor: exerciseList.indexOf(item) == 0
+                              ? Colors.transparent
+                              : StrongrColors.greyE,
+                          splashColor: exerciseList.indexOf(item) == 0
+                              ? Colors.transparent
+                              : StrongrColors.greyD,
+                          enableFeedback:
+                              exerciseList.indexOf(item) == 0 ? false : true,
+                          child: Icon(
+                            Icons.keyboard_arrow_up,
+                            color: exerciseList.indexOf(item) == 0
+                                ? Colors.grey
+                                : StrongrColors.black,
+                          ),
+                          shape: CircleBorder(),
+                        ),
+                      ),
+                      Container(
+                        // color: Colors.yellow,
+                        width: 30,
+                        child: Center(
+                          child: StrongrText(
+                            item.place != null ? item.place.toString() : "-",
+                            color: item.place != null
+                                ? StrongrColors.black
+                                : Colors.grey,
+                            bold: true,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        height: 30,
+                        // color: Colors.blue,
+                        child: RawMaterialButton(
+                          onPressed: exerciseList.indexOf(item) ==
+                                  exerciseList.indexOf(exerciseList.last)
+                              ? () {}
+                              : () {
+                                  changePlaceOfExercise(
+                                      exerciseList.indexOf(item),
+                                      AxisDirection.down);
+                                },
+                          hoverColor: exerciseList.indexOf(item) ==
+                                  exerciseList.indexOf(exerciseList.last)
+                              ? Colors.transparent
+                              : StrongrColors.greyE,
+                          splashColor: exerciseList.indexOf(item) ==
+                                  exerciseList.indexOf(exerciseList.last)
+                              ? Colors.transparent
+                              : StrongrColors.greyD,
+                          enableFeedback: exerciseList.indexOf(item) ==
+                                  exerciseList.indexOf(exerciseList.last)
+                              ? false
+                              : true,
+                          child: Icon(
+                            Icons.keyboard_arrow_down,
+                            color: exerciseList.indexOf(item) ==
+                                    exerciseList.indexOf(exerciseList.last)
+                                ? Colors.grey
+                                : StrongrColors.black,
+                          ),
+                          shape: CircleBorder(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Flexible(
+                  child: Container(
+                    // color: Colors.red,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Container(
+                              padding: EdgeInsets.only(left: 5, right: 5),
+                              child: Icon(
+                                Icons.fitness_center,
+                                color: item.appExerciseName == null
+                                    ? Colors.grey
+                                    : StrongrColors.black,
+                              ),
+                            ),
+                            Flexible(
+                              child: Container(
+                                // color: Colors.blue,
+                                child: StrongrText(
+                                  item.appExerciseName ?? "Aucun exercice",
+                                  color: item.appExerciseName == null
+                                      ? Colors.grey
+                                      : StrongrColors.black,
+                                  textAlign: TextAlign.start,
+                                  maxLines: 2,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: <Widget>[
+                            Container(
+                              padding: EdgeInsets.only(left: 5, right: 5),
+                              child: Icon(
+                                Icons.refresh,
+                                color: item.setCount == null ||
+                                        int.parse(item.setCount) < 1
+                                    ? Colors.grey
+                                    : StrongrColors.black,
+                              ),
+                            ),
+                            Flexible(
+                              child: Container(
+                                // width: 185,
+                                child: StrongrText(
+                                  item.setCount == null ||
+                                          int.parse(item.setCount) < 1
+                                      ? "Aucune série"
+                                      : item.setCount == 1
+                                          ? item.setCount + " série"
+                                          : item.setCount + " séries",
+                                  color: item.setCount == null ||
+                                          int.parse(item.setCount) < 1
+                                      ? Colors.grey
+                                      : StrongrColors.black,
+                                  textAlign: TextAlign.start,
+                                  maxLines: 1,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: <Widget>[
+                            Container(
+                              padding: EdgeInsets.only(left: 5, right: 5),
+                              child: Icon(
+                                Icons.show_chart,
+                                color: item.tonnage == null
+                                    ? Colors.grey
+                                    : StrongrColors.black,
+                              ),
+                            ),
+                            Flexible(
+                              child: Container(
+                                // width: 185,
+                                child: StrongrText(
+                                  item.tonnage != null
+                                      ? "Tonnage de " + item.tonnage.toString()
+                                      : "Tonnage non calculé",
+                                  color: item.tonnage == null
+                                      ? Colors.grey
+                                      : StrongrColors.black,
+                                  textAlign: TextAlign.start,
+                                  maxLines: 1,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Container(
+                  width: 35,
+                  height: 35,
+                  child: RawMaterialButton(
+                    child: Icon(
+                      Icons.close,
+                      color: Colors.red[800],
+                    ),
+                    shape: CircleBorder(),
+                    onPressed: () {
+                      deleteExercise(exerciseList.indexOf(item));
+                    },
+                  ),
+                ),
+              ],
+            ),
+            onPressed: () {
+              Navigator.pushNamed(
+                context,
+                EXERCISE_ROUTE,
+                arguments: ExerciseView(
+                  id: item.id.toString(),
+                  name: item.name.toString(),
+                  appExerciseName: item.appExerciseName.toString(),
+                  fromSessionAddExercise: true,
+                ),
+              );
+            },
+          ),
+        ),
+      );
+    return builtExerciseList;
   }
 
   @override
@@ -92,7 +377,8 @@ class _SessionCreateViewState extends State<SessionCreateView> {
                     ),
                   ),
                   Container(
-                    padding: EdgeInsets.all(10),
+                    // color: Colors.red,
+                    padding: EdgeInsets.only(top: 10, left: 10),
                     child: StrongrText("Exercices"),
                   ),
                   // Container(
@@ -105,6 +391,10 @@ class _SessionCreateViewState extends State<SessionCreateView> {
                   //     ),
                   //   ),
                   // ),
+                  Column(
+                    children:
+                        buildExerciseList(exerciseList: exercisesOfSession),
+                  ),
                   Container(
                     padding: EdgeInsets.all(10),
                     width: ScreenSize.width(context),
@@ -112,9 +402,20 @@ class _SessionCreateViewState extends State<SessionCreateView> {
                       child: FloatingActionButton.extended(
                         heroTag: "add_fab",
                         backgroundColor: StrongrColors.black,
-                        onPressed: () {},
-                        label: StrongrText("Ajouter", color: Colors.white,),
-                        icon: Icon(Icons.add, color: Colors.white,),
+                        icon: Icon(
+                          Icons.add,
+                          color: Colors.white,
+                        ),
+                        label: StrongrText(
+                          "Ajouter",
+                          color: Colors.white,
+                        ),
+                        onPressed: () {
+                          Navigator.pushNamed(
+                            context,
+                            SESSION_NEW_EXERCISE_ROUTE,
+                          ).then(getReturnedExercise);
+                        },
                       ),
                     ),
                   ),
@@ -136,12 +437,14 @@ class _SessionCreateViewState extends State<SessionCreateView> {
             ),
             Center(
               child: FloatingActionButton.extended(
-                backgroundColor: Colors.grey,
+                backgroundColor: exercisesOfSession.length != 0
+                    ? StrongrColors.blue
+                    : Colors.grey,
                 icon: Icon(
                   Icons.check,
                   color: Colors.white,
                 ),
-                onPressed: null,
+                onPressed: exercisesOfSession.length != 0 ? () {} : null,
                 label: StrongrText(
                   "Créer",
                   color: Colors.white,
