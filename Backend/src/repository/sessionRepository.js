@@ -73,12 +73,15 @@ repository.getSessionDetail = async (req) => {
 }
 
 repository.addSession = async (req) => {
+    // console.log(req.body)
     let sqlAddSession = "INSERT INTO _session (id_user, id_session_type, name, creation_date, last_update) VALUES ($1, $2, $3, $4, $5)"
     try {
         await clt.query(sqlAddSession, [req.user.id, req.body.id_session_type, req.body.name, new Date(), new Date()])
         let sqlGetLastSessionCreated = "SELECT id_session FROM _session WHERE id_user = $1 ORDER BY creation_date DESC"
         let getIdSession = await clt.query(sqlGetLastSessionCreated, [req.user.id])
+        // console.log(req.body.exercises[0])
         req.body.exercises = [JSON.parse(req.body.exercises)]
+        // console.log(req.body.exercises)
         req.body.exercises.forEach(async exercise => {
             let sqlGetIdAppExercise = "SELECT id_app_exercise FROM _exercise WHERE id_exercise = $1"
             let getIdAppExercise = await clt.query(sqlGetIdAppExercise, [exercise.id])

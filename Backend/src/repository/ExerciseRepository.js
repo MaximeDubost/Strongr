@@ -11,7 +11,7 @@ const repository = {};
  * create exercises 
  */
 repository.createExercise = async (req) => {
-
+    console.log(req.body)
     let date = new Date();
     let sqlCreateExercise = "INSERT INTO _exercise (id_app_exercise, id_user, name, id_equipment, creation_date, last_update) VALUES ($1, $2, $3, $4, $5, $6)"
     let sqlGetIdExercise = "SELECT id_exercise FROM _exercise WHERE id_user = $1 ORDER BY creation_date DESC LIMIT 1"

@@ -30,7 +30,7 @@ class _ExercisesViewState extends State<ExercisesView> {
   final globalKey = GlobalKey<ScaffoldState>();
   TextEditingController searchbarController;
   Future<List<ExercisePreview>> futureExercises;
-  bool sortedByRecent;
+  bool sortedByRecent, needToRefresh;
   // List<String> popupMenuItems;
 
   @override
@@ -38,6 +38,7 @@ class _ExercisesViewState extends State<ExercisesView> {
     searchbarController = TextEditingController(text: "");
     futureExercises = ExerciseService.getExercises();
     sortedByRecent = true;
+    needToRefresh = false;
     // popupMenuItems = ["Filtres", "Créer"];
     super.initState();
   }
@@ -277,12 +278,7 @@ class _ExercisesViewState extends State<ExercisesView> {
   void refreshExercises() async {
     setState(() {
       futureExercises = ExerciseService.getExercises();
-      // exercisesListCurrentPage = 0;
-      // exercisesListController = PageController(
-      //   initialPage: exercisesListCurrentPage,
-      //   keepPage: false,
-      //   viewportFraction: 0.85,
-      // );
+      needToRefresh = true;
     });
   }
 
@@ -297,7 +293,7 @@ class _ExercisesViewState extends State<ExercisesView> {
             ? AppBar(
                 centerTitle: true,
                 leading: BackButton(
-                  onPressed: () => Navigator.pop(context, true),
+                  onPressed: () => Navigator.pop(context, needToRefresh),
                 ),
                 title: Text("Vos exerices"),
                 actions: <Widget>[

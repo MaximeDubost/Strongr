@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
+import 'package:strongr/models/ExercisePreview.dart';
 import 'package:strongr/models/Session.dart';
 import 'package:strongr/models/SessionPreview.dart';
 import 'package:strongr/utils/global.dart';
@@ -44,37 +45,33 @@ class SessionService {
       return Session();
     }
   }
-}
 
-/* /// [POST] /session
+  /// [POST] /session
   ///
-  /// Crée une seance pour un utilisateur.
+  /// Crée une séance pour un utilisateur.
   static Future<int> postSession({
-    @required int sessionTypeId,
     @required String name,
-    @required List<SessionExercise> exercises,
+    @required List<ExercisePreview> exercises,
   }) async {
-    print(exercises);
-
-    var body = {
-      'sessionTypeId':sessionTypeId,
-      'name': name,
-      'exercises': exercises
-    };
-
     try {
       Response response = await http.post(
         Uri.encodeFull(
           Global.SERVER_URL + '/session',
         ),
         headers: {
-          "Content-Type": "application/json",
-          'Authorization': 'Bearer ' + Global.token,
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + Global.token
         },
-        body: jsonEncode(body),
+        body: jsonEncode({
+          'id_session_type': 3,
+          'name': name,
+          'exercises': exercises
+        }),
       );
       return response.statusCode;
     } catch (e) {
       return 503;
     }
-  } */
+  }
+}
+

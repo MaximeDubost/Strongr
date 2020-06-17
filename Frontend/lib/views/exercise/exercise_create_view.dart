@@ -115,6 +115,12 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
     equipmentSelection = List<bool>();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    exerciseNameController.dispose();
+  }
+
   String validate(String value) {
     // if (value.length == 0)
     //   return "Vous devez renseigner un nombre de séries";

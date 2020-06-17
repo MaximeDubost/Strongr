@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:strongr/models/ExercisePreview.dart';
+import 'package:strongr/services/session_service.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
@@ -14,9 +15,10 @@ class SessionCreateView extends StatefulWidget {
 }
 
 class _SessionCreateViewState extends State<SessionCreateView> {
+  final globalKey = GlobalKey<ScaffoldState>();
   GlobalKey<FormState> _key = GlobalKey();
-  bool _validate;
-  TextEditingController _seriesCountController;
+  bool _validate, createButtonEnabled;
+  TextEditingController sessionNameController;
   int linesCount = 1;
   String errorText = "";
   List<ExercisePreview> exercisesOfSession;
@@ -24,23 +26,66 @@ class _SessionCreateViewState extends State<SessionCreateView> {
   @override
   void initState() {
     super.initState();
-    _seriesCountController = TextEditingController(text: "1");
-    _validate = false;
+    _validate = createButtonEnabled = false;
+    sessionNameController = TextEditingController(text: "");
     exercisesOfSession = List<ExercisePreview>();
   }
 
   @override
   void dispose() {
     super.dispose();
-    _seriesCountController.dispose();
+    sessionNameController.dispose();
   }
 
-  void sendToServer() {
-    if (_key.currentState.validate() && _seriesCountController.text != "") {
+  void sendToServer() async {
+    if (_key.currentState.validate()) {
       _key.currentState.save();
-      setState(() {
-        linesCount = int.parse(_seriesCountController.text);
-      });
+      setState(() => createButtonEnabled = false);
+      int statusCode = await SessionService.postSession(
+        name: sessionNameController.text == ""
+            ? "Séance perso."
+            : sessionNameController.text,
+        exercises: exercisesOfSession,
+      );
+      if (statusCode == 201) {
+        Navigator.pop(context, true);
+      } else {
+        globalKey.currentState.showSnackBar(
+          SnackBar(
+            content: Container(
+              height: 35,
+              child: Stack(
+                children: <Widget>[
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    child: Icon(
+                      Icons.close,
+                      color: Colors.white,
+                    ),
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    child: StrongrText(
+                      "Impossible de créer la séance",
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            backgroundColor: Colors.red.withOpacity(0.8),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(15),
+                topRight: Radius.circular(15),
+                bottomLeft: Radius.circular(15),
+                bottomRight: Radius.circular(15),
+              ),
+            ),
+          ),
+        );
+        setState(() => createButtonEnabled = true);
+      }
     } else {
       setState(() {
         _validate = true;
@@ -48,7 +93,14 @@ class _SessionCreateViewState extends State<SessionCreateView> {
     }
   }
 
-  void getReturnedExercise(Object returnedExercise) {
+  void toggleCreateButton(List<dynamic> list) {
+    if (list.length < 1)
+      setState(() => createButtonEnabled = false);
+    else
+      setState(() => createButtonEnabled = true);
+  }
+
+  void addExercise(Object returnedExercise) {
     if (returnedExercise != null) {
       setState(() {
         exercisesOfSession.add(returnedExercise);
@@ -56,6 +108,7 @@ class _SessionCreateViewState extends State<SessionCreateView> {
       exercisesOfSession[exercisesOfSession.length - 1].place =
           exercisesOfSession.length;
     }
+    toggleCreateButton(exercisesOfSession);
   }
 
   void deleteExercise(int index) {
@@ -64,6 +117,7 @@ class _SessionCreateViewState extends State<SessionCreateView> {
       for (final item in exercisesOfSession)
         item.place = exercisesOfSession.indexOf(item) + 1;
     });
+    toggleCreateButton(exercisesOfSession);
   }
 
   void changePlaceOfExercise(int index, AxisDirection direction) {
@@ -330,6 +384,7 @@ class _SessionCreateViewState extends State<SessionCreateView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: globalKey,
       appBar: AppBar(
         centerTitle: true,
         leading: BackButton(),
@@ -414,7 +469,7 @@ class _SessionCreateViewState extends State<SessionCreateView> {
                           Navigator.pushNamed(
                             context,
                             SESSION_NEW_EXERCISE_ROUTE,
-                          ).then(getReturnedExercise);
+                          ).then(addExercise);
                         },
                       ),
                     ),
@@ -437,14 +492,13 @@ class _SessionCreateViewState extends State<SessionCreateView> {
             ),
             Center(
               child: FloatingActionButton.extended(
-                backgroundColor: exercisesOfSession.length != 0
-                    ? StrongrColors.blue
-                    : Colors.grey,
+                backgroundColor:
+                    createButtonEnabled ? StrongrColors.blue : Colors.grey,
                 icon: Icon(
                   Icons.check,
                   color: Colors.white,
                 ),
-                onPressed: exercisesOfSession.length != 0 ? () {} : null,
+                onPressed: createButtonEnabled ? () => sendToServer() : null,
                 label: StrongrText(
                   "Créer",
                   color: Colors.white,
