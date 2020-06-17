@@ -179,100 +179,78 @@ class _HomepageState extends State<Homepage> {
                         children: <Widget>[
                           for (final item in snapshot.data)
                             StrongrRoundedContainer(
-                              content: Stack(
+                              content: Row(
                                 children: <Widget>[
-                                  Container(
-                                    padding: EdgeInsets.only(
-                                      left: 10,
-                                      top: 8,
-                                      bottom: 8,
-                                    ),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Container(
-                                          alignment: Alignment.centerLeft,
-                                          child: StrongrText(
-                                            item.name,
-                                            bold: true,
+                                  Flexible(
+                                    child: Container(
+                                      // color: Colors.red[100],
+                                      padding: EdgeInsets.only(
+                                        left: 10,
+                                        top: 8,
+                                        bottom: 8,
+                                      ),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          Container(
+                                            alignment: Alignment.centerLeft,
+                                            child: StrongrText(
+                                              item.name,
+                                              bold: true,
+                                            ),
                                           ),
-                                        ),
-                                        Column(
-                                          children: <Widget>[
-                                            Container(
-                                              height: 30,
-                                              alignment: Alignment.centerLeft,
-                                              child: Row(
-                                                children: <Widget>[
-                                                  Icon(
-                                                    Icons.fitness_center,
-                                                    color:
-                                                        item.appExerciseName !=
-                                                                null
-                                                            ? StrongrColors
-                                                                .black
-                                                            : Colors.grey,
-                                                  ),
-                                                  Flexible(
-                                                    child: Container(
-                                                      padding: EdgeInsets.only(
-                                                          left: 10),
-                                                      child: StrongrText(
-                                                        item.appExerciseName !=
-                                                                null
-                                                            ? item
-                                                                .appExerciseName
-                                                            : "Aucun exercice",
-                                                        color: item.appExerciseName !=
-                                                                null
-                                                            ? StrongrColors
-                                                                .black
-                                                            : Colors.grey,
-                                                        textAlign:
-                                                            TextAlign.start,
-                                                        maxLines: 1,
+                                          Column(
+                                            children: <Widget>[
+                                              Container(
+                                                height: 30,
+                                                alignment: Alignment.centerLeft,
+                                                child: Row(
+                                                  children: <Widget>[
+                                                    Icon(
+                                                      Icons.fitness_center,
+                                                      color:
+                                                          item.appExerciseName !=
+                                                                  null
+                                                              ? StrongrColors
+                                                                  .black
+                                                              : Colors.grey,
+                                                    ),
+                                                    Flexible(
+                                                      child: Container(
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                left: 10),
+                                                        child: StrongrText(
+                                                          item.appExerciseName !=
+                                                                  null
+                                                              ? item
+                                                                  .appExerciseName
+                                                              : "Aucun exercice",
+                                                          color:
+                                                              item.appExerciseName !=
+                                                                      null
+                                                                  ? StrongrColors
+                                                                      .black
+                                                                  : Colors.grey,
+                                                          textAlign:
+                                                              TextAlign.start,
+                                                          maxLines: 1,
+                                                        ),
                                                       ),
                                                     ),
-                                                  ),
-                                                ],
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                            Container(
-                                              height: 30,
-                                              alignment: Alignment.centerLeft,
-                                              child: Row(
-                                                children: <Widget>[
-                                                  Icon(
-                                                    Icons.refresh,
-                                                    color: int.parse(item
-                                                                    .setCount) >
-                                                                0 ||
-                                                            int.parse(item
-                                                                    .setCount) !=
-                                                                null
-                                                        ? StrongrColors.black
-                                                        : Colors.grey,
-                                                  ),
-                                                  Container(
-                                                    padding: EdgeInsets.only(
-                                                        left: 10),
-                                                    child: StrongrText(
-                                                      int.parse(item.setCount) >
-                                                                  0 ||
-                                                              int.parse(item
-                                                                      .setCount) !=
-                                                                  null
-                                                          ? int.parse(item
-                                                                      .setCount) <=
-                                                                  1
-                                                              ? item.setCount +
-                                                                  " série"
-                                                              : item.setCount +
-                                                                  " séries"
-                                                          : "Aucune série",
+                                              Container(
+                                                height: 30,
+                                                alignment: Alignment.centerLeft,
+                                                child: Row(
+                                                  children: <Widget>[
+                                                    Icon(
+                                                      Icons.refresh,
                                                       color: int.parse(item
                                                                       .setCount) >
                                                                   0 ||
@@ -282,63 +260,114 @@ class _HomepageState extends State<Homepage> {
                                                           ? StrongrColors.black
                                                           : Colors.grey,
                                                     ),
-                                                  ),
-                                                ],
+                                                    Container(
+                                                      padding: EdgeInsets.only(
+                                                          left: 10),
+                                                      child: StrongrText(
+                                                        int.parse(item.setCount) >
+                                                                    0 ||
+                                                                int.parse(item
+                                                                        .setCount) !=
+                                                                    null
+                                                            ? int.parse(item
+                                                                        .setCount) <=
+                                                                    1
+                                                                ? item.setCount +
+                                                                    " série"
+                                                                : item.setCount +
+                                                                    " séries"
+                                                            : "Aucune série",
+                                                        color: int.parse(item
+                                                                        .setCount) >
+                                                                    0 ||
+                                                                int.parse(item
+                                                                        .setCount) !=
+                                                                    null
+                                                            ? StrongrColors
+                                                                .black
+                                                            : Colors.grey,
+                                                        textAlign:
+                                                            TextAlign.start,
+                                                        maxLines: 1,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                            Container(
-                                              height: 30,
-                                              alignment: Alignment.centerLeft,
-                                              child: Row(
-                                                children: <Widget>[
-                                                  Icon(
-                                                    Icons.show_chart,
-                                                    color: item.tonnage != null
-                                                        ? StrongrColors.black
-                                                        : Colors.grey,
-                                                  ),
-                                                  Container(
-                                                    padding: EdgeInsets.only(
-                                                        left: 10),
-                                                    child: StrongrText(
-                                                      item.tonnage != null
-                                                          ? "Tonnage de " +
-                                                              item.tonnage
-                                                                  .toString() +
-                                                              "kg"
-                                                          : "Tonnage non calculé",
+                                              Container(
+                                                // color: Colors.blue[100],
+                                                alignment: Alignment.centerLeft,
+                                                child: Row(
+                                                  children: <Widget>[
+                                                    Icon(
+                                                      Icons.show_chart,
                                                       color: item.tonnage !=
                                                               null
                                                           ? StrongrColors.black
                                                           : Colors.grey,
                                                     ),
-                                                  ),
-                                                ],
+                                                    Flexible(
+                                                      child: Container(
+                                                        // color: Colors.red,
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                left: 10),
+                                                        child: StrongrText(
+                                                          item.tonnage != null
+                                                              ? "Tonn. de " +
+                                                                  item.tonnage
+                                                                      .toString() +
+                                                                  "kg"
+                                                              : "Tonn. non calculé",
+                                                          color: item.tonnage !=
+                                                                  null
+                                                              ? StrongrColors
+                                                                  .black
+                                                              : Colors.grey,
+                                                          textAlign:
+                                                              TextAlign.start,
+                                                          maxLines: 1,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                   Container(
-                                    padding:
-                                        EdgeInsets.only(bottom: 10, right: 10),
-                                    alignment: Alignment.bottomRight,
-                                    child: Container(
-                                      width: 35,
-                                      height: 35,
-                                      child: FloatingActionButton(
-                                        elevation: 0,
-                                        heroTag: 'exercise_play_fab_' +
-                                            item.id.toString(),
-                                        tooltip: "Démarrer",
-                                        backgroundColor: StrongrColors.blue,
-                                        child: Icon(
-                                          Icons.play_arrow,
-                                          color: Colors.white,
+                                    width: 50,
+                                    // color: Colors.yellow,
+                                    child: Align(
+                                      alignment: Alignment.bottomCenter,
+                                      child: Container(
+                                        // color: Colors.purple,
+                                        height: 60,
+                                        child: Center(
+                                          child: Container(
+                                            alignment: Alignment.bottomCenter,
+                                            // color: Colors.green[500],
+                                            width: 35,
+                                            height: 35,
+                                            child: FloatingActionButton(
+                                              elevation: 0,
+                                              heroTag: 'exercise_play_fab_' +
+                                                  item.id.toString(),
+                                              tooltip: "Démarrer",
+                                              backgroundColor:
+                                                  StrongrColors.blue,
+                                              child: Icon(
+                                                Icons.play_arrow,
+                                                color: Colors.white,
+                                              ),
+                                              onPressed: () {},
+                                            ),
+                                          ),
                                         ),
-                                        onPressed: () {},
                                       ),
                                     ),
                                   ),
@@ -438,100 +467,77 @@ class _HomepageState extends State<Homepage> {
                         children: <Widget>[
                           for (final item in snapshot.data)
                             StrongrRoundedContainer(
-                              content: Stack(
+                              content: Row(
                                 children: <Widget>[
-                                  Container(
-                                    padding: EdgeInsets.only(
-                                      left: 10,
-                                      top: 8,
-                                      bottom: 8,
-                                    ),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Container(
-                                          alignment: Alignment.centerLeft,
-                                          child: StrongrText(
-                                            item.name,
-                                            bold: true,
+                                  Flexible(
+                                    child: Container(
+                                      padding: EdgeInsets.only(
+                                        left: 10,
+                                        top: 8,
+                                        bottom: 8,
+                                      ),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          Container(
+                                            alignment: Alignment.centerLeft,
+                                            child: StrongrText(
+                                              item.name,
+                                              bold: true,
+                                            ),
                                           ),
-                                        ),
-                                        Column(
-                                          children: <Widget>[
-                                            Container(
-                                              height: 30,
-                                              alignment: Alignment.centerLeft,
-                                              child: Row(
-                                                children: <Widget>[
-                                                  Icon(
-                                                    Icons.accessibility,
-                                                    color:
-                                                        item.sessionTypeName !=
-                                                                null
-                                                            ? StrongrColors
-                                                                .black
-                                                            : Colors.grey,
-                                                  ),
-                                                  Flexible(
-                                                    child: Container(
-                                                      padding: EdgeInsets.only(
-                                                          left: 10),
-                                                      child: StrongrText(
-                                                        item.sessionTypeName !=
-                                                                null
-                                                            ? item
-                                                                .sessionTypeName
-                                                            : "Aucune type",
-                                                        color: item.sessionTypeName !=
-                                                                null
-                                                            ? StrongrColors
-                                                                .black
-                                                            : Colors.grey,
-                                                        textAlign:
-                                                            TextAlign.start,
-                                                        maxLines: 1,
+                                          Column(
+                                            children: <Widget>[
+                                              Container(
+                                                height: 30,
+                                                alignment: Alignment.centerLeft,
+                                                child: Row(
+                                                  children: <Widget>[
+                                                    Icon(
+                                                      Icons.accessibility,
+                                                      color:
+                                                          item.sessionTypeName !=
+                                                                  null
+                                                              ? StrongrColors
+                                                                  .black
+                                                              : Colors.grey,
+                                                    ),
+                                                    Flexible(
+                                                      child: Container(
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                left: 10),
+                                                        child: StrongrText(
+                                                          item.sessionTypeName !=
+                                                                  null
+                                                              ? item
+                                                                  .sessionTypeName
+                                                              : "Aucune type",
+                                                          color:
+                                                              item.sessionTypeName !=
+                                                                      null
+                                                                  ? StrongrColors
+                                                                      .black
+                                                                  : Colors.grey,
+                                                          textAlign:
+                                                              TextAlign.start,
+                                                          maxLines: 1,
+                                                        ),
                                                       ),
                                                     ),
-                                                  ),
-                                                ],
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                            Container(
-                                              height: 30,
-                                              alignment: Alignment.centerLeft,
-                                              child: Row(
-                                                children: <Widget>[
-                                                  Icon(
-                                                    Icons.fitness_center,
-                                                    color: int.parse(item
-                                                                    .exerciseCount) >
-                                                                0 ||
-                                                            int.parse(item
-                                                                    .exerciseCount) !=
-                                                                null
-                                                        ? StrongrColors.black
-                                                        : Colors.grey,
-                                                  ),
-                                                  Container(
-                                                    padding: EdgeInsets.only(
-                                                        left: 10),
-                                                    child: StrongrText(
-                                                      int.parse(item.exerciseCount) >
-                                                                  0 ||
-                                                              int.parse(item
-                                                                      .exerciseCount) !=
-                                                                  null
-                                                          ? int.parse(item
-                                                                      .exerciseCount) <=
-                                                                  1
-                                                              ? item.exerciseCount +
-                                                                  " exercice"
-                                                              : item.exerciseCount +
-                                                                  " exercices"
-                                                          : "Aucun exercice",
+                                              Container(
+                                                height: 30,
+                                                alignment: Alignment.centerLeft,
+                                                child: Row(
+                                                  children: <Widget>[
+                                                    Icon(
+                                                      Icons.fitness_center,
                                                       color: int.parse(item
                                                                       .exerciseCount) >
                                                                   0 ||
@@ -541,63 +547,114 @@ class _HomepageState extends State<Homepage> {
                                                           ? StrongrColors.black
                                                           : Colors.grey,
                                                     ),
-                                                  ),
-                                                ],
+                                                    Container(
+                                                      padding: EdgeInsets.only(
+                                                          left: 10),
+                                                      child: StrongrText(
+                                                        int.parse(item.exerciseCount) >
+                                                                    0 ||
+                                                                int.parse(item
+                                                                        .exerciseCount) !=
+                                                                    null
+                                                            ? int.parse(item
+                                                                        .exerciseCount) <=
+                                                                    1
+                                                                ? item.exerciseCount +
+                                                                    " exercice"
+                                                                : item.exerciseCount +
+                                                                    " exercices"
+                                                            : "Aucun exercice",
+                                                        color: int.parse(item
+                                                                        .exerciseCount) >
+                                                                    0 ||
+                                                                int.parse(item
+                                                                        .exerciseCount) !=
+                                                                    null
+                                                            ? StrongrColors
+                                                                .black
+                                                            : Colors.grey,
+                                                        textAlign:
+                                                            TextAlign.start,
+                                                        maxLines: 1,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                            Container(
-                                              height: 30,
-                                              alignment: Alignment.centerLeft,
-                                              child: Row(
-                                                children: <Widget>[
-                                                  Icon(
-                                                    Icons.show_chart,
-                                                    color: item.tonnage != null
-                                                        ? StrongrColors.black
-                                                        : Colors.grey,
-                                                  ),
-                                                  Container(
-                                                    padding: EdgeInsets.only(
-                                                        left: 10),
-                                                    child: StrongrText(
-                                                      item.tonnage != null
-                                                          ? "Tonnage de " +
-                                                              item.tonnage
-                                                                  .toString() +
-                                                              "kg"
-                                                          : "Tonnage non calculé",
+                                              Container(
+                                                // color: Colors.blue[100],
+                                                alignment: Alignment.centerLeft,
+                                                child: Row(
+                                                  children: <Widget>[
+                                                    Icon(
+                                                      Icons.show_chart,
                                                       color: item.tonnage !=
                                                               null
                                                           ? StrongrColors.black
                                                           : Colors.grey,
                                                     ),
-                                                  ),
-                                                ],
+                                                    Flexible(
+                                                      child: Container(
+                                                        // color: Colors.red,
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                left: 10),
+                                                        child: StrongrText(
+                                                          item.tonnage != null
+                                                              ? "Tonn. de " +
+                                                                  item.tonnage
+                                                                      .toString() +
+                                                                  "kg"
+                                                              : "Tonn. non calculé",
+                                                          color: item.tonnage !=
+                                                                  null
+                                                              ? StrongrColors
+                                                                  .black
+                                                              : Colors.grey,
+                                                          textAlign:
+                                                              TextAlign.start,
+                                                          maxLines: 1,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                   Container(
-                                    padding:
-                                        EdgeInsets.only(bottom: 10, right: 10),
-                                    alignment: Alignment.bottomRight,
-                                    child: Container(
-                                      width: 35,
-                                      height: 35,
-                                      child: FloatingActionButton(
-                                        elevation: 0,
-                                        heroTag: 'session_play_fab_' +
-                                            item.id.toString(),
-                                        tooltip: "Démarrer",
-                                        backgroundColor: StrongrColors.blue,
-                                        child: Icon(
-                                          Icons.play_arrow,
-                                          color: Colors.white,
+                                    width: 50,
+                                    // color: Colors.yellow,
+                                    child: Align(
+                                      alignment: Alignment.bottomCenter,
+                                      child: Container(
+                                        // color: Colors.purple,
+                                        height: 60,
+                                        child: Center(
+                                          child: Container(
+                                            alignment: Alignment.bottomCenter,
+                                            // color: Colors.green[500],
+                                            width: 35,
+                                            height: 35,
+                                            child: FloatingActionButton(
+                                              elevation: 0,
+                                              heroTag: 'session_play_fab_' +
+                                                  item.id.toString(),
+                                              tooltip: "Démarrer",
+                                              backgroundColor:
+                                                  StrongrColors.blue,
+                                              child: Icon(
+                                                Icons.play_arrow,
+                                                color: Colors.white,
+                                              ),
+                                              onPressed: () {},
+                                            ),
+                                          ),
                                         ),
-                                        onPressed: () {},
                                       ),
                                     ),
                                   ),
@@ -696,100 +753,77 @@ class _HomepageState extends State<Homepage> {
                         children: <Widget>[
                           for (final item in snapshot.data)
                             StrongrRoundedContainer(
-                              content: Stack(
+                              content: Row(
                                 children: <Widget>[
-                                  Container(
-                                    padding: EdgeInsets.only(
-                                      left: 10,
-                                      top: 8,
-                                      bottom: 8,
-                                    ),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Container(
-                                          alignment: Alignment.centerLeft,
-                                          child: StrongrText(
-                                            item.name,
-                                            bold: true,
+                                  Flexible(
+                                    child: Container(
+                                      padding: EdgeInsets.only(
+                                        left: 10,
+                                        top: 8,
+                                        bottom: 8,
+                                      ),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          Container(
+                                            alignment: Alignment.centerLeft,
+                                            child: StrongrText(
+                                              item.name,
+                                              bold: true,
+                                            ),
                                           ),
-                                        ),
-                                        Column(
-                                          children: <Widget>[
-                                            Container(
-                                              height: 30,
-                                              alignment: Alignment.centerLeft,
-                                              child: Row(
-                                                children: <Widget>[
-                                                  Icon(
-                                                    Icons.star_border,
-                                                    color:
-                                                        item.programGoalName !=
-                                                                null
-                                                            ? StrongrColors
-                                                                .black
-                                                            : Colors.grey,
-                                                  ),
-                                                  Flexible(
-                                                    child: Container(
-                                                      padding: EdgeInsets.only(
-                                                          left: 10),
-                                                      child: StrongrText(
-                                                        item.programGoalName !=
-                                                                null
-                                                            ? item
-                                                                .programGoalName
-                                                            : "Aucun objectif",
-                                                        color: item.programGoalName !=
-                                                                null
-                                                            ? StrongrColors
-                                                                .black
-                                                            : Colors.grey,
-                                                        textAlign:
-                                                            TextAlign.start,
-                                                        maxLines: 1,
+                                          Column(
+                                            children: <Widget>[
+                                              Container(
+                                                height: 30,
+                                                alignment: Alignment.centerLeft,
+                                                child: Row(
+                                                  children: <Widget>[
+                                                    Icon(
+                                                      Icons.star_border,
+                                                      color:
+                                                          item.programGoalName !=
+                                                                  null
+                                                              ? StrongrColors
+                                                                  .black
+                                                              : Colors.grey,
+                                                    ),
+                                                    Flexible(
+                                                      child: Container(
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                left: 10),
+                                                        child: StrongrText(
+                                                          item.programGoalName !=
+                                                                  null
+                                                              ? item
+                                                                  .programGoalName
+                                                              : "Aucun objectif",
+                                                          color:
+                                                              item.programGoalName !=
+                                                                      null
+                                                                  ? StrongrColors
+                                                                      .black
+                                                                  : Colors.grey,
+                                                          textAlign:
+                                                              TextAlign.start,
+                                                          maxLines: 1,
+                                                        ),
                                                       ),
                                                     ),
-                                                  ),
-                                                ],
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                            Container(
-                                              height: 30,
-                                              alignment: Alignment.centerLeft,
-                                              child: Row(
-                                                children: <Widget>[
-                                                  Icon(
-                                                    Icons.calendar_today,
-                                                    color: int.parse(item
-                                                                    .sessionCount) >
-                                                                0 ||
-                                                            int.parse(item
-                                                                    .sessionCount) !=
-                                                                null
-                                                        ? StrongrColors.black
-                                                        : Colors.grey,
-                                                  ),
-                                                  Container(
-                                                    padding: EdgeInsets.only(
-                                                        left: 10),
-                                                    child: StrongrText(
-                                                      int.parse(item.sessionCount) >
-                                                                  0 ||
-                                                              int.parse(item
-                                                                      .sessionCount) !=
-                                                                  null
-                                                          ? int.parse(item
-                                                                      .sessionCount) <=
-                                                                  1
-                                                              ? item.sessionCount +
-                                                                  " séance"
-                                                              : item.sessionCount +
-                                                                  " séance"
-                                                          : "Aucune séance",
+                                              Container(
+                                                height: 30,
+                                                alignment: Alignment.centerLeft,
+                                                child: Row(
+                                                  children: <Widget>[
+                                                    Icon(
+                                                      Icons.calendar_today,
                                                       color: int.parse(item
                                                                       .sessionCount) >
                                                                   0 ||
@@ -799,63 +833,114 @@ class _HomepageState extends State<Homepage> {
                                                           ? StrongrColors.black
                                                           : Colors.grey,
                                                     ),
-                                                  ),
-                                                ],
+                                                    Container(
+                                                      padding: EdgeInsets.only(
+                                                          left: 10),
+                                                      child: StrongrText(
+                                                        int.parse(item.sessionCount) >
+                                                                    0 ||
+                                                                int.parse(item
+                                                                        .sessionCount) !=
+                                                                    null
+                                                            ? int.parse(item
+                                                                        .sessionCount) <=
+                                                                    1
+                                                                ? item.sessionCount +
+                                                                    " séance"
+                                                                : item.sessionCount +
+                                                                    " séance"
+                                                            : "Aucune séance",
+                                                        color: int.parse(item
+                                                                        .sessionCount) >
+                                                                    0 ||
+                                                                int.parse(item
+                                                                        .sessionCount) !=
+                                                                    null
+                                                            ? StrongrColors
+                                                                .black
+                                                            : Colors.grey,
+                                                        textAlign:
+                                                            TextAlign.start,
+                                                        maxLines: 1,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                            Container(
-                                              height: 30,
-                                              alignment: Alignment.centerLeft,
-                                              child: Row(
-                                                children: <Widget>[
-                                                  Icon(
-                                                    Icons.show_chart,
-                                                    color: item.tonnage != null
-                                                        ? StrongrColors.black
-                                                        : Colors.grey,
-                                                  ),
-                                                  Container(
-                                                    padding: EdgeInsets.only(
-                                                        left: 10),
-                                                    child: StrongrText(
-                                                      item.tonnage != null
-                                                          ? "Tonnage de " +
-                                                              item.tonnage
-                                                                  .toString() +
-                                                              "kg"
-                                                          : "Tonnage non calculé",
+                                              Container(
+                                                // color: Colors.blue[100],
+                                                alignment: Alignment.centerLeft,
+                                                child: Row(
+                                                  children: <Widget>[
+                                                    Icon(
+                                                      Icons.show_chart,
                                                       color: item.tonnage !=
                                                               null
                                                           ? StrongrColors.black
                                                           : Colors.grey,
                                                     ),
-                                                  ),
-                                                ],
+                                                    Flexible(
+                                                      child: Container(
+                                                        // color: Colors.red,
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                left: 10),
+                                                        child: StrongrText(
+                                                          item.tonnage != null
+                                                              ? "Tonn. de " +
+                                                                  item.tonnage
+                                                                      .toString() +
+                                                                  "kg"
+                                                              : "Tonn. non calculé",
+                                                          color: item.tonnage !=
+                                                                  null
+                                                              ? StrongrColors
+                                                                  .black
+                                                              : Colors.grey,
+                                                          textAlign:
+                                                              TextAlign.start,
+                                                          maxLines: 1,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                   Container(
-                                    padding:
-                                        EdgeInsets.only(bottom: 10, right: 10),
-                                    alignment: Alignment.bottomRight,
-                                    child: Container(
-                                      width: 35,
-                                      height: 35,
-                                      child: FloatingActionButton(
-                                        elevation: 0,
-                                        heroTag: 'program_play_fab_' +
-                                            item.id.toString(),
-                                        tooltip: "Démarrer",
-                                        backgroundColor: StrongrColors.blue,
-                                        child: Icon(
-                                          Icons.play_arrow,
-                                          color: Colors.white,
+                                    width: 50,
+                                    // color: Colors.yellow,
+                                    child: Align(
+                                      alignment: Alignment.bottomCenter,
+                                      child: Container(
+                                        // color: Colors.purple,
+                                        height: 60,
+                                        child: Center(
+                                          child: Container(
+                                            alignment: Alignment.bottomCenter,
+                                            // color: Colors.green[500],
+                                            width: 35,
+                                            height: 35,
+                                            child: FloatingActionButton(
+                                              elevation: 0,
+                                              heroTag: 'program_play_fab_' +
+                                                  item.id.toString(),
+                                              tooltip: "Démarrer",
+                                              backgroundColor:
+                                                  StrongrColors.blue,
+                                              child: Icon(
+                                                Icons.play_arrow,
+                                                color: Colors.white,
+                                              ),
+                                              onPressed: () {},
+                                            ),
+                                          ),
                                         ),
-                                        onPressed: () {},
                                       ),
                                     ),
                                   ),
@@ -875,8 +960,6 @@ class _HomepageState extends State<Homepage> {
                             ),
                         ],
                       );
-
-                    // return Center(child: StrongrText(snapshot.data.toString()),);
                   } else if (snapshot.hasError) {
                     return Text(snapshot.error, textAlign: TextAlign.center);
                   } else
