@@ -74,12 +74,11 @@ class _SessionViewState extends State<SessionView> {
                         width: 30,
                         child: Center(
                           child: StrongrText(
-                            item.place != null || item.place >= 1
+                            item.place != null
                                 ? item.place.toString()
                                 : "-",
                             color: isEditMode ||
-                                    item.place != null ||
-                                    item.place >= 1
+                                    item.place != null
                                 ? StrongrColors.black
                                 : Colors.grey,
                             bold: true,

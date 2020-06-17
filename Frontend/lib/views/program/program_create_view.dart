@@ -90,7 +90,7 @@ class _ProgramCreateViewState extends State<ProgramCreateView> {
                         LengthLimitingTextInputFormatter(30),
                       ],
                       hint: "Programme perso.",
-                      textInputType: TextInputType.emailAddress,
+                      textInputType: TextInputType.text,
                     ),
                   ),
                   Container(

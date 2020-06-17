@@ -17,9 +17,8 @@ class ProgramsView extends StatefulWidget {
   final GlobalKey<dynamic> key;
   final int id;
   final String name;
-  final bool fromExercises;
 
-  ProgramsView({this.key, this.id, this.name, this.fromExercises = false});
+  ProgramsView({this.key, this.id, this.name});
 
   @override
   _ProgramsViewState createState() => _ProgramsViewState();

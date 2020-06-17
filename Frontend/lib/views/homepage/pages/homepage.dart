@@ -114,12 +114,16 @@ class _HomepageState extends State<Homepage> {
               child: FlatButton(
                 onPressed: () async {
                   AppExercisesFilters.disableAll();
-                  await Navigator.pushNamed(context, EXERCISES_ROUTE)
-                      .then((val) {
-                    if (val == true) {
-                      refreshExercises();
-                    }
-                  });
+                  await Navigator.pushNamed(
+                    context,
+                    EXERCISES_ROUTE,
+                  ).then(
+                    (exerciseCreated) {
+                      if (exerciseCreated) {
+                        refreshExercises();
+                      }
+                    },
+                  );
                 },
                 child: Container(
                   // height: ScreenSize.height(context) / 12,
@@ -200,6 +204,8 @@ class _HomepageState extends State<Homepage> {
                                             child: StrongrText(
                                               item.name,
                                               bold: true,
+                                              textAlign: TextAlign.start,
+                                              maxLines: 2,
                                             ),
                                           ),
                                           Column(
@@ -314,11 +320,11 @@ class _HomepageState extends State<Homepage> {
                                                                 left: 10),
                                                         child: StrongrText(
                                                           item.tonnage != null
-                                                              ? "Tonn. de " +
+                                                              ? "Tonnage : " +
                                                                   item.tonnage
                                                                       .toString() +
                                                                   "kg"
-                                                              : "Tonn. non calculé",
+                                                              : "Tonnage inconnu",
                                                           color: item.tonnage !=
                                                                   null
                                                               ? StrongrColors
@@ -410,7 +416,16 @@ class _HomepageState extends State<Homepage> {
             child: Container(
               child: FlatButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, SESSIONS_ROUTE);
+                  Navigator.pushNamed(
+                    context,
+                    SESSIONS_ROUTE,
+                  ).then(
+                    (sessionCreated) {
+                      if (sessionCreated) {
+                        refreshSessions();
+                      }
+                    },
+                  );
                 },
                 child: Container(
                   // height: ScreenSize.height(context) / 12,
@@ -487,6 +502,8 @@ class _HomepageState extends State<Homepage> {
                                             child: StrongrText(
                                               item.name,
                                               bold: true,
+                                              textAlign: TextAlign.start,
+                                              maxLines: 2,
                                             ),
                                           ),
                                           Column(
@@ -601,11 +618,11 @@ class _HomepageState extends State<Homepage> {
                                                                 left: 10),
                                                         child: StrongrText(
                                                           item.tonnage != null
-                                                              ? "Tonn. de " +
+                                                              ? "Tonnage : " +
                                                                   item.tonnage
                                                                       .toString() +
                                                                   "kg"
-                                                              : "Tonn. non calculé",
+                                                              : "Tonnage inconnu",
                                                           color: item.tonnage !=
                                                                   null
                                                               ? StrongrColors
@@ -696,7 +713,16 @@ class _HomepageState extends State<Homepage> {
             child: Container(
               child: FlatButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, PROGRAMS_ROUTE);
+                  Navigator.pushNamed(
+                    context,
+                    PROGRAMS_ROUTE,
+                  ).then(
+                    (programCreated) {
+                      if (programCreated) {
+                        refreshPrograms();
+                      }
+                    },
+                  );
                 },
                 child: Container(
                   // height: ScreenSize.height(context) / 12,
@@ -773,6 +799,8 @@ class _HomepageState extends State<Homepage> {
                                             child: StrongrText(
                                               item.name,
                                               bold: true,
+                                              textAlign: TextAlign.start,
+                                              maxLines: 2,
                                             ),
                                           ),
                                           Column(
@@ -887,11 +915,11 @@ class _HomepageState extends State<Homepage> {
                                                                 left: 10),
                                                         child: StrongrText(
                                                           item.tonnage != null
-                                                              ? "Tonn. de " +
+                                                              ? "Tonnage : " +
                                                                   item.tonnage
                                                                       .toString() +
                                                                   "kg"
-                                                              : "Tonn. non calculé",
+                                                              : "Tonnage inconnu",
                                                           color: item.tonnage !=
                                                                   null
                                                               ? StrongrColors

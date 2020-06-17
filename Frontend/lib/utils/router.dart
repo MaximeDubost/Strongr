@@ -17,6 +17,7 @@ import 'package:strongr/views/program/program_create_view.dart';
 import 'package:strongr/views/program/program_view.dart';
 import 'package:strongr/views/program/programs_view.dart';
 import 'package:strongr/views/session/session_create_view.dart';
+import 'package:strongr/views/session/session_new_exercise_view.dart';
 import 'package:strongr/views/session/session_view.dart';
 import 'package:strongr/views/session/sessions_view.dart';
 import 'package:strongr/views/unknown_view.dart';
@@ -103,6 +104,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
           name: args.name,
           appExerciseName: args.appExerciseName,
           fromSession: args.fromSession,
+          fromSessionAddExercise: args.fromSessionAddExercise,
         ),
       );
 
@@ -146,6 +148,11 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case SESSION_CREATE_ROUTE:
       return CupertinoPageRoute(
         builder: (context) => SessionCreateView(),
+      );
+
+    case SESSION_NEW_EXERCISE_ROUTE:
+      return CupertinoPageRoute(
+        builder: (context) => SessionNewExerciseView(),
       );
 
     ///

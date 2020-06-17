@@ -14,7 +14,8 @@ repository.getSessions = async (req) => {
     JOIN _session_type st ON s.id_session_type = st.id_session_type
     JOIN _session_exercise se ON s.id_session = se.id_session
     WHERE s.id_user = $1
-    GROUP BY s.id_session, s.name, st.name
+    GROUP BY s.id_session, s.name, st.name, s.last_update
+    ORDER BY s.last_update DESC
     `
     try {
         var result = await clt.query(sql, [req.user.id])
@@ -73,19 +74,20 @@ repository.getSessionDetail = async (req) => {
 }
 
 repository.addSession = async (req) => {
+    // console.log(req.body)
     let sqlAddSession = "INSERT INTO _session (id_user, id_session_type, name, creation_date, last_update) VALUES ($1, $2, $3, $4, $5)"
     try {
         await clt.query(sqlAddSession, [req.user.id, req.body.id_session_type, req.body.name, new Date(), new Date()])
         let sqlGetLastSessionCreated = "SELECT id_session FROM _session WHERE id_user = $1 ORDER BY creation_date DESC"
         let getIdSession = await clt.query(sqlGetLastSessionCreated, [req.user.id])
-        req.body.exercises = [JSON.parse(req.body.exercises)]
         req.body.exercises.forEach(async exercise => {
+            let parsed_exercise = JSON.parse(exercise)
             let sqlGetIdAppExercise = "SELECT id_app_exercise FROM _exercise WHERE id_exercise = $1"
-            let getIdAppExercise = await clt.query(sqlGetIdAppExercise, [exercise.id])
+            let getIdAppExercise = await clt.query(sqlGetIdAppExercise, [parsed_exercise.id])
             let insertInSessionExercise = "INSERT INTO _session_exercise (id_user, id_user_1, id_session, id_exercise, id_app_exercise, place) VALUES ($1, $2, $3, $4, $5, $6)"
-            await clt.query(insertInSessionExercise, [req.user.id, req.user.id, getIdSession.rows[0].id_session, exercise.id, getIdAppExercise.rows[0].id_app_exercise, exercise.place])
+            await clt.query(insertInSessionExercise, [req.user.id, req.user.id, getIdSession.rows[0].id_session, parsed_exercise.id, getIdAppExercise.rows[0].id_app_exercise, parsed_exercise.place])
         })
-        return 200
+        return 201
     } catch (error) {
         console.log(error)
         return 501
