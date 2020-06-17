@@ -14,7 +14,8 @@ repository.getSessions = async (req) => {
     JOIN _session_type st ON s.id_session_type = st.id_session_type
     JOIN _session_exercise se ON s.id_session = se.id_session
     WHERE s.id_user = $1
-    GROUP BY s.id_session, s.name, st.name
+    GROUP BY s.id_session, s.name, st.name, s.last_update
+    ORDER BY s.last_update DESC
     `
     try {
         var result = await clt.query(sql, [req.user.id])
@@ -86,7 +87,7 @@ repository.addSession = async (req) => {
             let insertInSessionExercise = "INSERT INTO _session_exercise (id_user, id_user_1, id_session, id_exercise, id_app_exercise, place) VALUES ($1, $2, $3, $4, $5, $6)"
             await clt.query(insertInSessionExercise, [req.user.id, req.user.id, getIdSession.rows[0].id_session, parsed_exercise.id, getIdAppExercise.rows[0].id_app_exercise, parsed_exercise.place])
         })
-        return 200
+        return 201
     } catch (error) {
         console.log(error)
         return 501

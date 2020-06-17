@@ -22,7 +22,7 @@ repository.createExercise = async (req) => {
         req.body.sets.forEach(async set => {
             let parsed_set = JSON.parse(set)
             let sqlAddSet = `INSERT INTO _set (id_app_exercise, id_user, id_exercise, repetitions_count, rest_time, place) VALUES ($1, $2, $3, $4, $5, $6)`
-            await clt.query(sqlAddSet, [req.body.id_app_exercise, req.user.id, result.rows[0].id_exercise, set.repetitions_count, parsed_set.rest_time, parsed_set.place])
+            await clt.query(sqlAddSet, [req.body.id_app_exercise, req.user.id, result.rows[0].id_exercise, parsed_set.repetitions_count, parsed_set.rest_time, parsed_set.place])
         })
         return 201;
     }

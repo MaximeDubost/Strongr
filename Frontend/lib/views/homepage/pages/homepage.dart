@@ -200,6 +200,8 @@ class _HomepageState extends State<Homepage> {
                                             child: StrongrText(
                                               item.name,
                                               bold: true,
+                                              textAlign: TextAlign.start,
+                                              maxLines: 2,
                                             ),
                                           ),
                                           Column(
@@ -487,6 +489,8 @@ class _HomepageState extends State<Homepage> {
                                             child: StrongrText(
                                               item.name,
                                               bold: true,
+                                              textAlign: TextAlign.start,
+                                              maxLines: 2,
                                             ),
                                           ),
                                           Column(
@@ -773,6 +777,8 @@ class _HomepageState extends State<Homepage> {
                                             child: StrongrText(
                                               item.name,
                                               bold: true,
+                                              textAlign: TextAlign.start,
+                                              maxLines: 2,
                                             ),
                                           ),
                                           Column(

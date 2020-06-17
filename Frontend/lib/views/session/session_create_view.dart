@@ -414,7 +414,7 @@ class _SessionCreateViewState extends State<SessionCreateView> {
                   Container(
                     padding: EdgeInsets.only(left: 15, right: 15),
                     child: StrongrRoundedTextFormField(
-                      controller: null,
+                      controller: sessionNameController,
                       validator: null,
                       // onSaved: (String value) => setState(
                       // () => connectId = value.toLowerCase()),
@@ -466,6 +466,7 @@ class _SessionCreateViewState extends State<SessionCreateView> {
                           color: Colors.white,
                         ),
                         onPressed: () {
+                          FocusScope.of(context).unfocus();
                           Navigator.pushNamed(
                             context,
                             SESSION_NEW_EXERCISE_ROUTE,
