@@ -18,16 +18,11 @@ repository.createExercise = async (req) => {
     try {
         await clt.query(sqlCreateExercise, [req.body.id_app_exercise, req.user.id, req.body.name, req.body.id_equipment, date, date])
         let result = await clt.query(sqlGetIdExercise, [req.user.id])
-        req.body.sets = [JSON.parse(req.body.sets)]
+
         req.body.sets.forEach(async set => {
-            console.log(req.body);
+            let parsed_set = JSON.parse(set)
             let sqlAddSet = `INSERT INTO _set (id_app_exercise, id_user, id_exercise, repetitions_count, rest_time, place) VALUES ($1, $2, $3, $4, $5, $6)`
-            try {
-                await clt.query(sqlAddSet, [req.body.id_app_exercise, req.user.id, result.rows[0].id_exercise, set.repetitions_count, set.rest_time, set.place])
-            }
-            catch (error) {
-                console.error(error)
-            }
+            await clt.query(sqlAddSet, [req.body.id_app_exercise, req.user.id, result.rows[0].id_exercise, set.repetitions_count, parsed_set.rest_time, parsed_set.place])
         })
         return 201;
     }

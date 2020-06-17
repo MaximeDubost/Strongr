@@ -95,10 +95,10 @@ repository.addProgram = async (req) => {
         await clt.query(sqlAddProgram, [req.user.id, req.body.id_program_goal, req.body.name, new Date(), new Date()])
         let sqlLastProgramCreated = "SELECT id_program FROM _program WHERE id_user = $1 ORDER BY creation_date DESC"
         let getIdProgram = await clt.query(sqlLastProgramCreated, [req.user.id])
-        req.body.sessions = [JSON.parse(req.body.sessions)]
         req.body.sessions.forEach(async session => {
+            let parsed_session = JSON.parse(session)
             let insertInProgramSession = "INSERT INTO _program_session (id_user, id_user_1, id_program, id_session, place) VALUES ($1, $2, $3, $4, $5)"
-            await clt.query(insertInProgramSession, [req.user.id, req.user.id, getIdProgram.rows[0].id_program, session.id, session.place])
+            await clt.query(insertInProgramSession, [req.user.id, req.user.id, getIdProgram.rows[0].id_program, parsed_session.id, parsed_session.place])
         })
         return 201
     } catch (error) {
