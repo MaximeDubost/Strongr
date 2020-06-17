@@ -125,7 +125,7 @@ class _ExerciseViewState extends State<ExerciseView> {
                               padding: EdgeInsets.only(left: 5, right: 5),
                               child: Icon(
                                 Icons.autorenew,
-                                color: item.repetitionCount != null ||
+                                color: item.repetitionCount != null &&
                                         item.repetitionCount != 0
                                     ? StrongrColors.black
                                     : Colors.grey,
@@ -135,13 +135,13 @@ class _ExerciseViewState extends State<ExerciseView> {
                               child: Container(
                                 // color: Colors.blue,
                                 child: StrongrText(
-                                  item.repetitionCount != null ||
+                                  item.repetitionCount != null &&
                                           item.repetitionCount != 0
                                       ? "Répétitions : " +
                                           item.repetitionCount.toString()
                                       : "Aucune répétition",
                                   color: isEditMode ||
-                                          item.repetitionCount == null ||
+                                          item.repetitionCount == null &&
                                           item.repetitionCount == 0
                                       ? Colors.grey
                                       : StrongrColors.black,
@@ -158,7 +158,7 @@ class _ExerciseViewState extends State<ExerciseView> {
                               child: Icon(
                                 Icons.hourglass_empty,
                                 color:
-                                    item.restTime != null || item.restTime != 0
+                                    item.restTime != null && item.restTime != 0
                                         ? StrongrColors.black
                                         : Colors.grey,
                               ),
@@ -167,14 +167,14 @@ class _ExerciseViewState extends State<ExerciseView> {
                               child: Container(
                                 // width: 185,
                                 child: StrongrText(
-                                  item.restTime != null || item.restTime != 0
+                                  item.restTime != null && item.restTime != 0
                                       ? "Repos : " +
                                           TimeFormater.getDuration(
                                             Duration(seconds: item.restTime),
                                           ).toString()
                                       : "Aucun temps de repos",
                                   color: isEditMode ||
-                                          item.restTime == null ||
+                                          item.restTime == null &&
                                           item.restTime == 0
                                       ? Colors.grey
                                       : StrongrColors.black,

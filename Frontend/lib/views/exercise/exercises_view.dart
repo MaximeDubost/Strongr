@@ -333,8 +333,8 @@ class _ExercisesViewState extends State<ExercisesView> {
                         context,
                         EXERCISE_ADD_ROUTE,
                       ).then(
-                        (val) {
-                          if (val == true) {
+                        (exerciseCreated) {
+                          if (exerciseCreated) {
                             refreshExercises();
                             globalKey.currentState.showSnackBar(
                               SnackBar(

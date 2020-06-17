@@ -12,23 +12,24 @@ import 'package:strongr/widgets/dialogs/filters_dialog.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
-
 class SessionsView extends StatefulWidget {
   final GlobalKey<dynamic> key;
   final int id;
   final String name;
   final bool fromProgramCreation;
 
-  SessionsView({this.key, this.id, this.name, this.fromProgramCreation = false});
+  SessionsView(
+      {this.key, this.id, this.name, this.fromProgramCreation = false});
 
   @override
   _SessionsViewState createState() => _SessionsViewState();
 }
 
 class _SessionsViewState extends State<SessionsView> {
+  final globalKey = GlobalKey<ScaffoldState>();
   TextEditingController searchbarController;
   Future<List<SessionPreview>> futureSessions;
-  bool sortedByRecent;
+  bool sortedByRecent, needToRefresh;
   // List<String> popupMenuItems;
 
   @override
@@ -36,6 +37,7 @@ class _SessionsViewState extends State<SessionsView> {
     searchbarController = TextEditingController(text: "");
     futureSessions = SessionService.getSessions();
     sortedByRecent = true;
+    needToRefresh = false;
     // popupMenuItems = ["Filtres", "Créer"];
     super.initState();
   }
@@ -74,10 +76,7 @@ class _SessionsViewState extends State<SessionsView> {
         for (final item in sessions)
           if ((searchbarController.text == "" ||
               Diacritics.remove(
-                sessions[sessions.indexOf(item)]
-                    .name
-                    .toString()
-                    .toLowerCase(),
+                sessions[sessions.indexOf(item)].name.toString().toLowerCase(),
               ).contains(
                 Diacritics.remove(
                   searchbarController.text.toLowerCase(),
@@ -149,13 +148,15 @@ class _SessionsViewState extends State<SessionsView> {
                                   padding: EdgeInsets.only(left: 10),
                                   child: StrongrText(
                                     int.parse(item.exerciseCount) > 0 ||
-                                            int.parse(item.exerciseCount) != null
+                                            int.parse(item.exerciseCount) !=
+                                                null
                                         ? int.parse(item.exerciseCount) <= 1
                                             ? item.exerciseCount + " exercice"
                                             : item.exerciseCount + " exercices"
                                         : "Aucun exercice",
                                     color: int.parse(item.exerciseCount) > 0 ||
-                                            int.parse(item.exerciseCount) != null
+                                            int.parse(item.exerciseCount) !=
+                                                null
                                         ? StrongrColors.black
                                         : Colors.grey,
                                   ),
@@ -230,9 +231,12 @@ class _SessionsViewState extends State<SessionsView> {
     );
   }
 
-  /// Actualise la page.
-  void refresh() {
-    setState(() {});
+  /// Actualise la liste des exercices.
+  void refreshSessions() async {
+    setState(() {
+      futureSessions = SessionService.getSessions();
+      needToRefresh = true;
+    });
   }
 
   @override
@@ -240,10 +244,13 @@ class _SessionsViewState extends State<SessionsView> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
+        key: globalKey,
         resizeToAvoidBottomPadding: false,
         appBar: AppBar(
           centerTitle: true,
-          leading: BackButton(),
+          leading: BackButton(
+            onPressed: () => Navigator.pop(context, needToRefresh),
+          ),
           title: Text("Vos séances"),
           actions: <Widget>[
             // PopupMenuButton<String>(
@@ -281,11 +288,45 @@ class _SessionsViewState extends State<SessionsView> {
                 await Navigator.pushNamed(
                   context,
                   SESSION_CREATE_ROUTE,
-                ).then((val) {
-                  if (val == true) {
-                    setState(() {});
-                  }
-                });
+                ).then(
+                  (sessionCreated) {
+                    if (sessionCreated) {
+                      refreshSessions();
+                      globalKey.currentState.showSnackBar(
+                        SnackBar(
+                          content: Container(
+                            height: 35,
+                            child: Stack(
+                              children: <Widget>[
+                                Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: Icon(
+                                    Icons.check,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                Container(
+                                  alignment: Alignment.center,
+                                  child: StrongrText(
+                                    "Séance créée avec succès",
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          backgroundColor: StrongrColors.blue80,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(15),
+                              topRight: Radius.circular(15),
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                );
               },
             ),
           ],
@@ -344,7 +385,7 @@ class _SessionsViewState extends State<SessionsView> {
                         context: context,
                         builder: (context) => FiltersDialog(),
                       ).then((val) {
-                        if (val == true) refresh();
+                        if (val == true) refreshSessions();
                       });
                     },
                     child: StrongrText(
@@ -432,7 +473,8 @@ class _SessionsViewState extends State<SessionsView> {
                                   color: Colors.grey,
                                 ),
                               ),
-                        resultCount(snapshot.data) != 0 || snapshot.data.length == 0
+                        resultCount(snapshot.data) != 0 ||
+                                snapshot.data.length == 0
                             ? Container(
                                 child: buildSessionsList(snapshot.data),
                               )

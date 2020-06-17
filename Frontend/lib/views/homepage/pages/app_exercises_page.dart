@@ -231,11 +231,13 @@ class _AppExercisesPageState extends State<AppExercisesPage> {
                                 appExercises[appExercises.indexOf(appExercise)]
                                     .name,
                           ),
-                        ).then((val) {
-                          if (val == true) {
-                            Navigator.pop(context, val);
-                          }
-                        });
+                        ).then(
+                          (exerciseCreated) {
+                            if (exerciseCreated) {
+                              Navigator.pop(context, true);
+                            }
+                          },
+                        );
                 },
               ),
             ),

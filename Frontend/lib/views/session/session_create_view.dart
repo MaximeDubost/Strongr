@@ -17,7 +17,7 @@ class SessionCreateView extends StatefulWidget {
 class _SessionCreateViewState extends State<SessionCreateView> {
   final globalKey = GlobalKey<ScaffoldState>();
   GlobalKey<FormState> _key = GlobalKey();
-  bool _validate, createButtonEnabled;
+  bool _validate, createButtonEnabled, editButtonsEnabled;
   TextEditingController sessionNameController;
   int linesCount = 1;
   String errorText = "";
@@ -27,6 +27,7 @@ class _SessionCreateViewState extends State<SessionCreateView> {
   void initState() {
     super.initState();
     _validate = createButtonEnabled = false;
+    editButtonsEnabled = true;
     sessionNameController = TextEditingController(text: "");
     exercisesOfSession = List<ExercisePreview>();
   }
@@ -40,7 +41,10 @@ class _SessionCreateViewState extends State<SessionCreateView> {
   void sendToServer() async {
     if (_key.currentState.validate()) {
       _key.currentState.save();
-      setState(() => createButtonEnabled = false);
+      setState(() {
+        createButtonEnabled = false;
+        editButtonsEnabled = false;
+      });
       int statusCode = await SessionService.postSession(
         name: sessionNameController.text == ""
             ? "Séance perso."
@@ -75,16 +79,14 @@ class _SessionCreateViewState extends State<SessionCreateView> {
             ),
             backgroundColor: Colors.red.withOpacity(0.8),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(15),
-                topRight: Radius.circular(15),
-                bottomLeft: Radius.circular(15),
-                bottomRight: Radius.circular(15),
-              ),
+              borderRadius: BorderRadius.all(Radius.circular(15)),
             ),
           ),
         );
-        setState(() => createButtonEnabled = true);
+        setState(() {
+          createButtonEnabled = true;
+          editButtonsEnabled = true;
+        });
       }
     } else {
       setState(() {
@@ -175,24 +177,31 @@ class _SessionCreateViewState extends State<SessionCreateView> {
                         height: 30,
                         // color: Colors.blue,
                         child: RawMaterialButton(
-                          onPressed: exerciseList.indexOf(item) == 0
+                          onPressed: exerciseList.indexOf(item) == 0 ||
+                                  !editButtonsEnabled
                               ? () {}
                               : () {
                                   changePlaceOfExercise(
-                                      exerciseList.indexOf(item),
-                                      AxisDirection.up);
+                                    exerciseList.indexOf(item),
+                                    AxisDirection.up,
+                                  );
                                 },
-                          hoverColor: exerciseList.indexOf(item) == 0
+                          hoverColor: exerciseList.indexOf(item) == 0 ||
+                                  !editButtonsEnabled
                               ? Colors.transparent
                               : StrongrColors.greyE,
-                          splashColor: exerciseList.indexOf(item) == 0
+                          splashColor: exerciseList.indexOf(item) == 0 ||
+                                  !editButtonsEnabled
                               ? Colors.transparent
                               : StrongrColors.greyD,
-                          enableFeedback:
-                              exerciseList.indexOf(item) == 0 ? false : true,
+                          enableFeedback: exerciseList.indexOf(item) == 0 ||
+                                  !editButtonsEnabled
+                              ? false
+                              : true,
                           child: Icon(
                             Icons.keyboard_arrow_up,
-                            color: exerciseList.indexOf(item) == 0
+                            color: exerciseList.indexOf(item) == 0 ||
+                                    !editButtonsEnabled
                                 ? Colors.grey
                                 : StrongrColors.black,
                           ),
@@ -217,29 +226,36 @@ class _SessionCreateViewState extends State<SessionCreateView> {
                         // color: Colors.blue,
                         child: RawMaterialButton(
                           onPressed: exerciseList.indexOf(item) ==
-                                  exerciseList.indexOf(exerciseList.last)
+                                      exerciseList.indexOf(exerciseList.last) ||
+                                  !editButtonsEnabled
                               ? () {}
                               : () {
                                   changePlaceOfExercise(
-                                      exerciseList.indexOf(item),
-                                      AxisDirection.down);
+                                    exerciseList.indexOf(item),
+                                    AxisDirection.down,
+                                  );
                                 },
                           hoverColor: exerciseList.indexOf(item) ==
-                                  exerciseList.indexOf(exerciseList.last)
+                                      exerciseList.indexOf(exerciseList.last) ||
+                                  !editButtonsEnabled
                               ? Colors.transparent
                               : StrongrColors.greyE,
                           splashColor: exerciseList.indexOf(item) ==
-                                  exerciseList.indexOf(exerciseList.last)
+                                      exerciseList.indexOf(exerciseList.last) ||
+                                  !editButtonsEnabled
                               ? Colors.transparent
                               : StrongrColors.greyD,
                           enableFeedback: exerciseList.indexOf(item) ==
-                                  exerciseList.indexOf(exerciseList.last)
+                                      exerciseList.indexOf(exerciseList.last) ||
+                                  !editButtonsEnabled
                               ? false
                               : true,
                           child: Icon(
                             Icons.keyboard_arrow_down,
                             color: exerciseList.indexOf(item) ==
-                                    exerciseList.indexOf(exerciseList.last)
+                                        exerciseList
+                                            .indexOf(exerciseList.last) ||
+                                    !editButtonsEnabled
                                 ? Colors.grey
                                 : StrongrColors.black,
                           ),
@@ -353,12 +369,14 @@ class _SessionCreateViewState extends State<SessionCreateView> {
                   child: RawMaterialButton(
                     child: Icon(
                       Icons.close,
-                      color: Colors.red[800],
+                      color: editButtonsEnabled ? Colors.red[800] : Colors.grey,
                     ),
                     shape: CircleBorder(),
-                    onPressed: () {
-                      deleteExercise(exerciseList.indexOf(item));
-                    },
+                    onPressed: editButtonsEnabled
+                        ? () {
+                            deleteExercise(exerciseList.indexOf(item));
+                          }
+                        : null,
                   ),
                 ),
               ],
@@ -387,7 +405,9 @@ class _SessionCreateViewState extends State<SessionCreateView> {
       key: globalKey,
       appBar: AppBar(
         centerTitle: true,
-        leading: BackButton(),
+        leading: BackButton(
+          onPressed: () => Navigator.pop(context, false),
+        ),
         title: Text("Nouvelle séance"),
         // actions: <Widget>[
         //   IconButton(
@@ -414,6 +434,7 @@ class _SessionCreateViewState extends State<SessionCreateView> {
                   Container(
                     padding: EdgeInsets.only(left: 15, right: 15),
                     child: StrongrRoundedTextFormField(
+                      enabled: editButtonsEnabled,
                       controller: sessionNameController,
                       validator: null,
                       // onSaved: (String value) => setState(
@@ -428,7 +449,7 @@ class _SessionCreateViewState extends State<SessionCreateView> {
                         LengthLimitingTextInputFormatter(30),
                       ],
                       hint: "Séance perso.",
-                      textInputType: TextInputType.emailAddress,
+                      textInputType: TextInputType.text,
                     ),
                   ),
                   Container(
@@ -456,7 +477,9 @@ class _SessionCreateViewState extends State<SessionCreateView> {
                     child: Center(
                       child: FloatingActionButton.extended(
                         heroTag: "add_fab",
-                        backgroundColor: StrongrColors.black,
+                        backgroundColor: editButtonsEnabled
+                            ? StrongrColors.black
+                            : Colors.grey,
                         icon: Icon(
                           Icons.add,
                           color: Colors.white,
@@ -465,13 +488,15 @@ class _SessionCreateViewState extends State<SessionCreateView> {
                           "Ajouter",
                           color: Colors.white,
                         ),
-                        onPressed: () {
-                          FocusScope.of(context).unfocus();
-                          Navigator.pushNamed(
-                            context,
-                            SESSION_NEW_EXERCISE_ROUTE,
-                          ).then(addExercise);
-                        },
+                        onPressed: editButtonsEnabled
+                            ? () {
+                                FocusScope.of(context).unfocus();
+                                Navigator.pushNamed(
+                                  context,
+                                  SESSION_NEW_EXERCISE_ROUTE,
+                                ).then(addExercise);
+                              }
+                            : null,
                       ),
                     ),
                   ),
