@@ -486,16 +486,19 @@ class _FiltersDialogState extends State<FiltersDialog> {
             onChanged: onChanged,
           ),
         ),
-        Container(
-          height: 30,
-          child: InkWell(
-            onTap: onTap,
-            child: Padding(
-              padding: EdgeInsets.only(left: 8, right: 8),
-              child: Center(
+        Flexible(
+          child: Container(
+            height: 30,
+            child: InkWell(
+              onTap: onTap,
+              child: Container(
+                alignment: Alignment.centerLeft,
+                padding: EdgeInsets.only(left: 8, right: 8),
                 child: StrongrText(
                   content,
                   size: 16,
+                  maxLines: 1,
+                  textAlign: TextAlign.start,
                 ),
               ),
             ),

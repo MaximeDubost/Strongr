@@ -59,13 +59,44 @@ class ProgramService {
               ),
             );
           }
-        if(!found)
-          sessionsFullList.add(SessionPreview(place: i));
+        if (!found) sessionsFullList.add(SessionPreview(place: i));
       }
       program.sessions = sessionsFullList;
       return program;
     } catch (e) {
       return Program();
+    }
+  }
+
+  /// [POST] /program
+  ///
+  /// Crée un programme pour un utilisateur.
+  static Future<int> postProgram({
+    @required int programGoalId,
+    @required String name,
+    @required List<SessionPreview> sessions,
+  }) async {
+    List<SessionPreview> definitiveSessions = List<SessionPreview>();
+    for (final item in sessions)
+      if (item.id != null) definitiveSessions.add(item);
+    try {
+      Response response = await http.post(
+        Uri.encodeFull(
+          Global.SERVER_URL + '/program',
+        ),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + Global.token
+        },
+        body: jsonEncode({
+          'id_program_goal': programGoalId,
+          'name': name,
+          'sessions': definitiveSessions
+        }),
+      );
+      return response.statusCode;
+    } catch (e) {
+      return 503;
     }
   }
 }

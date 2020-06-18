@@ -14,7 +14,8 @@ repository.readProgram = async (req) => {
         JOIN _program_goal pg ON pg.id_program_goal = p.id_program_goal
         JOIN _program_session ps ON ps.id_program = p.id_program
         WHERE p.id_user = $1 
-        GROUP BY p.id_program, p.name, pg.name
+        GROUP BY p.id_program, p.name, pg.name, p.last_update
+        ORDER BY p.last_update DESC
     `
     try {
         var result = await clt.query(sql, [req.user.id])

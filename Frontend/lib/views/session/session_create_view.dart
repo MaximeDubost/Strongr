@@ -70,7 +70,7 @@ class _SessionCreateViewState extends State<SessionCreateView> {
                   Container(
                     alignment: Alignment.center,
                     child: StrongrText(
-                      "Impossible de créer la séance",
+                      "Erreur : échec de la création",
                       color: Colors.white,
                     ),
                   ),
@@ -436,7 +436,7 @@ class _SessionCreateViewState extends State<SessionCreateView> {
                     child: StrongrRoundedTextFormField(
                       enabled: editButtonsEnabled,
                       controller: sessionNameController,
-                      validator: null,
+                      // validator: null,
                       // onSaved: (String value) => setState(
                       // () => connectId = value.toLowerCase()),
                       onSaved: (value) {},

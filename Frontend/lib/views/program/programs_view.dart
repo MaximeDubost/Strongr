@@ -25,9 +25,10 @@ class ProgramsView extends StatefulWidget {
 }
 
 class _ProgramsViewState extends State<ProgramsView> {
+  final globalKey = GlobalKey<ScaffoldState>();
   TextEditingController searchbarController;
   Future<List<ProgramPreview>> futurePrograms;
-  bool sortedByRecent;
+  bool sortedByRecent, needToRefresh;
   // List<String> popupMenuItems;
 
   @override
@@ -35,6 +36,7 @@ class _ProgramsViewState extends State<ProgramsView> {
     searchbarController = TextEditingController(text: "");
     futurePrograms = ProgramService.getPrograms();
     sortedByRecent = true;
+    needToRefresh = false;
     // popupMenuItems = ["Filtres", "Créer"];
     super.initState();
   }
@@ -226,9 +228,12 @@ class _ProgramsViewState extends State<ProgramsView> {
     );
   }
 
-  /// Actualise la page.
-  void refresh() {
-    setState(() {});
+  /// Actualise la liste des programmes.
+  void refreshPrograms() async {
+    setState(() {
+      futurePrograms = ProgramService.getPrograms();
+      needToRefresh = true;
+    });
   }
 
   @override
@@ -236,10 +241,13 @@ class _ProgramsViewState extends State<ProgramsView> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
+        key: globalKey,
         resizeToAvoidBottomPadding: false,
         appBar: AppBar(
           centerTitle: true,
-          leading: BackButton(),
+          leading: BackButton(
+            onPressed: () => Navigator.pop(context, needToRefresh),
+          ),
           title: Text("Vos programmes"),
           actions: <Widget>[
             // PopupMenuButton<String>(
@@ -277,11 +285,45 @@ class _ProgramsViewState extends State<ProgramsView> {
                 await Navigator.pushNamed(
                   context,
                   PROGRAM_CREATE_ROUTE,
-                ).then((val) {
-                  if (val == true) {
-                    setState(() {});
-                  }
-                });
+                ).then(
+                  (programCreated) {
+                    if (programCreated) {
+                      refreshPrograms();
+                      globalKey.currentState.showSnackBar(
+                        SnackBar(
+                          content: Container(
+                            height: 35,
+                            child: Stack(
+                              children: <Widget>[
+                                Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: Icon(
+                                    Icons.check,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                Container(
+                                  alignment: Alignment.center,
+                                  child: StrongrText(
+                                    "Programme créé avec succès",
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          backgroundColor: StrongrColors.blue80,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(15),
+                              topRight: Radius.circular(15),
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                );
               },
             ),
           ],
@@ -340,7 +382,7 @@ class _ProgramsViewState extends State<ProgramsView> {
                         context: context,
                         builder: (context) => FiltersDialog(),
                       ).then((val) {
-                        if (val == true) refresh();
+                        if (val == true) refreshPrograms();
                       });
                     },
                     child: StrongrText(
