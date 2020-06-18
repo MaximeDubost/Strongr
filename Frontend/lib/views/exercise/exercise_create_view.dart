@@ -155,7 +155,7 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
                   Container(
                     alignment: Alignment.center,
                     child: StrongrText(
-                      "Impossible de créer l'exercice",
+                      "Erreur : échec de la création",
                       color: Colors.white,
                     ),
                   ),

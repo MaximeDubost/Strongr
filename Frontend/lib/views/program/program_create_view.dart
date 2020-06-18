@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:strongr/models/ProgramGoal.dart';
 import 'package:strongr/models/SessionPreview.dart';
 import 'package:strongr/services/program_goal_service.dart';
+import 'package:strongr/services/program_service.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
@@ -55,56 +56,61 @@ class _ProgramCreateViewState extends State<ProgramCreateView> {
   }
 
   void sendToServer() async {
+    FocusScope.of(context).unfocus();
     if (_key.currentState.validate()) {
       _key.currentState.save();
       setState(() {
         createButtonEnabled = false;
         editButtonsEnabled = false;
       });
-      int statusCode = 0;
-      // int statusCode = await ProgramService.postProgram(
-      //   programGoalId: selectedProgramGoalId,
-      //   name: programeNameController.text == ""
-      //       ? "Programme perso."
-      //       : programeNameController.text,
-      //   sessions: sessionsOfProgram,
-      // );
+      int statusCode = await ProgramService.postProgram(
+        programGoalId: selectedProgramGoalId,
+        name: programNameController.text == ""
+            ? "Programme perso."
+            : programNameController.text,
+        sessions: sessionsOfProgram,
+      );
+      // statusCode =  0;
       if (statusCode == 201) {
         Navigator.pop(context, true);
       } else {
-        globalKey.currentState.showSnackBar(
-          SnackBar(
-            content: Container(
-              height: 35,
-              child: Stack(
-                children: <Widget>[
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    child: Icon(
-                      Icons.close,
-                      color: Colors.white,
+        try {
+          globalKey.currentState.showSnackBar(
+            SnackBar(
+              content: Container(
+                height: 35,
+                child: Stack(
+                  children: <Widget>[
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Icon(
+                        Icons.close,
+                        color: Colors.white,
+                      ),
                     ),
-                  ),
-                  Container(
-                    alignment: Alignment.center,
-                    child: StrongrText(
-                      "Impossible de créer l'exercice",
-                      color: Colors.white,
+                    Container(
+                      alignment: Alignment.center,
+                      child: StrongrText(
+                        "Erreur : échec de la création",
+                        color: Colors.white,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
+              ),
+              backgroundColor: Colors.red.withOpacity(0.8),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(15)),
               ),
             ),
-            backgroundColor: Colors.red.withOpacity(0.8),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(15)),
-            ),
-          ),
-        );
-        setState(() {
-          createButtonEnabled = true;
-          editButtonsEnabled = true;
-        });
+          );
+          setState(() {
+            createButtonEnabled = true;
+            editButtonsEnabled = true;
+          });
+        } catch (e) {
+          print(e.toString());
+        }
       }
     } else {
       setState(() {
@@ -136,42 +142,40 @@ class _ProgramCreateViewState extends State<ProgramCreateView> {
     toggleCreateButton(sessionsOfProgram);
   }
 
-  void deleteExercise(int index) {
-    // setState(() {
-    //   exercisesOfSession.removeAt(index);
-    //   for (final item in exercisesOfSession)
-    //     item.place = exercisesOfSession.indexOf(item) + 1;
-    // });
-    // toggleCreateButton(exercisesOfSession);
+  void deleteSession(int index) {
+    setState(() {
+      sessionsOfProgram[index] = SessionPreview(place: index + 1);
+    });
+    toggleCreateButton(sessionsOfProgram);
   }
 
-  void changePlaceOfExercise(int index, AxisDirection direction) {
-    // switch (direction) {
-    //   case AxisDirection.up:
-    //   case AxisDirection.left:
-    //     if (index > 0) {
-    //       ExercisePreview transition = exercisesOfSession[index - 1];
-    //       setState(() {
-    //         exercisesOfSession[index - 1] = exercisesOfSession[index];
-    //         exercisesOfSession[index] = transition;
-    //         for (final item in exercisesOfSession)
-    //           item.place = exercisesOfSession.indexOf(item) + 1;
-    //       });
-    //     }
-    //     break;
-    //   case AxisDirection.right:
-    //   case AxisDirection.down:
-    //     if (index < exercisesOfSession.indexOf(exercisesOfSession.last)) {
-    //       ExercisePreview transition = exercisesOfSession[index + 1];
-    //       setState(() {
-    //         exercisesOfSession[index + 1] = exercisesOfSession[index];
-    //         exercisesOfSession[index] = transition;
-    //         for (final item in exercisesOfSession)
-    //           item.place = exercisesOfSession.indexOf(item) + 1;
-    //       });
-    //     }
-    //     break;
-    // }
+  void changePlaceOfSession(int index, AxisDirection direction) {
+    switch (direction) {
+      case AxisDirection.up:
+      case AxisDirection.left:
+        if (index > 0) {
+          SessionPreview transition = sessionsOfProgram[index - 1];
+          setState(() {
+            sessionsOfProgram[index - 1] = sessionsOfProgram[index];
+            sessionsOfProgram[index] = transition;
+            for (final item in sessionsOfProgram)
+              item.place = sessionsOfProgram.indexOf(item) + 1;
+          });
+        }
+        break;
+      case AxisDirection.right:
+      case AxisDirection.down:
+        if (index < sessionsOfProgram.indexOf(sessionsOfProgram.last)) {
+          SessionPreview transition = sessionsOfProgram[index + 1];
+          setState(() {
+            sessionsOfProgram[index + 1] = sessionsOfProgram[index];
+            sessionsOfProgram[index] = transition;
+            for (final item in sessionsOfProgram)
+              item.place = sessionsOfProgram.indexOf(item) + 1;
+          });
+        }
+        break;
+    }
   }
 
   String getShortWeekDay(int day) {
@@ -242,10 +246,35 @@ class _ProgramCreateViewState extends State<ProgramCreateView> {
                               height: 30,
                               // color: Colors.blue,
                               child: RawMaterialButton(
-                                onPressed: () {},
+                                onPressed: sessionList.indexOf(item) == 0 ||
+                                        !editButtonsEnabled
+                                    ? () {}
+                                    : () {
+                                        FocusScope.of(context).unfocus();
+                                        changePlaceOfSession(
+                                          sessionList.indexOf(item),
+                                          AxisDirection.up,
+                                        );
+                                      },
+                                hoverColor: sessionList.indexOf(item) == 0 ||
+                                        !editButtonsEnabled
+                                    ? Colors.transparent
+                                    : StrongrColors.greyE,
+                                splashColor: sessionList.indexOf(item) == 0 ||
+                                        !editButtonsEnabled
+                                    ? Colors.transparent
+                                    : StrongrColors.greyD,
+                                enableFeedback:
+                                    sessionList.indexOf(item) == 0 ||
+                                            !editButtonsEnabled
+                                        ? false
+                                        : true,
                                 child: Icon(
                                   Icons.keyboard_arrow_up,
-                                  color: StrongrColors.black,
+                                  color: sessionList.indexOf(item) == 0 ||
+                                          !editButtonsEnabled
+                                      ? Colors.grey
+                                      : StrongrColors.black,
                                 ),
                                 shape: CircleBorder(),
                               ),
@@ -264,10 +293,44 @@ class _ProgramCreateViewState extends State<ProgramCreateView> {
                               height: 30,
                               // color: Colors.blue,
                               child: RawMaterialButton(
-                                onPressed: () {},
+                                onPressed: sessionList.indexOf(item) ==
+                                            sessionList
+                                                .indexOf(sessionList.last) ||
+                                        !editButtonsEnabled
+                                    ? () {}
+                                    : () {
+                                        FocusScope.of(context).unfocus();
+                                        changePlaceOfSession(
+                                          sessionList.indexOf(item),
+                                          AxisDirection.down,
+                                        );
+                                      },
+                                hoverColor: sessionList.indexOf(item) ==
+                                            sessionList
+                                                .indexOf(sessionList.last) ||
+                                        !editButtonsEnabled
+                                    ? Colors.transparent
+                                    : StrongrColors.greyE,
+                                splashColor: sessionList.indexOf(item) ==
+                                            sessionList
+                                                .indexOf(sessionList.last) ||
+                                        !editButtonsEnabled
+                                    ? Colors.transparent
+                                    : StrongrColors.greyD,
+                                enableFeedback: sessionList.indexOf(item) ==
+                                            sessionList
+                                                .indexOf(sessionList.last) ||
+                                        !editButtonsEnabled
+                                    ? false
+                                    : true,
                                 child: Icon(
                                   Icons.keyboard_arrow_down,
-                                  color: StrongrColors.black,
+                                  color: sessionList.indexOf(item) ==
+                                              sessionList
+                                                  .indexOf(sessionList.last) ||
+                                          !editButtonsEnabled
+                                      ? Colors.grey
+                                      : StrongrColors.black,
                                 ),
                                 shape: CircleBorder(),
                               ),
@@ -378,20 +441,23 @@ class _ProgramCreateViewState extends State<ProgramCreateView> {
                           ),
                         ),
                       ),
-                      Visibility(
-                        visible: true,
-                        child: Container(
-                          width: 35,
-                          child: RawMaterialButton(
-                            onPressed: () {},
-                            child: Icon(
-                              Icons.close,
-                              color: Colors.red[800],
-                            ),
-                            shape: CircleBorder(),
+                      Container(
+                        width: 35,
+                        child: RawMaterialButton(
+                          onPressed: editButtonsEnabled
+                              ? () {
+                                  FocusScope.of(context).unfocus();
+                                  deleteSession(sessionList.indexOf(item));
+                                }
+                              : null,
+                          child: Icon(
+                            Icons.close,
+                            color: Colors.red[800],
                           ),
+                          shape: CircleBorder(),
                         ),
                       ),
+
                       // Visibility(
                       //   visible: !isEditMode,
                       //   child: Container(
@@ -414,6 +480,7 @@ class _ProgramCreateViewState extends State<ProgramCreateView> {
                     ],
                   ),
                   onPressed: () {
+                    FocusScope.of(context).unfocus();
                     Navigator.pushNamed(
                       context,
                       SESSION_ROUTE,
@@ -478,6 +545,7 @@ class _ProgramCreateViewState extends State<ProgramCreateView> {
                       ],
                     ),
                     onPressed: () {
+                      FocusScope.of(context).unfocus();
                       lastIndexPressed = sessionList.indexOf(item);
                       Navigator.pushNamed(context, PROGRAM_NEW_SESSION_ROUTE)
                           .then(addSession);
@@ -492,6 +560,7 @@ class _ProgramCreateViewState extends State<ProgramCreateView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: globalKey,
       appBar: AppBar(
         centerTitle: true,
         leading: BackButton(onPressed: () => Navigator.pop(context, false)),
@@ -607,8 +676,12 @@ class _ProgramCreateViewState extends State<ProgramCreateView> {
                                                 ? StrongrColors.blue
                                                 : Colors.grey,
                                           ),
-                                          onPressed:
-                                              editButtonsEnabled ? () {} : null,
+                                          onPressed: editButtonsEnabled
+                                              ? () {
+                                                  FocusScope.of(context)
+                                                      .unfocus();
+                                                }
+                                              : null,
                                         ),
                                       ],
                                     ),

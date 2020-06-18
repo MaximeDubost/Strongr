@@ -245,7 +245,9 @@ class _ProgramsViewState extends State<ProgramsView> {
         resizeToAvoidBottomPadding: false,
         appBar: AppBar(
           centerTitle: true,
-          leading: BackButton(),
+          leading: BackButton(
+            onPressed: () => Navigator.pop(context, needToRefresh),
+          ),
           title: Text("Vos programmes"),
           actions: <Widget>[
             // PopupMenuButton<String>(
@@ -284,44 +286,44 @@ class _ProgramsViewState extends State<ProgramsView> {
                   context,
                   PROGRAM_CREATE_ROUTE,
                 ).then(
-                        (programCreated) {
-                          if (programCreated) {
-                            refreshPrograms();
-                            globalKey.currentState.showSnackBar(
-                              SnackBar(
-                                content: Container(
-                                  height: 35,
-                                  child: Stack(
-                                    children: <Widget>[
-                                      Container(
-                                        alignment: Alignment.centerLeft,
-                                        child: Icon(
-                                          Icons.check,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                      Container(
-                                        alignment: Alignment.center,
-                                        child: StrongrText(
-                                          "Program créé avec succès",
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ],
+                  (programCreated) {
+                    if (programCreated) {
+                      refreshPrograms();
+                      globalKey.currentState.showSnackBar(
+                        SnackBar(
+                          content: Container(
+                            height: 35,
+                            child: Stack(
+                              children: <Widget>[
+                                Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: Icon(
+                                    Icons.check,
+                                    color: Colors.white,
                                   ),
                                 ),
-                                backgroundColor: StrongrColors.blue80,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(15),
-                                    topRight: Radius.circular(15),
+                                Container(
+                                  alignment: Alignment.center,
+                                  child: StrongrText(
+                                    "Programme créé avec succès",
+                                    color: Colors.white,
                                   ),
                                 ),
-                              ),
-                            );
-                          }
-                        },
+                              ],
+                            ),
+                          ),
+                          backgroundColor: StrongrColors.blue80,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(15),
+                              topRight: Radius.circular(15),
+                            ),
+                          ),
+                        ),
                       );
+                    }
+                  },
+                );
               },
             ),
           ],

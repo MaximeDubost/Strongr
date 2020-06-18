@@ -70,7 +70,7 @@ class _SessionCreateViewState extends State<SessionCreateView> {
                   Container(
                     alignment: Alignment.center,
                     child: StrongrText(
-                      "Impossible de créer la séance",
+                      "Erreur : échec de la création",
                       color: Colors.white,
                     ),
                   ),
