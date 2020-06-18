@@ -436,7 +436,7 @@ class _SessionCreateViewState extends State<SessionCreateView> {
                     child: StrongrRoundedTextFormField(
                       enabled: editButtonsEnabled,
                       controller: sessionNameController,
-                      validator: null,
+                      // validator: null,
                       // onSaved: (String value) => setState(
                       // () => connectId = value.toLowerCase()),
                       onSaved: (value) {},
