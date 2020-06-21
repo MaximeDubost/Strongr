@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'package:http/http.dart' as http;
 import 'package:strongr/models/Exercise.dart';
 import 'package:strongr/models/ExercisePreview.dart';
 import 'package:strongr/utils/Global.dart';
@@ -11,10 +10,10 @@ import 'package:strongr/models/Set.dart';
 class ExerciseService {
   /// [GET] /exercises
   ///
-  /// Retourne la liste des exercices.
+  /// Retourne la liste des exercices d'un utilisateur.
   static Future<List<ExercisePreview>> getExercises() async {
     try {
-      Response response = await http.get(
+      Response response = await get(
         Uri.encodeFull(
           Global.SERVER_URL + '/exercises',
         ),
@@ -31,10 +30,10 @@ class ExerciseService {
 
   /// [GET] /exercise/[id]
   ///
-  /// Retourne le détail d'un exercice [id].
+  /// Retourne le détail d'un exercice [id] d'un utilisateur.
   static Future<Exercise> getExercise({@required int id}) async {
     try {
-      Response response = await http.get(
+      Response response = await get(
         Uri.encodeFull(
           Global.SERVER_URL + '/exercise/' + id.toString(),
         ),
@@ -56,7 +55,7 @@ class ExerciseService {
     @required List<Set> sets,
   }) async {
     try {
-      Response response = await http.post(
+      Response response = await post(
         Uri.encodeFull(
           Global.SERVER_URL + '/exercise',
         ),
@@ -79,14 +78,27 @@ class ExerciseService {
 
   /// [PUT] /exercise/[id]
   ///
-  /// Modifie l'exercice [id].
-  static Future<int> putExercise({@required int id}) async {
+  /// Modifie l'exercice [id] d'un utilisateur.
+  static Future<int> putExercise({
+    @required int id,
+    @required int equipmentId,
+    @required String name,
+    @required List<Set> sets,
+  }) async {
     try {
-      Response response = await http.put(
+      Response response = await put(
         Uri.encodeFull(
           Global.SERVER_URL + '/exercise/' + id.toString(),
         ),
-        headers: {'Authorization': 'Bearer ' + Global.token},
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + Global.token
+        },
+        body: jsonEncode({
+          'id_equipment': equipmentId,
+          'name': name,
+          'sets': sets
+        }),
       );
       return response.statusCode;
     } catch (e) {
@@ -99,7 +111,7 @@ class ExerciseService {
   /// Supprime l'exercice [id] d'un utilisateur.
   static Future<int> deleteExercise({@required int id}) async {
     try {
-      Response response = await http.delete(
+      Response response = await delete(
         Uri.encodeFull(
           Global.SERVER_URL + '/exercise/' + id.toString(),
         ),

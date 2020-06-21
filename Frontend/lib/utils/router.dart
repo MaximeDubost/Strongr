@@ -40,8 +40,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case SIGN_IN_NEXT_ROUTE:
       SignInView args = settings.arguments;
       return CupertinoPageRoute(
-        builder: (context) =>
-            SignInNextView(email: args.email, password: args.password),
+        builder: (context) => SignInNextView(
+          email: args.email,
+          password: args.password,
+        ),
       );
 
     case LOG_IN_ROUTE:

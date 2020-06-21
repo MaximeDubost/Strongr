@@ -3,7 +3,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'package:http/http.dart' as http;
 import 'package:strongr/utils/Global.dart';
 import 'package:strongr/models/AppExercise.dart';
 
@@ -13,7 +12,7 @@ class AppExerciseService {
   /// Retourne la liste des exercices de l'application.
   static Future<List<AppExercise>> getAppExercises() async {
     try {
-      Response response = await http.get(
+      Response response = await get(
         Uri.encodeFull(
           Global.SERVER_URL + '/appexercises',
         ),
@@ -32,7 +31,7 @@ class AppExerciseService {
   /// Retourne les détails de l'exercice [id] de l'application.
   static Future<AppExercise> getAppExercise({@required int id}) async {
     try {
-      Response response = await http.get(
+      Response response = await get(
         Uri.encodeFull(
           Global.SERVER_URL + '/appexercise/' + id.toString(),
         ),

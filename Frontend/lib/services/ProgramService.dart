@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'package:http/http.dart' as http;
 import 'package:strongr/models/Program.dart';
 import 'package:strongr/models/ProgramPreview.dart';
 import 'package:strongr/models/SessionPreview.dart';
@@ -14,7 +13,7 @@ class ProgramService {
   /// Retourne la liste des programmes.
   static Future<List<ProgramPreview>> getPrograms() async {
     try {
-      Response response = await http.get(
+      Response response = await get(
         Uri.encodeFull(
           Global.SERVER_URL + '/programs',
         ),
@@ -34,7 +33,7 @@ class ProgramService {
   /// Retourne le détail d'une programme [id].
   static Future<Program> getProgram({@required String id}) async {
     try {
-      Response response = await http.get(
+      Response response = await get(
         Uri.encodeFull(
           Global.SERVER_URL + '/program/' + id,
         ),
@@ -80,7 +79,7 @@ class ProgramService {
     for (final item in sessions)
       if (item.id != null) definitiveSessions.add(item);
     try {
-      Response response = await http.post(
+      Response response = await post(
         Uri.encodeFull(
           Global.SERVER_URL + '/program',
         ),
@@ -93,6 +92,53 @@ class ProgramService {
           'name': name,
           'sessions': definitiveSessions
         }),
+      );
+      return response.statusCode;
+    } catch (e) {
+      return 503;
+    }
+  }
+
+  /// [PUT] /program/[id]
+  ///
+  /// Modifie le programme [id] d'un utilisateur.
+  static Future<int> putProgram({
+    @required int id,
+    @required int programGoalId,
+    @required String name,
+    @required List<SessionPreview> sessions,
+  }) async {
+    try {
+      Response response = await put(
+        Uri.encodeFull(
+          Global.SERVER_URL + '/program/' + id.toString(),
+        ),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + Global.token
+        },
+        body: jsonEncode({
+          'id_program_goal': programGoalId,
+          'name': name,
+          'sessions': sessions
+        }),
+      );
+      return response.statusCode;
+    } catch (e) {
+      return 503;
+    }
+  }
+
+  /// [DELETE] /program/[id]
+  ///
+  /// Supprime le programme [id] d'un utilisateur.
+  static Future<int> deleteProgram({@required int id}) async {
+    try {
+      Response response = await delete(
+        Uri.encodeFull(
+          Global.SERVER_URL + '/program/' + id.toString(),
+        ),
+        headers: {'Authorization': 'Bearer ' + Global.token},
       );
       return response.statusCode;
     } catch (e) {

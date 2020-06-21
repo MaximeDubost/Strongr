@@ -1,9 +1,6 @@
 import 'dart:async';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'package:http/http.dart' as http;
 import 'package:strongr/utils/Global.dart';
 
 class UserService {
@@ -12,7 +9,7 @@ class UserService {
   /// Vérifie la disponibilité de l'e-mail [email].
   static Future<int> postCheckEmail({@required String email}) async {
     try {
-      Response response = await http.post(
+      Response response = await post(
         Uri.encodeFull(
           Global.SERVER_URL + '/checkEmail',
         ),
@@ -39,7 +36,7 @@ class UserService {
     @required String username,
   }) async {
     try {
-      Response response = await http.post(
+      Response response = await post(
         Uri.encodeFull(
           Global.SERVER_URL + '/user/add',
         ),
@@ -59,54 +56,6 @@ class UserService {
     }
   }
 
-  /// WIP : [GET] /user/[id]
-  ///
-  /// Retourne l'utilisateur [id].
-  static Future<dynamic> getUser({@required int id}) async {
-    Response response = await http.get(
-      Uri.encodeFull(
-        Global.SERVER_URL + '/user/' + id.toString(),
-      ),
-    );
-    if (response.statusCode == 200) {
-      return '';
-    } else
-      throw HttpException('');
-  }
-
-  /// WIP : [PUT] /user/update/[id]
-  ///
-  /// Modifie l'utilisateur [id].
-  static Future<int> putUser({@required int id}) async {
-    Response response = await http.put(
-      Uri.encodeFull(
-        Global.SERVER_URL + '/user/update/' + id.toString(),
-      ),
-      body: {
-        '': '',
-      },
-    );
-    if (response.statusCode == 200) {
-      return 0;
-    } else
-      throw HttpException('');
-  }
-
-  /// WIP : [DELETE] /user/delete/[id]
-  ///
-  /// Supprime l'utilisateur [id].
-  static Future<int> deleteUser({@required int id}) async {
-    Response response = await http.delete(
-      Uri.encodeFull(
-        Global.SERVER_URL + '/user/delete/' + id.toString(),
-      ),
-    );
-    if (response.statusCode == 200) {
-      return 0;
-    } else
-      throw HttpException('');
-  }
-
   /// [POST] /login
   ///
   /// Demande la connexion de l'utilisateur [connectId] avec le mot de passe [password].
@@ -115,7 +64,7 @@ class UserService {
     @required String password,
   }) async {
     try {
-      Response response = await http.post(
+      Response response = await post(
         Uri.encodeFull(
           Global.SERVER_URL + '/login',
         ),
@@ -133,30 +82,12 @@ class UserService {
     }
   }
 
-  /// WIP : [POST] /logout
-  ///
-  /// Demande la déconnexion d'un utilisateur.
-  static Future<int> postLogOut() async {
-    Response response = await http.post(
-      Uri.encodeFull(
-        Global.SERVER_URL + '/logout',
-      ),
-      body: {
-        '': '',
-      },
-    );
-    if (response.statusCode == 200) {
-      return 0;
-    } else
-      throw HttpException('');
-  }
-
   /// [POST] /sendCode
   ///
   /// Envoie le code à l'adresse [email].
   static Future<int> postSendCode({@required String email}) async {
     try {
-      Response response = await http.post(
+      Response response = await post(
         Uri.encodeFull(
           Global.SERVER_URL + '/sendCode',
         ),
@@ -178,7 +109,7 @@ class UserService {
     @required String code,
   }) async {
     try {
-      Response response = await http.post(
+      Response response = await post(
         Uri.encodeFull(
           Global.SERVER_URL + '/checkCode',
         ),
@@ -201,7 +132,7 @@ class UserService {
     @required String password,
   }) async {
     try {
-      Response response = await http.put(
+      Response response = await put(
         Uri.encodeFull(
           Global.SERVER_URL + '/resetPassword',
         ),
