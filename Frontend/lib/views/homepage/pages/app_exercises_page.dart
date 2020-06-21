@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:strongr/models/muscle.dart';
 import 'package:strongr/models/AppExercise.dart';
-import 'package:strongr/services/app_exercise_service.dart';
+import 'package:strongr/services/AppExerciseService.dart';
 import 'package:strongr/utils/app_exercises_filters.dart';
 import 'package:strongr/utils/diacritics.dart';
 import 'package:strongr/utils/routing_constants.dart';

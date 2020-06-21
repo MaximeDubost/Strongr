@@ -105,7 +105,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
           name: args.name,
           appExerciseName: args.appExerciseName,
           fromSession: args.fromSession,
-          fromSessionAddExercise: args.fromSessionAddExercise,
+          fromSessionCreation: args.fromSessionCreation,
         ),
       );
 
@@ -139,12 +139,9 @@ Route<dynamic> generateRoute(RouteSettings settings) {
           name: args.name,
           sessionTypeName: args.sessionTypeName,
           fromProgram: args.fromProgram,
+          fromProgramCreation: args.fromProgramCreation,
         ),
       );
-
-    case SESSION_ADD_ROUTE:
-      return null;
-      break;
 
     case SESSION_CREATE_ROUTE:
       return CupertinoPageRoute(
@@ -174,10 +171,6 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         ),
       );
 
-    case PROGRAM_ADD_ROUTE:
-      return null;
-      break;
-
     case PROGRAM_CREATE_ROUTE:
       return CupertinoPageRoute(
         builder: (context) => ProgramCreateView(),
@@ -187,14 +180,6 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return CupertinoPageRoute(
         builder: (context) => ProgramNewSessionView(),
       );
-
-    ///
-    /// Debug Zone
-    ///
-    // case DEBUG_ZONE_ROUTE:
-    //   return CupertinoPageRoute(
-    //     builder: (context) => DebugZone(),
-    //   );
 
     ///
     /// Page non trouvée

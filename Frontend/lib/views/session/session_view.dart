@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:strongr/models/Session.dart';
-import 'package:strongr/services/session_service.dart';
+import 'package:strongr/services/SessionService.dart';
 import 'package:strongr/utils/date_formater.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
@@ -14,9 +14,15 @@ class SessionView extends StatefulWidget {
   final String name;
   final String sessionTypeName;
   final bool fromProgram;
+  final bool fromProgramCreation;
 
-  SessionView(
-      {this.id, this.name, this.sessionTypeName, this.fromProgram = false});
+  SessionView({
+    this.id,
+    this.name,
+    this.sessionTypeName,
+    this.fromProgram = false,
+    this.fromProgramCreation = false,
+  });
 
   @override
   _SessionViewState createState() => _SessionViewState();
@@ -74,11 +80,8 @@ class _SessionViewState extends State<SessionView> {
                         width: 30,
                         child: Center(
                           child: StrongrText(
-                            item.place != null
-                                ? item.place.toString()
-                                : "-",
-                            color: isEditMode ||
-                                    item.place != null
+                            item.place != null ? item.place.toString() : "-",
+                            color: isEditMode || item.place != null
                                 ? StrongrColors.black
                                 : Colors.grey,
                             bold: true,
@@ -204,38 +207,41 @@ class _SessionViewState extends State<SessionView> {
                     ),
                   ),
                 ),
-                !isEditMode
-                    ? Container(
-                        width: 35,
-                        height: 35,
-                        child: FloatingActionButton(
-                          elevation: 0,
-                          heroTag: "fs_exercise_play_fab_" + item.id.toString(),
-                          tooltip: !isEditMode ? "Démarrer" : "Supprimer",
-                          backgroundColor: !isEditMode
-                              ? StrongrColors.blue
-                              : Colors.red[800],
-                          child: Icon(
-                            !isEditMode
-                                ? Icons.play_arrow
-                                : Icons.delete_outline,
-                            color: Colors.white,
-                          ),
-                          onPressed: () {},
-                        ),
-                      )
-                    : Container(
-                        width: 35,
-                        height: 35,
-                        child: RawMaterialButton(
-                          child: Icon(
-                            Icons.close,
-                            color: Colors.red[800],
-                          ),
-                          shape: CircleBorder(),
-                          onPressed: () {},
-                        ),
-                      ),
+                !widget.fromProgramCreation
+                    ? !isEditMode
+                        ? Container(
+                            width: 35,
+                            height: 35,
+                            child: FloatingActionButton(
+                              elevation: 0,
+                              heroTag:
+                                  "fs_exercise_play_fab_" + item.id.toString(),
+                              tooltip: !isEditMode ? "Démarrer" : "Supprimer",
+                              backgroundColor: !isEditMode
+                                  ? StrongrColors.blue
+                                  : Colors.red[800],
+                              child: Icon(
+                                !isEditMode
+                                    ? Icons.play_arrow
+                                    : Icons.delete_outline,
+                                color: Colors.white,
+                              ),
+                              onPressed: () {},
+                            ),
+                          )
+                        : Container(
+                            width: 35,
+                            height: 35,
+                            child: RawMaterialButton(
+                              child: Icon(
+                                Icons.close,
+                                color: Colors.red[800],
+                              ),
+                              shape: CircleBorder(),
+                              onPressed: () {},
+                            ),
+                          )
+                    : SizedBox(),
               ],
             ),
             onPressed: !isEditMode
@@ -248,12 +254,15 @@ class _SessionViewState extends State<SessionView> {
                         name: item.name.toString(),
                         appExerciseName: item.appExerciseName,
                         fromSession: true,
+                        fromSessionCreation:
+                            widget.fromProgramCreation ? true : false,
                       ),
                     );
                   }
                 : null,
-            onLongPressed:
-                !isEditMode ? () => setState(() => isEditMode = true) : null,
+            onLongPressed: !isEditMode && !widget.fromProgramCreation
+                ? () => setState(() => isEditMode = true)
+                : null,
           ),
         ),
       );
@@ -273,15 +282,17 @@ class _SessionViewState extends State<SessionView> {
               )
             : BackButton(),
         actions: <Widget>[
-          isEditMode
-              ? IconButton(
-                  icon: Icon(Icons.check),
-                  onPressed: () {},
-                )
-              : IconButton(
-                  icon: Icon(Icons.edit),
-                  onPressed: () => setState(() => isEditMode = true),
-                ),
+          !widget.fromProgramCreation
+              ? isEditMode
+                  ? IconButton(
+                      icon: Icon(Icons.check),
+                      onPressed: () {},
+                    )
+                  : IconButton(
+                      icon: Icon(Icons.edit),
+                      onPressed: () => setState(() => isEditMode = true),
+                    )
+              : SizedBox(),
         ],
       ),
       body: Container(
@@ -455,21 +466,24 @@ class _SessionViewState extends State<SessionView> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        heroTag: !widget.fromProgram
-            ? 'session_play_fab_' + widget.id.toString()
-            : 'fp_session_play_fab_' + widget.id.toString(),
-        backgroundColor: isEditMode ? Colors.red[800] : StrongrColors.blue,
-        icon: Icon(
-          isEditMode ? Icons.delete_outline : Icons.play_arrow,
-          color: Colors.white,
-        ),
-        onPressed: isEditMode ? () {} : () {},
-        label: StrongrText(
-          isEditMode ? "Supprimer" : "Démarrer",
-          color: Colors.white,
-        ),
-      ),
+      floatingActionButton: !widget.fromProgramCreation
+          ? FloatingActionButton.extended(
+              heroTag: !widget.fromProgram
+                  ? 'session_play_fab_' + widget.id.toString()
+                  : 'fp_session_play_fab_' + widget.id.toString(),
+              backgroundColor:
+                  isEditMode ? Colors.red[800] : StrongrColors.blue,
+              icon: Icon(
+                isEditMode ? Icons.delete_outline : Icons.play_arrow,
+                color: Colors.white,
+              ),
+              onPressed: isEditMode ? () {} : () {},
+              label: StrongrText(
+                isEditMode ? "Supprimer" : "Démarrer",
+                color: Colors.white,
+              ),
+            )
+          : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }

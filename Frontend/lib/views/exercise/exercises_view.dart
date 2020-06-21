@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:strongr/models/ExercisePreview.dart';
-import 'package:strongr/services/exercise_service.dart';
+import 'package:strongr/services/ExerciseService.dart';
 import 'package:strongr/utils/app_exercises_filters.dart';
 import 'package:strongr/utils/diacritics.dart';
 import 'package:strongr/utils/routing_constants.dart';
@@ -233,7 +233,7 @@ class _ExercisesViewState extends State<ExercisesView> {
                                       id: item.id.toString(),
                                       name: item.name,
                                       appExerciseName: item.appExerciseName,
-                                      fromSessionAddExercise: true,
+                                      fromSessionCreation: true,
                                     ),
                                   );
                                 },

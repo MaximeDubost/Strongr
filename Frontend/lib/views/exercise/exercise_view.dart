@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:strongr/models/Exercise.dart';
-import 'package:strongr/services/exercise_service.dart';
+import 'package:strongr/services/ExerciseService.dart';
 import 'package:strongr/utils/date_formater.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
@@ -15,14 +15,14 @@ class ExerciseView extends StatefulWidget {
   final String name;
   final String appExerciseName;
   final bool fromSession;
-  final bool fromSessionAddExercise;
+  final bool fromSessionCreation;
 
   ExerciseView({
     this.id,
     this.name,
     this.appExerciseName,
     this.fromSession = false,
-    this.fromSessionAddExercise = false,
+    this.fromSessionCreation = false,
   });
 
   @override
@@ -233,8 +233,8 @@ class _ExerciseViewState extends State<ExerciseView> {
                 ),
               ],
             ),
-            onPressed: !isEditMode && !widget.fromSessionAddExercise ? () {} : null,
-            onLongPressed: !isEditMode && !widget.fromSessionAddExercise
+            onPressed: !isEditMode && !widget.fromSessionCreation ? () {} : null,
+            onLongPressed: !isEditMode && !widget.fromSessionCreation
                 ? () => setState(() => isEditMode = true)
                 : null,
           ),
@@ -256,7 +256,7 @@ class _ExerciseViewState extends State<ExerciseView> {
               )
             : BackButton(),
         actions: <Widget>[
-          !widget.fromSessionAddExercise
+          !widget.fromSessionCreation
               ? isEditMode
                   ? IconButton(
                       icon: Icon(Icons.check),
@@ -447,7 +447,7 @@ class _ExerciseViewState extends State<ExerciseView> {
           ],
         ),
       ),
-      floatingActionButton: !widget.fromSessionAddExercise
+      floatingActionButton: !widget.fromSessionCreation
           ? FloatingActionButton.extended(
               heroTag: !widget.fromSession
                   ? 'exercise_play_fab_' + widget.id.toString()

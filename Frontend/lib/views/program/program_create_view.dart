@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:strongr/models/ProgramGoal.dart';
 import 'package:strongr/models/SessionPreview.dart';
-import 'package:strongr/services/program_goal_service.dart';
-import 'package:strongr/services/program_service.dart';
+import 'package:strongr/services/ProgramGoalService.dart';
+import 'package:strongr/services/ProgramService.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
@@ -488,7 +488,8 @@ class _ProgramCreateViewState extends State<ProgramCreateView> {
                         id: item.id.toString(),
                         name: item.name,
                         sessionTypeName: item.sessionTypeName,
-                        fromProgram: true,
+                        fromProgram: false,
+                        fromProgramCreation: true,
                       ),
                     );
                   },

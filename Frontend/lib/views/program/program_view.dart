@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:strongr/models/Program.dart';
-import 'package:strongr/services/program_service.dart';
+import 'package:strongr/services/ProgramService.dart';
 import 'package:strongr/utils/date_formater.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';

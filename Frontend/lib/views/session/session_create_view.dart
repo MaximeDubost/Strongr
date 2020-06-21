@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:strongr/models/ExercisePreview.dart';
-import 'package:strongr/services/session_service.dart';
+import 'package:strongr/services/SessionService.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
@@ -389,7 +389,7 @@ class _SessionCreateViewState extends State<SessionCreateView> {
                   id: item.id.toString(),
                   name: item.name.toString(),
                   appExerciseName: item.appExerciseName.toString(),
-                  fromSessionAddExercise: true,
+                  fromSessionCreation: true,
                 ),
               );
             },
