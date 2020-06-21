@@ -7,6 +7,7 @@ import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/utils/time_formater.dart';
 import 'package:strongr/views/app_exercise/app_exercise_view.dart';
+import 'package:strongr/widgets/dialogs/delete_dialog.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
@@ -38,6 +39,67 @@ class _ExerciseViewState extends State<ExerciseView> {
     isEditMode = false;
     futureExercise = ExerciseService.getExercise(id: int.parse(widget.id));
     super.initState();
+  }
+
+  void showDeleteDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => DeleteDialog(
+        height: 400,
+        title: "Supprimer cet exercice ?",
+        content: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            StrongrText(
+              "Cette action est irréversible.",
+              textAlign: TextAlign.start,
+            ),
+            SizedBox(height: 15),
+            Row(
+              children: <Widget>[
+                SizedBox(
+                  width: 40,
+                  child: Icon(
+                    Icons.warning,
+                    color: Colors.orange,
+                  ),
+                ),
+                Flexible(
+                  child: StrongrText(
+                    "Les séance contenant uniquement cet exercice seront supprimées.",
+                    color: Colors.orange,
+                    textAlign: TextAlign.start,
+                    maxLines: 6,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 15),
+            Row(
+              children: <Widget>[
+                SizedBox(
+                  width: 40,
+                  child: Icon(
+                    Icons.warning,
+                    color: Colors.orange,
+                  ),
+                ),
+                Flexible(
+                  child: StrongrText(
+                    "Les programmes n'ayant qu'une seule séance contenant uniquement cet exercices seront supprimés.",
+                    color: Colors.orange,
+                    textAlign: TextAlign.start,
+                    maxLines: 6,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 15),
+          ],
+        ),
+        onPressed: () {},
+      ),
+    );
   }
 
   List<Widget> buildSetList({List setList}) {
@@ -142,7 +204,7 @@ class _ExerciseViewState extends State<ExerciseView> {
                                       : "Aucune répétition",
                                   color: isEditMode ||
                                           item.repetitionCount == null &&
-                                          item.repetitionCount == 0
+                                              item.repetitionCount == 0
                                       ? Colors.grey
                                       : StrongrColors.black,
                                   textAlign: TextAlign.start,
@@ -175,7 +237,7 @@ class _ExerciseViewState extends State<ExerciseView> {
                                       : "Aucun temps de repos",
                                   color: isEditMode ||
                                           item.restTime == null &&
-                                          item.restTime == 0
+                                              item.restTime == 0
                                       ? Colors.grey
                                       : StrongrColors.black,
                                   textAlign: TextAlign.start,
@@ -233,7 +295,8 @@ class _ExerciseViewState extends State<ExerciseView> {
                 ),
               ],
             ),
-            onPressed: !isEditMode && !widget.fromSessionCreation ? () {} : null,
+            onPressed:
+                !isEditMode && !widget.fromSessionCreation ? () {} : null,
             onLongPressed: !isEditMode && !widget.fromSessionCreation
                 ? () => setState(() => isEditMode = true)
                 : null,
@@ -458,11 +521,11 @@ class _ExerciseViewState extends State<ExerciseView> {
                 isEditMode ? Icons.delete_outline : Icons.play_arrow,
                 color: Colors.white,
               ),
-              onPressed: isEditMode ? () {} : () {},
               label: StrongrText(
                 isEditMode ? "Supprimer" : "Démarrer",
                 color: Colors.white,
               ),
+              onPressed: isEditMode ? () => showDeleteDialog() : () {},
             )
           : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,

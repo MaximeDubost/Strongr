@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/router.dart' as router;
 import 'package:strongr/utils/strongr_colors.dart';

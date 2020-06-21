@@ -87,7 +87,10 @@ class SessionService {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + Global.token
         },
-        body: jsonEncode({'name': name, 'exercises': exercises}),
+        body: jsonEncode({
+          'name': name,
+          'exercises': exercises,
+        }),
       );
       return response.statusCode;
     } catch (e) {

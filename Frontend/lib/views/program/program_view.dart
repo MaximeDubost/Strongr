@@ -6,6 +6,7 @@ import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/views/session/session_view.dart';
+import 'package:strongr/widgets/dialogs/delete_dialog.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
@@ -80,6 +81,47 @@ class _ProgramViewState extends State<ProgramView> {
         break;
     }
     return "";
+  }
+
+  void showDeleteDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => DeleteDialog(
+        height: 300,
+        title: "Supprimer ce programme ?",
+        content: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            StrongrText(
+              "Cette action est irréversible.",
+              textAlign: TextAlign.start,
+            ),
+            SizedBox(height: 15),
+            Row(
+              children: <Widget>[
+                SizedBox(
+                  width: 40,
+                  child: Icon(
+                    Icons.check,
+                    color: Colors.grey,
+                  ),
+                ),
+                Flexible(
+                  child: StrongrText(
+                    "Les séances contenues dans ce programme ne seront pas supprimées.",
+                    color: Colors.grey,
+                    textAlign: TextAlign.start,
+                    maxLines: 6,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 15),
+          ],
+        ),
+        onPressed: () {},
+      ),
+    );
   }
 
   List<Widget> buildSessionList({List sessionList}) {
@@ -573,7 +615,7 @@ class _ProgramViewState extends State<ProgramView> {
                 color: Colors.white,
               ),
               onPressed: isEditMode
-                  ? () {}
+                  ? () => showDeleteDialog()
                   : snapshot.data.sessions[DateTime.now().weekday - 1].id !=
                           null
                       ? () {}

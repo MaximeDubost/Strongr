@@ -6,6 +6,7 @@ import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/views/exercise/exercise_view.dart';
+import 'package:strongr/widgets/dialogs/delete_dialog.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
@@ -37,6 +38,67 @@ class _SessionViewState extends State<SessionView> {
     isEditMode = false;
     futureSession = SessionService.getSession(id: int.parse(widget.id));
     super.initState();
+  }
+
+  void showDeleteDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => DeleteDialog(
+        height: 400,
+        title: "Supprimer cette séance ?",
+        content: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            StrongrText(
+              "Cette action est irréversible.",
+              textAlign: TextAlign.start,
+            ),
+            SizedBox(height: 15),
+            Row(
+              children: <Widget>[
+                SizedBox(
+                  width: 40,
+                  child: Icon(
+                    Icons.check,
+                    color: Colors.grey,
+                  ),
+                ),
+                Flexible(
+                  child: StrongrText(
+                    "Les exercices contenus dans cette séance ne seront pas supprimés.",
+                    color: Colors.grey,
+                    textAlign: TextAlign.start,
+                    maxLines: 6,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 15),
+            Row(
+              children: <Widget>[
+                SizedBox(
+                  width: 40,
+                  child: Icon(
+                    Icons.warning,
+                    color: Colors.orange,
+                  ),
+                ),
+                Flexible(
+                  child: StrongrText(
+                    "Les programmes contenant uniquement cet séance seront supprimés.",
+                    color: Colors.orange,
+                    textAlign: TextAlign.start,
+                    maxLines: 6,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 15),
+          ],
+        ),
+        onPressed: () {},
+      ),
+    );
   }
 
   List<Widget> buildExerciseList({List exerciseList}) {
@@ -477,7 +539,7 @@ class _SessionViewState extends State<SessionView> {
                 isEditMode ? Icons.delete_outline : Icons.play_arrow,
                 color: Colors.white,
               ),
-              onPressed: isEditMode ? () {} : () {},
+              onPressed: isEditMode ? () => showDeleteDialog() : () {},
               label: StrongrText(
                 isEditMode ? "Supprimer" : "Démarrer",
                 color: Colors.white,
