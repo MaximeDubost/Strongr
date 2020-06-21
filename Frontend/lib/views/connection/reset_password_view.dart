@@ -3,15 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:strongr/services/UserService.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
+import 'package:strongr/views/connection/recovery_code_view.dart';
 import 'package:strongr/widgets/strongr_raised_button.dart';
 import 'package:strongr/widgets/strongr_rounded_textformfield.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
 class ResetPasswordView extends StatefulWidget {
-  final String email;
-
-  ResetPasswordView({this.email});
-
   @override
   _ResetPasswordViewState createState() => _ResetPasswordViewState();
 }
@@ -75,7 +72,7 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
         Navigator.pushNamed(
           context,
           RECOVERY_CODE_ROUTE,
-          arguments: ResetPasswordView(
+          arguments: RecoveryCodeView(
             email: email,
           ),
         );

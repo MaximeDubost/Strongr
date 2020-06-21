@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/router.dart' as router;
 import 'package:strongr/utils/strongr_colors.dart';
@@ -20,6 +21,14 @@ class MyApp extends StatelessWidget {
       ),
       onGenerateRoute: router.generateRoute,
       initialRoute: HOMEPAGE_ROUTE
+      // initialRoute: LOG_IN_ROUTE,
+      // localizationsDelegates: [
+      //   GlobalMaterialLocalizations.delegate,
+      //   GlobalWidgetsLocalizations.delegate,
+      // ],
+      // supportedLocales: [
+      //   const Locale('fr', 'FR'),
+      // ],
     );
   }
 }

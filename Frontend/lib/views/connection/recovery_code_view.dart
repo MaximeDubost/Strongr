@@ -4,6 +4,7 @@ import 'package:strongr/services/UserService.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
+import 'package:strongr/views/connection/new_password_view.dart';
 import 'package:strongr/widgets/strongr_raised_button.dart';
 import 'package:strongr/widgets/strongr_rounded_textformfield.dart';
 import 'package:strongr/widgets/strongr_text.dart';
@@ -142,7 +143,7 @@ class _RecoveryCodeViewState extends State<RecoveryCodeView> {
         Navigator.pushNamed(
           context,
           NEW_PASSWORD_ROUTE,
-          arguments: RecoveryCodeView(
+          arguments: NewPasswordView(
             email: widget.email,
           ),
         );

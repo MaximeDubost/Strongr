@@ -291,7 +291,7 @@ class _SignInNextViewState extends State<SignInNextView> {
                                         textColor: birthdate != null
                                             ? StrongrColors.black
                                             : null,
-                                        onPressed: () {
+                                        onPressed: () async {
                                           FocusScope.of(context).unfocus();
                                           showDatePicker(
                                             context: context,
@@ -302,7 +302,7 @@ class _SignInNextViewState extends State<SignInNextView> {
                                             firstDate: DateTime.now().subtract(
                                                 Duration(days: 36500)),
                                             lastDate: DateTime.now(),
-                                            locale: Locale('fr'),
+                                            // locale: Locale('fr'),
                                           ).then((date) {
                                             if (date != null) {
                                               setState(() {

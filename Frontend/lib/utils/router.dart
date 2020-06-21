@@ -22,7 +22,6 @@ import 'package:strongr/views/session/session_new_exercise_view.dart';
 import 'package:strongr/views/session/session_view.dart';
 import 'package:strongr/views/session/sessions_view.dart';
 import 'package:strongr/views/unknown_view.dart';
-
 import 'routing_constants.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
@@ -31,14 +30,13 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     ///
     /// Connexion
     ///
-
     case SIGN_IN_ROUTE:
       return CupertinoPageRoute(
         builder: (context) => SignInView(),
       );
 
     case SIGN_IN_NEXT_ROUTE:
-      SignInView args = settings.arguments;
+      SignInNextView args = settings.arguments;
       return CupertinoPageRoute(
         builder: (context) => SignInNextView(
           email: args.email,
@@ -57,28 +55,31 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       );
 
     case RECOVERY_CODE_ROUTE:
-      ResetPasswordView args = settings.arguments;
+      RecoveryCodeView args = settings.arguments;
       return CupertinoPageRoute(
-        builder: (context) => RecoveryCodeView(email: args.email),
+        builder: (context) => RecoveryCodeView(
+          email: args.email,
+        ),
       );
 
     case NEW_PASSWORD_ROUTE:
-      RecoveryCodeView args = settings.arguments;
+      NewPasswordView args = settings.arguments;
       return CupertinoPageRoute(
-        builder: (context) => NewPasswordView(email: args.email),
+        builder: (context) => NewPasswordView(
+          email: args.email,
+        ),
       );
 
     ///
     /// Accueil
     ///
-
     case HOMEPAGE_ROUTE:
       return CupertinoPageRoute(
         builder: (context) => HomepageView(),
       );
 
     ///
-    /// Exercice Application
+    /// AppExercise
     ///
     case APP_EXERCISE_ROUTE:
       AppExerciseView args = settings.arguments;
@@ -92,7 +93,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       );
 
     ///
-    /// Exercice(s)
+    /// Exercise
     ///
     case EXERCISES_ROUTE:
       return CupertinoPageRoute(
@@ -126,7 +127,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       );
 
     ///
-    /// Séance(s)
+    /// Session
     ///
     case SESSIONS_ROUTE:
       return CupertinoPageRoute(
@@ -156,7 +157,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       );
 
     ///
-    /// Programme(s)
+    /// Program
     ///
     case PROGRAMS_ROUTE:
       return CupertinoPageRoute(
@@ -184,7 +185,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       );
 
     ///
-    /// Page non trouvée
+    /// UnknownView
     ///
     default:
       return NoAnimationMaterialPageRoute(

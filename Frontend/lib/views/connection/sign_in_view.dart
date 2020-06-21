@@ -3,16 +3,14 @@ import 'package:strongr/services/UserService.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
+import 'package:strongr/views/connection/sign_in_next_view.dart';
 import 'package:strongr/widgets/strongr_raised_button.dart';
 import 'package:strongr/widgets/strongr_rounded_textformfield.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 
 class SignInView extends StatefulWidget {
-  final String email;
-  final String password;
 
-  SignInView({this.email, this.password});
 
   @override
   _SignInViewState createState() => _SignInViewState();
@@ -130,7 +128,7 @@ class _SignInViewState extends State<SignInView> {
         Navigator.pushNamed(
           context,
           SIGN_IN_NEXT_ROUTE,
-          arguments: SignInView(
+          arguments: SignInNextView(
             email: email,
             password: password,
           ),
