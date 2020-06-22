@@ -9,14 +9,17 @@
 --
 
 -- Muscle --
-CREATE TABLE _muscle(
+CREATE TABLE _muscle
+(
    id_muscle SERIAL,
    name VARCHAR(255) NOT NULL,
    PRIMARY KEY(id_muscle)
+
 );
 
 -- Equipment --
-CREATE TABLE _equipment(
+CREATE TABLE _equipment
+(
    id_equipment SERIAL,
    name VARCHAR(255) NOT NULL,
    description TEXT,
@@ -25,7 +28,8 @@ CREATE TABLE _equipment(
 );
 
 -- User --
-CREATE TABLE _user(
+CREATE TABLE _user
+(
    id_user SERIAL,
    email VARCHAR(255) NOT NULL UNIQUE,
    password VARCHAR(255) NOT NULL,
@@ -41,7 +45,8 @@ CREATE TABLE _user(
 );
 
 -- AppExercise --
-CREATE TABLE _app_exercise(
+CREATE TABLE _app_exercise
+(
    id_app_exercise SERIAL,
    name VARCHAR(255) NOT NULL,
    description TEXT,
@@ -50,7 +55,8 @@ CREATE TABLE _app_exercise(
 );
 
 -- SessionType --
-CREATE TABLE _session_type(
+CREATE TABLE _session_type
+(
    id_session_type SERIAL,
    name VARCHAR(255) NOT NULL,
    description TEXT,
@@ -58,7 +64,8 @@ CREATE TABLE _session_type(
 );
 
 -- ProgramGoal --
-CREATE TABLE _program_goal(
+CREATE TABLE _program_goal
+(
    id_program_goal SERIAL,
    name VARCHAR(255) NOT NULL,
    description TEXT,
@@ -66,7 +73,8 @@ CREATE TABLE _program_goal(
 );
 
 -- Exercise --
-CREATE TABLE _exercise(
+CREATE TABLE _exercise
+(
    id_exercise SERIAL,
    id_app_exercise INT NOT NULL,
    id_user INT NOT NULL,
@@ -76,12 +84,13 @@ CREATE TABLE _exercise(
    last_update TIMESTAMP,
    PRIMARY KEY(id_app_exercise, id_user, id_exercise),
    FOREIGN KEY(id_app_exercise) REFERENCES _app_exercise(id_app_exercise),
-   FOREIGN KEY(id_user) REFERENCES _user(id_user),
+   FOREIGN KEY(id_user) REFERENCES _user(id_user) ON DELETE CASCADE,
    FOREIGN KEY(id_equipment) REFERENCES _equipment(id_equipment)
 );
 
 -- Session --
-CREATE TABLE _session(
+CREATE TABLE _session
+(
    id_session SERIAL,
    id_user INT NOT NULL,
    id_session_type INT NOT NULL,
@@ -89,12 +98,13 @@ CREATE TABLE _session(
    creation_date TIMESTAMP,
    last_update TIMESTAMP,
    PRIMARY KEY(id_user, id_session),
-   FOREIGN KEY(id_user) REFERENCES _user(id_user),
+   FOREIGN KEY(id_user) REFERENCES _user(id_user) ON DELETE CASCADE,
    FOREIGN KEY(id_session_type) REFERENCES _session_type(id_session_type)
 );
 
 -- Program --
-CREATE TABLE _program(
+CREATE TABLE _program
+(
    id_program SERIAL,
    id_user INT NOT NULL,
    id_program_goal INT NOT NULL,
@@ -102,12 +112,13 @@ CREATE TABLE _program(
    creation_date TIMESTAMP,
    last_update TIMESTAMP,
    PRIMARY KEY(id_user, id_program),
-   FOREIGN KEY(id_user) REFERENCES _user(id_user),
+   FOREIGN KEY(id_user) REFERENCES _user(id_user) ON DELETE CASCADE,
    FOREIGN KEY(id_program_goal) REFERENCES _program_goal(id_program_goal)
 );
 
 -- Set --
-CREATE TABLE _set(
+CREATE TABLE _set
+(
    id_set SERIAL,
    id_user INT NOT NULL,
    id_exercise INT NOT NULL,
@@ -118,7 +129,7 @@ CREATE TABLE _set(
    expected_performance INT,
    realized_performance INT,
    PRIMARY KEY(id_app_exercise, id_user, id_exercise, id_set),
-   FOREIGN KEY(id_app_exercise, id_user, id_exercise) REFERENCES _exercise(id_app_exercise, id_user, id_exercise)
+   FOREIGN KEY(id_app_exercise, id_user, id_exercise) REFERENCES _exercise(id_app_exercise, id_user, id_exercise) ON DELETE CASCADE
 );
 
 -- 
@@ -126,19 +137,21 @@ CREATE TABLE _set(
 --
 
 -- Program <> Session --
-CREATE TABLE _program_session(
+CREATE TABLE _program_session
+(
    id_user INT,
    id_user_1 INT,
    id_program INT,
    id_session INT,
    place INT NOT NULL,
    PRIMARY KEY(id_user, id_user_1, id_program,  id_session),
-   FOREIGN KEY(id_user, id_program) REFERENCES _program(id_user, id_program),
-   FOREIGN KEY(id_user_1, id_session) REFERENCES _session(id_user, id_session)
+   FOREIGN KEY(id_user, id_program) REFERENCES _program(id_user, id_program) ON DELETE CASCADE,
+   FOREIGN KEY(id_user_1, id_session) REFERENCES _session(id_user, id_session) ON DELETE CASCADE
 );
 
 -- Session <> Exercise --
-CREATE TABLE _session_exercise(
+CREATE TABLE _session_exercise
+(
    id_user INT,
    id_user_1 INT,
    id_session INT,
@@ -146,12 +159,13 @@ CREATE TABLE _session_exercise(
    id_app_exercise INT,
    place INT NOT NULL,
    PRIMARY KEY(id_user, id_user_1, id_session, id_exercise, id_app_exercise),
-   FOREIGN KEY(id_app_exercise, id_user, id_exercise) REFERENCES _exercise(id_app_exercise, id_user, id_exercise),
-   FOREIGN KEY(id_user_1, id_session) REFERENCES _session(id_user, id_session)
+   FOREIGN KEY(id_app_exercise, id_user, id_exercise) REFERENCES _exercise(id_app_exercise, id_user, id_exercise) ON DELETE CASCADE,
+   FOREIGN KEY(id_user_1, id_session) REFERENCES _session(id_user, id_session) ON DELETE CASCADE
 );
 
 -- AppExercise <> Muscle --
-CREATE TABLE _app_exercise_muscle(
+CREATE TABLE _app_exercise_muscle
+(
    id_app_exercise INT,
    id_muscle INT,
    PRIMARY KEY(id_muscle, id_app_exercise),
@@ -160,10 +174,12 @@ CREATE TABLE _app_exercise_muscle(
 );
 
 -- AppExercise <> Equipment --
-CREATE TABLE _app_exercise_equipment(
+CREATE TABLE _app_exercise_equipment
+(
    id_app_exercise INT,
    id_equipment INT,
    PRIMARY KEY(id_equipment, id_app_exercise),
    FOREIGN KEY(id_equipment) REFERENCES _equipment(id_equipment),
    FOREIGN KEY(id_app_exercise) REFERENCES _app_exercise(id_app_exercise)
 );
+
