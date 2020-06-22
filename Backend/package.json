@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node ./bin/www",
     "server": "babel-node ./src/bin/www",
-    "server:prod": "node ./dist/bin/www",
+    "server:prod": "babel-node ./dist/bin/www",
     "dev": "npm-run-all server",
     "clean": "rimraf dist",
     "build": "babel ./src -d dist --source-maps",
