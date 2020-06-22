@@ -158,16 +158,41 @@ class _HomepageState extends State<Homepage> {
                                 "Aucun exercice à afficher",
                                 color: Colors.grey,
                               ),
-                              // FloatingActionButton.extended(
-                              //   heroTag: "exercise_create_fab",
-                              //   icon: Icon(Icons.add),
-                              //   label: StrongrText(
-                              //     "Créer",
-                              //     color: Colors.white,
-                              //   ),
-                              //   onPressed: () => Navigator.pushNamed(
-                              //       context, EXERCISE_ADD_ROUTE),
-                              // ),
+                              FloatingActionButton.extended(
+                                heroTag: "exercise_create_fab",
+                                icon: Icon(Icons.add),
+                                label: StrongrText(
+                                  "Créer",
+                                  color: Colors.white,
+                                ),
+                                onPressed: () => Navigator.pushNamed(
+                                  context,
+                                  EXERCISE_ADD_ROUTE,
+                                ).then(
+                                  (exerciseCreated) {
+                                    if (exerciseCreated) {
+                                      refreshExercises();
+                                      globalKey.currentState
+                                          .hideCurrentSnackBar();
+                                      globalKey.currentState.showSnackBar(
+                                        SnackBar(
+                                          content: StrongrSnackBarContent(
+                                            message:
+                                                "Exercice créé avec succès",
+                                          ),
+                                          backgroundColor: StrongrColors.blue80,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(15),
+                                              topRight: Radius.circular(15),
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                ),
+                              ),
                             ],
                           ),
                         );
@@ -440,7 +465,6 @@ class _HomepageState extends State<Homepage> {
                               ),
                           ],
                         );
-
                       // return Center(child: StrongrText(snapshot.data.toString()),);
                     } else if (snapshot.hasError &&
                         snapshot.connectionState == ConnectionState.done) {
@@ -503,16 +527,40 @@ class _HomepageState extends State<Homepage> {
                                 "Aucune séance à afficher",
                                 color: Colors.grey,
                               ),
-                              // FloatingActionButton.extended(
-                              //   heroTag: "session_create_fab",
-                              //   icon: Icon(Icons.add),
-                              //   label: StrongrText(
-                              //     "Créer",
-                              //     color: Colors.white,
-                              //   ),
-                              //   onPressed: () => Navigator.pushNamed(
-                              //       context, SESSION_CREATE_ROUTE),
-                              // ),
+                              FloatingActionButton.extended(
+                                heroTag: "session_create_fab",
+                                icon: Icon(Icons.add),
+                                label: StrongrText(
+                                  "Créer",
+                                  color: Colors.white,
+                                ),
+                                onPressed: () => Navigator.pushNamed(
+                                  context,
+                                  SESSION_CREATE_ROUTE,
+                                ).then(
+                                  (sessionCreated) {
+                                    if (sessionCreated) {
+                                      refreshSessions();
+                                      globalKey.currentState
+                                          .hideCurrentSnackBar();
+                                      globalKey.currentState.showSnackBar(
+                                        SnackBar(
+                                          content: StrongrSnackBarContent(
+                                            message: "Séance créée avec succès",
+                                          ),
+                                          backgroundColor: StrongrColors.blue80,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(15),
+                                              topRight: Radius.circular(15),
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                ),
+                              ),
                             ],
                           ),
                         );
@@ -845,16 +893,41 @@ class _HomepageState extends State<Homepage> {
                                 "Aucun programme à afficher",
                                 color: Colors.grey,
                               ),
-                              // FloatingActionButton.extended(
-                              //   heroTag: "program_create_fab",
-                              //   icon: Icon(Icons.add),
-                              //   label: StrongrText(
-                              //     "Créer",
-                              //     color: Colors.white,
-                              //   ),
-                              //   onPressed: () => Navigator.pushNamed(
-                              //       context, PROGRAM_CREATE_ROUTE),
-                              // ),
+                              FloatingActionButton.extended(
+                                heroTag: "program_create_fab",
+                                icon: Icon(Icons.add),
+                                label: StrongrText(
+                                  "Créer",
+                                  color: Colors.white,
+                                ),
+                                onPressed: () => Navigator.pushNamed(
+                                  context,
+                                  PROGRAM_CREATE_ROUTE,
+                                ).then(
+                                  (programCreated) {
+                                    if (programCreated) {
+                                      refreshPrograms();
+                                      globalKey.currentState
+                                          .hideCurrentSnackBar();
+                                      globalKey.currentState.showSnackBar(
+                                        SnackBar(
+                                          content: StrongrSnackBarContent(
+                                            message:
+                                                "Programme créé avec succès",
+                                          ),
+                                          backgroundColor: StrongrColors.blue80,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(15),
+                                              topRight: Radius.circular(15),
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                ),
+                              ),
                             ],
                           ),
                         );
