@@ -6,9 +6,11 @@ import 'package:strongr/utils/app_exercises_filters.dart';
 import 'package:strongr/utils/diacritics.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
+import 'package:strongr/utils/string_constants.dart';
 import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/widgets/dialogs/filters_dialog.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
+import 'package:strongr/widgets/strongr_snackbar_content.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
 import 'exercise_view.dart';
@@ -30,7 +32,7 @@ class _ExercisesViewState extends State<ExercisesView> {
   final globalKey = GlobalKey<ScaffoldState>();
   TextEditingController searchbarController;
   Future<List<ExercisePreview>> futureExercises;
-  bool sortedByRecent, needToRefresh;
+  bool sortedByRecent, exerciseChanges;
   // List<String> popupMenuItems;
 
   @override
@@ -38,7 +40,7 @@ class _ExercisesViewState extends State<ExercisesView> {
     searchbarController = TextEditingController(text: "");
     futureExercises = ExerciseService.getExercises();
     sortedByRecent = true;
-    needToRefresh = false;
+    exerciseChanges = false;
     // popupMenuItems = ["Filtres", "Créer"];
     super.initState();
   }
@@ -226,11 +228,12 @@ class _ExercisesViewState extends State<ExercisesView> {
                               child: RawMaterialButton(
                                 shape: CircleBorder(),
                                 onPressed: () {
+                                  globalKey.currentState.hideCurrentSnackBar();
                                   Navigator.pushNamed(
                                     context,
                                     EXERCISE_ROUTE,
                                     arguments: ExerciseView(
-                                      id: item.id.toString(),
+                                      id: item.id,
                                       name: item.name,
                                       appExerciseName: item.appExerciseName,
                                       fromSessionCreation: true,
@@ -247,15 +250,50 @@ class _ExercisesViewState extends State<ExercisesView> {
                   ],
                 ),
                 onPressed: () {
+                  globalKey.currentState.hideCurrentSnackBar();
                   !widget.fromSessionCreation
                       ? Navigator.pushNamed(
                           context,
                           EXERCISE_ROUTE,
                           arguments: ExerciseView(
-                            id: item.id.toString(),
+                            id: item.id,
                             name: item.name,
                             appExerciseName: item.appExerciseName,
                           ),
+                        ).then(
+                          (value) {
+                            Map<String, bool> action;
+                            if (value != null)
+                              action = value;
+                            else
+                              action = {
+                                CREATE: false,
+                                UPDATE: false,
+                                DELETE: false,
+                              };
+                            if (action[CREATE] ||
+                                action[UPDATE] ||
+                                action[DELETE]) {
+                              refreshExercises();
+                              if (action[DELETE]) {
+                                globalKey.currentState.hideCurrentSnackBar();
+                                globalKey.currentState.showSnackBar(
+                                  SnackBar(
+                                    content: StrongrSnackBarContent(
+                                      message: "Exercice supprimé avec succès",
+                                    ),
+                                    backgroundColor: StrongrColors.blue80,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(15),
+                                        topRight: Radius.circular(15),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }
+                            }
+                          },
                         )
                       : Navigator.pop(
                           context,
@@ -278,7 +316,7 @@ class _ExercisesViewState extends State<ExercisesView> {
   void refreshExercises() async {
     setState(() {
       futureExercises = ExerciseService.getExercises();
-      needToRefresh = true;
+      exerciseChanges = true;
     });
   }
 
@@ -293,7 +331,7 @@ class _ExercisesViewState extends State<ExercisesView> {
             ? AppBar(
                 centerTitle: true,
                 leading: BackButton(
-                  onPressed: () => Navigator.pop(context, needToRefresh),
+                  onPressed: () => Navigator.pop(context, exerciseChanges),
                 ),
                 title: Text("Vos exerices"),
                 actions: <Widget>[
@@ -329,35 +367,19 @@ class _ExercisesViewState extends State<ExercisesView> {
                   IconButton(
                     icon: Icon(Icons.add),
                     onPressed: () async {
+                      globalKey.currentState.hideCurrentSnackBar();
                       await Navigator.pushNamed(
                         context,
                         EXERCISE_ADD_ROUTE,
                       ).then(
-                        (exerciseCreated) {
-                          if (exerciseCreated) {
+                        (exerciseChanges) {
+                          if (exerciseChanges) {
                             refreshExercises();
+                            globalKey.currentState.hideCurrentSnackBar();
                             globalKey.currentState.showSnackBar(
                               SnackBar(
-                                content: Container(
-                                  height: 35,
-                                  child: Stack(
-                                    children: <Widget>[
-                                      Container(
-                                        alignment: Alignment.centerLeft,
-                                        child: Icon(
-                                          Icons.check,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                      Container(
-                                        alignment: Alignment.center,
-                                        child: StrongrText(
-                                          "Exercice créé avec succès",
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                content: StrongrSnackBarContent(
+                                  message: "Exercice créé avec succès",
                                 ),
                                 backgroundColor: StrongrColors.blue80,
                                 shape: RoundedRectangleBorder(

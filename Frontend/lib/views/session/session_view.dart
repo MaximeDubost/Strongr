@@ -4,13 +4,16 @@ import 'package:strongr/services/SessionService.dart';
 import 'package:strongr/utils/date_formater.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
+import 'package:strongr/utils/string_constants.dart';
 import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/views/exercise/exercise_view.dart';
+import 'package:strongr/widgets/dialogs/delete_dialog.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
+import 'package:strongr/widgets/strongr_snackbar_content.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
 class SessionView extends StatefulWidget {
-  final String id;
+  final int id;
   final String name;
   final String sessionTypeName;
   final bool fromProgram;
@@ -29,14 +32,106 @@ class SessionView extends StatefulWidget {
 }
 
 class _SessionViewState extends State<SessionView> {
-  bool isEditMode;
+  final globalKey = GlobalKey<ScaffoldState>();
+  bool isEditMode, editButtonsEnabled;
   Future<Session> futureSession;
 
   @override
   void initState() {
     isEditMode = false;
-    futureSession = SessionService.getSession(id: int.parse(widget.id));
+    editButtonsEnabled = true;
+    futureSession = SessionService.getSession(id: widget.id);
     super.initState();
+  }
+
+  void showDeleteDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => DeleteDialog(
+        height: 400,
+        title: "Supprimer cette séance ?",
+        content: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            StrongrText(
+              "Cette action est irréversible.",
+              textAlign: TextAlign.start,
+            ),
+            SizedBox(height: 15),
+            Row(
+              children: <Widget>[
+                SizedBox(
+                  width: 40,
+                  child: Icon(
+                    Icons.check,
+                    color: Colors.grey,
+                  ),
+                ),
+                Flexible(
+                  child: StrongrText(
+                    "Les exercices contenus dans cette séance ne seront pas supprimés.",
+                    color: Colors.grey,
+                    textAlign: TextAlign.start,
+                    maxLines: 6,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 15),
+            Row(
+              children: <Widget>[
+                SizedBox(
+                  width: 40,
+                  child: Icon(
+                    Icons.warning,
+                    color: Colors.orange,
+                  ),
+                ),
+                Flexible(
+                  child: StrongrText(
+                    "Les programmes contenant uniquement cet séance seront supprimés.",
+                    color: Colors.orange,
+                    textAlign: TextAlign.start,
+                    maxLines: 6,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 15),
+          ],
+        ),
+        onPressed: () => Navigator.pop(context, true),
+      ),
+    ).then(
+      (delete) async {
+        if (delete) {
+          setState(() => editButtonsEnabled = false);
+          int statusCode = await SessionService.deleteSession(id: widget.id);
+          if (statusCode == 200)
+            Navigator.pop(context, {
+              CREATE: false,
+              UPDATE: false,
+              DELETE: true,
+            });
+          else {
+            globalKey.currentState.hideCurrentSnackBar();
+            globalKey.currentState.showSnackBar(
+              SnackBar(
+                content: StrongrSnackBarContent(
+                  icon: Icons.close,
+                  message: "Échec lors de la suppression de la séance",
+                ),
+                backgroundColor: Colors.red.withOpacity(0.8),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(15)),
+                ),
+              ),
+            );
+            setState(() => editButtonsEnabled = true);
+          }
+        }
+      },
+    );
   }
 
   List<Widget> buildExerciseList({List exerciseList}) {
@@ -65,12 +160,15 @@ class _SessionViewState extends State<SessionView> {
                         height: 30,
                         // color: Colors.blue,
                         child: RawMaterialButton(
-                          onPressed: isEditMode ? () {} : null,
+                          onPressed:
+                              editButtonsEnabled && isEditMode ? () {} : null,
                           child: Icon(
                             Icons.keyboard_arrow_up,
-                            color: isEditMode
-                                ? StrongrColors.black
-                                : Colors.transparent,
+                            color: !editButtonsEnabled
+                                ? Colors.grey
+                                : isEditMode
+                                    ? StrongrColors.black
+                                    : Colors.transparent,
                           ),
                           shape: CircleBorder(),
                         ),
@@ -92,12 +190,15 @@ class _SessionViewState extends State<SessionView> {
                         height: 30,
                         // color: Colors.blue,
                         child: RawMaterialButton(
-                          onPressed: isEditMode ? () {} : null,
+                          onPressed:
+                              editButtonsEnabled && isEditMode ? () {} : null,
                           child: Icon(
                             Icons.keyboard_arrow_down,
-                            color: isEditMode
-                                ? StrongrColors.black
-                                : Colors.transparent,
+                            color: !editButtonsEnabled
+                                ? Colors.grey
+                                : isEditMode
+                                    ? StrongrColors.black
+                                    : Colors.transparent,
                           ),
                           shape: CircleBorder(),
                         ),
@@ -216,41 +317,41 @@ class _SessionViewState extends State<SessionView> {
                               elevation: 0,
                               heroTag:
                                   "fs_exercise_play_fab_" + item.id.toString(),
-                              tooltip: !isEditMode ? "Démarrer" : "Supprimer",
-                              backgroundColor: !isEditMode
+                              tooltip: "Démarrer",
+                              backgroundColor: editButtonsEnabled
                                   ? StrongrColors.blue
-                                  : Colors.red[800],
+                                  : Colors.grey,
                               child: Icon(
-                                !isEditMode
-                                    ? Icons.play_arrow
-                                    : Icons.delete_outline,
+                                Icons.play_arrow,
                                 color: Colors.white,
                               ),
-                              onPressed: () {},
+                              onPressed: editButtonsEnabled ? () {} : null,
                             ),
                           )
                         : Container(
                             width: 35,
                             height: 35,
                             child: RawMaterialButton(
+                              shape: CircleBorder(),
                               child: Icon(
                                 Icons.close,
-                                color: Colors.red[800],
+                                color: editButtonsEnabled
+                                    ? Colors.red[800]
+                                    : Colors.grey,
                               ),
-                              shape: CircleBorder(),
-                              onPressed: () {},
+                              onPressed: editButtonsEnabled ? () {} : null,
                             ),
                           )
                     : SizedBox(),
               ],
             ),
-            onPressed: !isEditMode
+            onPressed: editButtonsEnabled && !isEditMode
                 ? () {
                     Navigator.pushNamed(
                       context,
                       EXERCISE_ROUTE,
                       arguments: ExerciseView(
-                        id: item.id.toString(),
+                        id: item.id,
                         name: item.name.toString(),
                         appExerciseName: item.appExerciseName,
                         fromSession: true,
@@ -260,9 +361,10 @@ class _SessionViewState extends State<SessionView> {
                     );
                   }
                 : null,
-            onLongPressed: !isEditMode && !widget.fromProgramCreation
-                ? () => setState(() => isEditMode = true)
-                : null,
+            onLongPressed:
+                editButtonsEnabled && !isEditMode && !widget.fromProgramCreation
+                    ? () => setState(() => isEditMode = true)
+                    : null,
           ),
         ),
       );
@@ -272,6 +374,7 @@ class _SessionViewState extends State<SessionView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: globalKey,
       appBar: AppBar(
         centerTitle: true,
         title: Text(widget.name),
@@ -285,12 +388,20 @@ class _SessionViewState extends State<SessionView> {
           !widget.fromProgramCreation
               ? isEditMode
                   ? IconButton(
-                      icon: Icon(Icons.check),
+                      icon: Icon(
+                        Icons.check,
+                        color: !editButtonsEnabled ? Colors.grey : Colors.white,
+                      ),
                       onPressed: () {},
                     )
                   : IconButton(
-                      icon: Icon(Icons.edit),
-                      onPressed: () => setState(() => isEditMode = true),
+                      icon: Icon(
+                        Icons.edit,
+                        color: !editButtonsEnabled ? Colors.grey : Colors.white,
+                      ),
+                      onPressed: editButtonsEnabled
+                          ? () => setState(() => isEditMode = true)
+                          : null,
                     )
               : SizedBox(),
         ],
@@ -306,7 +417,7 @@ class _SessionViewState extends State<SessionView> {
                   return Container(
                     // color: Colors.red,
                     child: InkWell(
-                      onTap: isEditMode ? null : () {},
+                      onTap: !editButtonsEnabled || isEditMode ? null : () {},
                       child: Stack(
                         children: <Widget>[
                           Container(
@@ -328,7 +439,12 @@ class _SessionViewState extends State<SessionView> {
                             child: Opacity(
                               opacity: isEditMode ? 0 : 1,
                               child: Container(
-                                child: Icon(Icons.info_outline),
+                                child: Icon(
+                                  Icons.info_outline,
+                                  color: editButtonsEnabled
+                                      ? StrongrColors.black
+                                      : Colors.grey,
+                                ),
                               ),
                             ),
                           ),
@@ -449,7 +565,8 @@ class _SessionViewState extends State<SessionView> {
                 child: Center(
                   child: FloatingActionButton.extended(
                     heroTag: "add_fab",
-                    backgroundColor: StrongrColors.black,
+                    backgroundColor:
+                        !editButtonsEnabled ? Colors.grey : StrongrColors.black,
                     label: StrongrText(
                       "Nouvel exercice",
                       color: Colors.white,
@@ -458,7 +575,7 @@ class _SessionViewState extends State<SessionView> {
                       Icons.add,
                       color: Colors.white,
                     ),
-                    onPressed: () {},
+                    onPressed: editButtonsEnabled ? () {} : null,
                   ),
                 ),
               ),
@@ -471,17 +588,20 @@ class _SessionViewState extends State<SessionView> {
               heroTag: !widget.fromProgram
                   ? 'session_play_fab_' + widget.id.toString()
                   : 'fp_session_play_fab_' + widget.id.toString(),
-              backgroundColor:
-                  isEditMode ? Colors.red[800] : StrongrColors.blue,
+              backgroundColor: !editButtonsEnabled
+                  ? Colors.grey
+                  : isEditMode ? Colors.red[800] : StrongrColors.blue,
               icon: Icon(
                 isEditMode ? Icons.delete_outline : Icons.play_arrow,
                 color: Colors.white,
               ),
-              onPressed: isEditMode ? () {} : () {},
               label: StrongrText(
                 isEditMode ? "Supprimer" : "Démarrer",
                 color: Colors.white,
               ),
+              onPressed: editButtonsEnabled
+                  ? isEditMode ? () => showDeleteDialog() : () {}
+                  : null,
             )
           : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,

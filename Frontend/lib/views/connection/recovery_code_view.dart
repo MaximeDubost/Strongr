@@ -7,6 +7,7 @@ import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/views/connection/new_password_view.dart';
 import 'package:strongr/widgets/strongr_raised_button.dart';
 import 'package:strongr/widgets/strongr_rounded_textformfield.dart';
+import 'package:strongr/widgets/strongr_snackbar_content.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
 class RecoveryCodeView extends StatefulWidget {
@@ -69,7 +70,8 @@ class _RecoveryCodeViewState extends State<RecoveryCodeView> {
       _isLoading = true;
     });
 
-    dynamic result = await UserService.postSendCode(email: widget.email.toLowerCase());
+    dynamic result =
+        await UserService.postSendCode(email: widget.email.toLowerCase());
     if (result == 200) {
       setState(() {
         _validate = false;
@@ -80,11 +82,9 @@ class _RecoveryCodeViewState extends State<RecoveryCodeView> {
       _scaffoldKey.currentState.showSnackBar(
         SnackBar(
           duration: Duration(seconds: 1),
-          backgroundColor: StrongrColors.blue,
-          content: StrongrText(
-            "Code renvoyé",
-            size: 18,
-            color: Colors.white,
+          backgroundColor: StrongrColors.blue80,
+          content: StrongrSnackBarContent(
+            message: "Code renvoyé",
           ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
@@ -99,10 +99,8 @@ class _RecoveryCodeViewState extends State<RecoveryCodeView> {
         SnackBar(
           duration: Duration(seconds: 3),
           backgroundColor: Colors.red,
-          content: StrongrText(
-            "Le code n'a pas pu être renvoyé",
-            size: 18,
-            color: Colors.white,
+          content: StrongrSnackBarContent(
+            message: "Le code n'a pas pu être renvoyé",
           ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
@@ -127,7 +125,8 @@ class _RecoveryCodeViewState extends State<RecoveryCodeView> {
         _isLoading = true;
       });
 
-      dynamic result = await UserService.postCheckCode(email: widget.email.toLowerCase(), code: code);
+      dynamic result = await UserService.postCheckCode(
+          email: widget.email.toLowerCase(), code: code);
 
       setState(() {
         code = _codeController.text = "";
@@ -147,7 +146,6 @@ class _RecoveryCodeViewState extends State<RecoveryCodeView> {
             email: widget.email,
           ),
         );
-        
       } else if (result == 401 || result == 404) {
         setState(() {
           warning = "Le code saisi est incorrect.";

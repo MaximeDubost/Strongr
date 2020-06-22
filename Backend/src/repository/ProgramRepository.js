@@ -107,5 +107,15 @@ repository.addProgram = async (req) => {
     }
 }
 
+repository.deleteProgram = async (req) => {
+    let sqlAddProgram = "DELETE FROM _program WHERE id_program = $1 AND id_user = $2"
+    try {
+        await clt.query(sqlAddProgram, [req.params.id_program, req.user.id])
+        return 200
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 
 export default repository;

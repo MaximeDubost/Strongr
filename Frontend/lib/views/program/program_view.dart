@@ -4,13 +4,16 @@ import 'package:strongr/services/ProgramService.dart';
 import 'package:strongr/utils/date_formater.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
+import 'package:strongr/utils/string_constants.dart';
 import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/views/session/session_view.dart';
+import 'package:strongr/widgets/dialogs/delete_dialog.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
+import 'package:strongr/widgets/strongr_snackbar_content.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
 class ProgramView extends StatefulWidget {
-  final String id;
+  final int id;
   final String name;
   final String programGoalName;
 
@@ -21,13 +24,15 @@ class ProgramView extends StatefulWidget {
 }
 
 class _ProgramViewState extends State<ProgramView> {
+  final globalKey = GlobalKey<ScaffoldState>();
+  bool isEditMode, editButtonsEnabled;
   String weekday;
-  bool isEditMode;
   Future<Program> futureProgram;
 
   @override
   void initState() {
     isEditMode = false;
+    editButtonsEnabled = true;
     switch (DateTime.now().weekday) {
       case DateTime.monday:
         weekday = "Lundi";
@@ -82,6 +87,76 @@ class _ProgramViewState extends State<ProgramView> {
     return "";
   }
 
+  void showDeleteDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => DeleteDialog(
+        height: 300,
+        title: "Supprimer ce programme ?",
+        content: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            StrongrText(
+              "Cette action est irréversible.",
+              textAlign: TextAlign.start,
+            ),
+            SizedBox(height: 15),
+            Row(
+              children: <Widget>[
+                SizedBox(
+                  width: 40,
+                  child: Icon(
+                    Icons.check,
+                    color: Colors.grey,
+                  ),
+                ),
+                Flexible(
+                  child: StrongrText(
+                    "Les séances contenues dans ce programme ne seront pas supprimées.",
+                    color: Colors.grey,
+                    textAlign: TextAlign.start,
+                    maxLines: 6,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 15),
+          ],
+        ),
+        onPressed: () => Navigator.pop(context, true),
+      ),
+    ).then(
+      (delete) async {
+        if (delete) {
+          setState(() => editButtonsEnabled = false);
+          int statusCode = await ProgramService.deleteProgram(id: widget.id);
+          if (statusCode == 200)
+            Navigator.pop(context, {
+              CREATE: false,
+              UPDATE: false,
+              DELETE: true,
+            });
+          else {
+            globalKey.currentState.hideCurrentSnackBar();
+            globalKey.currentState.showSnackBar(
+              SnackBar(
+                content: StrongrSnackBarContent(
+                  icon: Icons.close,
+                  message: "Échec lors de la suppression du programme",
+                ),
+                backgroundColor: Colors.red.withOpacity(0.8),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(15)),
+                ),
+              ),
+            );
+            setState(() => editButtonsEnabled = true);
+          }
+        }
+      },
+    );
+  }
+
   List<Widget> buildSessionList({List sessionList}) {
     List<Widget> builtexerciseList = [];
     for (final item in sessionList)
@@ -128,12 +203,16 @@ class _ProgramViewState extends State<ProgramView> {
                               height: 30,
                               // color: Colors.blue,
                               child: RawMaterialButton(
-                                onPressed: isEditMode ? () {} : null,
+                                onPressed: editButtonsEnabled && isEditMode
+                                    ? () {}
+                                    : null,
                                 child: Icon(
                                   Icons.keyboard_arrow_up,
-                                  color: isEditMode
-                                      ? StrongrColors.black
-                                      : Colors.transparent,
+                                  color: !editButtonsEnabled
+                                      ? Colors.grey
+                                      : isEditMode
+                                          ? StrongrColors.black
+                                          : Colors.transparent,
                                 ),
                                 shape: CircleBorder(),
                               ),
@@ -152,12 +231,16 @@ class _ProgramViewState extends State<ProgramView> {
                               height: 30,
                               // color: Colors.blue,
                               child: RawMaterialButton(
-                                onPressed: isEditMode ? () {} : null,
+                                onPressed: editButtonsEnabled && isEditMode
+                                    ? () {}
+                                    : null,
                                 child: Icon(
                                   Icons.keyboard_arrow_down,
-                                  color: isEditMode
-                                      ? StrongrColors.black
-                                      : Colors.transparent,
+                                  color: !editButtonsEnabled
+                                      ? Colors.grey
+                                      : isEditMode
+                                          ? StrongrColors.black
+                                          : Colors.transparent,
                                 ),
                                 shape: CircleBorder(),
                               ),
@@ -258,9 +341,10 @@ class _ProgramViewState extends State<ProgramView> {
                                             ? "Tonnage de " +
                                                 item.tonnage.toString()
                                             : "Tonnage non calculé",
-                                        color: isEditMode || item.tonnage == null
-                                            ? Colors.grey
-                                            : StrongrColors.black,
+                                        color:
+                                            isEditMode || item.tonnage == null
+                                                ? Colors.grey
+                                                : StrongrColors.black,
                                         textAlign: TextAlign.start,
                                         maxLines: 1,
                                       ),
@@ -277,11 +361,13 @@ class _ProgramViewState extends State<ProgramView> {
                         child: Container(
                           width: 35,
                           child: RawMaterialButton(
-                            onPressed: () {},
                             child: Icon(
                               Icons.close,
-                              color: Colors.red[800],
+                              color: editButtonsEnabled
+                                  ? Colors.red[800]
+                                  : Colors.grey,
                             ),
+                            onPressed: editButtonsEnabled ? () {} : null,
                             shape: CircleBorder(),
                           ),
                         ),
@@ -296,24 +382,26 @@ class _ProgramViewState extends State<ProgramView> {
                             heroTag:
                                 "fp_session_play_fab_" + item.id.toString(),
                             tooltip: "Démarrer",
-                            backgroundColor: StrongrColors.blue,
+                            backgroundColor: editButtonsEnabled
+                                ? StrongrColors.blue
+                                : Colors.grey,
                             child: Icon(
                               Icons.play_arrow,
                               color: Colors.white,
                             ),
-                            onPressed: () {},
+                            onPressed: editButtonsEnabled ? () {} : null,
                           ),
                         ),
                       )
                     ],
                   ),
-                  onPressed: !isEditMode
+                  onPressed: editButtonsEnabled && !isEditMode
                       ? () {
                           Navigator.pushNamed(
                             context,
                             SESSION_ROUTE,
                             arguments: SessionView(
-                              id: item.id.toString(),
+                              id: item.id,
                               name: item.name,
                               sessionTypeName: item.sessionTypeName,
                               fromProgram: true,
@@ -321,7 +409,7 @@ class _ProgramViewState extends State<ProgramView> {
                           );
                         }
                       : null,
-                  onLongPressed: !isEditMode
+                  onLongPressed: editButtonsEnabled && !isEditMode
                       ? () => setState(() => isEditMode = true)
                       : null,
                 ),
@@ -350,7 +438,7 @@ class _ProgramViewState extends State<ProgramView> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25.0),
                     ),
-                    onPressed: isEditMode ? () {} : null,
+                    onPressed: editButtonsEnabled && isEditMode ? () {} : null,
                     child: Stack(
                       children: <Widget>[
                         Center(
@@ -372,7 +460,9 @@ class _ProgramViewState extends State<ProgramView> {
                               width: 35,
                               child: Icon(
                                 Icons.add,
-                                color: Colors.grey,
+                                color: editButtonsEnabled
+                                    ? Colors.grey
+                                    : Colors.transparent,
                               ),
                             ),
                           ),
@@ -389,6 +479,7 @@ class _ProgramViewState extends State<ProgramView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: globalKey,
       appBar: AppBar(
         centerTitle: true,
         title: Text(widget.name),
@@ -401,13 +492,21 @@ class _ProgramViewState extends State<ProgramView> {
         actions: <Widget>[
           isEditMode
               ? IconButton(
-                  icon: Icon(Icons.check),
+                  icon: Icon(
+                    Icons.check,
+                    color: !editButtonsEnabled ? Colors.grey : Colors.white,
+                  ),
                   onPressed: () {},
                 )
               : IconButton(
-                  icon: Icon(Icons.edit),
-                  onPressed: () => setState(() => isEditMode = true),
-                ),
+                  icon: Icon(
+                    Icons.edit,
+                    color: !editButtonsEnabled ? Colors.grey : Colors.white,
+                  ),
+                  onPressed: editButtonsEnabled
+                      ? () => setState(() => isEditMode = true)
+                      : null,
+                )
         ],
       ),
       body: Container(
@@ -421,7 +520,7 @@ class _ProgramViewState extends State<ProgramView> {
                   return Container(
                     // color: Colors.red,
                     child: InkWell(
-                      onTap: isEditMode ? null : () {},
+                      onTap: !editButtonsEnabled || isEditMode ? null : () {},
                       child: Stack(
                         children: <Widget>[
                           Container(
@@ -443,7 +542,12 @@ class _ProgramViewState extends State<ProgramView> {
                             child: Opacity(
                               opacity: isEditMode ? 0 : 1,
                               child: Container(
-                                child: Icon(Icons.info_outline),
+                                child: Icon(
+                                  Icons.info_outline,
+                                  color: editButtonsEnabled
+                                      ? StrongrColors.black
+                                      : Colors.grey,
+                                ),
                               ),
                             ),
                           ),
@@ -562,22 +666,26 @@ class _ProgramViewState extends State<ProgramView> {
           if (snapshot.hasData) {
             return FloatingActionButton.extended(
               heroTag: 'program_play_fab_' + widget.id.toString(),
-              backgroundColor: isEditMode
-                  ? Colors.red[800]
-                  : snapshot.data.sessions[DateTime.now().weekday - 1].id !=
-                          null
-                      ? StrongrColors.blue
-                      : Colors.grey,
+              backgroundColor: !editButtonsEnabled
+                  ? Colors.grey
+                  : isEditMode
+                      ? Colors.red[800]
+                      : snapshot.data.sessions[DateTime.now().weekday - 1].id !=
+                              null
+                          ? StrongrColors.blue
+                          : Colors.grey,
               icon: Icon(
                 isEditMode ? Icons.delete_outline : Icons.play_arrow,
                 color: Colors.white,
               ),
-              onPressed: isEditMode
-                  ? () {}
-                  : snapshot.data.sessions[DateTime.now().weekday - 1].id !=
-                          null
-                      ? () {}
-                      : null,
+              onPressed: editButtonsEnabled
+                  ? isEditMode
+                      ? () => showDeleteDialog()
+                      : snapshot.data.sessions[DateTime.now().weekday - 1].id !=
+                              null
+                          ? () {}
+                          : null
+                  : null,
               label: StrongrText(
                 isEditMode ? "Supprimer" : "Démarrer (" + weekday + ")",
                 color: Colors.white,

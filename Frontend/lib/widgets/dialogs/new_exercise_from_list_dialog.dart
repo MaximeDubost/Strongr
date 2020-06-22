@@ -76,9 +76,11 @@ class _NewExerciseFromListDialogState extends State<NewExerciseFromListDialog> {
                     id: widget.id,
                     name: widget.name,
                   ),
-                ).then((result) {
-                  Navigator.of(context).pop();
-                });
+                ).then(
+                  (result) {
+                    Navigator.pop(context, result);
+                  },
+                );
               },
             ),
           ],
