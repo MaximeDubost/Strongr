@@ -4,6 +4,7 @@ import 'package:strongr/services/ExerciseService.dart';
 import 'package:strongr/utils/date_formater.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
+import 'package:strongr/utils/string_constants.dart';
 import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/utils/time_formater.dart';
 import 'package:strongr/views/app_exercise/app_exercise_view.dart';
@@ -12,7 +13,7 @@ import 'package:strongr/widgets/strongr_rounded_container.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
 class ExerciseView extends StatefulWidget {
-  final String id;
+  final int id;
   final String name;
   final String appExerciseName;
   final bool fromSession;
@@ -31,13 +32,15 @@ class ExerciseView extends StatefulWidget {
 }
 
 class _ExerciseViewState extends State<ExerciseView> {
-  bool isEditMode;
+  final globalKey = GlobalKey<ScaffoldState>();
+  bool isEditMode, editButtonsEnabled;
   Future<Exercise> futureExercise;
 
   @override
   void initState() {
     isEditMode = false;
-    futureExercise = ExerciseService.getExercise(id: int.parse(widget.id));
+    editButtonsEnabled = true;
+    futureExercise = ExerciseService.getExercise(id: widget.id);
     super.initState();
   }
 
@@ -97,9 +100,55 @@ class _ExerciseViewState extends State<ExerciseView> {
             SizedBox(height: 15),
           ],
         ),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pop(context, true);
+        },
       ),
-    );
+    ).then((delete) async {
+      if (delete) {
+        setState(() {
+          editButtonsEnabled = false;
+        });
+        int statusCode = await ExerciseService.deleteExercise(id: widget.id);
+        if (statusCode == 200) {
+          Navigator.pop(context, {
+            CREATE: false,
+            UPDATE: false,
+            DELETE: true,
+          });
+        } else {
+          globalKey.currentState.showSnackBar(
+            SnackBar(
+              content: Container(
+                height: 35,
+                child: Stack(
+                  children: <Widget>[
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Icon(
+                        Icons.close,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Container(
+                      alignment: Alignment.center,
+                      child: StrongrText(
+                        "Erreur : échec de la suppression",
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              backgroundColor: Colors.red.withOpacity(0.8),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(15)),
+              ),
+            ),
+          );
+        }
+      }
+    });
   }
 
   List<Widget> buildSetList({List setList}) {
@@ -137,12 +186,15 @@ class _ExerciseViewState extends State<ExerciseView> {
                         height: 30,
                         // color: Colors.blue,
                         child: RawMaterialButton(
-                          onPressed: isEditMode ? () {} : null,
+                          onPressed:
+                              editButtonsEnabled && isEditMode ? () {} : null,
                           child: Icon(
                             Icons.keyboard_arrow_up,
-                            color: isEditMode
-                                ? StrongrColors.black
-                                : Colors.transparent,
+                            color: !editButtonsEnabled
+                                ? Colors.grey
+                                : isEditMode
+                                    ? StrongrColors.black
+                                    : Colors.transparent,
                           ),
                           shape: CircleBorder(),
                         ),
@@ -161,12 +213,15 @@ class _ExerciseViewState extends State<ExerciseView> {
                         height: 30,
                         // color: Colors.blue,
                         child: RawMaterialButton(
-                          onPressed: isEditMode ? () {} : null,
+                          onPressed:
+                              editButtonsEnabled && isEditMode ? () {} : null,
                           child: Icon(
                             Icons.keyboard_arrow_down,
-                            color: isEditMode
-                                ? StrongrColors.black
-                                : Colors.transparent,
+                            color: !editButtonsEnabled
+                                ? Colors.grey
+                                : isEditMode
+                                    ? StrongrColors.black
+                                    : Colors.transparent,
                           ),
                           shape: CircleBorder(),
                         ),
@@ -281,10 +336,12 @@ class _ExerciseViewState extends State<ExerciseView> {
                         Container(
                           width: 35,
                           child: RawMaterialButton(
-                            onPressed: () {},
+                            onPressed: editButtonsEnabled ? () {} : null,
                             child: Icon(
                               Icons.close,
-                              color: Colors.red[800],
+                              color: !editButtonsEnabled
+                                  ? Colors.grey
+                                  : Colors.red[800],
                             ),
                             shape: CircleBorder(),
                           ),
@@ -296,10 +353,13 @@ class _ExerciseViewState extends State<ExerciseView> {
               ],
             ),
             onPressed:
-                !isEditMode && !widget.fromSessionCreation ? () {} : null,
-            onLongPressed: !isEditMode && !widget.fromSessionCreation
-                ? () => setState(() => isEditMode = true)
-                : null,
+                editButtonsEnabled && !isEditMode && !widget.fromSessionCreation
+                    ? () {}
+                    : null,
+            onLongPressed:
+                editButtonsEnabled && !isEditMode && !widget.fromSessionCreation
+                    ? () => setState(() => isEditMode = true)
+                    : null,
           ),
         ),
       );
@@ -309,6 +369,7 @@ class _ExerciseViewState extends State<ExerciseView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: globalKey,
       appBar: AppBar(
         centerTitle: true,
         title: Text(widget.name),
@@ -322,12 +383,20 @@ class _ExerciseViewState extends State<ExerciseView> {
           !widget.fromSessionCreation
               ? isEditMode
                   ? IconButton(
-                      icon: Icon(Icons.check),
-                      onPressed: () {},
+                      icon: Icon(
+                        Icons.check,
+                        color: !editButtonsEnabled ? Colors.grey : Colors.white,
+                      ),
+                      onPressed: editButtonsEnabled ? () {} : null,
                     )
                   : IconButton(
-                      icon: Icon(Icons.edit),
-                      onPressed: () => setState(() => isEditMode = true),
+                      icon: Icon(
+                        Icons.edit,
+                        color: !editButtonsEnabled ? Colors.grey : Colors.white,
+                      ),
+                      onPressed: editButtonsEnabled
+                          ? () => setState(() => isEditMode = true)
+                          : null,
                     )
               : SizedBox(),
         ],
@@ -343,7 +412,7 @@ class _ExerciseViewState extends State<ExerciseView> {
                   return Container(
                     // color: Colors.red,
                     child: InkWell(
-                      onTap: isEditMode
+                      onTap: !editButtonsEnabled || isEditMode
                           ? null
                           : () {
                               Navigator.pushNamed(
@@ -373,7 +442,12 @@ class _ExerciseViewState extends State<ExerciseView> {
                             child: Opacity(
                               opacity: isEditMode ? 0 : 1,
                               child: Container(
-                                child: Icon(Icons.info_outline),
+                                child: Icon(
+                                  Icons.info_outline,
+                                  color: editButtonsEnabled
+                                      ? StrongrColors.black
+                                      : Colors.grey,
+                                ),
                               ),
                             ),
                           ),
@@ -493,7 +567,8 @@ class _ExerciseViewState extends State<ExerciseView> {
                 child: Center(
                   child: FloatingActionButton.extended(
                     heroTag: "add_fab",
-                    backgroundColor: StrongrColors.black,
+                    backgroundColor:
+                        !editButtonsEnabled ? Colors.grey : StrongrColors.black,
                     label: StrongrText(
                       "Nouvelle série",
                       color: Colors.white,
@@ -502,7 +577,7 @@ class _ExerciseViewState extends State<ExerciseView> {
                       Icons.add,
                       color: Colors.white,
                     ),
-                    onPressed: () {},
+                    onPressed: editButtonsEnabled ? () {} : null,
                   ),
                 ),
               ),
@@ -515,8 +590,9 @@ class _ExerciseViewState extends State<ExerciseView> {
               heroTag: !widget.fromSession
                   ? 'exercise_play_fab_' + widget.id.toString()
                   : 'fs_exercise_play_fab_' + widget.id.toString(),
-              backgroundColor:
-                  isEditMode ? Colors.red[800] : StrongrColors.blue,
+              backgroundColor: !editButtonsEnabled
+                  ? Colors.grey
+                  : isEditMode ? Colors.red[800] : StrongrColors.blue,
               icon: Icon(
                 isEditMode ? Icons.delete_outline : Icons.play_arrow,
                 color: Colors.white,
@@ -525,7 +601,9 @@ class _ExerciseViewState extends State<ExerciseView> {
                 isEditMode ? "Supprimer" : "Démarrer",
                 color: Colors.white,
               ),
-              onPressed: isEditMode ? () => showDeleteDialog() : () {},
+              onPressed: editButtonsEnabled
+                  ? isEditMode ? () => showDeleteDialog() : () {}
+                  : null,
             )
           : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,

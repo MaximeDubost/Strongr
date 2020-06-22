@@ -9,6 +9,7 @@ import 'package:strongr/services/SessionService.dart';
 import 'package:strongr/utils/app_exercises_filters.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
+import 'package:strongr/utils/string_constants.dart';
 import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/views/exercise/exercise_view.dart';
 import 'package:strongr/views/program/program_view.dart';
@@ -17,15 +18,12 @@ import 'package:strongr/widgets/strongr_rounded_container.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
 class Homepage extends StatefulWidget {
-  // final GlobalKey<dynamic> key;
-
-  // Homepage({this.key});
-
   @override
   _HomepageState createState() => _HomepageState();
 }
 
 class _HomepageState extends State<Homepage> {
+  final globalKey = GlobalKey<ScaffoldState>();
   PageController exercisesListController,
       sessionsListController,
       programsListController;
@@ -104,185 +102,174 @@ class _HomepageState extends State<Homepage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      // color: Colors.red,
-      child: Column(
-        children: <Widget>[
-          Flexible(
-            flex: 4,
-            child: Container(
-              child: FlatButton(
-                onPressed: () async {
-                  AppExercisesFilters.disableAll();
-                  await Navigator.pushNamed(
-                    context,
-                    EXERCISES_ROUTE,
-                  ).then(
-                    (exerciseCreated) {
-                      if (exerciseCreated) {
-                        refreshExercises();
-                      }
-                    },
-                  );
-                },
-                child: Container(
-                  // height: ScreenSize.height(context) / 12,
-                  padding: EdgeInsets.all(5),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      StrongrText("Vos exercices", size: 25),
-                      Icon(Icons.keyboard_arrow_right),
-                    ],
+    return Scaffold(
+      key: globalKey,
+      body: Container(
+        // color: Colors.red,
+        child: Column(
+          children: <Widget>[
+            Flexible(
+              flex: 4,
+              child: Container(
+                child: FlatButton(
+                  onPressed: () async {
+                    AppExercisesFilters.disableAll();
+                    await Navigator.pushNamed(
+                      context,
+                      EXERCISES_ROUTE,
+                    ).then(
+                      (value) {
+                        Map<String, bool> action;
+                        if (value != null)
+                          action = value;
+                        else
+                          action = {
+                            CREATE: false,
+                            UPDATE: false,
+                            DELETE: false,
+                          };
+                        if (action[CREATE] ||
+                            action[UPDATE] ||
+                            action[DELETE]) {
+                          refreshExercises();
+                        }
+                      },
+                    );
+                  },
+                  child: Container(
+                    // height: ScreenSize.height(context) / 12,
+                    padding: EdgeInsets.all(5),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        StrongrText("Vos exercices", size: 25),
+                        Icon(Icons.keyboard_arrow_right),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-          Flexible(
-            flex: 11,
-            child: Container(
-              // color: Colors.red,
-              // height: ScreenSize.height(context) / 5.5,
-              child: FutureBuilder(
-                future: futureExercises,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData &&
-                      snapshot.connectionState == ConnectionState.done) {
-                    if (snapshot.data.length == 0) {
-                      return Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            StrongrText(
-                              "Aucun exercice à afficher",
-                              color: Colors.grey,
-                            ),
-                            FloatingActionButton.extended(
-                              heroTag: "exercise_create_fab",
-                              icon: Icon(Icons.add),
-                              label: StrongrText(
-                                "Créer",
-                                color: Colors.white,
+            Flexible(
+              flex: 11,
+              child: Container(
+                // color: Colors.red,
+                // height: ScreenSize.height(context) / 5.5,
+                child: FutureBuilder(
+                  future: futureExercises,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData &&
+                        snapshot.connectionState == ConnectionState.done) {
+                      if (snapshot.data.length == 0) {
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: <Widget>[
+                              StrongrText(
+                                "Aucun exercice à afficher",
+                                color: Colors.grey,
                               ),
-                              onPressed: () => Navigator.pushNamed(
-                                  context, EXERCISE_ADD_ROUTE),
-                            ),
-                          ],
-                        ),
-                      );
-                    } else
-                      return PageView(
-                        physics: BouncingScrollPhysics(),
-                        onPageChanged: (value) {
-                          setState(() {
-                            exercisesListCurrentPage = value;
-                          });
-                        },
-                        controller: exercisesListController,
-                        children: <Widget>[
-                          for (final item in snapshot.data)
-                            StrongrRoundedContainer(
-                              content: Row(
-                                children: <Widget>[
-                                  Flexible(
-                                    child: Container(
-                                      // color: Colors.red[100],
-                                      padding: EdgeInsets.only(
-                                        left: 10,
-                                        top: 8,
-                                        bottom: 8,
-                                      ),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          Container(
-                                            alignment: Alignment.centerLeft,
-                                            child: StrongrText(
-                                              item.name,
-                                              bold: true,
-                                              textAlign: TextAlign.start,
-                                              maxLines: 2,
+                              // FloatingActionButton.extended(
+                              //   heroTag: "exercise_create_fab",
+                              //   icon: Icon(Icons.add),
+                              //   label: StrongrText(
+                              //     "Créer",
+                              //     color: Colors.white,
+                              //   ),
+                              //   onPressed: () => Navigator.pushNamed(
+                              //       context, EXERCISE_ADD_ROUTE),
+                              // ),
+                            ],
+                          ),
+                        );
+                      } else
+                        return PageView(
+                          physics: BouncingScrollPhysics(),
+                          onPageChanged: (value) {
+                            setState(() {
+                              exercisesListCurrentPage = value;
+                            });
+                          },
+                          controller: exercisesListController,
+                          children: <Widget>[
+                            for (final item in snapshot.data)
+                              StrongrRoundedContainer(
+                                content: Row(
+                                  children: <Widget>[
+                                    Flexible(
+                                      child: Container(
+                                        // color: Colors.red[100],
+                                        padding: EdgeInsets.only(
+                                          left: 10,
+                                          top: 8,
+                                          bottom: 8,
+                                        ),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            Container(
+                                              alignment: Alignment.centerLeft,
+                                              child: StrongrText(
+                                                item.name,
+                                                bold: true,
+                                                textAlign: TextAlign.start,
+                                                maxLines: 2,
+                                              ),
                                             ),
-                                          ),
-                                          Column(
-                                            children: <Widget>[
-                                              Container(
-                                                height: 30,
-                                                alignment: Alignment.centerLeft,
-                                                child: Row(
-                                                  children: <Widget>[
-                                                    Icon(
-                                                      Icons.fitness_center,
-                                                      color:
-                                                          item.appExerciseName !=
-                                                                  null
-                                                              ? StrongrColors
-                                                                  .black
-                                                              : Colors.grey,
-                                                    ),
-                                                    Flexible(
-                                                      child: Container(
-                                                        padding:
-                                                            EdgeInsets.only(
-                                                                left: 10),
-                                                        child: StrongrText(
-                                                          item.appExerciseName !=
-                                                                  null
-                                                              ? item
-                                                                  .appExerciseName
-                                                              : "Aucun exercice",
-                                                          color:
-                                                              item.appExerciseName !=
-                                                                      null
-                                                                  ? StrongrColors
-                                                                      .black
-                                                                  : Colors.grey,
-                                                          textAlign:
-                                                              TextAlign.start,
-                                                          maxLines: 1,
+                                            Column(
+                                              children: <Widget>[
+                                                Container(
+                                                  height: 30,
+                                                  alignment:
+                                                      Alignment.centerLeft,
+                                                  child: Row(
+                                                    children: <Widget>[
+                                                      Icon(
+                                                        Icons.fitness_center,
+                                                        color: item.appExerciseName !=
+                                                                null
+                                                            ? StrongrColors
+                                                                .black
+                                                            : Colors.grey,
+                                                      ),
+                                                      Flexible(
+                                                        child: Container(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  left: 10),
+                                                          child: StrongrText(
+                                                            item.appExerciseName !=
+                                                                    null
+                                                                ? item
+                                                                    .appExerciseName
+                                                                : "Aucun exercice",
+                                                            color:
+                                                                item.appExerciseName !=
+                                                                        null
+                                                                    ? StrongrColors
+                                                                        .black
+                                                                    : Colors
+                                                                        .grey,
+                                                            textAlign:
+                                                                TextAlign.start,
+                                                            maxLines: 1,
+                                                          ),
                                                         ),
                                                       ),
-                                                    ),
-                                                  ],
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
-                                              Container(
-                                                height: 30,
-                                                alignment: Alignment.centerLeft,
-                                                child: Row(
-                                                  children: <Widget>[
-                                                    Icon(
-                                                      Icons.refresh,
-                                                      color: int.parse(item
-                                                                      .setCount) >
-                                                                  0 ||
-                                                              int.parse(item
-                                                                      .setCount) !=
-                                                                  null
-                                                          ? StrongrColors.black
-                                                          : Colors.grey,
-                                                    ),
-                                                    Container(
-                                                      padding: EdgeInsets.only(
-                                                          left: 10),
-                                                      child: StrongrText(
-                                                        int.parse(item.setCount) >
-                                                                    0 ||
-                                                                int.parse(item
-                                                                        .setCount) !=
-                                                                    null
-                                                            ? int.parse(item
-                                                                        .setCount) <=
-                                                                    1
-                                                                ? item.setCount +
-                                                                    " série"
-                                                                : item.setCount +
-                                                                    " séries"
-                                                            : "Aucune série",
+                                                Container(
+                                                  height: 30,
+                                                  alignment:
+                                                      Alignment.centerLeft,
+                                                  child: Row(
+                                                    children: <Widget>[
+                                                      Icon(
+                                                        Icons.refresh,
                                                         color: int.parse(item
                                                                         .setCount) >
                                                                     0 ||
@@ -292,41 +279,31 @@ class _HomepageState extends State<Homepage> {
                                                             ? StrongrColors
                                                                 .black
                                                             : Colors.grey,
-                                                        textAlign:
-                                                            TextAlign.start,
-                                                        maxLines: 1,
                                                       ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              Container(
-                                                // color: Colors.blue[100],
-                                                alignment: Alignment.centerLeft,
-                                                child: Row(
-                                                  children: <Widget>[
-                                                    Icon(
-                                                      Icons.show_chart,
-                                                      color: item.tonnage !=
-                                                              null
-                                                          ? StrongrColors.black
-                                                          : Colors.grey,
-                                                    ),
-                                                    Flexible(
-                                                      child: Container(
-                                                        // color: Colors.red,
+                                                      Container(
                                                         padding:
                                                             EdgeInsets.only(
                                                                 left: 10),
                                                         child: StrongrText(
-                                                          item.tonnage != null
-                                                              ? "Tonnage : " +
-                                                                  item.tonnage
-                                                                      .toString() +
-                                                                  "kg"
-                                                              : "Tonnage inconnu",
-                                                          color: item.tonnage !=
-                                                                  null
+                                                          int.parse(item.setCount) >
+                                                                      0 ||
+                                                                  int.parse(item
+                                                                          .setCount) !=
+                                                                      null
+                                                              ? int.parse(item
+                                                                          .setCount) <=
+                                                                      1
+                                                                  ? item.setCount +
+                                                                      " série"
+                                                                  : item.setCount +
+                                                                      " séries"
+                                                              : "Aucune série",
+                                                          color: int.parse(item
+                                                                          .setCount) >
+                                                                      0 ||
+                                                                  int.parse(item
+                                                                          .setCount) !=
+                                                                      null
                                                               ? StrongrColors
                                                                   .black
                                                               : Colors.grey,
@@ -335,252 +312,323 @@ class _HomepageState extends State<Homepage> {
                                                           maxLines: 1,
                                                         ),
                                                       ),
-                                                    ),
-                                                  ],
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
+                                                Container(
+                                                  // color: Colors.blue[100],
+                                                  alignment:
+                                                      Alignment.centerLeft,
+                                                  child: Row(
+                                                    children: <Widget>[
+                                                      Icon(
+                                                        Icons.show_chart,
+                                                        color:
+                                                            item.tonnage != null
+                                                                ? StrongrColors
+                                                                    .black
+                                                                : Colors.grey,
+                                                      ),
+                                                      Flexible(
+                                                        child: Container(
+                                                          // color: Colors.red,
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  left: 10),
+                                                          child: StrongrText(
+                                                            item.tonnage != null
+                                                                ? "Tonnage : " +
+                                                                    item.tonnage
+                                                                        .toString() +
+                                                                    "kg"
+                                                                : "Tonnage inconnu",
+                                                            color: item
+                                                                        .tonnage !=
+                                                                    null
+                                                                ? StrongrColors
+                                                                    .black
+                                                                : Colors.grey,
+                                                            textAlign:
+                                                                TextAlign.start,
+                                                            maxLines: 1,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Container(
-                                    width: 50,
-                                    // color: Colors.yellow,
-                                    child: Align(
-                                      alignment: Alignment.bottomCenter,
-                                      child: Container(
-                                        // color: Colors.purple,
-                                        height: 60,
-                                        child: Center(
-                                          child: Container(
-                                            alignment: Alignment.bottomCenter,
-                                            // color: Colors.green[500],
-                                            width: 35,
-                                            height: 35,
-                                            child: FloatingActionButton(
-                                              elevation: 0,
-                                              heroTag: 'exercise_play_fab_' +
-                                                  item.id.toString(),
-                                              tooltip: "Démarrer",
-                                              backgroundColor:
-                                                  StrongrColors.blue,
-                                              child: Icon(
-                                                Icons.play_arrow,
-                                                color: Colors.white,
+                                    Container(
+                                      width: 50,
+                                      // color: Colors.yellow,
+                                      child: Align(
+                                        alignment: Alignment.bottomCenter,
+                                        child: Container(
+                                          // color: Colors.purple,
+                                          height: 60,
+                                          child: Center(
+                                            child: Container(
+                                              alignment: Alignment.bottomCenter,
+                                              // color: Colors.green[500],
+                                              width: 35,
+                                              height: 35,
+                                              child: FloatingActionButton(
+                                                elevation: 0,
+                                                heroTag: 'exercise_play_fab_' +
+                                                    item.id.toString(),
+                                                tooltip: "Démarrer",
+                                                backgroundColor:
+                                                    StrongrColors.blue,
+                                                child: Icon(
+                                                  Icons.play_arrow,
+                                                  color: Colors.white,
+                                                ),
+                                                onPressed: () {},
                                               ),
-                                              onPressed: () {},
                                             ),
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              onPressed: () {
-                                Navigator.pushNamed(
-                                  context,
-                                  EXERCISE_ROUTE,
-                                  arguments: ExerciseView(
-                                    id: item.id.toString(),
-                                    name: item.name,
-                                    appExerciseName: item.appExerciseName,
-                                  ),
-                                );
-                              },
-                            ),
-                        ],
-                      );
-
-                    // return Center(child: StrongrText(snapshot.data.toString()),);
-                  } else if (snapshot.hasError &&
-                      snapshot.connectionState == ConnectionState.done) {
-                    return Text(snapshot.error, textAlign: TextAlign.center);
-                  } else
-                    return Container(
-                      alignment: Alignment.center,
-                      height: ScreenSize.height(context) / 1.75,
-                      child: CircularProgressIndicator(
-                        valueColor:
-                            AlwaysStoppedAnimation<Color>(StrongrColors.blue),
-                      ),
-                    );
-                },
-              ),
-            ),
-          ),
-          Flexible(
-            flex: 4,
-            child: Container(
-              child: FlatButton(
-                onPressed: () {
-                  Navigator.pushNamed(
-                    context,
-                    SESSIONS_ROUTE,
-                  ).then(
-                    (sessionCreated) {
-                      if (sessionCreated) {
-                        refreshSessions();
-                      }
-                    },
-                  );
-                },
-                child: Container(
-                  // height: ScreenSize.height(context) / 12,
-                  padding: EdgeInsets.all(5),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      StrongrText("Vos séances", size: 25),
-                      Icon(Icons.keyboard_arrow_right),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Flexible(
-            flex: 11,
-            child: Container(
-              child: FutureBuilder(
-                future: futureSessions,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    if (snapshot.data.length == 0) {
-                      return Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            StrongrText(
-                              "Aucune séance à afficher",
-                              color: Colors.grey,
-                            ),
-                            FloatingActionButton.extended(
-                              heroTag: "session_create_fab",
-                              icon: Icon(Icons.add),
-                              label: StrongrText(
-                                "Créer",
-                                color: Colors.white,
-                              ),
-                              onPressed: () => Navigator.pushNamed(
-                                  context, SESSION_CREATE_ROUTE),
-                            ),
-                          ],
-                        ),
-                      );
-                    } else
-                      return PageView(
-                        physics: BouncingScrollPhysics(),
-                        onPageChanged: (value) {
-                          setState(() {
-                            sessionsListCurrentPage = value;
-                          });
-                        },
-                        controller: sessionsListController,
-                        children: <Widget>[
-                          for (final item in snapshot.data)
-                            StrongrRoundedContainer(
-                              content: Row(
-                                children: <Widget>[
-                                  Flexible(
-                                    child: Container(
-                                      padding: EdgeInsets.only(
-                                        left: 10,
-                                        top: 8,
-                                        bottom: 8,
-                                      ),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          Container(
-                                            alignment: Alignment.centerLeft,
-                                            child: StrongrText(
-                                              item.name,
-                                              bold: true,
-                                              textAlign: TextAlign.start,
-                                              maxLines: 2,
-                                            ),
-                                          ),
-                                          Column(
-                                            children: <Widget>[
-                                              Container(
-                                                height: 30,
-                                                alignment: Alignment.centerLeft,
-                                                child: Row(
+                                  ],
+                                ),
+                                onPressed: () {
+                                  Navigator.pushNamed(
+                                    context,
+                                    EXERCISE_ROUTE,
+                                    arguments: ExerciseView(
+                                      id: item.id,
+                                      name: item.name,
+                                      appExerciseName: item.appExerciseName,
+                                    ),
+                                  ).then(
+                                    (value) {
+                                      Map<String, bool> action;
+                                      if (value != null)
+                                        action = value;
+                                      else
+                                        action = {
+                                          CREATE: false,
+                                          UPDATE: false,
+                                          DELETE: false,
+                                        };
+                                      if (action[CREATE] ||
+                                          action[UPDATE] ||
+                                          action[DELETE]) {
+                                        refreshExercises();
+                                        if (action[DELETE]) {
+                                          globalKey.currentState.showSnackBar(
+                                            SnackBar(
+                                              content: Container(
+                                                height: 35,
+                                                child: Stack(
                                                   children: <Widget>[
-                                                    Icon(
-                                                      Icons.accessibility,
-                                                      color:
-                                                          item.sessionTypeName !=
-                                                                  null
-                                                              ? StrongrColors
-                                                                  .black
-                                                              : Colors.grey,
+                                                    Container(
+                                                      alignment:
+                                                          Alignment.centerLeft,
+                                                      child: Icon(
+                                                        Icons.check,
+                                                        color: Colors.white,
+                                                      ),
                                                     ),
-                                                    Flexible(
-                                                      child: Container(
-                                                        padding:
-                                                            EdgeInsets.only(
-                                                                left: 10),
-                                                        child: StrongrText(
-                                                          item.sessionTypeName !=
-                                                                  null
-                                                              ? item
-                                                                  .sessionTypeName
-                                                              : "Aucune type",
-                                                          color:
-                                                              item.sessionTypeName !=
-                                                                      null
-                                                                  ? StrongrColors
-                                                                      .black
-                                                                  : Colors.grey,
-                                                          textAlign:
-                                                              TextAlign.start,
-                                                          maxLines: 1,
-                                                        ),
+                                                    Container(
+                                                      alignment:
+                                                          Alignment.center,
+                                                      child: StrongrText(
+                                                        "Exercice supprimé avec succès",
+                                                        color: Colors.white,
                                                       ),
                                                     ),
                                                   ],
                                                 ),
                                               ),
-                                              Container(
-                                                height: 30,
-                                                alignment: Alignment.centerLeft,
-                                                child: Row(
-                                                  children: <Widget>[
-                                                    Icon(
-                                                      Icons.fitness_center,
-                                                      color: int.parse(item
-                                                                      .exerciseCount) >
-                                                                  0 ||
-                                                              int.parse(item
-                                                                      .exerciseCount) !=
-                                                                  null
-                                                          ? StrongrColors.black
-                                                          : Colors.grey,
-                                                    ),
-                                                    Container(
-                                                      padding: EdgeInsets.only(
-                                                          left: 10),
-                                                      child: StrongrText(
-                                                        int.parse(item.exerciseCount) >
-                                                                    0 ||
-                                                                int.parse(item
-                                                                        .exerciseCount) !=
+                                              backgroundColor:
+                                                  StrongrColors.blue80,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.only(
+                                                  topLeft: Radius.circular(15),
+                                                  topRight: Radius.circular(15),
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                      }
+                                    },
+                                  );
+                                },
+                              ),
+                          ],
+                        );
+
+                      // return Center(child: StrongrText(snapshot.data.toString()),);
+                    } else if (snapshot.hasError &&
+                        snapshot.connectionState == ConnectionState.done) {
+                      return Text(snapshot.error, textAlign: TextAlign.center);
+                    } else
+                      return Container(
+                        alignment: Alignment.center,
+                        height: ScreenSize.height(context) / 1.75,
+                        child: CircularProgressIndicator(
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(StrongrColors.blue),
+                        ),
+                      );
+                  },
+                ),
+              ),
+            ),
+            Flexible(
+              flex: 4,
+              child: Container(
+                child: FlatButton(
+                  onPressed: () {
+                    Navigator.pushNamed(
+                      context,
+                      SESSIONS_ROUTE,
+                    ).then(
+                      (sessionCreated) {
+                        if (sessionCreated) {
+                          refreshSessions();
+                        }
+                      },
+                    );
+                  },
+                  child: Container(
+                    // height: ScreenSize.height(context) / 12,
+                    padding: EdgeInsets.all(5),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        StrongrText("Vos séances", size: 25),
+                        Icon(Icons.keyboard_arrow_right),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Flexible(
+              flex: 11,
+              child: Container(
+                child: FutureBuilder(
+                  future: futureSessions,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      if (snapshot.data.length == 0) {
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: <Widget>[
+                              StrongrText(
+                                "Aucune séance à afficher",
+                                color: Colors.grey,
+                              ),
+                              // FloatingActionButton.extended(
+                              //   heroTag: "session_create_fab",
+                              //   icon: Icon(Icons.add),
+                              //   label: StrongrText(
+                              //     "Créer",
+                              //     color: Colors.white,
+                              //   ),
+                              //   onPressed: () => Navigator.pushNamed(
+                              //       context, SESSION_CREATE_ROUTE),
+                              // ),
+                            ],
+                          ),
+                        );
+                      } else
+                        return PageView(
+                          physics: BouncingScrollPhysics(),
+                          onPageChanged: (value) {
+                            setState(() {
+                              sessionsListCurrentPage = value;
+                            });
+                          },
+                          controller: sessionsListController,
+                          children: <Widget>[
+                            for (final item in snapshot.data)
+                              StrongrRoundedContainer(
+                                content: Row(
+                                  children: <Widget>[
+                                    Flexible(
+                                      child: Container(
+                                        padding: EdgeInsets.only(
+                                          left: 10,
+                                          top: 8,
+                                          bottom: 8,
+                                        ),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            Container(
+                                              alignment: Alignment.centerLeft,
+                                              child: StrongrText(
+                                                item.name,
+                                                bold: true,
+                                                textAlign: TextAlign.start,
+                                                maxLines: 2,
+                                              ),
+                                            ),
+                                            Column(
+                                              children: <Widget>[
+                                                Container(
+                                                  height: 30,
+                                                  alignment:
+                                                      Alignment.centerLeft,
+                                                  child: Row(
+                                                    children: <Widget>[
+                                                      Icon(
+                                                        Icons.accessibility,
+                                                        color: item.sessionTypeName !=
+                                                                null
+                                                            ? StrongrColors
+                                                                .black
+                                                            : Colors.grey,
+                                                      ),
+                                                      Flexible(
+                                                        child: Container(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  left: 10),
+                                                          child: StrongrText(
+                                                            item.sessionTypeName !=
                                                                     null
-                                                            ? int.parse(item
-                                                                        .exerciseCount) <=
-                                                                    1
-                                                                ? item.exerciseCount +
-                                                                    " exercice"
-                                                                : item.exerciseCount +
-                                                                    " exercices"
-                                                            : "Aucun exercice",
+                                                                ? item
+                                                                    .sessionTypeName
+                                                                : "Aucune type",
+                                                            color:
+                                                                item.sessionTypeName !=
+                                                                        null
+                                                                    ? StrongrColors
+                                                                        .black
+                                                                    : Colors
+                                                                        .grey,
+                                                            textAlign:
+                                                                TextAlign.start,
+                                                            maxLines: 1,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                Container(
+                                                  height: 30,
+                                                  alignment:
+                                                      Alignment.centerLeft,
+                                                  child: Row(
+                                                    children: <Widget>[
+                                                      Icon(
+                                                        Icons.fitness_center,
                                                         color: int.parse(item
                                                                         .exerciseCount) >
                                                                     0 ||
@@ -590,41 +638,31 @@ class _HomepageState extends State<Homepage> {
                                                             ? StrongrColors
                                                                 .black
                                                             : Colors.grey,
-                                                        textAlign:
-                                                            TextAlign.start,
-                                                        maxLines: 1,
                                                       ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              Container(
-                                                // color: Colors.blue[100],
-                                                alignment: Alignment.centerLeft,
-                                                child: Row(
-                                                  children: <Widget>[
-                                                    Icon(
-                                                      Icons.show_chart,
-                                                      color: item.tonnage !=
-                                                              null
-                                                          ? StrongrColors.black
-                                                          : Colors.grey,
-                                                    ),
-                                                    Flexible(
-                                                      child: Container(
-                                                        // color: Colors.red,
+                                                      Container(
                                                         padding:
                                                             EdgeInsets.only(
                                                                 left: 10),
                                                         child: StrongrText(
-                                                          item.tonnage != null
-                                                              ? "Tonnage : " +
-                                                                  item.tonnage
-                                                                      .toString() +
-                                                                  "kg"
-                                                              : "Tonnage inconnu",
-                                                          color: item.tonnage !=
-                                                                  null
+                                                          int.parse(item.exerciseCount) >
+                                                                      0 ||
+                                                                  int.parse(item
+                                                                          .exerciseCount) !=
+                                                                      null
+                                                              ? int.parse(item
+                                                                          .exerciseCount) <=
+                                                                      1
+                                                                  ? item.exerciseCount +
+                                                                      " exercice"
+                                                                  : item.exerciseCount +
+                                                                      " exercices"
+                                                              : "Aucun exercice",
+                                                          color: int.parse(item
+                                                                          .exerciseCount) >
+                                                                      0 ||
+                                                                  int.parse(item
+                                                                          .exerciseCount) !=
+                                                                      null
                                                               ? StrongrColors
                                                                   .black
                                                               : Colors.grey,
@@ -633,251 +671,268 @@ class _HomepageState extends State<Homepage> {
                                                           maxLines: 1,
                                                         ),
                                                       ),
-                                                    ),
-                                                  ],
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
+                                                Container(
+                                                  // color: Colors.blue[100],
+                                                  alignment:
+                                                      Alignment.centerLeft,
+                                                  child: Row(
+                                                    children: <Widget>[
+                                                      Icon(
+                                                        Icons.show_chart,
+                                                        color:
+                                                            item.tonnage != null
+                                                                ? StrongrColors
+                                                                    .black
+                                                                : Colors.grey,
+                                                      ),
+                                                      Flexible(
+                                                        child: Container(
+                                                          // color: Colors.red,
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  left: 10),
+                                                          child: StrongrText(
+                                                            item.tonnage != null
+                                                                ? "Tonnage : " +
+                                                                    item.tonnage
+                                                                        .toString() +
+                                                                    "kg"
+                                                                : "Tonnage inconnu",
+                                                            color: item
+                                                                        .tonnage !=
+                                                                    null
+                                                                ? StrongrColors
+                                                                    .black
+                                                                : Colors.grey,
+                                                            textAlign:
+                                                                TextAlign.start,
+                                                            maxLines: 1,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Container(
-                                    width: 50,
-                                    // color: Colors.yellow,
-                                    child: Align(
-                                      alignment: Alignment.bottomCenter,
-                                      child: Container(
-                                        // color: Colors.purple,
-                                        height: 60,
-                                        child: Center(
-                                          child: Container(
-                                            alignment: Alignment.bottomCenter,
-                                            // color: Colors.green[500],
-                                            width: 35,
-                                            height: 35,
-                                            child: FloatingActionButton(
-                                              elevation: 0,
-                                              heroTag: 'session_play_fab_' +
-                                                  item.id.toString(),
-                                              tooltip: "Démarrer",
-                                              backgroundColor:
-                                                  StrongrColors.blue,
-                                              child: Icon(
-                                                Icons.play_arrow,
-                                                color: Colors.white,
+                                    Container(
+                                      width: 50,
+                                      // color: Colors.yellow,
+                                      child: Align(
+                                        alignment: Alignment.bottomCenter,
+                                        child: Container(
+                                          // color: Colors.purple,
+                                          height: 60,
+                                          child: Center(
+                                            child: Container(
+                                              alignment: Alignment.bottomCenter,
+                                              // color: Colors.green[500],
+                                              width: 35,
+                                              height: 35,
+                                              child: FloatingActionButton(
+                                                elevation: 0,
+                                                heroTag: 'session_play_fab_' +
+                                                    item.id.toString(),
+                                                tooltip: "Démarrer",
+                                                backgroundColor:
+                                                    StrongrColors.blue,
+                                                child: Icon(
+                                                  Icons.play_arrow,
+                                                  color: Colors.white,
+                                                ),
+                                                onPressed: () {},
                                               ),
-                                              onPressed: () {},
                                             ),
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
+                                onPressed: () {
+                                  Navigator.pushNamed(
+                                    context,
+                                    SESSION_ROUTE,
+                                    arguments: SessionView(
+                                      id: item.id.toString(),
+                                      name: item.name,
+                                      sessionTypeName: item.sessionTypeName,
+                                    ),
+                                  );
+                                },
                               ),
-                              onPressed: () {
-                                Navigator.pushNamed(
-                                  context,
-                                  SESSION_ROUTE,
-                                  arguments: SessionView(
-                                    id: item.id.toString(),
-                                    name: item.name,
-                                    sessionTypeName: item.sessionTypeName,
-                                  ),
-                                );
-                              },
-                            ),
-                        ],
-                      );
+                          ],
+                        );
 
-                    // return Center(child: StrongrText(snapshot.data.toString()),);
-                  } else if (snapshot.hasError) {
-                    return Text(snapshot.error, textAlign: TextAlign.center);
-                  } else
-                    return Container(
-                      alignment: Alignment.center,
-                      height: ScreenSize.height(context) / 1.75,
-                      child: CircularProgressIndicator(
-                        valueColor:
-                            AlwaysStoppedAnimation<Color>(StrongrColors.blue),
-                      ),
-                    );
-                },
+                      // return Center(child: StrongrText(snapshot.data.toString()),);
+                    } else if (snapshot.hasError) {
+                      return Text(snapshot.error, textAlign: TextAlign.center);
+                    } else
+                      return Container(
+                        alignment: Alignment.center,
+                        height: ScreenSize.height(context) / 1.75,
+                        child: CircularProgressIndicator(
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(StrongrColors.blue),
+                        ),
+                      );
+                  },
+                ),
               ),
             ),
-          ),
-          Flexible(
-            flex: 4,
-            child: Container(
-              child: FlatButton(
-                onPressed: () {
-                  Navigator.pushNamed(
-                    context,
-                    PROGRAMS_ROUTE,
-                  ).then(
-                    (programCreated) {
-                      if (programCreated) {
-                        refreshPrograms();
-                      }
-                    },
-                  );
-                },
-                child: Container(
-                  // height: ScreenSize.height(context) / 12,
-                  padding: EdgeInsets.all(5),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      StrongrText("Vos programmes", size: 25),
-                      Icon(Icons.keyboard_arrow_right),
-                    ],
+            Flexible(
+              flex: 4,
+              child: Container(
+                child: FlatButton(
+                  onPressed: () {
+                    Navigator.pushNamed(
+                      context,
+                      PROGRAMS_ROUTE,
+                    ).then(
+                      (programCreated) {
+                        if (programCreated) {
+                          refreshPrograms();
+                        }
+                      },
+                    );
+                  },
+                  child: Container(
+                    // height: ScreenSize.height(context) / 12,
+                    padding: EdgeInsets.all(5),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        StrongrText("Vos programmes", size: 25),
+                        Icon(Icons.keyboard_arrow_right),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-          Flexible(
-            flex: 11,
-            child: Container(
-              child: FutureBuilder(
-                future: futurePrograms,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    if (snapshot.data.length == 0) {
-                      return Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            StrongrText(
-                              "Aucun programme à afficher",
-                              color: Colors.grey,
-                            ),
-                            FloatingActionButton.extended(
-                              heroTag: "program_create_fab",
-                              icon: Icon(Icons.add),
-                              label: StrongrText(
-                                "Créer",
-                                color: Colors.white,
+            Flexible(
+              flex: 11,
+              child: Container(
+                child: FutureBuilder(
+                  future: futurePrograms,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      if (snapshot.data.length == 0) {
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: <Widget>[
+                              StrongrText(
+                                "Aucun programme à afficher",
+                                color: Colors.grey,
                               ),
-                              onPressed: () => Navigator.pushNamed(
-                                  context, PROGRAM_CREATE_ROUTE),
-                            ),
-                          ],
-                        ),
-                      );
-                    } else
-                      return PageView(
-                        physics: BouncingScrollPhysics(),
-                        onPageChanged: (value) {
-                          setState(() {
-                            sessionsListCurrentPage = value;
-                          });
-                        },
-                        controller: sessionsListController,
-                        children: <Widget>[
-                          for (final item in snapshot.data)
-                            StrongrRoundedContainer(
-                              content: Row(
-                                children: <Widget>[
-                                  Flexible(
-                                    child: Container(
-                                      padding: EdgeInsets.only(
-                                        left: 10,
-                                        top: 8,
-                                        bottom: 8,
-                                      ),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          Container(
-                                            alignment: Alignment.centerLeft,
-                                            child: StrongrText(
-                                              item.name,
-                                              bold: true,
-                                              textAlign: TextAlign.start,
-                                              maxLines: 2,
+                              // FloatingActionButton.extended(
+                              //   heroTag: "program_create_fab",
+                              //   icon: Icon(Icons.add),
+                              //   label: StrongrText(
+                              //     "Créer",
+                              //     color: Colors.white,
+                              //   ),
+                              //   onPressed: () => Navigator.pushNamed(
+                              //       context, PROGRAM_CREATE_ROUTE),
+                              // ),
+                            ],
+                          ),
+                        );
+                      } else
+                        return PageView(
+                          physics: BouncingScrollPhysics(),
+                          onPageChanged: (value) {
+                            setState(() {
+                              sessionsListCurrentPage = value;
+                            });
+                          },
+                          controller: sessionsListController,
+                          children: <Widget>[
+                            for (final item in snapshot.data)
+                              StrongrRoundedContainer(
+                                content: Row(
+                                  children: <Widget>[
+                                    Flexible(
+                                      child: Container(
+                                        padding: EdgeInsets.only(
+                                          left: 10,
+                                          top: 8,
+                                          bottom: 8,
+                                        ),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            Container(
+                                              alignment: Alignment.centerLeft,
+                                              child: StrongrText(
+                                                item.name,
+                                                bold: true,
+                                                textAlign: TextAlign.start,
+                                                maxLines: 2,
+                                              ),
                                             ),
-                                          ),
-                                          Column(
-                                            children: <Widget>[
-                                              Container(
-                                                height: 30,
-                                                alignment: Alignment.centerLeft,
-                                                child: Row(
-                                                  children: <Widget>[
-                                                    Icon(
-                                                      Icons.star_border,
-                                                      color:
-                                                          item.programGoalName !=
-                                                                  null
-                                                              ? StrongrColors
-                                                                  .black
-                                                              : Colors.grey,
-                                                    ),
-                                                    Flexible(
-                                                      child: Container(
-                                                        padding:
-                                                            EdgeInsets.only(
-                                                                left: 10),
-                                                        child: StrongrText(
-                                                          item.programGoalName !=
-                                                                  null
-                                                              ? item
-                                                                  .programGoalName
-                                                              : "Aucun objectif",
-                                                          color:
-                                                              item.programGoalName !=
-                                                                      null
-                                                                  ? StrongrColors
-                                                                      .black
-                                                                  : Colors.grey,
-                                                          textAlign:
-                                                              TextAlign.start,
-                                                          maxLines: 1,
+                                            Column(
+                                              children: <Widget>[
+                                                Container(
+                                                  height: 30,
+                                                  alignment:
+                                                      Alignment.centerLeft,
+                                                  child: Row(
+                                                    children: <Widget>[
+                                                      Icon(
+                                                        Icons.star_border,
+                                                        color: item.programGoalName !=
+                                                                null
+                                                            ? StrongrColors
+                                                                .black
+                                                            : Colors.grey,
+                                                      ),
+                                                      Flexible(
+                                                        child: Container(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  left: 10),
+                                                          child: StrongrText(
+                                                            item.programGoalName !=
+                                                                    null
+                                                                ? item
+                                                                    .programGoalName
+                                                                : "Aucun objectif",
+                                                            color:
+                                                                item.programGoalName !=
+                                                                        null
+                                                                    ? StrongrColors
+                                                                        .black
+                                                                    : Colors
+                                                                        .grey,
+                                                            textAlign:
+                                                                TextAlign.start,
+                                                            maxLines: 1,
+                                                          ),
                                                         ),
                                                       ),
-                                                    ),
-                                                  ],
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
-                                              Container(
-                                                height: 30,
-                                                alignment: Alignment.centerLeft,
-                                                child: Row(
-                                                  children: <Widget>[
-                                                    Icon(
-                                                      Icons.calendar_today,
-                                                      color: int.parse(item
-                                                                      .sessionCount) >
-                                                                  0 ||
-                                                              int.parse(item
-                                                                      .sessionCount) !=
-                                                                  null
-                                                          ? StrongrColors.black
-                                                          : Colors.grey,
-                                                    ),
-                                                    Container(
-                                                      padding: EdgeInsets.only(
-                                                          left: 10),
-                                                      child: StrongrText(
-                                                        int.parse(item.sessionCount) >
-                                                                    0 ||
-                                                                int.parse(item
-                                                                        .sessionCount) !=
-                                                                    null
-                                                            ? int.parse(item
-                                                                        .sessionCount) <=
-                                                                    1
-                                                                ? item.sessionCount +
-                                                                    " séance"
-                                                                : item.sessionCount +
-                                                                    " séance"
-                                                            : "Aucune séance",
+                                                Container(
+                                                  height: 30,
+                                                  alignment:
+                                                      Alignment.centerLeft,
+                                                  child: Row(
+                                                    children: <Widget>[
+                                                      Icon(
+                                                        Icons.calendar_today,
                                                         color: int.parse(item
                                                                         .sessionCount) >
                                                                     0 ||
@@ -887,41 +942,31 @@ class _HomepageState extends State<Homepage> {
                                                             ? StrongrColors
                                                                 .black
                                                             : Colors.grey,
-                                                        textAlign:
-                                                            TextAlign.start,
-                                                        maxLines: 1,
                                                       ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              Container(
-                                                // color: Colors.blue[100],
-                                                alignment: Alignment.centerLeft,
-                                                child: Row(
-                                                  children: <Widget>[
-                                                    Icon(
-                                                      Icons.show_chart,
-                                                      color: item.tonnage !=
-                                                              null
-                                                          ? StrongrColors.black
-                                                          : Colors.grey,
-                                                    ),
-                                                    Flexible(
-                                                      child: Container(
-                                                        // color: Colors.red,
+                                                      Container(
                                                         padding:
                                                             EdgeInsets.only(
                                                                 left: 10),
                                                         child: StrongrText(
-                                                          item.tonnage != null
-                                                              ? "Tonnage : " +
-                                                                  item.tonnage
-                                                                      .toString() +
-                                                                  "kg"
-                                                              : "Tonnage inconnu",
-                                                          color: item.tonnage !=
-                                                                  null
+                                                          int.parse(item.sessionCount) >
+                                                                      0 ||
+                                                                  int.parse(item
+                                                                          .sessionCount) !=
+                                                                      null
+                                                              ? int.parse(item
+                                                                          .sessionCount) <=
+                                                                      1
+                                                                  ? item.sessionCount +
+                                                                      " séance"
+                                                                  : item.sessionCount +
+                                                                      " séance"
+                                                              : "Aucune séance",
+                                                          color: int.parse(item
+                                                                          .sessionCount) >
+                                                                      0 ||
+                                                                  int.parse(item
+                                                                          .sessionCount) !=
+                                                                      null
                                                               ? StrongrColors
                                                                   .black
                                                               : Colors.grey,
@@ -930,80 +975,122 @@ class _HomepageState extends State<Homepage> {
                                                           maxLines: 1,
                                                         ),
                                                       ),
-                                                    ),
-                                                  ],
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
+                                                Container(
+                                                  // color: Colors.blue[100],
+                                                  alignment:
+                                                      Alignment.centerLeft,
+                                                  child: Row(
+                                                    children: <Widget>[
+                                                      Icon(
+                                                        Icons.show_chart,
+                                                        color:
+                                                            item.tonnage != null
+                                                                ? StrongrColors
+                                                                    .black
+                                                                : Colors.grey,
+                                                      ),
+                                                      Flexible(
+                                                        child: Container(
+                                                          // color: Colors.red,
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  left: 10),
+                                                          child: StrongrText(
+                                                            item.tonnage != null
+                                                                ? "Tonnage : " +
+                                                                    item.tonnage
+                                                                        .toString() +
+                                                                    "kg"
+                                                                : "Tonnage inconnu",
+                                                            color: item
+                                                                        .tonnage !=
+                                                                    null
+                                                                ? StrongrColors
+                                                                    .black
+                                                                : Colors.grey,
+                                                            textAlign:
+                                                                TextAlign.start,
+                                                            maxLines: 1,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Container(
-                                    width: 50,
-                                    // color: Colors.yellow,
-                                    child: Align(
-                                      alignment: Alignment.bottomCenter,
-                                      child: Container(
-                                        // color: Colors.purple,
-                                        height: 60,
-                                        child: Center(
-                                          child: Container(
-                                            alignment: Alignment.bottomCenter,
-                                            // color: Colors.green[500],
-                                            width: 35,
-                                            height: 35,
-                                            child: FloatingActionButton(
-                                              elevation: 0,
-                                              heroTag: 'program_play_fab_' +
-                                                  item.id.toString(),
-                                              tooltip: "Démarrer",
-                                              backgroundColor:
-                                                  StrongrColors.blue,
-                                              child: Icon(
-                                                Icons.play_arrow,
-                                                color: Colors.white,
+                                    Container(
+                                      width: 50,
+                                      // color: Colors.yellow,
+                                      child: Align(
+                                        alignment: Alignment.bottomCenter,
+                                        child: Container(
+                                          // color: Colors.purple,
+                                          height: 60,
+                                          child: Center(
+                                            child: Container(
+                                              alignment: Alignment.bottomCenter,
+                                              // color: Colors.green[500],
+                                              width: 35,
+                                              height: 35,
+                                              child: FloatingActionButton(
+                                                elevation: 0,
+                                                heroTag: 'program_play_fab_' +
+                                                    item.id.toString(),
+                                                tooltip: "Démarrer",
+                                                backgroundColor:
+                                                    StrongrColors.blue,
+                                                child: Icon(
+                                                  Icons.play_arrow,
+                                                  color: Colors.white,
+                                                ),
+                                                onPressed: () {},
                                               ),
-                                              onPressed: () {},
                                             ),
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
+                                onPressed: () {
+                                  Navigator.pushNamed(
+                                    context,
+                                    PROGRAM_ROUTE,
+                                    arguments: ProgramView(
+                                      id: item.id.toString(),
+                                      name: item.name,
+                                      programGoalName: item.programGoalName,
+                                    ),
+                                  );
+                                },
                               ),
-                              onPressed: () {
-                                Navigator.pushNamed(
-                                  context,
-                                  PROGRAM_ROUTE,
-                                  arguments: ProgramView(
-                                    id: item.id.toString(),
-                                    name: item.name,
-                                    programGoalName: item.programGoalName,
-                                  ),
-                                );
-                              },
-                            ),
-                        ],
+                          ],
+                        );
+                    } else if (snapshot.hasError) {
+                      return Text(snapshot.error, textAlign: TextAlign.center);
+                    } else
+                      return Container(
+                        alignment: Alignment.center,
+                        height: ScreenSize.height(context) / 1.75,
+                        child: CircularProgressIndicator(
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(StrongrColors.blue),
+                        ),
                       );
-                  } else if (snapshot.hasError) {
-                    return Text(snapshot.error, textAlign: TextAlign.center);
-                  } else
-                    return Container(
-                      alignment: Alignment.center,
-                      height: ScreenSize.height(context) / 1.75,
-                      child: CircularProgressIndicator(
-                        valueColor:
-                            AlwaysStoppedAnimation<Color>(StrongrColors.blue),
-                      ),
-                    );
-                },
+                  },
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -312,7 +312,7 @@ class _SessionViewState extends State<SessionView> {
                       context,
                       EXERCISE_ROUTE,
                       arguments: ExerciseView(
-                        id: item.id.toString(),
+                        id: item.id,
                         name: item.name.toString(),
                         appExerciseName: item.appExerciseName,
                         fromSession: true,

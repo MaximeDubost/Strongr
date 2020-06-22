@@ -386,7 +386,7 @@ class _SessionCreateViewState extends State<SessionCreateView> {
                 context,
                 EXERCISE_ROUTE,
                 arguments: ExerciseView(
-                  id: item.id.toString(),
+                  id: item.id,
                   name: item.name.toString(),
                   appExerciseName: item.appExerciseName.toString(),
                   fromSessionCreation: true,
