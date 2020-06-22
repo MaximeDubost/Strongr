@@ -12,6 +12,7 @@ import 'package:strongr/views/exercise/exercise_create_view.dart';
 import 'package:strongr/widgets/dialogs/filters_dialog.dart';
 import 'package:strongr/widgets/dialogs/new_exercise_from_list_dialog.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
+import 'package:strongr/widgets/strongr_snackbar_content.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 import 'package:strongr/views/app_exercise/app_exercise_view.dart';
 
@@ -28,6 +29,7 @@ class AppExercisesPage extends StatefulWidget {
 }
 
 class _AppExercisesPageState extends State<AppExercisesPage> {
+  final globalKey = GlobalKey<ScaffoldState>();
   TextEditingController searchbarController;
   Future<List<AppExercise>> futureAppExercisesList;
   bool sortedByAlpha;
@@ -160,6 +162,28 @@ class _AppExercisesPageState extends State<AppExercisesPage> {
                                     id: appExercise.id,
                                     name: appExercise.name,
                                   ),
+                                ).then(
+                                  (exerciseCreated) {
+                                    if (exerciseCreated) {
+                                      globalKey.currentState
+                                          .hideCurrentSnackBar();
+                                      globalKey.currentState.showSnackBar(
+                                        SnackBar(
+                                          content: StrongrSnackBarContent(
+                                            message:
+                                                "Exercice créé avec succès",
+                                          ),
+                                          backgroundColor: StrongrColors.blue80,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(15),
+                                              topRight: Radius.circular(15),
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  },
                                 ),
                               ),
                             )
@@ -260,167 +284,173 @@ class _AppExercisesPageState extends State<AppExercisesPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: ListView(
-        physics: BouncingScrollPhysics(),
-        children: <Widget>[
-          Container(
-            margin: EdgeInsets.only(top: 20, bottom: 5),
-            padding: EdgeInsets.only(left: 10, right: 10),
-            height: 60,
-            width: ScreenSize.width(context),
-            child: Container(
-              alignment: Alignment.center,
-              height: 50,
-              width: 50,
-              child: TextField(
-                controller: searchbarController,
-                style: TextStyle(
-                    color: StrongrColors.black,
-                    fontFamily: 'Futura',
-                    fontSize: 18),
-                inputFormatters: [
-                  LengthLimitingTextInputFormatter(100),
-                ],
-                onChanged: (newValue) => setState(() {}),
-                decoration: InputDecoration(
-                  suffixIcon: Icon(Icons.search, color: StrongrColors.blue),
-                  hintText: "Rechercher un exercice...",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(25),
+    return Scaffold(
+      key: globalKey,
+      body: Container(
+        child: ListView(
+          physics: BouncingScrollPhysics(),
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.only(top: 20, bottom: 5),
+              padding: EdgeInsets.only(left: 10, right: 10),
+              height: 60,
+              width: ScreenSize.width(context),
+              child: Container(
+                alignment: Alignment.center,
+                height: 50,
+                width: 50,
+                child: TextField(
+                  controller: searchbarController,
+                  style: TextStyle(
+                      color: StrongrColors.black,
+                      fontFamily: 'Futura',
+                      fontSize: 18),
+                  inputFormatters: [
+                    LengthLimitingTextInputFormatter(100),
+                  ],
+                  onChanged: (newValue) => setState(() {}),
+                  decoration: InputDecoration(
+                    suffixIcon: Icon(Icons.search, color: StrongrColors.blue),
+                    hintText: "Rechercher un exercice...",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(25),
+                      borderSide:
+                          BorderSide(color: StrongrColors.blue, width: 1.5),
+                    ),
+                    fillColor: Colors.white,
+                    filled: true,
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(25),
-                    borderSide:
-                        BorderSide(color: StrongrColors.blue, width: 1.5),
-                  ),
-                  fillColor: Colors.white,
-                  filled: true,
                 ),
               ),
             ),
-          ),
-          Visibility(
-            visible: !AppExercisesFilters.areAllDisabled() &&
-                AppExercisesFilters.atLeastOneDisabled(),
-            child: Container(
-              padding: EdgeInsets.only(top: 5, left: 20, right: 20, bottom: 5),
-              alignment: Alignment.centerLeft,
-              child: InkWell(
-                onTap: () async {
-                  FocusScope.of(context).unfocus();
-                  await showDialog(
-                    context: context,
-                    builder: (context) => FiltersDialog(),
-                  ).then((val) {
-                    if (val == true) refresh();
-                  });
-                },
-                child: StrongrText(
-                  !AppExercisesFilters.filterMode
-                      ? AppExercisesFilters.allEnabledFiltersToList().length ==
-                              1
-                          ? "Filtre : " +
-                              AppExercisesFilters.allEnabledFiltersToString()
-                          : "Filtres : " +
-                              AppExercisesFilters.allEnabledFiltersToString()
-                      : "Filtres : Tout sauf " +
-                          AppExercisesFilters.allDisabledFiltersToString(),
-                  textAlign: TextAlign.start,
-                  color: Colors.grey,
-                  size: 16,
+            Visibility(
+              visible: !AppExercisesFilters.areAllDisabled() &&
+                  AppExercisesFilters.atLeastOneDisabled(),
+              child: Container(
+                padding:
+                    EdgeInsets.only(top: 5, left: 20, right: 20, bottom: 5),
+                alignment: Alignment.centerLeft,
+                child: InkWell(
+                  onTap: () async {
+                    FocusScope.of(context).unfocus();
+                    await showDialog(
+                      context: context,
+                      builder: (context) => FiltersDialog(),
+                    ).then((val) {
+                      if (val == true) refresh();
+                    });
+                  },
+                  child: StrongrText(
+                    !AppExercisesFilters.filterMode
+                        ? AppExercisesFilters.allEnabledFiltersToList()
+                                    .length ==
+                                1
+                            ? "Filtre : " +
+                                AppExercisesFilters.allEnabledFiltersToString()
+                            : "Filtres : " +
+                                AppExercisesFilters.allEnabledFiltersToString()
+                        : "Filtres : Tout sauf " +
+                            AppExercisesFilters.allDisabledFiltersToString(),
+                    textAlign: TextAlign.start,
+                    color: Colors.grey,
+                    size: 16,
+                  ),
                 ),
               ),
             ),
-          ),
-          Container(
-            height: 25,
-            child: Stack(
-              children: <Widget>[
-                Center(
-                  child: Divider(
-                    color: Colors.grey[350],
-                    height: 0,
-                    thickness: 1,
-                    indent: ScreenSize.width(context) / 4,
-                    endIndent: ScreenSize.width(context) / 4,
+            Container(
+              height: 25,
+              child: Stack(
+                children: <Widget>[
+                  Center(
+                    child: Divider(
+                      color: Colors.grey[350],
+                      height: 0,
+                      thickness: 1,
+                      indent: ScreenSize.width(context) / 4,
+                      endIndent: ScreenSize.width(context) / 4,
+                    ),
                   ),
-                ),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Container(
-                    margin: EdgeInsets.only(left: 25),
-                    width: 55,
-                    child: InkWell(
-                      onTap: () =>
-                          setState(() => sortedByAlpha = !sortedByAlpha),
-                      child: Row(
-                        children: <Widget>[
-                          Icon(
-                            sortedByAlpha
-                                ? Icons.keyboard_arrow_down
-                                : Icons.keyboard_arrow_up,
-                            color: Colors.black87,
-                          ),
-                          StrongrText(
-                            sortedByAlpha ? "A-Z" : "Z-A",
-                            color: Colors.black87,
-                            size: 14,
-                          ),
-                        ],
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Container(
+                      margin: EdgeInsets.only(left: 25),
+                      width: 55,
+                      child: InkWell(
+                        onTap: () =>
+                            setState(() => sortedByAlpha = !sortedByAlpha),
+                        child: Row(
+                          children: <Widget>[
+                            Icon(
+                              sortedByAlpha
+                                  ? Icons.keyboard_arrow_down
+                                  : Icons.keyboard_arrow_up,
+                              color: Colors.black87,
+                            ),
+                            StrongrText(
+                              sortedByAlpha ? "A-Z" : "Z-A",
+                              color: Colors.black87,
+                              size: 14,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          FutureBuilder(
-            future: futureAppExercisesList,
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    snapshot.data.length != 0
-                        ? SizedBox()
-                        : Container(
-                            alignment: Alignment.center,
-                            height: ScreenSize.height(context) / 1.75,
-                            child: StrongrText(
-                              "Impossible d'afficher les exercices",
-                              color: Colors.grey,
-                            ),
-                          ),
-                    resultCount(snapshot.data) != 0 || snapshot.data.length == 0
-                        ? Container(
-                            child: buildAppExercisesList(snapshot.data),
-                          )
-                        : Container(
-                            height: ScreenSize.height(context) / 1.75,
-                            child: Center(
+            FutureBuilder(
+              future: futureAppExercisesList,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      snapshot.data.length != 0
+                          ? SizedBox()
+                          : Container(
+                              alignment: Alignment.center,
+                              height: ScreenSize.height(context) / 1.75,
                               child: StrongrText(
-                                "Aucun résultat trouvé",
+                                "Impossible d'afficher les exercices",
                                 color: Colors.grey,
                               ),
                             ),
-                          ),
-                  ],
-                );
-              } else if (snapshot.hasError) {
-                return Text(snapshot.error, textAlign: TextAlign.center);
-              } else
-                return Container(
-                  alignment: Alignment.center,
-                  height: ScreenSize.height(context) / 1.75,
-                  child: CircularProgressIndicator(
-                    valueColor:
-                        AlwaysStoppedAnimation<Color>(StrongrColors.blue),
-                  ),
-                );
-            },
-          ),
-        ],
+                      resultCount(snapshot.data) != 0 ||
+                              snapshot.data.length == 0
+                          ? Container(
+                              child: buildAppExercisesList(snapshot.data),
+                            )
+                          : Container(
+                              height: ScreenSize.height(context) / 1.75,
+                              child: Center(
+                                child: StrongrText(
+                                  "Aucun résultat trouvé",
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ),
+                    ],
+                  );
+                } else if (snapshot.hasError) {
+                  return Text(snapshot.error, textAlign: TextAlign.center);
+                } else
+                  return Container(
+                    alignment: Alignment.center,
+                    height: ScreenSize.height(context) / 1.75,
+                    child: CircularProgressIndicator(
+                      valueColor:
+                          AlwaysStoppedAnimation<Color>(StrongrColors.blue),
+                    ),
+                  );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -31,11 +31,11 @@ class ProgramService {
   /// [GET] /program/[id]
   ///
   /// Retourne le détail d'une programme [id].
-  static Future<Program> getProgram({@required String id}) async {
+  static Future<Program> getProgram({@required int id}) async {
     try {
       Response response = await get(
         Uri.encodeFull(
-          Global.SERVER_URL + '/program/' + id,
+          Global.SERVER_URL + '/program/' + id.toString(),
         ),
         headers: {'Authorization': 'Bearer ' + Global.token},
       );

@@ -6,9 +6,11 @@ import 'package:strongr/utils/app_exercises_filters.dart';
 import 'package:strongr/utils/diacritics.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
+import 'package:strongr/utils/string_constants.dart';
 import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/widgets/dialogs/filters_dialog.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
+import 'package:strongr/widgets/strongr_snackbar_content.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
 import 'program_view.dart';
@@ -28,7 +30,7 @@ class _ProgramsViewState extends State<ProgramsView> {
   final globalKey = GlobalKey<ScaffoldState>();
   TextEditingController searchbarController;
   Future<List<ProgramPreview>> futurePrograms;
-  bool sortedByRecent, needToRefresh;
+  bool sortedByRecent, programChanges;
   // List<String> popupMenuItems;
 
   @override
@@ -36,7 +38,7 @@ class _ProgramsViewState extends State<ProgramsView> {
     searchbarController = TextEditingController(text: "");
     futurePrograms = ProgramService.getPrograms();
     sortedByRecent = true;
-    needToRefresh = false;
+    programChanges = false;
     // popupMenuItems = ["Filtres", "Créer"];
     super.initState();
   }
@@ -212,14 +214,47 @@ class _ProgramsViewState extends State<ProgramsView> {
                   ],
                 ),
                 onPressed: () {
+                  globalKey.currentState.hideCurrentSnackBar();
                   Navigator.pushNamed(
                     context,
                     PROGRAM_ROUTE,
                     arguments: ProgramView(
-                      id: item.id.toString(),
+                      id: item.id,
                       name: item.name,
                       programGoalName: item.programGoalName,
                     ),
+                  ).then(
+                    (value) {
+                      Map<String, bool> action;
+                      if (value != null)
+                        action = value;
+                      else
+                        action = {
+                          CREATE: false,
+                          UPDATE: false,
+                          DELETE: false,
+                        };
+                      if (action[CREATE] || action[UPDATE] || action[DELETE]) {
+                        refreshPrograms();
+                        if (action[DELETE]) {
+                          globalKey.currentState.hideCurrentSnackBar();
+                          globalKey.currentState.showSnackBar(
+                            SnackBar(
+                              content: StrongrSnackBarContent(
+                                message: "Programme supprimé avec succès",
+                              ),
+                              backgroundColor: StrongrColors.blue80,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(15),
+                                  topRight: Radius.circular(15),
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+                      }
+                    },
                   );
                 },
               ),
@@ -232,7 +267,7 @@ class _ProgramsViewState extends State<ProgramsView> {
   void refreshPrograms() async {
     setState(() {
       futurePrograms = ProgramService.getPrograms();
-      needToRefresh = true;
+      programChanges = true;
     });
   }
 
@@ -246,7 +281,7 @@ class _ProgramsViewState extends State<ProgramsView> {
         appBar: AppBar(
           centerTitle: true,
           leading: BackButton(
-            onPressed: () => Navigator.pop(context, needToRefresh),
+            onPressed: () => Navigator.pop(context, programChanges),
           ),
           title: Text("Vos programmes"),
           actions: <Widget>[
@@ -282,35 +317,19 @@ class _ProgramsViewState extends State<ProgramsView> {
             IconButton(
               icon: Icon(Icons.add),
               onPressed: () async {
+                globalKey.currentState.hideCurrentSnackBar();
                 await Navigator.pushNamed(
                   context,
                   PROGRAM_CREATE_ROUTE,
                 ).then(
-                  (programCreated) {
-                    if (programCreated) {
+                  (programChanges) {
+                    if (programChanges) {
                       refreshPrograms();
+                      globalKey.currentState.hideCurrentSnackBar();
                       globalKey.currentState.showSnackBar(
                         SnackBar(
-                          content: Container(
-                            height: 35,
-                            child: Stack(
-                              children: <Widget>[
-                                Container(
-                                  alignment: Alignment.centerLeft,
-                                  child: Icon(
-                                    Icons.check,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                Container(
-                                  alignment: Alignment.center,
-                                  child: StrongrText(
-                                    "Programme créé avec succès",
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ],
-                            ),
+                          content: StrongrSnackBarContent(
+                            message: "Programme créé avec succès",
                           ),
                           backgroundColor: StrongrColors.blue80,
                           shape: RoundedRectangleBorder(

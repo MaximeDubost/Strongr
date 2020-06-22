@@ -5,7 +5,7 @@ const pool = new Pool(
         port: 5432,
         user: 'postgres',
         password: 'root',
-        database: 'Strongit',
+        database: 'StrongrDB',
     });
 
 module.exports = {

@@ -15,6 +15,7 @@ import 'package:strongr/views/exercise/exercise_view.dart';
 import 'package:strongr/views/program/program_view.dart';
 import 'package:strongr/views/session/session_view.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
+import 'package:strongr/widgets/strongr_snackbar_content.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
 class Homepage extends StatefulWidget {
@@ -114,25 +115,13 @@ class _HomepageState extends State<Homepage> {
                 child: FlatButton(
                   onPressed: () async {
                     AppExercisesFilters.disableAll();
+                    globalKey.currentState.hideCurrentSnackBar();
                     await Navigator.pushNamed(
                       context,
                       EXERCISES_ROUTE,
                     ).then(
-                      (value) {
-                        Map<String, bool> action;
-                        if (value != null)
-                          action = value;
-                        else
-                          action = {
-                            CREATE: false,
-                            UPDATE: false,
-                            DELETE: false,
-                          };
-                        if (action[CREATE] ||
-                            action[UPDATE] ||
-                            action[DELETE]) {
-                          refreshExercises();
-                        }
+                      (exerciseChanges) {
+                        if (exerciseChanges) refreshExercises();
                       },
                     );
                   },
@@ -398,6 +387,7 @@ class _HomepageState extends State<Homepage> {
                                   ],
                                 ),
                                 onPressed: () {
+                                  globalKey.currentState.hideCurrentSnackBar();
                                   Navigator.pushNamed(
                                     context,
                                     EXERCISE_ROUTE,
@@ -422,30 +412,15 @@ class _HomepageState extends State<Homepage> {
                                           action[DELETE]) {
                                         refreshExercises();
                                         if (action[DELETE]) {
+                                          refreshSessions();
+                                          refreshPrograms();
+                                          globalKey.currentState
+                                              .hideCurrentSnackBar();
                                           globalKey.currentState.showSnackBar(
                                             SnackBar(
-                                              content: Container(
-                                                height: 35,
-                                                child: Stack(
-                                                  children: <Widget>[
-                                                    Container(
-                                                      alignment:
-                                                          Alignment.centerLeft,
-                                                      child: Icon(
-                                                        Icons.check,
-                                                        color: Colors.white,
-                                                      ),
-                                                    ),
-                                                    Container(
-                                                      alignment:
-                                                          Alignment.center,
-                                                      child: StrongrText(
-                                                        "Exercice supprimé avec succès",
-                                                        color: Colors.white,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
+                                              content: StrongrSnackBarContent(
+                                                message:
+                                                    "Exercice supprimé avec succès",
                                               ),
                                               backgroundColor:
                                                   StrongrColors.blue80,
@@ -488,14 +463,13 @@ class _HomepageState extends State<Homepage> {
               child: Container(
                 child: FlatButton(
                   onPressed: () {
+                    globalKey.currentState.hideCurrentSnackBar();
                     Navigator.pushNamed(
                       context,
                       SESSIONS_ROUTE,
                     ).then(
-                      (sessionCreated) {
-                        if (sessionCreated) {
-                          refreshSessions();
-                        }
+                      (sessionChanges) {
+                        if (sessionChanges) refreshSessions();
                       },
                     );
                   },
@@ -757,14 +731,53 @@ class _HomepageState extends State<Homepage> {
                                   ],
                                 ),
                                 onPressed: () {
+                                  globalKey.currentState.hideCurrentSnackBar();
                                   Navigator.pushNamed(
                                     context,
                                     SESSION_ROUTE,
                                     arguments: SessionView(
-                                      id: item.id.toString(),
+                                      id: item.id,
                                       name: item.name,
                                       sessionTypeName: item.sessionTypeName,
                                     ),
+                                  ).then(
+                                    (value) {
+                                      Map<String, bool> action;
+                                      if (value != null)
+                                        action = value;
+                                      else
+                                        action = {
+                                          CREATE: false,
+                                          UPDATE: false,
+                                          DELETE: false,
+                                        };
+                                      if (action[CREATE] ||
+                                          action[UPDATE] ||
+                                          action[DELETE]) {
+                                        refreshSessions();
+                                        if (action[DELETE]) {
+                                          refreshPrograms();
+                                          globalKey.currentState
+                                              .hideCurrentSnackBar();
+                                          globalKey.currentState.showSnackBar(
+                                            SnackBar(
+                                              content: StrongrSnackBarContent(
+                                                message:
+                                                    "Séance supprimée avec succès",
+                                              ),
+                                              backgroundColor:
+                                                  StrongrColors.blue80,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.only(
+                                                  topLeft: Radius.circular(15),
+                                                  topRight: Radius.circular(15),
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                      }
+                                    },
                                   );
                                 },
                               ),
@@ -792,14 +805,13 @@ class _HomepageState extends State<Homepage> {
               child: Container(
                 child: FlatButton(
                   onPressed: () {
+                    globalKey.currentState.hideCurrentSnackBar();
                     Navigator.pushNamed(
                       context,
                       PROGRAMS_ROUTE,
                     ).then(
-                      (programCreated) {
-                        if (programCreated) {
-                          refreshPrograms();
-                        }
+                      (programChanges) {
+                        if (programChanges) refreshPrograms();
                       },
                     );
                   },
@@ -1061,14 +1073,52 @@ class _HomepageState extends State<Homepage> {
                                   ],
                                 ),
                                 onPressed: () {
+                                  globalKey.currentState.hideCurrentSnackBar();
                                   Navigator.pushNamed(
                                     context,
                                     PROGRAM_ROUTE,
                                     arguments: ProgramView(
-                                      id: item.id.toString(),
+                                      id: item.id,
                                       name: item.name,
                                       programGoalName: item.programGoalName,
                                     ),
+                                  ).then(
+                                    (value) {
+                                      Map<String, bool> action;
+                                      if (value != null)
+                                        action = value;
+                                      else
+                                        action = {
+                                          CREATE: false,
+                                          UPDATE: false,
+                                          DELETE: false,
+                                        };
+                                      if (action[CREATE] ||
+                                          action[UPDATE] ||
+                                          action[DELETE]) {
+                                        refreshPrograms();
+                                        if (action[DELETE]) {
+                                          globalKey.currentState
+                                              .hideCurrentSnackBar();
+                                          globalKey.currentState.showSnackBar(
+                                            SnackBar(
+                                              content: StrongrSnackBarContent(
+                                                message:
+                                                    "Programme supprimé avec succès",
+                                              ),
+                                              backgroundColor:
+                                                  StrongrColors.blue80,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.only(
+                                                  topLeft: Radius.circular(15),
+                                                  topRight: Radius.circular(15),
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                      }
+                                    },
                                   );
                                 },
                               ),

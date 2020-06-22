@@ -10,6 +10,7 @@ import 'package:strongr/utils/time_formater.dart';
 import 'package:strongr/views/app_exercise/app_exercise_view.dart';
 import 'package:strongr/widgets/dialogs/delete_dialog.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
+import 'package:strongr/widgets/strongr_snackbar_content.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
 class ExerciseView extends StatefulWidget {
@@ -100,55 +101,38 @@ class _ExerciseViewState extends State<ExerciseView> {
             SizedBox(height: 15),
           ],
         ),
-        onPressed: () {
-          Navigator.pop(context, true);
-        },
+        onPressed: () => Navigator.pop(context, true),
       ),
-    ).then((delete) async {
-      if (delete) {
-        setState(() {
-          editButtonsEnabled = false;
-        });
-        int statusCode = await ExerciseService.deleteExercise(id: widget.id);
-        if (statusCode == 200) {
-          Navigator.pop(context, {
-            CREATE: false,
-            UPDATE: false,
-            DELETE: true,
-          });
-        } else {
-          globalKey.currentState.showSnackBar(
-            SnackBar(
-              content: Container(
-                height: 35,
-                child: Stack(
-                  children: <Widget>[
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      child: Icon(
-                        Icons.close,
-                        color: Colors.white,
-                      ),
-                    ),
-                    Container(
-                      alignment: Alignment.center,
-                      child: StrongrText(
-                        "Erreur : échec de la suppression",
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
+    ).then(
+      (delete) async {
+        if (delete) {
+          setState(() => editButtonsEnabled = false);
+          int statusCode = await ExerciseService.deleteExercise(id: widget.id);
+          if (statusCode == 200)
+            Navigator.pop(context, {
+              CREATE: false,
+              UPDATE: false,
+              DELETE: true,
+            });
+          else {
+            globalKey.currentState.hideCurrentSnackBar();
+            globalKey.currentState.showSnackBar(
+              SnackBar(
+                content: StrongrSnackBarContent(
+                  icon: Icons.close,
+                  message: "Échec lors de la suppression de l'exercice",
+                ),
+                backgroundColor: Colors.red.withOpacity(0.8),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(15)),
                 ),
               ),
-              backgroundColor: Colors.red.withOpacity(0.8),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(15)),
-              ),
-            ),
-          );
+            );
+            setState(() => editButtonsEnabled = true);
+          }
         }
-      }
-    });
+      },
+    );
   }
 
   List<Widget> buildSetList({List setList}) {
@@ -336,14 +320,14 @@ class _ExerciseViewState extends State<ExerciseView> {
                         Container(
                           width: 35,
                           child: RawMaterialButton(
-                            onPressed: editButtonsEnabled ? () {} : null,
+                            shape: CircleBorder(),
                             child: Icon(
                               Icons.close,
                               color: !editButtonsEnabled
                                   ? Colors.grey
                                   : Colors.red[800],
                             ),
-                            shape: CircleBorder(),
+                            onPressed: editButtonsEnabled ? () {} : null,
                           ),
                         ),
                       ],

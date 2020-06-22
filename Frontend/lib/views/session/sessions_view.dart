@@ -6,10 +6,12 @@ import 'package:strongr/utils/app_exercises_filters.dart';
 import 'package:strongr/utils/diacritics.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
+import 'package:strongr/utils/string_constants.dart';
 import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/views/session/session_view.dart';
 import 'package:strongr/widgets/dialogs/filters_dialog.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
+import 'package:strongr/widgets/strongr_snackbar_content.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
 class SessionsView extends StatefulWidget {
@@ -29,7 +31,7 @@ class _SessionsViewState extends State<SessionsView> {
   final globalKey = GlobalKey<ScaffoldState>();
   TextEditingController searchbarController;
   Future<List<SessionPreview>> futureSessions;
-  bool sortedByRecent, needToRefresh;
+  bool sortedByRecent, sessionChanges;
   // List<String> popupMenuItems;
 
   @override
@@ -37,7 +39,7 @@ class _SessionsViewState extends State<SessionsView> {
     searchbarController = TextEditingController(text: "");
     futureSessions = SessionService.getSessions();
     sortedByRecent = true;
-    needToRefresh = false;
+    sessionChanges = false;
     // popupMenuItems = ["Filtres", "Créer"];
     super.initState();
   }
@@ -224,11 +226,12 @@ class _SessionsViewState extends State<SessionsView> {
                               child: RawMaterialButton(
                                 shape: CircleBorder(),
                                 onPressed: () {
+                                  globalKey.currentState.hideCurrentSnackBar();
                                   Navigator.pushNamed(
                                     context,
                                     SESSION_ROUTE,
                                     arguments: SessionView(
-                                      id: item.id.toString(),
+                                      id: item.id,
                                       name: item.name,
                                       sessionTypeName: item.sessionTypeName,
                                       fromProgram: true,
@@ -245,15 +248,50 @@ class _SessionsViewState extends State<SessionsView> {
                   ],
                 ),
                 onPressed: () {
+                  globalKey.currentState.hideCurrentSnackBar();
                   !widget.fromProgramCreation
                       ? Navigator.pushNamed(
                           context,
                           SESSION_ROUTE,
                           arguments: SessionView(
-                            id: item.id.toString(),
+                            id: item.id,
                             name: item.name,
                             sessionTypeName: item.sessionTypeName,
                           ),
+                        ).then(
+                          (value) {
+                            Map<String, bool> action;
+                            if (value != null)
+                              action = value;
+                            else
+                              action = {
+                                CREATE: false,
+                                UPDATE: false,
+                                DELETE: false,
+                              };
+                            if (action[CREATE] ||
+                                action[UPDATE] ||
+                                action[DELETE]) {
+                              refreshSessions();
+                              if (action[DELETE]) {
+                                globalKey.currentState.hideCurrentSnackBar();
+                                globalKey.currentState.showSnackBar(
+                                  SnackBar(
+                                    content: StrongrSnackBarContent(
+                                      message: "Séance supprimée avec succès",
+                                    ),
+                                    backgroundColor: StrongrColors.blue80,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(15),
+                                        topRight: Radius.circular(15),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }
+                            }
+                          },
                         )
                       : Navigator.pop(
                           context,
@@ -277,7 +315,7 @@ class _SessionsViewState extends State<SessionsView> {
   void refreshSessions() async {
     setState(() {
       futureSessions = SessionService.getSessions();
-      needToRefresh = true;
+      sessionChanges = true;
     });
   }
 
@@ -292,7 +330,7 @@ class _SessionsViewState extends State<SessionsView> {
             ? AppBar(
                 centerTitle: true,
                 leading: BackButton(
-                  onPressed: () => Navigator.pop(context, needToRefresh),
+                  onPressed: () => Navigator.pop(context, sessionChanges),
                 ),
                 title: Text("Vos séances"),
                 actions: <Widget>[
@@ -328,35 +366,19 @@ class _SessionsViewState extends State<SessionsView> {
                   IconButton(
                     icon: Icon(Icons.add),
                     onPressed: () async {
+                      globalKey.currentState.hideCurrentSnackBar();
                       await Navigator.pushNamed(
                         context,
                         SESSION_CREATE_ROUTE,
                       ).then(
-                        (sessionCreated) {
-                          if (sessionCreated) {
+                        (sessionChanges) {
+                          if (sessionChanges) {
                             refreshSessions();
+                            globalKey.currentState.hideCurrentSnackBar();
                             globalKey.currentState.showSnackBar(
                               SnackBar(
-                                content: Container(
-                                  height: 35,
-                                  child: Stack(
-                                    children: <Widget>[
-                                      Container(
-                                        alignment: Alignment.centerLeft,
-                                        child: Icon(
-                                          Icons.check,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                      Container(
-                                        alignment: Alignment.center,
-                                        child: StrongrText(
-                                          "Séance créée avec succès",
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                content: StrongrSnackBarContent(
+                                  message: "Séance créée avec succès",
                                 ),
                                 backgroundColor: StrongrColors.blue80,
                                 shape: RoundedRectangleBorder(

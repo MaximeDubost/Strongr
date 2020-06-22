@@ -10,6 +10,7 @@ import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/views/session/session_view.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
 import 'package:strongr/widgets/strongr_rounded_textformfield.dart';
+import 'package:strongr/widgets/strongr_snackbar_content.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
 class ProgramCreateView extends StatefulWidget {
@@ -75,28 +76,12 @@ class _ProgramCreateViewState extends State<ProgramCreateView> {
         Navigator.pop(context, true);
       } else {
         try {
+          globalKey.currentState.hideCurrentSnackBar();
           globalKey.currentState.showSnackBar(
             SnackBar(
-              content: Container(
-                height: 35,
-                child: Stack(
-                  children: <Widget>[
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      child: Icon(
-                        Icons.close,
-                        color: Colors.white,
-                      ),
-                    ),
-                    Container(
-                      alignment: Alignment.center,
-                      child: StrongrText(
-                        "Erreur : échec de la création",
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
+              content: StrongrSnackBarContent(
+                icon: Icons.close,
+                message: "Échec lors de la création du programme",
               ),
               backgroundColor: Colors.red.withOpacity(0.8),
               shape: RoundedRectangleBorder(
@@ -485,7 +470,7 @@ class _ProgramCreateViewState extends State<ProgramCreateView> {
                       context,
                       SESSION_ROUTE,
                       arguments: SessionView(
-                        id: item.id.toString(),
+                        id: item.id,
                         name: item.name,
                         sessionTypeName: item.sessionTypeName,
                         fromProgram: false,

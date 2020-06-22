@@ -10,6 +10,7 @@ import 'package:strongr/widgets/dialogs/rest_time_dialog.dart';
 import 'package:strongr/widgets/dialogs/set_count_dialog.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
 import 'package:strongr/widgets/strongr_rounded_textformfield.dart';
+import 'package:strongr/widgets/strongr_snackbar_content.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 import 'package:strongr/models/Equipment.dart';
 import 'package:strongr/models/Set.dart';
@@ -139,28 +140,12 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
       if (statusCode == 201) {
         Navigator.pop(context, true);
       } else {
+        globalKey.currentState.hideCurrentSnackBar();
         globalKey.currentState.showSnackBar(
           SnackBar(
-            content: Container(
-              height: 35,
-              child: Stack(
-                children: <Widget>[
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    child: Icon(
-                      Icons.close,
-                      color: Colors.white,
-                    ),
-                  ),
-                  Container(
-                    alignment: Alignment.center,
-                    child: StrongrText(
-                      "Erreur : échec de la création",
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
+            content: StrongrSnackBarContent(
+              icon: Icons.close,
+              message: "Échec lors de la création de l'exercice",
             ),
             backgroundColor: Colors.red.withOpacity(0.8),
             shape: RoundedRectangleBorder(

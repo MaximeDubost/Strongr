@@ -8,6 +8,7 @@ import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/views/exercise/exercise_view.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
 import 'package:strongr/widgets/strongr_rounded_textformfield.dart';
+import 'package:strongr/widgets/strongr_snackbar_content.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
 class SessionCreateView extends StatefulWidget {
@@ -54,28 +55,12 @@ class _SessionCreateViewState extends State<SessionCreateView> {
       if (statusCode == 201) {
         Navigator.pop(context, true);
       } else {
+        globalKey.currentState.hideCurrentSnackBar();
         globalKey.currentState.showSnackBar(
           SnackBar(
-            content: Container(
-              height: 35,
-              child: Stack(
-                children: <Widget>[
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    child: Icon(
-                      Icons.close,
-                      color: Colors.white,
-                    ),
-                  ),
-                  Container(
-                    alignment: Alignment.center,
-                    child: StrongrText(
-                      "Erreur : échec de la création",
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
+            content: StrongrSnackBarContent(
+              icon: Icons.close,
+              message: "Échec lors de la création de la séance",
             ),
             backgroundColor: Colors.red.withOpacity(0.8),
             shape: RoundedRectangleBorder(
