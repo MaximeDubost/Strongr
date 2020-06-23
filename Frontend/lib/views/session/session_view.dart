@@ -34,7 +34,6 @@ class SessionView extends StatefulWidget {
 
 class _SessionViewState extends State<SessionView> {
   final globalKey = GlobalKey<ScaffoldState>();
-  GlobalKey<FormState> _key = GlobalKey();
   bool isEditMode, validateButtonEnabled, editButtonsEnabled, isEdited;
   Future<Session> futureSession;
   List<ExercisePreview> exercisesOfSession;
@@ -168,7 +167,10 @@ class _SessionViewState extends State<SessionView> {
           ),
         ),
       );
-      setState(() => isEditMode = false);
+      setState(() {
+        isEditMode = false;
+        isEdited = false;
+      } );
     } else {
       globalKey.currentState.hideCurrentSnackBar();
       globalKey.currentState.showSnackBar(
@@ -217,7 +219,6 @@ class _SessionViewState extends State<SessionView> {
         globalKey.currentState.hideCurrentSnackBar();
         globalKey.currentState.showSnackBar(
           SnackBar(
-            duration: Duration(seconds: 2),
             behavior: SnackBarBehavior.floating,
             content: GestureDetector(
               onVerticalDragStart: (_) => null,
@@ -563,6 +564,7 @@ class _SessionViewState extends State<SessionView> {
                 icon: Icon(Icons.close),
                 onPressed: () => setState(() {
                   isEditMode = false;
+                  isEdited = false;
                   futureSession = SessionService.getSession(id: widget.id);
                   exercisesOfSession = [];
                 }),
@@ -574,15 +576,17 @@ class _SessionViewState extends State<SessionView> {
                   ? IconButton(
                       icon: Icon(
                         Icons.check,
-                        color: !isEdited && !editButtonsEnabled ||
-                                exercisesOfSession.length <= 0
-                            ? Colors.grey
-                            : Colors.white,
+                        color: isEdited &&
+                                editButtonsEnabled &&
+                                exercisesOfSession.length != 0
+                            ? Colors.white
+                            : Colors.grey,
                       ),
-                      onPressed: !isEdited && !editButtonsEnabled ||
-                              exercisesOfSession.length <= 0
-                          ? null
-                          : () async => sendToServer(),
+                      onPressed: isEdited &&
+                              editButtonsEnabled &&
+                              exercisesOfSession.length != 0
+                          ? () async => sendToServer()
+                          : null,
                     )
                   : IconButton(
                       icon: Icon(

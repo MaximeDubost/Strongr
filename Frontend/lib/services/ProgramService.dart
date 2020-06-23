@@ -104,7 +104,7 @@ class ProgramService {
   /// Modifie le programme [id] d'un utilisateur.
   static Future<int> putProgram({
     @required int id,
-    @required int programGoalId,
+    @required String programGoalName,
     @required String name,
     @required List<SessionPreview> sessions,
   }) async {
@@ -118,7 +118,7 @@ class ProgramService {
           'Authorization': 'Bearer ' + Global.token
         },
         body: jsonEncode({
-          'id_program_goal': programGoalId,
+          'program_goal_name': programGoalName,
           'name': name,
           'sessions': sessions
         }),
