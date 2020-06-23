@@ -17,12 +17,10 @@ import 'exercise_view.dart';
 
 class ExercisesView extends StatefulWidget {
   final GlobalKey<dynamic> key;
-  final int id;
-  final String name;
   final bool fromSessionCreation;
 
   ExercisesView(
-      {this.key, this.id, this.name, this.fromSessionCreation = false});
+      {this.key, this.fromSessionCreation = false});
 
   @override
   _ExercisesViewState createState() => _ExercisesViewState();

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:strongr/models/ExercisePreview.dart';
 import 'package:strongr/models/Session.dart';
 import 'package:strongr/services/SessionService.dart';
 import 'package:strongr/utils/date_formater.dart';
@@ -33,13 +34,18 @@ class SessionView extends StatefulWidget {
 
 class _SessionViewState extends State<SessionView> {
   final globalKey = GlobalKey<ScaffoldState>();
-  bool isEditMode, editButtonsEnabled;
+  GlobalKey<FormState> _key = GlobalKey();
+  bool isEditMode, validateButtonEnabled, editButtonsEnabled, isEdited;
   Future<Session> futureSession;
+  List<ExercisePreview> exercisesOfSession;
+  TextEditingController sessionNameController;
 
   @override
   void initState() {
-    isEditMode = false;
+    sessionNameController = TextEditingController(text: "");
+    isEditMode = validateButtonEnabled = isEdited = false;
     editButtonsEnabled = true;
+    exercisesOfSession = List<ExercisePreview>();
     futureSession = SessionService.getSession(id: widget.id);
     super.initState();
   }
@@ -134,14 +140,381 @@ class _SessionViewState extends State<SessionView> {
     );
   }
 
-  List<Widget> buildExerciseList({List exerciseList}) {
+  // List<Widget> buildExerciseList({List newExerciseList}) {
+  //   List<Widget> builtExerciseList = [];
+  //   for (final item in newExerciseList)
+  //     builtExerciseList.add(
+  //       Container(
+  //         margin:
+  //             newExerciseList.indexOf(item) == 0 ? EdgeInsets.only(top: 5) : null,
+  //         key: ValueKey(newExerciseList.indexOf(item)),
+  //         padding: EdgeInsets.all(5),
+  //         height: 110,
+  //         child: StrongrRoundedContainer(
+  //           width: ScreenSize.width(context),
+  //           content: Row(
+  //             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  //             children: <Widget>[
+  //               Container(
+  //                 // color: Colors.red,
+  //                 width: 35,
+  //                 height: 110,
+  //                 child: Column(
+  //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                   children: <Widget>[
+  //                     Container(
+  //                       height: 30,
+  //                       // color: Colors.blue,
+  //                       child: RawMaterialButton(
+  //                         onPressed:
+  //                             editButtonsEnabled && isEditMode ? () {} : null,
+  //                         child: Icon(
+  //                           Icons.keyboard_arrow_up,
+  //                           color: !editButtonsEnabled
+  //                               ? Colors.grey
+  //                               : isEditMode
+  //                                   ? StrongrColors.black
+  //                                   : Colors.transparent,
+  //                         ),
+  //                         shape: CircleBorder(),
+  //                       ),
+  //                     ),
+  //                     Container(
+  //                       // color: Colors.yellow,
+  //                       width: 30,
+  //                       child: Center(
+  //                         child: StrongrText(
+  //                           item.place != null ? item.place.toString() : "-",
+  //                           color: isEditMode || item.place != null
+  //                               ? StrongrColors.black
+  //                               : Colors.grey,
+  //                           bold: true,
+  //                         ),
+  //                       ),
+  //                     ),
+  //                     Container(
+  //                       height: 30,
+  //                       // color: Colors.blue,
+  //                       child: RawMaterialButton(
+  //                         onPressed:
+  //                             editButtonsEnabled && isEditMode ? () {} : null,
+  //                         child: Icon(
+  //                           Icons.keyboard_arrow_down,
+  //                           color: !editButtonsEnabled
+  //                               ? Colors.grey
+  //                               : isEditMode
+  //                                   ? StrongrColors.black
+  //                                   : Colors.transparent,
+  //                         ),
+  //                         shape: CircleBorder(),
+  //                       ),
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ),
+  //               Flexible(
+  //                 child: Container(
+  //                   // color: Colors.red,
+  //                   child: Column(
+  //                     crossAxisAlignment: CrossAxisAlignment.start,
+  //                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  //                     children: <Widget>[
+  //                       Row(
+  //                         children: <Widget>[
+  //                           Container(
+  //                             padding: EdgeInsets.only(left: 5, right: 5),
+  //                             child: Icon(
+  //                               Icons.fitness_center,
+  //                               color:
+  //                                   isEditMode || item.appExerciseName == null
+  //                                       ? Colors.grey
+  //                                       : StrongrColors.black,
+  //                             ),
+  //                           ),
+  //                           Flexible(
+  //                             child: Container(
+  //                               // color: Colors.blue,
+  //                               child: StrongrText(
+  //                                 item.appExerciseName ?? "Aucun exercice",
+  //                                 color:
+  //                                     isEditMode || item.appExerciseName == null
+  //                                         ? Colors.grey
+  //                                         : StrongrColors.black,
+  //                                 textAlign: TextAlign.start,
+  //                                 maxLines: 2,
+  //                               ),
+  //                             ),
+  //                           ),
+  //                         ],
+  //                       ),
+  //                       Row(
+  //                         children: <Widget>[
+  //                           Container(
+  //                             padding: EdgeInsets.only(left: 5, right: 5),
+  //                             child: Icon(
+  //                               Icons.refresh,
+  //                               color: isEditMode ||
+  //                                       item.setCount == null ||
+  //                                       int.parse(item.setCount) < 1
+  //                                   ? Colors.grey
+  //                                   : StrongrColors.black,
+  //                             ),
+  //                           ),
+  //                           Flexible(
+  //                             child: Container(
+  //                               // width: 185,
+  //                               child: StrongrText(
+  //                                 item.setCount == null ||
+  //                                         int.parse(item.setCount) < 1
+  //                                     ? "Aucune série"
+  //                                     : item.setCount == 1
+  //                                         ? item.setCount + " série"
+  //                                         : item.setCount + " séries",
+  //                                 color: isEditMode ||
+  //                                         item.setCount == null ||
+  //                                         int.parse(item.setCount) < 1
+  //                                     ? Colors.grey
+  //                                     : StrongrColors.black,
+  //                                 textAlign: TextAlign.start,
+  //                                 maxLines: 1,
+  //                               ),
+  //                             ),
+  //                           ),
+  //                         ],
+  //                       ),
+  //                       Row(
+  //                         children: <Widget>[
+  //                           Container(
+  //                             padding: EdgeInsets.only(left: 5, right: 5),
+  //                             child: Icon(
+  //                               Icons.show_chart,
+  //                               color: isEditMode || item.tonnage == null
+  //                                   ? Colors.grey
+  //                                   : StrongrColors.black,
+  //                             ),
+  //                           ),
+  //                           Flexible(
+  //                             child: Container(
+  //                               // width: 185,
+  //                               child: StrongrText(
+  //                                 item.tonnage != null
+  //                                     ? "Tonnage de " + item.tonnage.toString()
+  //                                     : "Tonnage non calculé",
+  //                                 color: isEditMode || item.tonnage == null
+  //                                     ? Colors.grey
+  //                                     : StrongrColors.black,
+  //                                 textAlign: TextAlign.start,
+  //                                 maxLines: 1,
+  //                               ),
+  //                             ),
+  //                           ),
+  //                         ],
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ),
+  //               ),
+  //               !widget.fromProgramCreation
+  //                   ? !isEditMode
+  //                       ? Container(
+  //                           width: 35,
+  //                           height: 35,
+  //                           child: FloatingActionButton(
+  //                             elevation: 0,
+  //                             heroTag:
+  //                                 "fs_exercise_play_fab_" + item.id.toString(),
+  //                             tooltip: "Démarrer",
+  //                             backgroundColor: editButtonsEnabled
+  //                                 ? StrongrColors.blue
+  //                                 : Colors.grey,
+  //                             child: Icon(
+  //                               Icons.play_arrow,
+  //                               color: Colors.white,
+  //                             ),
+  //                             onPressed: editButtonsEnabled ? () {} : null,
+  //                           ),
+  //                         )
+  //                       : Container(
+  //                           width: 35,
+  //                           height: 35,
+  //                           child: RawMaterialButton(
+  //                             shape: CircleBorder(),
+  //                             child: Icon(
+  //                               Icons.close,
+  //                               color: editButtonsEnabled
+  //                                   ? Colors.red[800]
+  //                                   : Colors.grey,
+  //                             ),
+  //                             onPressed: editButtonsEnabled ? () {} : null,
+  //                           ),
+  //                         )
+  //                   : SizedBox(),
+  //             ],
+  //           ),
+  //           onPressed: editButtonsEnabled && !isEditMode
+  //               ? () {
+  //                   Navigator.pushNamed(
+  //                     context,
+  //                     EXERCISE_ROUTE,
+  //                     arguments: ExerciseView(
+  //                       id: item.id,
+  //                       name: item.name.toString(),
+  //                       appExerciseName: item.appExerciseName,
+  //                       fromSession: true,
+  //                       fromSessionCreation:
+  //                           widget.fromProgramCreation ? true : false,
+  //                     ),
+  //                   );
+  //                 }
+  //               : null,
+  //           onLongPressed:
+  //               editButtonsEnabled && !isEditMode && !widget.fromProgramCreation
+  //                   ? () => setState(() => isEditMode = true)
+  //                   : null,
+  //         ),
+  //       ),
+  //     );
+  //   return builtExerciseList;
+  // }
+
+  void sendToServer() async {
+    if (_key.currentState.validate()) {
+      _key.currentState.save();
+      // setState(() {
+      //   validateButtonEnabled = false;
+      //   editButtonsEnabled = false;
+      // });
+      // int statusCode = await SessionService.postSession(
+      //   name: sessionNameController.text == ""
+      //       ? "Séance perso."
+      //       : sessionNameController.text,
+      //   exercises: exercisesOfSession,
+      // );
+      // if (statusCode == 201) {
+      //   Navigator.pop(context, true);
+      // } else {
+      //   globalKey.currentState.hideCurrentSnackBar();
+      //   globalKey.currentState.showSnackBar(
+      //     SnackBar(
+      //       content: StrongrSnackBarContent(
+      //         icon: Icons.close,
+      //         message: "Échec lors de la création de la séance",
+      //       ),
+      //       backgroundColor: Colors.red.withOpacity(0.8),
+      //       shape: RoundedRectangleBorder(
+      //         borderRadius: BorderRadius.all(Radius.circular(15)),
+      //       ),
+      //     ),
+      //   );
+      //   setState(() {
+      //     validateButtonEnabled = true;
+      //     editButtonsEnabled = true;
+      //   });
+      // }
+    } else {
+      // Indiquer que le nombre d'exercice est nul.
+    }
+  }
+
+  void toggleCreateButton(List<dynamic> list) {
+    if (list.length < 1)
+      setState(() => validateButtonEnabled = false);
+    else
+      setState(() => validateButtonEnabled = true);
+  }
+
+  void addExercise(Object returnedExercise) {
+    if (returnedExercise != null) {
+      bool alreadyExists = false;
+      ExercisePreview exercise = returnedExercise;
+      for (final item in exercisesOfSession)
+        if (exercise.id == item.id) alreadyExists = true;
+      if (!alreadyExists) {
+        setState(() {
+          isEdited = true;
+          exercisesOfSession.add(returnedExercise);
+        });
+        exercisesOfSession[exercisesOfSession.length - 1].place =
+            exercisesOfSession.length;
+      } else {
+        globalKey.currentState.hideCurrentSnackBar();
+        globalKey.currentState.showSnackBar(
+          SnackBar(
+            duration: Duration(seconds: 2),
+            behavior: SnackBarBehavior.floating,
+            content: GestureDetector(
+              onVerticalDragStart: (_) => null,
+              child: InkWell(
+                onTap: () => globalKey.currentState.hideCurrentSnackBar(),
+                child: StrongrSnackBarContent(
+                  icon: Icons.close,
+                  message: "Cet exercice a déjà été ajouté",
+                ),
+              ),
+            ),
+            backgroundColor: Colors.red.withOpacity(0.8),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(15),
+              ),
+            ),
+          ),
+        );
+      }
+    }
+    toggleCreateButton(exercisesOfSession);
+  }
+
+  void deleteExercise(int index) {
+    setState(() {
+      isEdited = true;
+      exercisesOfSession.removeAt(index);
+      for (final item in exercisesOfSession)
+        item.place = exercisesOfSession.indexOf(item) + 1;
+    });
+    toggleCreateButton(exercisesOfSession);
+  }
+
+  void changePlaceOfExercise(int index, AxisDirection direction) {
+    switch (direction) {
+      case AxisDirection.up:
+      case AxisDirection.left:
+        if (index > 0) {
+          ExercisePreview transition = exercisesOfSession[index - 1];
+          setState(() {
+            isEdited = true;
+            exercisesOfSession[index - 1] = exercisesOfSession[index];
+            exercisesOfSession[index] = transition;
+            for (final item in exercisesOfSession)
+              item.place = exercisesOfSession.indexOf(item) + 1;
+          });
+        }
+        break;
+      case AxisDirection.right:
+      case AxisDirection.down:
+        if (index < exercisesOfSession.indexOf(exercisesOfSession.last)) {
+          ExercisePreview transition = exercisesOfSession[index + 1];
+          setState(() {
+            isEdited = true;
+            exercisesOfSession[index + 1] = exercisesOfSession[index];
+            exercisesOfSession[index] = transition;
+            for (final item in exercisesOfSession)
+              item.place = exercisesOfSession.indexOf(item) + 1;
+          });
+        }
+        break;
+    }
+  }
+
+  List<Widget> buildExerciseList({List newExerciseList}) {
     List<Widget> builtExerciseList = [];
-    for (final item in exerciseList)
+    for (final item in newExerciseList)
       builtExerciseList.add(
         Container(
-          margin:
-              exerciseList.indexOf(item) == 0 ? EdgeInsets.only(top: 5) : null,
-          key: ValueKey(exerciseList.indexOf(item)),
+          margin: newExerciseList.indexOf(item) == 0
+              ? EdgeInsets.only(top: 5)
+              : null,
+          key: ValueKey(item.id),
           padding: EdgeInsets.all(5),
           height: 110,
           child: StrongrRoundedContainer(
@@ -159,19 +532,42 @@ class _SessionViewState extends State<SessionView> {
                       Container(
                         height: 30,
                         // color: Colors.blue,
-                        child: RawMaterialButton(
-                          onPressed:
-                              editButtonsEnabled && isEditMode ? () {} : null,
-                          child: Icon(
-                            Icons.keyboard_arrow_up,
-                            color: !editButtonsEnabled
-                                ? Colors.grey
-                                : isEditMode
-                                    ? StrongrColors.black
-                                    : Colors.transparent,
-                          ),
-                          shape: CircleBorder(),
-                        ),
+                        child: isEditMode
+                            ? RawMaterialButton(
+                                onPressed: newExerciseList.indexOf(item) == 0 ||
+                                        !editButtonsEnabled
+                                    ? () {}
+                                    : () {
+                                        changePlaceOfExercise(
+                                          newExerciseList.indexOf(item),
+                                          AxisDirection.up,
+                                        );
+                                      },
+                                hoverColor:
+                                    newExerciseList.indexOf(item) == 0 ||
+                                            !editButtonsEnabled
+                                        ? Colors.transparent
+                                        : StrongrColors.greyE,
+                                splashColor:
+                                    newExerciseList.indexOf(item) == 0 ||
+                                            !editButtonsEnabled
+                                        ? Colors.transparent
+                                        : StrongrColors.greyD,
+                                enableFeedback:
+                                    newExerciseList.indexOf(item) == 0 ||
+                                            !editButtonsEnabled
+                                        ? false
+                                        : true,
+                                child: Icon(
+                                  Icons.keyboard_arrow_up,
+                                  color: newExerciseList.indexOf(item) == 0 ||
+                                          !editButtonsEnabled
+                                      ? Colors.grey
+                                      : StrongrColors.black,
+                                ),
+                                shape: CircleBorder(),
+                              )
+                            : null,
                       ),
                       Container(
                         // color: Colors.yellow,
@@ -179,7 +575,7 @@ class _SessionViewState extends State<SessionView> {
                         child: Center(
                           child: StrongrText(
                             item.place != null ? item.place.toString() : "-",
-                            color: isEditMode || item.place != null
+                            color: item.place != null
                                 ? StrongrColors.black
                                 : Colors.grey,
                             bold: true,
@@ -189,19 +585,49 @@ class _SessionViewState extends State<SessionView> {
                       Container(
                         height: 30,
                         // color: Colors.blue,
-                        child: RawMaterialButton(
-                          onPressed:
-                              editButtonsEnabled && isEditMode ? () {} : null,
-                          child: Icon(
-                            Icons.keyboard_arrow_down,
-                            color: !editButtonsEnabled
-                                ? Colors.grey
-                                : isEditMode
-                                    ? StrongrColors.black
-                                    : Colors.transparent,
-                          ),
-                          shape: CircleBorder(),
-                        ),
+                        child: isEditMode
+                            ? RawMaterialButton(
+                                onPressed: newExerciseList.indexOf(item) ==
+                                            newExerciseList.indexOf(
+                                                newExerciseList.last) ||
+                                        !editButtonsEnabled
+                                    ? () {}
+                                    : () {
+                                        changePlaceOfExercise(
+                                          newExerciseList.indexOf(item),
+                                          AxisDirection.down,
+                                        );
+                                      },
+                                hoverColor: newExerciseList.indexOf(item) ==
+                                            newExerciseList.indexOf(
+                                                newExerciseList.last) ||
+                                        !editButtonsEnabled
+                                    ? Colors.transparent
+                                    : StrongrColors.greyE,
+                                splashColor: newExerciseList.indexOf(item) ==
+                                            newExerciseList.indexOf(
+                                                newExerciseList.last) ||
+                                        !editButtonsEnabled
+                                    ? Colors.transparent
+                                    : StrongrColors.greyD,
+                                enableFeedback: newExerciseList.indexOf(item) ==
+                                            newExerciseList.indexOf(
+                                                newExerciseList.last) ||
+                                        !editButtonsEnabled
+                                    ? false
+                                    : true,
+                                child: Icon(
+                                  Icons.keyboard_arrow_down,
+                                  color: newExerciseList.indexOf(item) ==
+                                              newExerciseList.indexOf(
+                                                  newExerciseList.last) ||
+                                          !editButtonsEnabled
+                                      ? Colors.grey
+                                      : StrongrColors.black,
+                                ),
+                                shape: CircleBorder(),
+                              )
+                            : null,
                       ),
                     ],
                   ),
@@ -219,10 +645,9 @@ class _SessionViewState extends State<SessionView> {
                               padding: EdgeInsets.only(left: 5, right: 5),
                               child: Icon(
                                 Icons.fitness_center,
-                                color:
-                                    isEditMode || item.appExerciseName == null
-                                        ? Colors.grey
-                                        : StrongrColors.black,
+                                color: item.appExerciseName == null
+                                    ? Colors.grey
+                                    : StrongrColors.black,
                               ),
                             ),
                             Flexible(
@@ -230,10 +655,9 @@ class _SessionViewState extends State<SessionView> {
                                 // color: Colors.blue,
                                 child: StrongrText(
                                   item.appExerciseName ?? "Aucun exercice",
-                                  color:
-                                      isEditMode || item.appExerciseName == null
-                                          ? Colors.grey
-                                          : StrongrColors.black,
+                                  color: item.appExerciseName == null
+                                      ? Colors.grey
+                                      : StrongrColors.black,
                                   textAlign: TextAlign.start,
                                   maxLines: 2,
                                 ),
@@ -247,8 +671,7 @@ class _SessionViewState extends State<SessionView> {
                               padding: EdgeInsets.only(left: 5, right: 5),
                               child: Icon(
                                 Icons.refresh,
-                                color: isEditMode ||
-                                        item.setCount == null ||
+                                color: item.setCount == null ||
                                         int.parse(item.setCount) < 1
                                     ? Colors.grey
                                     : StrongrColors.black,
@@ -264,8 +687,7 @@ class _SessionViewState extends State<SessionView> {
                                       : item.setCount == 1
                                           ? item.setCount + " série"
                                           : item.setCount + " séries",
-                                  color: isEditMode ||
-                                          item.setCount == null ||
+                                  color: item.setCount == null ||
                                           int.parse(item.setCount) < 1
                                       ? Colors.grey
                                       : StrongrColors.black,
@@ -282,7 +704,7 @@ class _SessionViewState extends State<SessionView> {
                               padding: EdgeInsets.only(left: 5, right: 5),
                               child: Icon(
                                 Icons.show_chart,
-                                color: isEditMode || item.tonnage == null
+                                color: item.tonnage == null
                                     ? Colors.grey
                                     : StrongrColors.black,
                               ),
@@ -294,7 +716,7 @@ class _SessionViewState extends State<SessionView> {
                                   item.tonnage != null
                                       ? "Tonnage de " + item.tonnage.toString()
                                       : "Tonnage non calculé",
-                                  color: isEditMode || item.tonnage == null
+                                  color: item.tonnage == null
                                       ? Colors.grey
                                       : StrongrColors.black,
                                   textAlign: TextAlign.start,
@@ -308,59 +730,40 @@ class _SessionViewState extends State<SessionView> {
                     ),
                   ),
                 ),
-                !widget.fromProgramCreation
-                    ? !isEditMode
-                        ? Container(
-                            width: 35,
-                            height: 35,
-                            child: FloatingActionButton(
-                              elevation: 0,
-                              heroTag:
-                                  "fs_exercise_play_fab_" + item.id.toString(),
-                              tooltip: "Démarrer",
-                              backgroundColor: editButtonsEnabled
-                                  ? StrongrColors.blue
-                                  : Colors.grey,
-                              child: Icon(
-                                Icons.play_arrow,
-                                color: Colors.white,
-                              ),
-                              onPressed: editButtonsEnabled ? () {} : null,
-                            ),
-                          )
-                        : Container(
-                            width: 35,
-                            height: 35,
-                            child: RawMaterialButton(
-                              shape: CircleBorder(),
-                              child: Icon(
-                                Icons.close,
-                                color: editButtonsEnabled
-                                    ? Colors.red[800]
-                                    : Colors.grey,
-                              ),
-                              onPressed: editButtonsEnabled ? () {} : null,
-                            ),
-                          )
-                    : SizedBox(),
+                Container(
+                  width: 35,
+                  height: 35,
+                  child: isEditMode
+                      ? RawMaterialButton(
+                          child: Icon(
+                            Icons.close,
+                            color: editButtonsEnabled
+                                ? Colors.red[800]
+                                : Colors.grey,
+                          ),
+                          shape: CircleBorder(),
+                          onPressed: editButtonsEnabled
+                              ? () {
+                                  deleteExercise(newExerciseList.indexOf(item));
+                                }
+                              : null,
+                        )
+                      : null,
+                ),
               ],
             ),
-            onPressed: editButtonsEnabled && !isEditMode
-                ? () {
-                    Navigator.pushNamed(
-                      context,
-                      EXERCISE_ROUTE,
-                      arguments: ExerciseView(
-                        id: item.id,
-                        name: item.name.toString(),
-                        appExerciseName: item.appExerciseName,
-                        fromSession: true,
-                        fromSessionCreation:
-                            widget.fromProgramCreation ? true : false,
-                      ),
-                    );
-                  }
-                : null,
+            onPressed: () {
+              Navigator.pushNamed(
+                context,
+                EXERCISE_ROUTE,
+                arguments: ExerciseView(
+                  id: item.id,
+                  name: item.name.toString(),
+                  appExerciseName: item.appExerciseName.toString(),
+                  fromSessionCreation: true,
+                ),
+              );
+            },
             onLongPressed:
                 editButtonsEnabled && !isEditMode && !widget.fromProgramCreation
                     ? () => setState(() => isEditMode = true)
@@ -381,7 +784,11 @@ class _SessionViewState extends State<SessionView> {
         leading: isEditMode
             ? IconButton(
                 icon: Icon(Icons.close),
-                onPressed: () => setState(() => isEditMode = false),
+                onPressed: () => setState(() {
+                  isEditMode = false;
+                  futureSession = SessionService.getSession(id: widget.id);
+                  exercisesOfSession = [];
+                }),
               )
             : BackButton(),
         actions: <Widget>[
@@ -390,9 +797,38 @@ class _SessionViewState extends State<SessionView> {
                   ? IconButton(
                       icon: Icon(
                         Icons.check,
-                        color: !editButtonsEnabled ? Colors.grey : Colors.white,
+                        color: !isEdited && !editButtonsEnabled ||
+                                exercisesOfSession.length <= 0
+                            ? Colors.grey
+                            : Colors.white,
                       ),
-                      onPressed: () {},
+                      onPressed: !isEdited && !editButtonsEnabled ||
+                              exercisesOfSession.length <= 0
+                          ? null
+                          : () {
+                              setState(() {
+                                isEditMode = false;
+                                // TODO : UPDATE in sendToServer() method
+                                futureSession =
+                                    SessionService.getSession(id: widget.id);
+                              });
+                              // Here
+                              globalKey.currentState.hideCurrentSnackBar();
+                              globalKey.currentState.showSnackBar(
+                                SnackBar(
+                                  behavior: SnackBarBehavior.floating,
+                                  content: StrongrSnackBarContent(
+                                    message: "Exercice mis à jour avec succès",
+                                  ),
+                                  backgroundColor: StrongrColors.blue80,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(15),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
                     )
                   : IconButton(
                       icon: Icon(
@@ -479,10 +915,19 @@ class _SessionViewState extends State<SessionView> {
                 future: futureSession,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
+                    // print("");
+                    // print("=====================");
+                    // print("");
+                    // print("=== exercisesOfSession ===");
+                    // for(final item in exercisesOfSession) print(item);
+                    // print("=== snapshot.data.exercises ===");
+                    // for(final item in snapshot.data.exercises) print(item);
+                    // exercisesOfSession = snapshot.data.exercises;
+                    exercisesOfSession = snapshot.data.exercises;
                     return ListView(
                       physics: BouncingScrollPhysics(),
                       children: buildExerciseList(
-                          exerciseList: snapshot.data.exercises),
+                          newExerciseList: exercisesOfSession),
                     );
                     // return Center(
                     //   child: Text(snapshot.data.toString()),
@@ -566,7 +1011,9 @@ class _SessionViewState extends State<SessionView> {
                   child: FloatingActionButton.extended(
                     heroTag: "add_fab",
                     backgroundColor:
-                        !editButtonsEnabled ? Colors.grey : StrongrColors.black,
+                        !editButtonsEnabled || exercisesOfSession.length >= 20
+                            ? Colors.grey
+                            : StrongrColors.black,
                     label: StrongrText(
                       "Nouvel exercice",
                       color: Colors.white,
@@ -575,7 +1022,15 @@ class _SessionViewState extends State<SessionView> {
                       Icons.add,
                       color: Colors.white,
                     ),
-                    onPressed: editButtonsEnabled ? () {} : null,
+                    onPressed:
+                        !editButtonsEnabled || exercisesOfSession.length >= 20
+                            ? null
+                            : () {
+                                Navigator.pushNamed(
+                                  context,
+                                  SESSION_NEW_EXERCISE_ROUTE,
+                                ).then(addExercise);
+                              },
                   ),
                 ),
               ),

@@ -230,7 +230,7 @@ class _HomepageState extends State<Homepage> {
                                                 item.name,
                                                 bold: true,
                                                 textAlign: TextAlign.start,
-                                                maxLines: 2,
+                                                maxLines: 1,
                                               ),
                                             ),
                                             Column(
@@ -597,7 +597,7 @@ class _HomepageState extends State<Homepage> {
                                                 item.name,
                                                 bold: true,
                                                 textAlign: TextAlign.start,
-                                                maxLines: 2,
+                                                maxLines: 1,
                                               ),
                                             ),
                                             Column(
@@ -964,7 +964,7 @@ class _HomepageState extends State<Homepage> {
                                                 item.name,
                                                 bold: true,
                                                 textAlign: TextAlign.start,
-                                                maxLines: 2,
+                                                maxLines: 1,
                                               ),
                                             ),
                                             Column(
