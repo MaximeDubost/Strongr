@@ -114,7 +114,8 @@ repository.updateSession = async (req) => {
         sql = "INSERT INTO _session_exercise (id_user, id_user_1, id_session, id_exercise, id_app_exercise, place) VALUES ($1,$2,$3,$4,$5,$6)"
         req.body.exercises.forEach(async exercise => {
             let exercises_parsed = JSON.parse(exercise)
-            let result = await clt.query("SELECT id_app_exercise FROM _app_exercise WHERE name = $1", [exercise.appExerciseName])
+            let result = await clt.query("SELECT id_app_exercise FROM _app_exercise WHERE name = $1", [exercises_parsed.appExerciseName])
+            console.log(result);
             await clt.query(sql, [req.user.id, req.user.id, req.params.id_session, exercises_parsed.id, result.rows[0].id_app_exercise, exercises_parsed.place])
         })
         return 200
