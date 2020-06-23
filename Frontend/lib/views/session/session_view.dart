@@ -141,60 +141,56 @@ class _SessionViewState extends State<SessionView> {
   }
 
   void sendToServer() async {
-    if (_key.currentState.validate()) {
-      _key.currentState.save();
-      setState(() {
-        validateButtonEnabled = false;
-        editButtonsEnabled = false;
-      });
-      int statusCode = await SessionService.putSession(
-        id: widget.id,
-        name: widget.name,
-        exercises: exercisesOfSession,
+    setState(() {
+      validateButtonEnabled = false;
+      editButtonsEnabled = false;
+    });
+    int statusCode = await SessionService.putSession(
+      id: widget.id,
+      name: widget.name,
+      exercises: exercisesOfSession,
+    );
+    // DEBUG
+    // statusCode = 0;
+    if (statusCode == 200) {
+      globalKey.currentState.hideCurrentSnackBar();
+      globalKey.currentState.showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          content: StrongrSnackBarContent(
+            message: "Séance mise à jour avec succès",
+          ),
+          backgroundColor: StrongrColors.blue80,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(15),
+            ),
+          ),
+        ),
       );
-      if (statusCode == 200) {
-        globalKey.currentState.hideCurrentSnackBar();
-        globalKey.currentState.showSnackBar(
-          SnackBar(
-            behavior: SnackBarBehavior.floating,
-            content: StrongrSnackBarContent(
-              message: "Séance mise à jour avec succès",
-            ),
-            backgroundColor: StrongrColors.blue80,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(
-                Radius.circular(15),
-              ),
-            ),
-          ),
-        );
-        setState(() => isEditMode = false);
-      }
-      else {
-        globalKey.currentState.hideCurrentSnackBar();
-        globalKey.currentState.showSnackBar(
-          SnackBar(
-            behavior: SnackBarBehavior.floating,
-            content: StrongrSnackBarContent(
-                icon: Icons.close,
-                message: "Échec lors de la mise à jour de la séance",
-              ),
-              backgroundColor: Colors.red.withOpacity(0.8),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(
-                Radius.circular(15),
-              ),
-            ),
-          ),
-        );
-      }
-      setState(() {
-        validateButtonEnabled = true;
-        editButtonsEnabled = true;
-      });
+      setState(() => isEditMode = false);
     } else {
-      // Indiquer que le nombre d'exercice est nul.
+      globalKey.currentState.hideCurrentSnackBar();
+      globalKey.currentState.showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          content: StrongrSnackBarContent(
+            icon: Icons.close,
+            message: "Échec lors de la mise à jour de la séance",
+          ),
+          backgroundColor: Colors.red.withOpacity(0.8),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(15),
+            ),
+          ),
+        ),
+      );
     }
+    setState(() {
+      validateButtonEnabled = true;
+      editButtonsEnabled = true;
+    });
   }
 
   void toggleCreateButton(List<dynamic> list) {
@@ -586,7 +582,7 @@ class _SessionViewState extends State<SessionView> {
                       onPressed: !isEdited && !editButtonsEnabled ||
                               exercisesOfSession.length <= 0
                           ? null
-                          : () => sendToServer(),
+                          : () async => sendToServer(),
                     )
                   : IconButton(
                       icon: Icon(
