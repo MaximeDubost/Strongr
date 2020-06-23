@@ -115,7 +115,7 @@ repository.deleteProgram = async (req) => {
 }
 
 repository.updateProgram = async (req) => {
-    let sql = "UPDATE _program SET name = $1, last_update = $2, id_progam_goal = $3 WHERE id_program = $4 AND id_user = $5"
+    let sql = "UPDATE _program SET name = $1, last_update = $2, id_program_goal = $3 WHERE id_program = $4 AND id_user = $5"
     try {
         await clt.query(sql, [req.body.name, new Date(), req.body.id_program_goal, req.params.id_program, req.user.id])
         let session_parsed = JSON.parse(req.body.sessions)
