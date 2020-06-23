@@ -59,10 +59,16 @@ repository.readExercises = async (req) => {
 
 /// UPDATE
 repository.updateExercise = async (req) => {
-    let date = new Date();
-    let sqlUpdateExercise = "UPDATE _exercise SET id_app_exercise=$1, name=$2, id_equipment=$3, last_update=$4 WHERE id_exercise=$5 AND id_user=$6"
+    let sql = "UPDATE _exercise SET name = $1, last_update = $2, id_equipment = $3 WHERE id_exercise = $4 AND id_app_exercise = $5 AND id_user = $6"
     try {
-        await clt.query(sqlUpdateExercise, [req.body.id_app_exercise, req.body.name, req.body.id_equipment, date, req.params.id_exercise, req.user.id])
+        await clt.query(sql, [req.body.name, new Date(), req.body.id_equipment, req.params.id_exercise, req.body.id_app_exercise, req.user.id])
+        let parsed_sets = JSON.parse(req.body.sets)
+        parsed_sets.forEach(async set => {
+            sql = "DELETE FROM _set WHERE id_user = $1 AND id_exercise = $3 AND id_app_exercise = $4 AND id_set = $5 "
+            await clt.query(sql, [req.user.id, req.params.id_exercise, req.body.id_app_exercise, set.id])
+            sql = "INSERT INTO _set (id_user, id_exercise, id_app_exercise, place, repetitions_count, rest_time) VALUES ($1,$2,$3,$4,$5,$6)"
+            await clt.query(sql, [req.user.id, req.params.id_exercise, req.body.id_app_exercise, set.place, set.repetitions_count, set.rest_time])
+        })
         return 200
     } catch (error) {
         console.log(error)
