@@ -110,9 +110,9 @@ repository.updateSession = async (req) => {
     try {
         await clt.query(sql, [req.body.name, new Date(), req.user.id, req.params.id_session])
         let exercises_parsed = JSON.parse(req.body.exercises)
+        sql = "DELETE FROM _session_exercise WHERE id_user = $1 AND id_user_1 = $2 AND id_session = $3 AND id_app_exercise = $5"
+        await clt.query(sql, [req.user.id, req.user.id, req.params.id_session, exercise.id_app_exercise])
         exercises_parsed.forEach(async exercise => {
-            sql = "DELETE FROM _session_exercise WHERE id_user = $1 AND id_user_1 = $2 AND id_session = $3 AND id_exercise = $4 AND id_app_exercise = $5"
-            await clt.query(sql, [req.user.id, req.user.id, req.params.id_session, exercise.id, exercise.id_app_exercise])
             sql = "INSERT INTO _session_exercise (id_user, id_user_1, id_session, id_exercise, id_app_exercise, place) VALUES ($1,$2,$3,$4,$5,$6)"
             await clt.query(sql, [req.user.id, req.user.id, req.params.id_session, exercise.id, exercise.id_app_exercise, exercise.place])
         })
