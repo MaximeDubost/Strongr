@@ -143,37 +143,55 @@ class _SessionViewState extends State<SessionView> {
   void sendToServer() async {
     if (_key.currentState.validate()) {
       _key.currentState.save();
-      // setState(() {
-      //   validateButtonEnabled = false;
-      //   editButtonsEnabled = false;
-      // });
-      // int statusCode = await SessionService.postSession(
-      //   name: sessionNameController.text == ""
-      //       ? "Séance perso."
-      //       : sessionNameController.text,
-      //   exercises: exercisesOfSession,
-      // );
-      // if (statusCode == 201) {
-      //   Navigator.pop(context, true);
-      // } else {
-      //   globalKey.currentState.hideCurrentSnackBar();
-      //   globalKey.currentState.showSnackBar(
-      //     SnackBar(
-      //       content: StrongrSnackBarContent(
-      //         icon: Icons.close,
-      //         message: "Échec lors de la création de la séance",
-      //       ),
-      //       backgroundColor: Colors.red.withOpacity(0.8),
-      //       shape: RoundedRectangleBorder(
-      //         borderRadius: BorderRadius.all(Radius.circular(15)),
-      //       ),
-      //     ),
-      //   );
-      //   setState(() {
-      //     validateButtonEnabled = true;
-      //     editButtonsEnabled = true;
-      //   });
-      // }
+      setState(() {
+        validateButtonEnabled = false;
+        editButtonsEnabled = false;
+      });
+      int statusCode = await SessionService.putSession(
+        id: widget.id,
+        name: widget.name,
+        exercises: exercisesOfSession,
+      );
+      if (statusCode == 200) {
+        globalKey.currentState.hideCurrentSnackBar();
+        globalKey.currentState.showSnackBar(
+          SnackBar(
+            behavior: SnackBarBehavior.floating,
+            content: StrongrSnackBarContent(
+              message: "Séance mise à jour avec succès",
+            ),
+            backgroundColor: StrongrColors.blue80,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(15),
+              ),
+            ),
+          ),
+        );
+        setState(() => isEditMode = false);
+      }
+      else {
+        globalKey.currentState.hideCurrentSnackBar();
+        globalKey.currentState.showSnackBar(
+          SnackBar(
+            behavior: SnackBarBehavior.floating,
+            content: StrongrSnackBarContent(
+                icon: Icons.close,
+                message: "Échec lors de la mise à jour de la séance",
+              ),
+              backgroundColor: Colors.red.withOpacity(0.8),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(15),
+              ),
+            ),
+          ),
+        );
+      }
+      setState(() {
+        validateButtonEnabled = true;
+        editButtonsEnabled = true;
+      });
     } else {
       // Indiquer que le nombre d'exercice est nul.
     }
@@ -568,30 +586,7 @@ class _SessionViewState extends State<SessionView> {
                       onPressed: !isEdited && !editButtonsEnabled ||
                               exercisesOfSession.length <= 0
                           ? null
-                          : () {
-                              setState(() {
-                                isEditMode = false;
-                                // TODO : UPDATE in sendToServer() method
-                                futureSession =
-                                    SessionService.getSession(id: widget.id);
-                              });
-                              // Here
-                              globalKey.currentState.hideCurrentSnackBar();
-                              globalKey.currentState.showSnackBar(
-                                SnackBar(
-                                  behavior: SnackBarBehavior.floating,
-                                  content: StrongrSnackBarContent(
-                                    message: "Exercice mis à jour avec succès",
-                                  ),
-                                  backgroundColor: StrongrColors.blue80,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(15),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
+                          : () => sendToServer(),
                     )
                   : IconButton(
                       icon: Icon(
