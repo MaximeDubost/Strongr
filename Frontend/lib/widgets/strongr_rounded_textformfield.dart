@@ -4,6 +4,8 @@ import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
 
 class StrongrRoundedTextFormField extends StatefulWidget {
+  final double fontSize;
+  final String initialValue;
   final bool enabled;
   final double width;
   final String hint;
@@ -23,6 +25,8 @@ class StrongrRoundedTextFormField extends StatefulWidget {
   final List<TextInputFormatter> inputFormatters;
 
   StrongrRoundedTextFormField({
+    this.fontSize,
+    this.initialValue,
     this.enabled = true,
     this.width,
     this.hint,
@@ -54,6 +58,8 @@ class _StrongrRoundedTextFormFieldState
     return Container(
       width: widget.width == null ? ScreenSize.width(context) : widget.width,
       child: TextFormField(
+        style: TextStyle(fontSize: widget.fontSize),
+        initialValue: widget.initialValue,
         enabled: widget.enabled,
         inputFormatters: widget.inputFormatters,
         controller: widget.controller,
