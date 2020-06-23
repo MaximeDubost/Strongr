@@ -1,8 +1,5 @@
 import Program from "../Models/Program"
-import DetailProgram from "../Models/DetailProgram"
-import SessionForProgram from "../Models/SessionForProgram"
 import clt from "../core/config/database";
-import SessionsForProgram from "../Models/SessionForProgram";
 
 const repository = {};
 
@@ -114,6 +111,24 @@ repository.deleteProgram = async (req) => {
         return 200
     } catch (error) {
         console.log(error)
+    }
+}
+
+repository.updateProgram = async (req) => {
+    let sql = "UPDATE _program SET name = $1, last_update = $2, id_progam_goal = $3 WHERE id_program = $4 AND id_user = $5"
+    try {
+        await clt.query(sql, [req.body.name, new Date(), req.body.id_program_goal, req.params.id_program, req.user.id])
+        let session_parsed = JSON.parse(req.body.sessions)
+        session_parsed.forEach(async session => {
+            sql = "DELETE FROM _program_session WHERE id_user = $1 AND id_user_1 = $2 AND id_program = $3 AND id_session = $4"
+            await clt.query(sql, [req.user.id, req.user.id, req.params.id_program, session.id])
+            sql = "INSERT INTO _program_session (id_user, id_user_1, id_program, id_session, place) VALUES ($1,$2,$3,$4,$5)"
+            await clt.query(sql, [req.user.id, req.user.id, req.params.id_program, session.id, session.place])
+        })
+        return 200
+    } catch (error) {
+        console.log(error)
+        return 501
     }
 }
 
