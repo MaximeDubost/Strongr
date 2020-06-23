@@ -63,9 +63,9 @@ repository.updateExercise = async (req) => {
     try {
         await clt.query(sql, [req.body.name, new Date(), req.body.id_equipment, req.params.id_exercise, req.body.id_app_exercise, req.user.id])
         let parsed_sets = JSON.parse(req.body.sets)
+        sql = "DELETE FROM _set WHERE id_user = $1 AND id_exercise = $3 AND id_app_exercise = $4"
+        await clt.query(sql, [req.user.id, req.params.id_exercise, req.body.id_app_exercise])
         parsed_sets.forEach(async set => {
-            sql = "DELETE FROM _set WHERE id_user = $1 AND id_exercise = $3 AND id_app_exercise = $4 AND id_set = $5 "
-            await clt.query(sql, [req.user.id, req.params.id_exercise, req.body.id_app_exercise, set.id])
             sql = "INSERT INTO _set (id_user, id_exercise, id_app_exercise, place, repetitions_count, rest_time) VALUES ($1,$2,$3,$4,$5,$6)"
             await clt.query(sql, [req.user.id, req.params.id_exercise, req.body.id_app_exercise, set.place, set.repetitions_count, set.rest_time])
         })
