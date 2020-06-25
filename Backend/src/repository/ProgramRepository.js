@@ -115,7 +115,8 @@ repository.deleteProgram = async (req) => {
 }
 
 repository.updateProgram = async (req) => {
-    let sql = "SELECT id_program_goal FROM _program_goal WHERE id_program_goal = $1";
+    console.log(req.body)
+    let sql = "SELECT id_program_goal FROM _program_goal WHERE name = $1";
     try {
         let result = await clt.query(sql, [req.body.program_goal_name])
         sql = "UPDATE _program SET name = $1, last_update = $2, id_program_goal = $3 WHERE id_program = $4 AND id_user = $5"

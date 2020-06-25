@@ -108,6 +108,9 @@ class ProgramService {
     @required String name,
     @required List<SessionPreview> sessions,
   }) async {
+    List<SessionPreview> definitiveSessions = List<SessionPreview>();
+    for (final item in sessions)
+      if (item.id != null) definitiveSessions.add(item);
     try {
       Response response = await put(
         Uri.encodeFull(
@@ -120,7 +123,7 @@ class ProgramService {
         body: jsonEncode({
           'program_goal_name': programGoalName,
           'name': name,
-          'sessions': sessions
+          'sessions': definitiveSessions
         }),
       );
       return response.statusCode;
