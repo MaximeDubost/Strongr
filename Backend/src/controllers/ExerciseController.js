@@ -45,4 +45,19 @@ controller.deleteExercise = async (req, res) => {
     res.status(200).json(rows)
 }
 
+controller.testInsertForDeleteExercise = async (req, res) => {
+    let rows = await ExerciseRepository.testInsertForDeleteExercise(req)
+    res.status(200).json(rows)
+}
+
+controller.deleteForTest = async (req, res) => {
+    let rows = await ExerciseRepository.deleteForTest(req)
+    res.status(200).json(rows)
+}
+
+controller.deleteExerciseAll = async (req, res) => {
+    let rows = await ExerciseRepository.deleteExerciseAll(req)
+    res.status(200).json(rows)
+}
+
 export default controller;

@@ -51,6 +51,9 @@ router.get("/exercises", middleware.checkAuth, ExerciseController.readExercises)
 router.get("/exercise/:id_exercise", middleware.checkAuth, ExerciseController.detailExercise);
 router.put("/exercise/:id_exercise", middleware.checkAuth, ExerciseController.updateExercise);
 router.delete("/exercise/:id_exercise", middleware.checkAuth, ExerciseController.deleteExercise);
+router.all("/exercise/insertForTestDelete", middleware.checkAuth, ExerciseController.testInsertForDeleteExercise);
+router.all("/exercise/deleteForTest", middleware.checkAuth, ExerciseController.deleteForTest);
+router.all("/exercise/deleteAll/:id_exercise", middleware.checkAuth, ExerciseController.deleteExerciseAll);
 
 /**
  * Session
