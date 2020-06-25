@@ -44,7 +44,7 @@ class _ExerciseViewState extends State<ExerciseView> {
 
   @override
   void initState() {
-    isEditMode = false;
+    isEditMode = validateButtonEnabled = isEdited = false;
     editButtonsEnabled = true;
     futureExercise = ExerciseService.getExercise(id: widget.id);
     setsOfExercise = List<Set>();
@@ -261,7 +261,7 @@ class _ExerciseViewState extends State<ExerciseView> {
       builtSetList.add(
         Container(
           margin: setList.indexOf(item) == 0 ? EdgeInsets.only(top: 5) : null,
-          key: ValueKey(item.id),
+          key: ValueKey(item.place),
           padding: EdgeInsets.all(5),
           height: 110,
           child: StrongrRoundedContainer(
@@ -283,7 +283,7 @@ class _ExerciseViewState extends State<ExerciseView> {
                             ? RawMaterialButton(
                                 onPressed: setList.indexOf(item) == 0 ||
                                         !editButtonsEnabled
-                                    ? () {}
+                                    ? null
                                     : () {
                                         changePlaceOfSet(
                                           setList.indexOf(item),
@@ -334,7 +334,7 @@ class _ExerciseViewState extends State<ExerciseView> {
                                 onPressed: setList.indexOf(item) ==
                                             setList.indexOf(setList.last) ||
                                         !editButtonsEnabled
-                                    ? () {}
+                                    ? null
                                     : () {
                                         changePlaceOfSet(
                                           setList.indexOf(item),
@@ -384,10 +384,11 @@ class _ExerciseViewState extends State<ExerciseView> {
                               padding: EdgeInsets.only(left: 5, right: 5),
                               child: Icon(
                                 Icons.autorenew,
-                                color: item.repetitionCount != null &&
-                                        item.repetitionCount != 0
-                                    ? StrongrColors.black
-                                    : Colors.grey,
+                                color:
+                                        item.restTime == null ||
+                                        item.restTime == 0
+                                    ? Colors.grey
+                                    : StrongrColors.black,
                               ),
                             ),
                             Flexible(
@@ -399,9 +400,9 @@ class _ExerciseViewState extends State<ExerciseView> {
                                       ? "Répétitions : " +
                                           item.repetitionCount.toString()
                                       : "Aucune répétition",
-                                  color: isEditMode ||
-                                          item.repetitionCount == null &&
-                                              item.repetitionCount == 0
+                                  color:
+                                          item.repetitionCount == null ||
+                                          item.repetitionCount == 0
                                       ? Colors.grey
                                       : StrongrColors.black,
                                   textAlign: TextAlign.start,
@@ -417,9 +418,10 @@ class _ExerciseViewState extends State<ExerciseView> {
                               child: Icon(
                                 Icons.hourglass_empty,
                                 color:
-                                    item.restTime != null && item.restTime != 0
-                                        ? StrongrColors.black
-                                        : Colors.grey,
+                                        item.restTime == null ||
+                                        item.restTime == 0
+                                    ? Colors.grey
+                                    : StrongrColors.black,
                               ),
                             ),
                             Flexible(
@@ -432,9 +434,9 @@ class _ExerciseViewState extends State<ExerciseView> {
                                             Duration(seconds: item.restTime),
                                           ).toString()
                                       : "Aucun temps de repos",
-                                  color: isEditMode ||
-                                          item.restTime == null &&
-                                              item.restTime == 0
+                                  color:
+                                          item.restTime == null ||
+                                          item.restTime == 0
                                       ? Colors.grey
                                       : StrongrColors.black,
                                   textAlign: TextAlign.start,
@@ -491,18 +493,7 @@ class _ExerciseViewState extends State<ExerciseView> {
                 ),
               ],
             ),
-            onPressed: () {
-              // Navigator.pushNamed(
-              //   context,
-              //   EXERCISE_ROUTE,
-              //   arguments: ExerciseView(
-              //     id: item.id,
-              //     name: item.name.toString(),
-              //     appExerciseName: item.appExerciseName.toString(),
-              //     fromSessionCreation: true,
-              //   ),
-              // );
-            },
+            onPressed: editButtonsEnabled ? () {} : null,
             onLongPressed:
                 editButtonsEnabled && !isEditMode && !widget.fromSessionCreation
                     ? () => setState(() => isEditMode = true)
@@ -537,10 +528,17 @@ class _ExerciseViewState extends State<ExerciseView> {
                   ? IconButton(
                       icon: Icon(
                         Icons.check,
-                        color: !editButtonsEnabled ? Colors.grey : Colors.white,
+                        color: isEdited &&
+                                validateButtonEnabled &&
+                                setsOfExercise.length != 0
+                            ? Colors.white
+                            : Colors.grey,
                       ),
-                      onPressed:
-                          editButtonsEnabled ? () => sendToServer() : null,
+                      onPressed: isEdited &&
+                              validateButtonEnabled &&
+                              setsOfExercise.length != 0
+                          ? () => sendToServer()
+                          : null,
                     )
                   : IconButton(
                       icon: Icon(
@@ -548,7 +546,10 @@ class _ExerciseViewState extends State<ExerciseView> {
                         color: !editButtonsEnabled ? Colors.grey : Colors.white,
                       ),
                       onPressed: editButtonsEnabled
-                          ? () => setState(() => isEditMode = true)
+                          ? () {
+                              globalKey.currentState.hideCurrentSnackBar();
+                              setState(() => isEditMode = true);
+                            }
                           : null,
                     )
               : SizedBox(),
@@ -628,156 +629,176 @@ class _ExerciseViewState extends State<ExerciseView> {
               height: 1,
               color: Colors.grey[350],
             ),
-            Container(
-              // color: Colors.red,
-              height: ScreenSize.height(context) / 1.6,
-              child: FutureBuilder(
-                future: futureExercise,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    try {
-                      equipmentId = snapshot.data.equipment.id;
-                    } catch (e) {
-                      equipmentId = null;
-                    }
-                    setsOfExercise = snapshot.data.sets;
-                    return ListView(
-                      physics: BouncingScrollPhysics(),
-                      children: buildSetList(setList: setsOfExercise),
-                    );
-                  }
-                  if (snapshot.hasError)
-                    return Text(snapshot.error, textAlign: TextAlign.center);
-                  else
-                    return Container(
-                      alignment: Alignment.center,
-                      height: ScreenSize.height(context) / 1.75,
-                      child: CircularProgressIndicator(
-                        valueColor:
-                            AlwaysStoppedAnimation<Color>(StrongrColors.blue),
-                      ),
-                    );
-                },
-              ),
-            ),
-            Container(
-              width: ScreenSize.width(context),
-              height: 1,
-              color: Colors.grey[350],
-            ),
-            FutureBuilder(
-              future: futureExercise,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return Visibility(
-                    visible: !isEditMode,
-                    child: Container(
-                      padding: EdgeInsets.all(10),
-                      width: ScreenSize.width(context),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          StrongrText(
-                            "Créé le " +
-                                DateFormater.format(
-                                    snapshot.data.creationDate.toString()) +
-                                " à " +
-                                DateFormater.format(
-                                  snapshot.data.creationDate.toString(),
-                                  timeOnly: true,
-                                ),
-                            color: Colors.grey,
-                            size: 16,
-                          ),
-                          StrongrText(
-                            snapshot.data.creationDate !=
-                                    snapshot.data.lastUpdate
-                                ? "Mis à jour le " +
-                                    DateFormater.format(
-                                        snapshot.data.lastUpdate.toString()) +
-                                    " à " +
-                                    DateFormater.format(
-                                      snapshot.data.lastUpdate.toString(),
-                                      timeOnly: true,
-                                    )
-                                : "",
-                            color: Colors.grey,
-                            size: 16,
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                }
-                if (snapshot.hasError)
-                  return Text(snapshot.error, textAlign: TextAlign.center);
-                else
-                  return Container();
-              },
-            ),
-            Visibility(
-              visible: isEditMode,
+            Flexible(
               child: Container(
-                padding: EdgeInsets.all(10),
-                width: ScreenSize.width(context),
-                child: Center(
-                  child: FloatingActionButton.extended(
-                    heroTag: "add_fab",
-                    backgroundColor:
-                        !editButtonsEnabled ? Colors.grey : StrongrColors.black,
-                    label: StrongrText(
-                      "Nouvelle série",
-                      color: Colors.white,
-                    ),
-                    icon: Icon(
-                      Icons.add,
-                      color: Colors.white,
-                    ),
-                    onPressed: editButtonsEnabled && setsOfExercise.length < 10
-                        ? () => showDialog(
-                              context: context,
-                              builder: (context) => NewSetDialog(
-                                repetitionCount: 10,
-                                restTime: Duration(seconds: 90),
-                              ),
-                            ).then((value) {
-                              Set returnedSet = Set(
-                                // place: setsOfExercise.length + 1,
-                                repetitionCount: value["repetitionCount"],
-                                restTime: value["restTime"].inSeconds,
-                              );
-                              addSet(returnedSet);
-                            })
-                        : null,
-                  ),
+                // color: Colors.red,
+                // height: 100,
+                // height: ScreenSize.height(context) / 1.6,
+                child: FutureBuilder(
+                  future: futureExercise,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      try {
+                        equipmentId = snapshot.data.equipment.id;
+                      } catch (e) {
+                        equipmentId = null;
+                      }
+                      setsOfExercise = snapshot.data.sets;
+                      return ListView(
+                        physics: BouncingScrollPhysics(),
+                        children: buildSetList(setList: setsOfExercise),
+                      );
+                    }
+                    if (snapshot.hasError)
+                      return Text(snapshot.error, textAlign: TextAlign.center);
+                    else
+                      return Container(
+                        alignment: Alignment.center,
+                        height: ScreenSize.height(context) / 1.75,
+                        child: CircularProgressIndicator(
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(StrongrColors.blue),
+                        ),
+                      );
+                  },
                 ),
               ),
             ),
           ],
         ),
       ),
-      floatingActionButton: !widget.fromSessionCreation
-          ? FloatingActionButton.extended(
-              heroTag: !widget.fromSession
-                  ? 'exercise_play_fab_' + widget.id.toString()
-                  : 'fs_exercise_play_fab_' + widget.id.toString(),
-              backgroundColor: !editButtonsEnabled
-                  ? Colors.grey
-                  : isEditMode ? Colors.red[800] : StrongrColors.blue,
-              icon: Icon(
-                isEditMode ? Icons.delete_outline : Icons.play_arrow,
-                color: Colors.white,
+      bottomNavigationBar: Container(
+        height: 140,
+        // color: Colors.blue,
+        child: Column(
+          // mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              width: ScreenSize.width(context),
+              height: 1,
+              color: Colors.grey[350],
+            ),
+            Container(
+              height: 70,
+              child: !isEditMode
+                  ? FutureBuilder(
+                      future: futureExercise,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return Container(
+                            padding: EdgeInsets.all(10),
+                            width: ScreenSize.width(context),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                StrongrText(
+                                  "Créé le " +
+                                      DateFormater.format(snapshot
+                                          .data.creationDate
+                                          .toString()) +
+                                      " à " +
+                                      DateFormater.format(
+                                        snapshot.data.creationDate.toString(),
+                                        timeOnly: true,
+                                      ),
+                                  color: Colors.grey,
+                                  size: 16,
+                                ),
+                                StrongrText(
+                                  snapshot.data.creationDate !=
+                                          snapshot.data.lastUpdate
+                                      ? "Mis à jour le " +
+                                          DateFormater.format(snapshot
+                                              .data.lastUpdate
+                                              .toString()) +
+                                          " à " +
+                                          DateFormater.format(
+                                            snapshot.data.lastUpdate.toString(),
+                                            timeOnly: true,
+                                          )
+                                      : "",
+                                  color: Colors.grey,
+                                  size: 16,
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+                        if (snapshot.hasError)
+                          return Text(
+                            snapshot.error,
+                            textAlign: TextAlign.center,
+                          );
+                        else
+                          return Container();
+                      },
+                    )
+                  : Container(
+                      padding: EdgeInsets.all(10),
+                      width: ScreenSize.width(context),
+                      child: Center(
+                        child: FloatingActionButton.extended(
+                          heroTag: "add_fab",
+                          backgroundColor:
+                              !editButtonsEnabled || setsOfExercise.length >= 10
+                                  ? Colors.grey
+                                  : StrongrColors.black,
+                          label: StrongrText(
+                            "Nouvelle série",
+                            color: Colors.white,
+                          ),
+                          icon: Icon(
+                            Icons.add,
+                            color: Colors.white,
+                          ),
+                          onPressed: !editButtonsEnabled ||
+                                  setsOfExercise.length >= 20
+                              ? null
+                              : () => showDialog(
+                                    context: context,
+                                    builder: (context) => NewSetDialog(
+                                      repetitionCount: 10,
+                                      restTime: Duration(seconds: 90),
+                                    ),
+                                  ).then((value) {
+                                    if (value != null) {
+                                      Set returnedSet = Set(
+                                        repetitionCount:
+                                            value["repetitionCount"],
+                                        restTime: value["restTime"].inSeconds,
+                                      );
+                                      addSet(returnedSet);
+                                    }
+                                  }),
+                        ),
+                      ),
+                    ),
+            ),
+            Visibility(
+              visible: !widget.fromSessionCreation,
+              child: FloatingActionButton.extended(
+                heroTag: !widget.fromSession
+                    ? 'exercise_play_fab_' + widget.id.toString()
+                    : 'fs_exercise_play_fab_' + widget.id.toString(),
+                backgroundColor: !editButtonsEnabled
+                    ? Colors.grey
+                    : isEditMode ? Colors.red[800] : StrongrColors.blue,
+                icon: Icon(
+                  isEditMode ? Icons.delete_outline : Icons.play_arrow,
+                  color: Colors.white,
+                ),
+                label: StrongrText(
+                  isEditMode ? "Supprimer" : "Démarrer",
+                  color: Colors.white,
+                ),
+                onPressed: editButtonsEnabled
+                    ? isEditMode ? () => showDeleteDialog() : () {}
+                    : null,
               ),
-              label: StrongrText(
-                isEditMode ? "Supprimer" : "Démarrer",
-                color: Colors.white,
-              ),
-              onPressed: editButtonsEnabled
-                  ? isEditMode ? () => showDeleteDialog() : () {}
-                  : null,
-            )
-          : null,
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
