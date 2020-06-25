@@ -319,10 +319,10 @@ class _ProgramViewState extends State<ProgramView> {
   }
 
   List<Widget> buildSessionList({List sessionList}) {
-    List<Widget> builtexerciseList = [];
+    List<Widget> builtSessionList = [];
     for (final item in sessionList)
       item.id != null
-          ? builtexerciseList.add(
+          ? builtSessionList.add(
               Container(
                 // color: Colors.blue,
                 margin: sessionList.indexOf(item) == 0
@@ -606,6 +606,7 @@ class _ProgramViewState extends State<ProgramView> {
                   ),
                   onPressed: () {
                     FocusScope.of(context).unfocus();
+                    globalKey.currentState.hideCurrentSnackBar();
                     Navigator.pushNamed(
                       context,
                       SESSION_ROUTE,
@@ -621,7 +622,7 @@ class _ProgramViewState extends State<ProgramView> {
                 ),
               ),
             )
-          : builtexerciseList.add(
+          : builtSessionList.add(
               Container(
                 // color: Colors.red,
                 margin: sessionList.indexOf(item) == 0
@@ -673,6 +674,7 @@ class _ProgramViewState extends State<ProgramView> {
                     onPressed: isEditMode
                         ? () {
                             FocusScope.of(context).unfocus();
+                            globalKey.currentState.hideCurrentSnackBar();
                             lastIndexPressed = sessionList.indexOf(item);
                             Navigator.pushNamed(
                                     context, PROGRAM_NEW_SESSION_ROUTE)
@@ -683,327 +685,8 @@ class _ProgramViewState extends State<ProgramView> {
                 ),
               ),
             );
-    return builtexerciseList;
+    return builtSessionList;
   }
-
-  // List<Widget> buildSessionList({List sessionList}) {
-  //   List<Widget> builtexerciseList = [];
-  //   for (final item in sessionList)
-  //     item.id != null
-  //         ? builtexerciseList.add(
-  //             Container(
-  //               margin: sessionList.indexOf(item) == 0
-  //                   ? EdgeInsets.only(top: 5)
-  //                   : null,
-  //               key: ValueKey(sessionList.indexOf(item)),
-  //               padding: EdgeInsets.all(5),
-  //               height: 110,
-  //               child: StrongrRoundedContainer(
-  //                 width: ScreenSize.width(context),
-  //                 borderColor:
-  //                     item.place == DateTime.now().weekday && !isEditMode
-  //                         ? StrongrColors.blue80
-  //                         : StrongrColors.greyD,
-  //                 borderWidth:
-  //                     item.place == DateTime.now().weekday && !isEditMode
-  //                         ? 3
-  //                         : 1,
-  //                 content: Row(
-  //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //                   children: <Widget>[
-  //                     // Container(
-  //                     //   // color: Colors.yellow,
-  //                     //   width: 50,
-  //                     //   child: Center(
-  //                     //     child: StrongrText(
-  //                     //       getShortWeekDay(i),
-  //                     //       bold: true,
-  //                     //     ),
-  //                     //   ),
-  //                     // ),
-  //                     Container(
-  //                       // color: Colors.red,
-  //                       width: 50,
-  //                       height: 110,
-  //                       child: Column(
-  //                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-  //                         children: <Widget>[
-  //                           Container(
-  //                             height: 30,
-  //                             // color: Colors.blue,
-  //                             child: RawMaterialButton(
-  //                               onPressed: editButtonsEnabled && isEditMode
-  //                                   ? () {}
-  //                                   : null,
-  //                               child: Icon(
-  //                                 Icons.keyboard_arrow_up,
-  //                                 color: !editButtonsEnabled
-  //                                     ? Colors.grey
-  //                                     : isEditMode
-  //                                         ? StrongrColors.black
-  //                                         : Colors.transparent,
-  //                               ),
-  //                               shape: CircleBorder(),
-  //                             ),
-  //                           ),
-  //                           Container(
-  //                             // color: Colors.yellow,
-  //                             width: 50,
-  //                             child: Center(
-  //                               child: StrongrText(
-  //                                 getShortWeekDay(item.place) ?? "-",
-  //                                 bold: true,
-  //                               ),
-  //                             ),
-  //                           ),
-  //                           Container(
-  //                             height: 30,
-  //                             // color: Colors.blue,
-  //                             child: RawMaterialButton(
-  //                               onPressed: editButtonsEnabled && isEditMode
-  //                                   ? () {}
-  //                                   : null,
-  //                               child: Icon(
-  //                                 Icons.keyboard_arrow_down,
-  //                                 color: !editButtonsEnabled
-  //                                     ? Colors.grey
-  //                                     : isEditMode
-  //                                         ? StrongrColors.black
-  //                                         : Colors.transparent,
-  //                               ),
-  //                               shape: CircleBorder(),
-  //                             ),
-  //                           ),
-  //                         ],
-  //                       ),
-  //                     ),
-  //                     Flexible(
-  //                       child: Container(
-  //                         // color: Colors.red,
-  //                         child: Column(
-  //                           crossAxisAlignment: CrossAxisAlignment.start,
-  //                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-  //                           children: <Widget>[
-  //                             Row(
-  //                               children: <Widget>[
-  //                                 Container(
-  //                                   padding: EdgeInsets.only(left: 5, right: 5),
-  //                                   child: Icon(
-  //                                     Icons.accessibility,
-  //                                     color: isEditMode ||
-  //                                             item.sessionTypeName == null
-  //                                         ? Colors.grey
-  //                                         : StrongrColors.black,
-  //                                   ),
-  //                                 ),
-  //                                 Flexible(
-  //                                   child: Container(
-  //                                     // color: Colors.blue,
-  //                                     child: StrongrText(
-  //                                       item.sessionTypeName ?? "Aucun type",
-  //                                       color: isEditMode ||
-  //                                               item.sessionTypeName == null
-  //                                           ? Colors.grey
-  //                                           : StrongrColors.black,
-  //                                       textAlign: TextAlign.start,
-  //                                       maxLines: 2,
-  //                                     ),
-  //                                   ),
-  //                                 ),
-  //                               ],
-  //                             ),
-  //                             Row(
-  //                               children: <Widget>[
-  //                                 Container(
-  //                                   padding: EdgeInsets.only(left: 5, right: 5),
-  //                                   child: Icon(
-  //                                     Icons.fitness_center,
-  //                                     color: isEditMode ||
-  //                                             item.exerciseCount == null ||
-  //                                             int.parse(item.exerciseCount) < 1
-  //                                         ? Colors.grey
-  //                                         : StrongrColors.black,
-  //                                   ),
-  //                                 ),
-  //                                 Flexible(
-  //                                   child: Container(
-  //                                     // width: 185,
-  //                                     child: StrongrText(
-  //                                       item.exerciseCount == null ||
-  //                                               int.parse(item.exerciseCount) <
-  //                                                   1
-  //                                           ? "Aucun exercice"
-  //                                           : item.exerciseCount == 1
-  //                                               ? item.exerciseCount +
-  //                                                   " exercice"
-  //                                               : item.exerciseCount +
-  //                                                   " exercices",
-  //                                       color: isEditMode ||
-  //                                               item.exerciseCount == null ||
-  //                                               int.parse(item.exerciseCount) <
-  //                                                   1
-  //                                           ? Colors.grey
-  //                                           : StrongrColors.black,
-  //                                       textAlign: TextAlign.start,
-  //                                       maxLines: 1,
-  //                                     ),
-  //                                   ),
-  //                                 ),
-  //                               ],
-  //                             ),
-  //                             Row(
-  //                               children: <Widget>[
-  //                                 Container(
-  //                                   padding: EdgeInsets.only(left: 5, right: 5),
-  //                                   child: Icon(
-  //                                     Icons.show_chart,
-  //                                     color: isEditMode || item.tonnage == null
-  //                                         ? Colors.grey
-  //                                         : StrongrColors.black,
-  //                                   ),
-  //                                 ),
-  //                                 Flexible(
-  //                                   child: Container(
-  //                                     // width: 185,
-  //                                     child: StrongrText(
-  //                                       item.tonnage != null
-  //                                           ? "Tonnage de " +
-  //                                               item.tonnage.toString()
-  //                                           : "Tonnage non calculé",
-  //                                       color:
-  //                                           isEditMode || item.tonnage == null
-  //                                               ? Colors.grey
-  //                                               : StrongrColors.black,
-  //                                       textAlign: TextAlign.start,
-  //                                       maxLines: 1,
-  //                                     ),
-  //                                   ),
-  //                                 ),
-  //                               ],
-  //                             ),
-  //                           ],
-  //                         ),
-  //                       ),
-  //                     ),
-  //                     Visibility(
-  //                       visible: isEditMode,
-  //                       child: Container(
-  //                         width: 35,
-  //                         child: RawMaterialButton(
-  //                           child: Icon(
-  //                             Icons.close,
-  //                             color: editButtonsEnabled
-  //                                 ? Colors.red[800]
-  //                                 : Colors.grey,
-  //                           ),
-  //                           onPressed: editButtonsEnabled ? () {} : null,
-  //                           shape: CircleBorder(),
-  //                         ),
-  //                       ),
-  //                     ),
-  //                     Visibility(
-  //                       visible: !isEditMode,
-  //                       child: Container(
-  //                         width: 35,
-  //                         height: 35,
-  //                         child: FloatingActionButton(
-  //                           elevation: 0,
-  //                           heroTag:
-  //                               "fp_session_play_fab_" + item.id.toString(),
-  //                           tooltip: "Démarrer",
-  //                           backgroundColor: editButtonsEnabled
-  //                               ? StrongrColors.blue
-  //                               : Colors.grey,
-  //                           child: Icon(
-  //                             Icons.play_arrow,
-  //                             color: Colors.white,
-  //                           ),
-  //                           onPressed: editButtonsEnabled ? () {} : null,
-  //                         ),
-  //                       ),
-  //                     )
-  //                   ],
-  //                 ),
-  //                 onPressed: editButtonsEnabled && !isEditMode
-  //                     ? () {
-  //                         Navigator.pushNamed(
-  //                           context,
-  //                           SESSION_ROUTE,
-  //                           arguments: SessionView(
-  //                             id: item.id,
-  //                             name: item.name,
-  //                             sessionTypeName: item.sessionTypeName,
-  //                             fromProgram: true,
-  //                           ),
-  //                         );
-  //                       }
-  //                     : null,
-  //                 onLongPressed: editButtonsEnabled && !isEditMode
-  //                     ? () => setState(() => isEditMode = true)
-  //                     : null,
-  //               ),
-  //             ),
-  //           )
-  //         : builtexerciseList.add(
-  //             Container(
-  //               margin: sessionList.indexOf(item) == 0
-  //                   ? EdgeInsets.only(top: 5)
-  //                   : null,
-  //               key: ValueKey(sessionList.indexOf(item)),
-  //               padding: EdgeInsets.all(5),
-  //               height: 110,
-  //               child: Container(
-  //                 width: ScreenSize.width(context) / 1.2,
-  //                 height: 60,
-  //                 margin: EdgeInsets.only(left: 5, right: 5),
-  //                 decoration: BoxDecoration(
-  //                   color: StrongrColors.greyE,
-  //                   border: Border.all(color: StrongrColors.greyD),
-  //                   borderRadius: BorderRadius.all(
-  //                     Radius.circular(25.0),
-  //                   ),
-  //                 ),
-  //                 child: FlatButton(
-  //                   shape: RoundedRectangleBorder(
-  //                     borderRadius: BorderRadius.circular(25.0),
-  //                   ),
-  //                   onPressed: editButtonsEnabled && isEditMode ? () {} : null,
-  //                   child: Stack(
-  //                     children: <Widget>[
-  //                       Center(
-  //                         child: StrongrText(
-  //                           getShortWeekDay(item.place),
-  //                           size: 42,
-  //                           color: !isEditMode
-  //                               ? StrongrColors.greyC
-  //                               : StrongrColors.greyB,
-  //                         ),
-  //                       ),
-  //                       Container(
-  //                         // color: Colors.red,
-  //                         width: ScreenSize.width(context),
-  //                         alignment: Alignment.centerRight,
-  //                         child: Visibility(
-  //                           visible: isEditMode,
-  //                           child: Container(
-  //                             width: 35,
-  //                             child: Icon(
-  //                               Icons.add,
-  //                               color: editButtonsEnabled
-  //                                   ? Colors.grey
-  //                                   : Colors.transparent,
-  //                             ),
-  //                           ),
-  //                         ),
-  //                       ),
-  //                     ],
-  //                   ),
-  //                 ),
-  //               ),
-  //             ),
-  //           );
-  //   return builtexerciseList;
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -1015,7 +698,12 @@ class _ProgramViewState extends State<ProgramView> {
         leading: isEditMode
             ? IconButton(
                 icon: Icon(Icons.close),
-                onPressed: () => setState(() => isEditMode = false),
+                onPressed: () => setState(() {
+                  isEditMode = false;
+                  isEdited = false;
+                  futureProgram = ProgramService.getProgram(id: widget.id);
+                  sessionsOfProgram = [];
+                }),
               )
             : BackButton(),
         actions: <Widget>[

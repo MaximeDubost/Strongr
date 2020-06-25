@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:strongr/models/Exercise.dart';
+import 'package:strongr/models/Set.dart';
 import 'package:strongr/services/ExerciseService.dart';
 import 'package:strongr/utils/date_formater.dart';
 import 'package:strongr/utils/routing_constants.dart';
@@ -9,6 +10,7 @@ import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/utils/time_formater.dart';
 import 'package:strongr/views/app_exercise/app_exercise_view.dart';
 import 'package:strongr/widgets/dialogs/delete_dialog.dart';
+import 'package:strongr/widgets/dialogs/new_set_dialog.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
 import 'package:strongr/widgets/strongr_snackbar_content.dart';
 import 'package:strongr/widgets/strongr_text.dart';
@@ -34,14 +36,18 @@ class ExerciseView extends StatefulWidget {
 
 class _ExerciseViewState extends State<ExerciseView> {
   final globalKey = GlobalKey<ScaffoldState>();
-  bool isEditMode, editButtonsEnabled;
+  bool isEditMode, validateButtonEnabled, editButtonsEnabled, isEdited;
   Future<Exercise> futureExercise;
+  List<Set> setsOfExercise;
+  TextEditingController exerciseNameController;
+  int equipmentId;
 
   @override
   void initState() {
     isEditMode = false;
     editButtonsEnabled = true;
     futureExercise = ExerciseService.getExercise(id: widget.id);
+    setsOfExercise = List<Set>();
     super.initState();
   }
 
@@ -135,7 +141,123 @@ class _ExerciseViewState extends State<ExerciseView> {
     );
   }
 
-  List<Widget> buildSetList({List setList}) {
+  void sendToServer() async {
+      setState(() {
+        validateButtonEnabled = false;
+        editButtonsEnabled = false;
+      });
+      int statusCode = await ExerciseService.putExercise(
+        id: widget.id,
+        equipmentId: equipmentId,
+        name: widget.name,
+        sets: setsOfExercise,
+
+      );
+      if (statusCode == 200) {
+        globalKey.currentState.hideCurrentSnackBar();
+        globalKey.currentState.showSnackBar(
+          SnackBar(
+            behavior: SnackBarBehavior.floating,
+            content: StrongrSnackBarContent(
+              message: "Exercice mis à jour avec succès",
+            ),
+            backgroundColor: StrongrColors.blue80,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(15),
+              ),
+            ),
+          ),
+        );
+        setState(() {
+          isEditMode = false;
+          isEdited = false;
+        });
+      } else {
+        globalKey.currentState.hideCurrentSnackBar();
+        globalKey.currentState.showSnackBar(
+          SnackBar(
+            behavior: SnackBarBehavior.floating,
+            content: StrongrSnackBarContent(
+              icon: Icons.close,
+              message: "Échec lors de la mise à jour de l'exercice",
+            ),
+            backgroundColor: Colors.red.withOpacity(0.8),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(15),
+              ),
+            ),
+          ),
+        );
+      }
+      setState(() {
+        validateButtonEnabled = true;
+        editButtonsEnabled = true;
+      });
+  
+  }
+
+  void toggleCreateButton(List<dynamic> list) {
+    if (list.length < 1)
+      setState(() => validateButtonEnabled = false);
+    else
+      setState(() => validateButtonEnabled = true);
+  }
+
+  void addSet(Object returnedSet) {
+    if (returnedSet != null) {
+      setState(() {
+        isEdited = true;
+        setsOfExercise.add(returnedSet);
+      });
+      setsOfExercise[setsOfExercise.length - 1].place = setsOfExercise.length;
+    }
+    toggleCreateButton(setsOfExercise);
+  }
+
+  void deleteSet(int index) {
+    setState(() {
+      isEdited = true;
+      setsOfExercise.removeAt(index);
+      for (final item in setsOfExercise)
+        item.place = setsOfExercise.indexOf(item) + 1;
+    });
+    toggleCreateButton(setsOfExercise);
+  }
+
+  void changePlaceOfSet(int index, AxisDirection direction) {
+    switch (direction) {
+      case AxisDirection.up:
+      case AxisDirection.left:
+        if (index > 0) {
+          Set transition = setsOfExercise[index - 1];
+          setState(() {
+            isEdited = true;
+            setsOfExercise[index - 1] = setsOfExercise[index];
+            setsOfExercise[index] = transition;
+            for (final item in setsOfExercise)
+              item.place = setsOfExercise.indexOf(item) + 1;
+          });
+        }
+        break;
+      case AxisDirection.right:
+      case AxisDirection.down:
+        if (index < setsOfExercise.indexOf(setsOfExercise.last)) {
+          Set transition = setsOfExercise[index + 1];
+          setState(() {
+            isEdited = true;
+            setsOfExercise[index + 1] = setsOfExercise[index];
+            setsOfExercise[index] = transition;
+            for (final item in setsOfExercise)
+              item.place = setsOfExercise.indexOf(item) + 1;
+          });
+        }
+        break;
+    }
+  }
+
+  List<Widget> buildSetList({List<Set> setList}) {
     List<Widget> builtSetList = [];
     for (final item in setList)
       builtSetList.add(
@@ -147,48 +269,61 @@ class _ExerciseViewState extends State<ExerciseView> {
           child: StrongrRoundedContainer(
             width: ScreenSize.width(context),
             content: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                // Container(
-                //   // color: Colors.yellow,
-                //   width: 35,
-                //   child: Center(
-                //     child: StrongrText(
-                //       i.toString(),
-                //       bold: true,
-                //     ),
-                //   ),
-                // ),
                 Container(
                   // color: Colors.red,
                   width: 35,
                   height: 110,
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Container(
                         height: 30,
                         // color: Colors.blue,
-                        child: RawMaterialButton(
-                          onPressed:
-                              editButtonsEnabled && isEditMode ? () {} : null,
-                          child: Icon(
-                            Icons.keyboard_arrow_up,
-                            color: !editButtonsEnabled
-                                ? Colors.grey
-                                : isEditMode
-                                    ? StrongrColors.black
-                                    : Colors.transparent,
-                          ),
-                          shape: CircleBorder(),
-                        ),
+                        child: isEditMode
+                            ? RawMaterialButton(
+                                onPressed: setList.indexOf(item) == 0 ||
+                                        !editButtonsEnabled
+                                    ? () {}
+                                    : () {
+                                        changePlaceOfSet(
+                                          setList.indexOf(item),
+                                          AxisDirection.up,
+                                        );
+                                      },
+                                hoverColor: setList.indexOf(item) == 0 ||
+                                        !editButtonsEnabled
+                                    ? Colors.transparent
+                                    : StrongrColors.greyE,
+                                splashColor: setList.indexOf(item) == 0 ||
+                                        !editButtonsEnabled
+                                    ? Colors.transparent
+                                    : StrongrColors.greyD,
+                                enableFeedback: setList.indexOf(item) == 0 ||
+                                        !editButtonsEnabled
+                                    ? false
+                                    : true,
+                                child: Icon(
+                                  Icons.keyboard_arrow_up,
+                                  color: setList.indexOf(item) == 0 ||
+                                          !editButtonsEnabled
+                                      ? Colors.grey
+                                      : StrongrColors.black,
+                                ),
+                                shape: CircleBorder(),
+                              )
+                            : null,
                       ),
                       Container(
                         // color: Colors.yellow,
                         width: 30,
                         child: Center(
                           child: StrongrText(
-                            item.place.toString(),
+                            item.place != null ? item.place.toString() : "-",
+                            color: item.place != null
+                                ? StrongrColors.black
+                                : Colors.grey,
                             bold: true,
                           ),
                         ),
@@ -196,19 +331,44 @@ class _ExerciseViewState extends State<ExerciseView> {
                       Container(
                         height: 30,
                         // color: Colors.blue,
-                        child: RawMaterialButton(
-                          onPressed:
-                              editButtonsEnabled && isEditMode ? () {} : null,
-                          child: Icon(
-                            Icons.keyboard_arrow_down,
-                            color: !editButtonsEnabled
-                                ? Colors.grey
-                                : isEditMode
-                                    ? StrongrColors.black
-                                    : Colors.transparent,
-                          ),
-                          shape: CircleBorder(),
-                        ),
+                        child: isEditMode
+                            ? RawMaterialButton(
+                                onPressed: setList.indexOf(item) ==
+                                            setList.indexOf(setList.last) ||
+                                        !editButtonsEnabled
+                                    ? () {}
+                                    : () {
+                                        changePlaceOfSet(
+                                          setList.indexOf(item),
+                                          AxisDirection.down,
+                                        );
+                                      },
+                                hoverColor: setList.indexOf(item) ==
+                                            setList.indexOf(setList.last) ||
+                                        !editButtonsEnabled
+                                    ? Colors.transparent
+                                    : StrongrColors.greyE,
+                                splashColor: setList.indexOf(item) ==
+                                            setList.indexOf(setList.last) ||
+                                        !editButtonsEnabled
+                                    ? Colors.transparent
+                                    : StrongrColors.greyD,
+                                enableFeedback: setList.indexOf(item) ==
+                                            setList.indexOf(setList.last) ||
+                                        !editButtonsEnabled
+                                    ? false
+                                    : true,
+                                child: Icon(
+                                  Icons.keyboard_arrow_down,
+                                  color: setList.indexOf(item) ==
+                                              setList.indexOf(setList.last) ||
+                                          !editButtonsEnabled
+                                      ? Colors.grey
+                                      : StrongrColors.black,
+                                ),
+                                shape: CircleBorder(),
+                              )
+                            : null,
                       ),
                     ],
                   ),
@@ -311,35 +471,40 @@ class _ExerciseViewState extends State<ExerciseView> {
                     ),
                   ),
                 ),
-                Visibility(
-                  visible: isEditMode,
-                  child: Container(
-                    // color: Colors.green,
-                    child: Row(
-                      children: <Widget>[
-                        Container(
-                          width: 35,
-                          child: RawMaterialButton(
-                            shape: CircleBorder(),
-                            child: Icon(
-                              Icons.close,
-                              color: !editButtonsEnabled
-                                  ? Colors.grey
-                                  : Colors.red[800],
-                            ),
-                            onPressed: editButtonsEnabled ? () {} : null,
+                Container(
+                  width: 35,
+                  height: 35,
+                  child: isEditMode
+                      ? RawMaterialButton(
+                          child: Icon(
+                            Icons.close,
+                            color: editButtonsEnabled
+                                ? Colors.red[800]
+                                : Colors.grey,
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
+                          shape: CircleBorder(),
+                          onPressed: editButtonsEnabled
+                              ? () {
+                                  deleteSet(setList.indexOf(item));
+                                }
+                              : null,
+                        )
+                      : null,
                 ),
               ],
             ),
-            onPressed:
-                editButtonsEnabled && !isEditMode && !widget.fromSessionCreation
-                    ? () {}
-                    : null,
+            onPressed: () {
+              // Navigator.pushNamed(
+              //   context,
+              //   EXERCISE_ROUTE,
+              //   arguments: ExerciseView(
+              //     id: item.id,
+              //     name: item.name.toString(),
+              //     appExerciseName: item.appExerciseName.toString(),
+              //     fromSessionCreation: true,
+              //   ),
+              // );
+            },
             onLongPressed:
                 editButtonsEnabled && !isEditMode && !widget.fromSessionCreation
                     ? () => setState(() => isEditMode = true)
@@ -360,7 +525,12 @@ class _ExerciseViewState extends State<ExerciseView> {
         leading: isEditMode
             ? IconButton(
                 icon: Icon(Icons.close),
-                onPressed: () => setState(() => isEditMode = false),
+                onPressed: () => setState(() {
+                  isEditMode = false;
+                  isEdited = false;
+                  futureExercise = ExerciseService.getExercise(id: widget.id);
+                  setsOfExercise = [];
+                }),
               )
             : BackButton(),
         actions: <Widget>[
@@ -393,6 +563,8 @@ class _ExerciseViewState extends State<ExerciseView> {
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   // print(snapshot.data);
+                  equipmentId = snapshot.data.id_equipment;
+                  setsOfExercise = snapshot.data.sets;
                   return Container(
                     // color: Colors.red,
                     child: InkWell(
@@ -561,7 +733,22 @@ class _ExerciseViewState extends State<ExerciseView> {
                       Icons.add,
                       color: Colors.white,
                     ),
-                    onPressed: editButtonsEnabled ? () {} : null,
+                    onPressed: editButtonsEnabled && setsOfExercise.length < 10
+                        ? () => showDialog(
+                              context: context,
+                              builder: (context) => NewSetDialog(
+                                repetitionCount: 10,
+                                restTime: Duration(seconds: 90),
+                              ),
+                            ).then((value) {
+                              Set returnedSet = Set(
+                                // place: setsOfExercise.length + 1,
+                                repetitionCount: value["repetitionCount"],
+                                restTime: value["restTime"].inSeconds,
+                              );
+                              addSet(returnedSet);
+                            })
+                        : null,
                   ),
                 ),
               ),
