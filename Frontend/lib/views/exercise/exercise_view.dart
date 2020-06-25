@@ -142,60 +142,58 @@ class _ExerciseViewState extends State<ExerciseView> {
   }
 
   void sendToServer() async {
-      setState(() {
-        validateButtonEnabled = false;
-        editButtonsEnabled = false;
-      });
-      int statusCode = await ExerciseService.putExercise(
-        id: widget.id,
-        equipmentId: equipmentId,
-        name: widget.name,
-        sets: setsOfExercise,
-
+    setState(() {
+      validateButtonEnabled = false;
+      editButtonsEnabled = false;
+    });
+    int statusCode = await ExerciseService.putExercise(
+      id: widget.id,
+      equipmentId: equipmentId,
+      name: widget.name,
+      sets: setsOfExercise,
+    );
+    if (statusCode == 200) {
+      globalKey.currentState.hideCurrentSnackBar();
+      globalKey.currentState.showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          content: StrongrSnackBarContent(
+            message: "Exercice mis à jour avec succès",
+          ),
+          backgroundColor: StrongrColors.blue80,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(15),
+            ),
+          ),
+        ),
       );
-      if (statusCode == 200) {
-        globalKey.currentState.hideCurrentSnackBar();
-        globalKey.currentState.showSnackBar(
-          SnackBar(
-            behavior: SnackBarBehavior.floating,
-            content: StrongrSnackBarContent(
-              message: "Exercice mis à jour avec succès",
-            ),
-            backgroundColor: StrongrColors.blue80,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(
-                Radius.circular(15),
-              ),
-            ),
-          ),
-        );
-        setState(() {
-          isEditMode = false;
-          isEdited = false;
-        });
-      } else {
-        globalKey.currentState.hideCurrentSnackBar();
-        globalKey.currentState.showSnackBar(
-          SnackBar(
-            behavior: SnackBarBehavior.floating,
-            content: StrongrSnackBarContent(
-              icon: Icons.close,
-              message: "Échec lors de la mise à jour de l'exercice",
-            ),
-            backgroundColor: Colors.red.withOpacity(0.8),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(
-                Radius.circular(15),
-              ),
-            ),
-          ),
-        );
-      }
       setState(() {
-        validateButtonEnabled = true;
-        editButtonsEnabled = true;
+        isEditMode = false;
+        isEdited = false;
       });
-  
+    } else {
+      globalKey.currentState.hideCurrentSnackBar();
+      globalKey.currentState.showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          content: StrongrSnackBarContent(
+            icon: Icons.close,
+            message: "Échec lors de la mise à jour de l'exercice",
+          ),
+          backgroundColor: Colors.red.withOpacity(0.8),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(15),
+            ),
+          ),
+        ),
+      );
+    }
+    setState(() {
+      validateButtonEnabled = true;
+      editButtonsEnabled = true;
+    });
   }
 
   void toggleCreateButton(List<dynamic> list) {
@@ -541,7 +539,8 @@ class _ExerciseViewState extends State<ExerciseView> {
                         Icons.check,
                         color: !editButtonsEnabled ? Colors.grey : Colors.white,
                       ),
-                      onPressed: editButtonsEnabled ? () {} : null,
+                      onPressed:
+                          editButtonsEnabled ? () => sendToServer() : null,
                     )
                   : IconButton(
                       icon: Icon(
@@ -563,8 +562,6 @@ class _ExerciseViewState extends State<ExerciseView> {
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   // print(snapshot.data);
-                  equipmentId = snapshot.data.id_equipment;
-                  setsOfExercise = snapshot.data.sets;
                   return Container(
                     // color: Colors.red,
                     child: InkWell(
@@ -638,13 +635,16 @@ class _ExerciseViewState extends State<ExerciseView> {
                 future: futureExercise,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
+                    try {
+                      equipmentId = snapshot.data.equipment.id;
+                    } catch (e) {
+                      equipmentId = null;
+                    }
+                    setsOfExercise = snapshot.data.sets;
                     return ListView(
                       physics: BouncingScrollPhysics(),
-                      children: buildSetList(setList: snapshot.data.sets),
+                      children: buildSetList(setList: setsOfExercise),
                     );
-                    // return Center(
-                    //   child: Text(snapshot.data.toString()),
-                    // );
                   }
                   if (snapshot.hasError)
                     return Text(snapshot.error, textAlign: TextAlign.center);

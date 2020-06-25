@@ -60,10 +60,10 @@ repository.readExercises = async (req) => {
 
 /// UPDATE
 repository.updateExercise = async (req) => {
-    let sql = "UPDATE _exercise SET name = $1, last_update = $2, id_equipment = $3 WHERE id_exercise = $4 AND id_user = $6"
+    let sql = "UPDATE _exercise SET name = $1, last_update = $2, id_equipment = $3 WHERE id_exercise = $4 AND id_user = $5"
     try {
         await clt.query(sql, [req.body.name, new Date(), req.body.id_equipment, req.params.id_exercise, req.user.id])
-        sql = "DELETE FROM _set WHERE id_user = $1 AND id_exercise = $3"
+        sql = "DELETE FROM _set WHERE id_user = $1 AND id_exercise = $2"
         await clt.query(sql, [req.user.id, req.params.id_exercise])
         sql = "SELECT id_app_exercise FROM _exercise WHERE id_exercise = $1";
         let result = await clt.query(sql, [req.params.id_exercise]);

@@ -70,7 +70,7 @@ class Exercise {
       id: map['id'],
       name: map['name'],
       appExercise: AppExercise.fromMap(map['app_exercise']),
-      equipment: Equipment.fromMap(map['equipment']),
+      equipment: map['equipment'].length == 0 ? null : Equipment.fromMap(map['equipment']),
       sets: List<Set>.from(map['sets']?.map((x) => Set.fromMap(x))) ?? null,
       tonnage: map['tonnage'],
       creationDate: DateTime.parse(map['creation_date']),
