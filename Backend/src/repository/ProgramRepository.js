@@ -115,9 +115,11 @@ repository.deleteProgram = async (req) => {
 }
 
 repository.updateProgram = async (req) => {
-    let sql = "UPDATE _program SET name = $1, last_update = $2, id_program_goal = $3 WHERE id_program = $4 AND id_user = $5"
+    let sql = "SELECT id_program_goal FROM _program_goal WHERE id_program_goal = $1";
     try {
-        await clt.query(sql, [req.body.name, new Date(), req.body.id_program_goal, req.params.id_program, req.user.id])
+        let result = await clt.query(sql, [req.body.program_goal_name])
+        sql = "UPDATE _program SET name = $1, last_update = $2, id_program_goal = $3 WHERE id_program = $4 AND id_user = $5"
+        await clt.query(sql, [req.body.name, new Date(), result.rows[0].id_program_goal, req.params.id_program, req.user.id])
         sql = "DELETE FROM _program_session WHERE id_user = $1 AND id_user_1 = $2 AND id_program = $3"
         await clt.query(sql, [req.user.id, req.user.id, req.params.id_program])
         req.body.sessions.forEach(async session => {
