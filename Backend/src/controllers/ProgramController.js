@@ -19,6 +19,11 @@ controller.addProgram = async (req, res) => {
     res.sendStatus(status)
 }
 
+controller.updateProgram = async (req, res) => {
+    let status = await ProgramRepository.updateProgram(req)
+    res.sendStatus(status)
+}
+
 controller.deleteProgram = async (req, res) => {
     let status = await ProgramRepository.deleteProgram(req)
     res.sendStatus(status)

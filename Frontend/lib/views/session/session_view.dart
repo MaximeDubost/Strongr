@@ -34,7 +34,6 @@ class SessionView extends StatefulWidget {
 
 class _SessionViewState extends State<SessionView> {
   final globalKey = GlobalKey<ScaffoldState>();
-  GlobalKey<FormState> _key = GlobalKey();
   bool isEditMode, validateButtonEnabled, editButtonsEnabled, isEdited;
   Future<Session> futureSession;
   List<ExercisePreview> exercisesOfSession;
@@ -140,280 +139,60 @@ class _SessionViewState extends State<SessionView> {
     );
   }
 
-  // List<Widget> buildExerciseList({List newExerciseList}) {
-  //   List<Widget> builtExerciseList = [];
-  //   for (final item in newExerciseList)
-  //     builtExerciseList.add(
-  //       Container(
-  //         margin:
-  //             newExerciseList.indexOf(item) == 0 ? EdgeInsets.only(top: 5) : null,
-  //         key: ValueKey(newExerciseList.indexOf(item)),
-  //         padding: EdgeInsets.all(5),
-  //         height: 110,
-  //         child: StrongrRoundedContainer(
-  //           width: ScreenSize.width(context),
-  //           content: Row(
-  //             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-  //             children: <Widget>[
-  //               Container(
-  //                 // color: Colors.red,
-  //                 width: 35,
-  //                 height: 110,
-  //                 child: Column(
-  //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //                   children: <Widget>[
-  //                     Container(
-  //                       height: 30,
-  //                       // color: Colors.blue,
-  //                       child: RawMaterialButton(
-  //                         onPressed:
-  //                             editButtonsEnabled && isEditMode ? () {} : null,
-  //                         child: Icon(
-  //                           Icons.keyboard_arrow_up,
-  //                           color: !editButtonsEnabled
-  //                               ? Colors.grey
-  //                               : isEditMode
-  //                                   ? StrongrColors.black
-  //                                   : Colors.transparent,
-  //                         ),
-  //                         shape: CircleBorder(),
-  //                       ),
-  //                     ),
-  //                     Container(
-  //                       // color: Colors.yellow,
-  //                       width: 30,
-  //                       child: Center(
-  //                         child: StrongrText(
-  //                           item.place != null ? item.place.toString() : "-",
-  //                           color: isEditMode || item.place != null
-  //                               ? StrongrColors.black
-  //                               : Colors.grey,
-  //                           bold: true,
-  //                         ),
-  //                       ),
-  //                     ),
-  //                     Container(
-  //                       height: 30,
-  //                       // color: Colors.blue,
-  //                       child: RawMaterialButton(
-  //                         onPressed:
-  //                             editButtonsEnabled && isEditMode ? () {} : null,
-  //                         child: Icon(
-  //                           Icons.keyboard_arrow_down,
-  //                           color: !editButtonsEnabled
-  //                               ? Colors.grey
-  //                               : isEditMode
-  //                                   ? StrongrColors.black
-  //                                   : Colors.transparent,
-  //                         ),
-  //                         shape: CircleBorder(),
-  //                       ),
-  //                     ),
-  //                   ],
-  //                 ),
-  //               ),
-  //               Flexible(
-  //                 child: Container(
-  //                   // color: Colors.red,
-  //                   child: Column(
-  //                     crossAxisAlignment: CrossAxisAlignment.start,
-  //                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-  //                     children: <Widget>[
-  //                       Row(
-  //                         children: <Widget>[
-  //                           Container(
-  //                             padding: EdgeInsets.only(left: 5, right: 5),
-  //                             child: Icon(
-  //                               Icons.fitness_center,
-  //                               color:
-  //                                   isEditMode || item.appExerciseName == null
-  //                                       ? Colors.grey
-  //                                       : StrongrColors.black,
-  //                             ),
-  //                           ),
-  //                           Flexible(
-  //                             child: Container(
-  //                               // color: Colors.blue,
-  //                               child: StrongrText(
-  //                                 item.appExerciseName ?? "Aucun exercice",
-  //                                 color:
-  //                                     isEditMode || item.appExerciseName == null
-  //                                         ? Colors.grey
-  //                                         : StrongrColors.black,
-  //                                 textAlign: TextAlign.start,
-  //                                 maxLines: 2,
-  //                               ),
-  //                             ),
-  //                           ),
-  //                         ],
-  //                       ),
-  //                       Row(
-  //                         children: <Widget>[
-  //                           Container(
-  //                             padding: EdgeInsets.only(left: 5, right: 5),
-  //                             child: Icon(
-  //                               Icons.refresh,
-  //                               color: isEditMode ||
-  //                                       item.setCount == null ||
-  //                                       int.parse(item.setCount) < 1
-  //                                   ? Colors.grey
-  //                                   : StrongrColors.black,
-  //                             ),
-  //                           ),
-  //                           Flexible(
-  //                             child: Container(
-  //                               // width: 185,
-  //                               child: StrongrText(
-  //                                 item.setCount == null ||
-  //                                         int.parse(item.setCount) < 1
-  //                                     ? "Aucune série"
-  //                                     : item.setCount == 1
-  //                                         ? item.setCount + " série"
-  //                                         : item.setCount + " séries",
-  //                                 color: isEditMode ||
-  //                                         item.setCount == null ||
-  //                                         int.parse(item.setCount) < 1
-  //                                     ? Colors.grey
-  //                                     : StrongrColors.black,
-  //                                 textAlign: TextAlign.start,
-  //                                 maxLines: 1,
-  //                               ),
-  //                             ),
-  //                           ),
-  //                         ],
-  //                       ),
-  //                       Row(
-  //                         children: <Widget>[
-  //                           Container(
-  //                             padding: EdgeInsets.only(left: 5, right: 5),
-  //                             child: Icon(
-  //                               Icons.show_chart,
-  //                               color: isEditMode || item.tonnage == null
-  //                                   ? Colors.grey
-  //                                   : StrongrColors.black,
-  //                             ),
-  //                           ),
-  //                           Flexible(
-  //                             child: Container(
-  //                               // width: 185,
-  //                               child: StrongrText(
-  //                                 item.tonnage != null
-  //                                     ? "Tonnage de " + item.tonnage.toString()
-  //                                     : "Tonnage non calculé",
-  //                                 color: isEditMode || item.tonnage == null
-  //                                     ? Colors.grey
-  //                                     : StrongrColors.black,
-  //                                 textAlign: TextAlign.start,
-  //                                 maxLines: 1,
-  //                               ),
-  //                             ),
-  //                           ),
-  //                         ],
-  //                       ),
-  //                     ],
-  //                   ),
-  //                 ),
-  //               ),
-  //               !widget.fromProgramCreation
-  //                   ? !isEditMode
-  //                       ? Container(
-  //                           width: 35,
-  //                           height: 35,
-  //                           child: FloatingActionButton(
-  //                             elevation: 0,
-  //                             heroTag:
-  //                                 "fs_exercise_play_fab_" + item.id.toString(),
-  //                             tooltip: "Démarrer",
-  //                             backgroundColor: editButtonsEnabled
-  //                                 ? StrongrColors.blue
-  //                                 : Colors.grey,
-  //                             child: Icon(
-  //                               Icons.play_arrow,
-  //                               color: Colors.white,
-  //                             ),
-  //                             onPressed: editButtonsEnabled ? () {} : null,
-  //                           ),
-  //                         )
-  //                       : Container(
-  //                           width: 35,
-  //                           height: 35,
-  //                           child: RawMaterialButton(
-  //                             shape: CircleBorder(),
-  //                             child: Icon(
-  //                               Icons.close,
-  //                               color: editButtonsEnabled
-  //                                   ? Colors.red[800]
-  //                                   : Colors.grey,
-  //                             ),
-  //                             onPressed: editButtonsEnabled ? () {} : null,
-  //                           ),
-  //                         )
-  //                   : SizedBox(),
-  //             ],
-  //           ),
-  //           onPressed: editButtonsEnabled && !isEditMode
-  //               ? () {
-  //                   Navigator.pushNamed(
-  //                     context,
-  //                     EXERCISE_ROUTE,
-  //                     arguments: ExerciseView(
-  //                       id: item.id,
-  //                       name: item.name.toString(),
-  //                       appExerciseName: item.appExerciseName,
-  //                       fromSession: true,
-  //                       fromSessionCreation:
-  //                           widget.fromProgramCreation ? true : false,
-  //                     ),
-  //                   );
-  //                 }
-  //               : null,
-  //           onLongPressed:
-  //               editButtonsEnabled && !isEditMode && !widget.fromProgramCreation
-  //                   ? () => setState(() => isEditMode = true)
-  //                   : null,
-  //         ),
-  //       ),
-  //     );
-  //   return builtExerciseList;
-  // }
-
   void sendToServer() async {
-    if (_key.currentState.validate()) {
-      _key.currentState.save();
-      // setState(() {
-      //   validateButtonEnabled = false;
-      //   editButtonsEnabled = false;
-      // });
-      // int statusCode = await SessionService.postSession(
-      //   name: sessionNameController.text == ""
-      //       ? "Séance perso."
-      //       : sessionNameController.text,
-      //   exercises: exercisesOfSession,
-      // );
-      // if (statusCode == 201) {
-      //   Navigator.pop(context, true);
-      // } else {
-      //   globalKey.currentState.hideCurrentSnackBar();
-      //   globalKey.currentState.showSnackBar(
-      //     SnackBar(
-      //       content: StrongrSnackBarContent(
-      //         icon: Icons.close,
-      //         message: "Échec lors de la création de la séance",
-      //       ),
-      //       backgroundColor: Colors.red.withOpacity(0.8),
-      //       shape: RoundedRectangleBorder(
-      //         borderRadius: BorderRadius.all(Radius.circular(15)),
-      //       ),
-      //     ),
-      //   );
-      //   setState(() {
-      //     validateButtonEnabled = true;
-      //     editButtonsEnabled = true;
-      //   });
-      // }
+    setState(() {
+      validateButtonEnabled = false;
+      editButtonsEnabled = false;
+    });
+    int statusCode = await SessionService.putSession(
+      id: widget.id,
+      name: widget.name,
+      exercises: exercisesOfSession,
+    );
+    // DEBUG
+    // statusCode = 0;
+    if (statusCode == 200) {
+      globalKey.currentState.hideCurrentSnackBar();
+      globalKey.currentState.showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          content: StrongrSnackBarContent(
+            message: "Séance mise à jour avec succès",
+          ),
+          backgroundColor: StrongrColors.blue80,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(15),
+            ),
+          ),
+        ),
+      );
+      setState(() {
+        isEditMode = false;
+        isEdited = false;
+      } );
     } else {
-      // Indiquer que le nombre d'exercice est nul.
+      globalKey.currentState.hideCurrentSnackBar();
+      globalKey.currentState.showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          content: StrongrSnackBarContent(
+            icon: Icons.close,
+            message: "Échec lors de la mise à jour de la séance",
+          ),
+          backgroundColor: Colors.red.withOpacity(0.8),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(15),
+            ),
+          ),
+        ),
+      );
     }
+    setState(() {
+      validateButtonEnabled = true;
+      editButtonsEnabled = true;
+    });
   }
 
   void toggleCreateButton(List<dynamic> list) {
@@ -440,7 +219,6 @@ class _SessionViewState extends State<SessionView> {
         globalKey.currentState.hideCurrentSnackBar();
         globalKey.currentState.showSnackBar(
           SnackBar(
-            duration: Duration(seconds: 2),
             behavior: SnackBarBehavior.floating,
             content: GestureDetector(
               onVerticalDragStart: (_) => null,
@@ -786,6 +564,7 @@ class _SessionViewState extends State<SessionView> {
                 icon: Icon(Icons.close),
                 onPressed: () => setState(() {
                   isEditMode = false;
+                  isEdited = false;
                   futureSession = SessionService.getSession(id: widget.id);
                   exercisesOfSession = [];
                 }),
@@ -797,38 +576,17 @@ class _SessionViewState extends State<SessionView> {
                   ? IconButton(
                       icon: Icon(
                         Icons.check,
-                        color: !isEdited && !editButtonsEnabled ||
-                                exercisesOfSession.length <= 0
-                            ? Colors.grey
-                            : Colors.white,
+                        color: isEdited &&
+                                editButtonsEnabled &&
+                                exercisesOfSession.length != 0
+                            ? Colors.white
+                            : Colors.grey,
                       ),
-                      onPressed: !isEdited && !editButtonsEnabled ||
-                              exercisesOfSession.length <= 0
-                          ? null
-                          : () {
-                              setState(() {
-                                isEditMode = false;
-                                // TODO : UPDATE in sendToServer() method
-                                futureSession =
-                                    SessionService.getSession(id: widget.id);
-                              });
-                              // Here
-                              globalKey.currentState.hideCurrentSnackBar();
-                              globalKey.currentState.showSnackBar(
-                                SnackBar(
-                                  behavior: SnackBarBehavior.floating,
-                                  content: StrongrSnackBarContent(
-                                    message: "Exercice mis à jour avec succès",
-                                  ),
-                                  backgroundColor: StrongrColors.blue80,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(15),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
+                      onPressed: isEdited &&
+                              editButtonsEnabled &&
+                              exercisesOfSession.length != 0
+                          ? () async => sendToServer()
+                          : null,
                     )
                   : IconButton(
                       icon: Icon(

@@ -4,10 +4,13 @@ import 'package:collection/collection.dart';
 import 'package:strongr/models/AppExercise.dart';
 import 'package:strongr/models/Set.dart';
 
+import 'Equipment.dart';
+
 class Exercise {
   int id;
   String name;
   AppExercise appExercise;
+  Equipment equipment;
   List<Set> sets;
   double tonnage;
   DateTime creationDate;
@@ -17,6 +20,7 @@ class Exercise {
     this.id,
     this.name,
     this.appExercise,
+    this.equipment,
     this.sets,
     this.tonnage,
     this.creationDate,
@@ -28,6 +32,7 @@ class Exercise {
     int place,
     String name,
     AppExercise appExercise,
+    Equipment equipment,
     List<Set> sets,
     double tonnage,
     DateTime creationDate,
@@ -37,6 +42,7 @@ class Exercise {
       id: id ?? this.id,
       name: name ?? this.name,
       appExercise: appExercise ?? this.appExercise,
+      equipment: equipment ?? this.equipment,
       sets: sets ?? this.sets,
       tonnage: tonnage ?? this.tonnage,
       creationDate: creationDate ?? this.creationDate,
@@ -49,6 +55,7 @@ class Exercise {
       'id': id,
       'name': name,
       'appExercise': appExercise?.toMap(),
+      'equipment': equipment?.toMap(),
       'sets': sets,
       'tonnage': tonnage,
       'creationDate': creationDate?.millisecondsSinceEpoch,
@@ -63,7 +70,7 @@ class Exercise {
       id: map['id'],
       name: map['name'],
       appExercise: AppExercise.fromMap(map['app_exercise']),
-      // appExercise: AppExercise(id: map['id'], name: map['name']),
+      equipment: map['equipment'].length == 0 ? null : Equipment.fromMap(map['equipment']),
       sets: List<Set>.from(map['sets']?.map((x) => Set.fromMap(x))) ?? null,
       tonnage: map['tonnage'],
       creationDate: DateTime.parse(map['creation_date']),
@@ -77,7 +84,7 @@ class Exercise {
 
   @override
   String toString() {
-    return 'Exercise(id: $id, name: $name, appExercise: $appExercise, sets: $sets, tonnage: $tonnage, creationDate: $creationDate, lastUpdate: $lastUpdate)';
+    return 'Exercise(id: $id, name: $name, appExercise: $appExercise, equipment: $equipment, sets: $sets, tonnage: $tonnage, creationDate: $creationDate, lastUpdate: $lastUpdate)';
   }
 
   @override
@@ -89,6 +96,7 @@ class Exercise {
       o.id == id &&
       o.name == name &&
       o.appExercise == appExercise &&
+      o.equipment == equipment &&
       listEquals(o.sets, sets) &&
       o.tonnage == tonnage &&
       o.creationDate == creationDate &&
@@ -100,6 +108,7 @@ class Exercise {
     return id.hashCode ^
       name.hashCode ^
       appExercise.hashCode ^
+      equipment.hashCode ^
       sets.hashCode ^
       tonnage.hashCode ^
       creationDate.hashCode ^

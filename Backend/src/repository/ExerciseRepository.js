@@ -4,6 +4,7 @@ import Set from "../Models/Set"
 import DetailExercise from "../Models/DetailExercise"
 import clt from "../core/config/database";
 import { json } from "express";
+import Equipment from "../Models/Equipment";
 
 const repository = {};
 
@@ -59,10 +60,18 @@ repository.readExercises = async (req) => {
 
 /// UPDATE
 repository.updateExercise = async (req) => {
-    let date = new Date();
-    let sqlUpdateExercise = "UPDATE _exercise SET id_app_exercise=$1, name=$2, id_equipment=$3, last_update=$4 WHERE id_exercise=$5 AND id_user=$6"
+    let sql = "UPDATE _exercise SET name = $1, last_update = $2, id_equipment = $3 WHERE id_exercise = $4 AND id_user = $5"
     try {
-        await clt.query(sqlUpdateExercise, [req.body.id_app_exercise, req.body.name, req.body.id_equipment, date, req.params.id_exercise, req.user.id])
+        await clt.query(sql, [req.body.name, new Date(), req.body.id_equipment, req.params.id_exercise, req.user.id])
+        sql = "DELETE FROM _set WHERE id_user = $1 AND id_exercise = $2"
+        await clt.query(sql, [req.user.id, req.params.id_exercise])
+        sql = "SELECT id_app_exercise FROM _exercise WHERE id_exercise = $1";
+        let result = await clt.query(sql, [req.params.id_exercise]);
+        req.body.sets.forEach(async set => {
+            let parsed_set = JSON.parse(set);
+            sql = "INSERT INTO _set (id_user, id_exercise, id_app_exercise, place, repetitions_count, rest_time) VALUES ($1,$2,$3,$4,$5,$6)"
+            await clt.query(sql, [req.user.id, req.params.id_exercise, result.rows[0].id_app_exercise, parsed_set.place, parsed_set.repetitions_count, parsed_set.rest_time])
+        })
         return 200
     } catch (error) {
         console.log(error)
@@ -81,6 +90,7 @@ repository.deleteExercise = async (req) => {
 }
 
 repository.detailExercise = async (req) => {
+    let equipment = []
     let set_list = []
     let sql = `
     SELECT id_set, place, repetitions_count, rest_time, null as tonnage
@@ -105,7 +115,19 @@ repository.detailExercise = async (req) => {
         // console.log("result.rows: ", result.rows)
         let app_exercise = new AppExercise(result.rows[0].id_app_exercise, result.rows[0].name_app_exercise)
         // console.log("app_exercise: ", app_exercise)
-        return new DetailExercise(result.rows[0].id_exercise, result.rows[0].name_exercise, app_exercise, set_list, result.rows[0].creation_date, result.rows[0].last_update)
+        sql = `
+        SELECT eq.id_equipment, eq.name 
+        FROM _exercise e JOIN _equipment eq ON eq.id_equipment = e.id_equipment
+        WHERE e.id_exercise = $1 AND e.id_user = $2 AND e.id_app_exercise = $3
+        `
+        let result_equipment = await clt.query(sql, [req.params.id_exercise, req.user.id, result.rows[0].id_app_exercise])
+        console.log(result_equipment)
+
+        if (result_equipment.rowCount > 0) {
+            equipment = new Equipment(result_equipment.rows[0].id_equipment, result_equipment.rows[0].name)
+        }
+
+        return new DetailExercise(result.rows[0].id_exercise, result.rows[0].name_exercise, app_exercise, equipment, set_list, result.rows[0].creation_date, result.rows[0].last_update)
 
     } catch (error) {
         console.log(error)

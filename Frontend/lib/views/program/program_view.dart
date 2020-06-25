@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:strongr/models/Program.dart';
+import 'package:strongr/models/SessionPreview.dart';
 import 'package:strongr/services/ProgramService.dart';
 import 'package:strongr/utils/date_formater.dart';
 import 'package:strongr/utils/routing_constants.dart';
@@ -25,13 +26,15 @@ class ProgramView extends StatefulWidget {
 
 class _ProgramViewState extends State<ProgramView> {
   final globalKey = GlobalKey<ScaffoldState>();
-  bool isEditMode, editButtonsEnabled;
+  bool isEditMode, validateButtonEnabled, editButtonsEnabled, isEdited;
   String weekday;
+  int lastIndexPressed;
   Future<Program> futureProgram;
+  List<SessionPreview> sessionsOfProgram;
 
   @override
   void initState() {
-    isEditMode = false;
+    isEditMode = validateButtonEnabled = isEdited = false;
     editButtonsEnabled = true;
     switch (DateTime.now().weekday) {
       case DateTime.monday:
@@ -57,6 +60,16 @@ class _ProgramViewState extends State<ProgramView> {
         break;
     }
     futureProgram = ProgramService.getProgram(id: widget.id);
+    sessionsOfProgram = List<SessionPreview>();
+    sessionsOfProgram.addAll([
+      SessionPreview(place: 1),
+      SessionPreview(place: 2),
+      SessionPreview(place: 3),
+      SessionPreview(place: 4),
+      SessionPreview(place: 5),
+      SessionPreview(place: 6),
+      SessionPreview(place: 7),
+    ]);
     super.initState();
   }
 
@@ -157,12 +170,161 @@ class _ProgramViewState extends State<ProgramView> {
     );
   }
 
+  void sendToServer() async {
+    setState(() {
+      validateButtonEnabled = false;
+      editButtonsEnabled = false;
+    });
+    int statusCode = await ProgramService.putProgram(
+      id: widget.id,
+      programGoalName: widget.programGoalName,
+      name: widget.name,
+      sessions: sessionsOfProgram,
+    );
+    if (statusCode == 200) {
+      globalKey.currentState.hideCurrentSnackBar();
+      globalKey.currentState.showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          content: StrongrSnackBarContent(
+            message: "Programme mis à jour avec succès",
+          ),
+          backgroundColor: StrongrColors.blue80,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(15),
+            ),
+          ),
+        ),
+      );
+      setState(() {
+        isEditMode = false;
+        isEdited = false;
+      });
+    } else {
+      globalKey.currentState.hideCurrentSnackBar();
+      globalKey.currentState.showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          content: StrongrSnackBarContent(
+            icon: Icons.close,
+            message: "Échec lors de la mise à jour du programme",
+          ),
+          backgroundColor: Colors.red.withOpacity(0.8),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(15),
+            ),
+          ),
+        ),
+      );
+    }
+    setState(() {
+      validateButtonEnabled = true;
+      editButtonsEnabled = true;
+    });
+  }
+
+  void toggleCreateButton(List<dynamic> list) {
+    bool atLeastOneNotNullId = false;
+    for (final item in list) {
+      if (item.id != null) {
+        atLeastOneNotNullId = true;
+        break;
+      }
+    }
+    if (atLeastOneNotNullId)
+      setState(() => validateButtonEnabled = true);
+    else
+      setState(() => validateButtonEnabled = false);
+  }
+
+  void addSession(Object returnedSession) {
+    if (returnedSession != null) {
+      bool alreadyExists = false;
+      SessionPreview session = returnedSession;
+      for (final item in sessionsOfProgram)
+        if (session.id == item.id) alreadyExists = true;
+      if (!alreadyExists) {
+        session.place = lastIndexPressed + 1;
+        setState(() {
+          isEdited = true;
+          sessionsOfProgram[lastIndexPressed] = session;
+        });
+      } else {
+        globalKey.currentState.hideCurrentSnackBar();
+        globalKey.currentState.showSnackBar(
+          SnackBar(
+            behavior: SnackBarBehavior.floating,
+            content: GestureDetector(
+              onVerticalDragStart: (_) => null,
+              child: InkWell(
+                onTap: () => globalKey.currentState.hideCurrentSnackBar(),
+                child: StrongrSnackBarContent(
+                  icon: Icons.close,
+                  message: "Cette séance a déjà été ajoutée",
+                ),
+              ),
+            ),
+            backgroundColor: Colors.red.withOpacity(0.8),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(15),
+              ),
+            ),
+          ),
+        );
+      }
+    }
+    toggleCreateButton(sessionsOfProgram);
+  }
+
+  void deleteSession(int index) {
+    setState(() {
+      isEdited = true;
+      sessionsOfProgram[index] = SessionPreview(place: index + 1);
+    });
+    toggleCreateButton(sessionsOfProgram);
+  }
+
+  void changePlaceOfSession(int index, AxisDirection direction) {
+    switch (direction) {
+      case AxisDirection.up:
+      case AxisDirection.left:
+        if (index > 0) {
+          SessionPreview transition = sessionsOfProgram[index - 1];
+          setState(() {
+            isEdited = true;
+            sessionsOfProgram[index - 1] = sessionsOfProgram[index];
+            sessionsOfProgram[index] = transition;
+            for (final item in sessionsOfProgram)
+              item.place = sessionsOfProgram.indexOf(item) + 1;
+          });
+        }
+        break;
+      case AxisDirection.right:
+      case AxisDirection.down:
+        if (index < sessionsOfProgram.indexOf(sessionsOfProgram.last)) {
+          SessionPreview transition = sessionsOfProgram[index + 1];
+          setState(() {
+            isEdited = true;
+            sessionsOfProgram[index + 1] = sessionsOfProgram[index];
+            sessionsOfProgram[index] = transition;
+            for (final item in sessionsOfProgram)
+              item.place = sessionsOfProgram.indexOf(item) + 1;
+          });
+        }
+        break;
+    }
+  }
+
   List<Widget> buildSessionList({List sessionList}) {
-    List<Widget> builtexerciseList = [];
+    List<Widget> builtSessionList = [];
     for (final item in sessionList)
       item.id != null
-          ? builtexerciseList.add(
+          ? builtSessionList.add(
               Container(
+                // color: Colors.blue,
                 margin: sessionList.indexOf(item) == 0
                     ? EdgeInsets.only(top: 5)
                     : null,
@@ -171,14 +333,8 @@ class _ProgramViewState extends State<ProgramView> {
                 height: 110,
                 child: StrongrRoundedContainer(
                   width: ScreenSize.width(context),
-                  borderColor:
-                      item.place == DateTime.now().weekday && !isEditMode
-                          ? StrongrColors.blue80
-                          : StrongrColors.greyD,
-                  borderWidth:
-                      item.place == DateTime.now().weekday && !isEditMode
-                          ? 3
-                          : 1,
+                  borderColor: StrongrColors.greyD,
+                  borderWidth: 1,
                   content: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
@@ -202,20 +358,44 @@ class _ProgramViewState extends State<ProgramView> {
                             Container(
                               height: 30,
                               // color: Colors.blue,
-                              child: RawMaterialButton(
-                                onPressed: editButtonsEnabled && isEditMode
-                                    ? () {}
-                                    : null,
-                                child: Icon(
-                                  Icons.keyboard_arrow_up,
-                                  color: !editButtonsEnabled
-                                      ? Colors.grey
-                                      : isEditMode
-                                          ? StrongrColors.black
-                                          : Colors.transparent,
-                                ),
-                                shape: CircleBorder(),
-                              ),
+                              child: isEditMode
+                                  ? RawMaterialButton(
+                                      onPressed: sessionList.indexOf(item) ==
+                                                  0 ||
+                                              !editButtonsEnabled
+                                          ? () {}
+                                          : () {
+                                              FocusScope.of(context).unfocus();
+                                              changePlaceOfSession(
+                                                sessionList.indexOf(item),
+                                                AxisDirection.up,
+                                              );
+                                            },
+                                      hoverColor:
+                                          sessionList.indexOf(item) == 0 ||
+                                                  !editButtonsEnabled
+                                              ? Colors.transparent
+                                              : StrongrColors.greyE,
+                                      splashColor:
+                                          sessionList.indexOf(item) == 0 ||
+                                                  !editButtonsEnabled
+                                              ? Colors.transparent
+                                              : StrongrColors.greyD,
+                                      enableFeedback:
+                                          sessionList.indexOf(item) == 0 ||
+                                                  !editButtonsEnabled
+                                              ? false
+                                              : true,
+                                      child: Icon(
+                                        Icons.keyboard_arrow_up,
+                                        color: sessionList.indexOf(item) == 0 ||
+                                                !editButtonsEnabled
+                                            ? Colors.grey
+                                            : StrongrColors.black,
+                                      ),
+                                      shape: CircleBorder(),
+                                    )
+                                  : null,
                             ),
                             Container(
                               // color: Colors.yellow,
@@ -230,20 +410,51 @@ class _ProgramViewState extends State<ProgramView> {
                             Container(
                               height: 30,
                               // color: Colors.blue,
-                              child: RawMaterialButton(
-                                onPressed: editButtonsEnabled && isEditMode
-                                    ? () {}
-                                    : null,
-                                child: Icon(
-                                  Icons.keyboard_arrow_down,
-                                  color: !editButtonsEnabled
-                                      ? Colors.grey
-                                      : isEditMode
-                                          ? StrongrColors.black
-                                          : Colors.transparent,
-                                ),
-                                shape: CircleBorder(),
-                              ),
+                              child: isEditMode
+                                  ? RawMaterialButton(
+                                      onPressed: sessionList.indexOf(item) ==
+                                                  sessionList.indexOf(
+                                                      sessionList.last) ||
+                                              !editButtonsEnabled
+                                          ? () {}
+                                          : () {
+                                              FocusScope.of(context).unfocus();
+                                              changePlaceOfSession(
+                                                sessionList.indexOf(item),
+                                                AxisDirection.down,
+                                              );
+                                            },
+                                      hoverColor: sessionList.indexOf(item) ==
+                                                  sessionList.indexOf(
+                                                      sessionList.last) ||
+                                              !editButtonsEnabled
+                                          ? Colors.transparent
+                                          : StrongrColors.greyE,
+                                      splashColor: sessionList.indexOf(item) ==
+                                                  sessionList.indexOf(
+                                                      sessionList.last) ||
+                                              !editButtonsEnabled
+                                          ? Colors.transparent
+                                          : StrongrColors.greyD,
+                                      enableFeedback:
+                                          sessionList.indexOf(item) ==
+                                                      sessionList.indexOf(
+                                                          sessionList.last) ||
+                                                  !editButtonsEnabled
+                                              ? false
+                                              : true,
+                                      child: Icon(
+                                        Icons.keyboard_arrow_down,
+                                        color: sessionList.indexOf(item) ==
+                                                    sessionList.indexOf(
+                                                        sessionList.last) ||
+                                                !editButtonsEnabled
+                                            ? Colors.grey
+                                            : StrongrColors.black,
+                                      ),
+                                      shape: CircleBorder(),
+                                    )
+                                  : null,
                             ),
                           ],
                         ),
@@ -261,8 +472,7 @@ class _ProgramViewState extends State<ProgramView> {
                                     padding: EdgeInsets.only(left: 5, right: 5),
                                     child: Icon(
                                       Icons.accessibility,
-                                      color: isEditMode ||
-                                              item.sessionTypeName == null
+                                      color: item.sessionTypeName == null
                                           ? Colors.grey
                                           : StrongrColors.black,
                                     ),
@@ -272,8 +482,7 @@ class _ProgramViewState extends State<ProgramView> {
                                       // color: Colors.blue,
                                       child: StrongrText(
                                         item.sessionTypeName ?? "Aucun type",
-                                        color: isEditMode ||
-                                                item.sessionTypeName == null
+                                        color: item.sessionTypeName == null
                                             ? Colors.grey
                                             : StrongrColors.black,
                                         textAlign: TextAlign.start,
@@ -289,8 +498,7 @@ class _ProgramViewState extends State<ProgramView> {
                                     padding: EdgeInsets.only(left: 5, right: 5),
                                     child: Icon(
                                       Icons.fitness_center,
-                                      color: isEditMode ||
-                                              item.exerciseCount == null ||
+                                      color: item.exerciseCount == null ||
                                               int.parse(item.exerciseCount) < 1
                                           ? Colors.grey
                                           : StrongrColors.black,
@@ -309,8 +517,7 @@ class _ProgramViewState extends State<ProgramView> {
                                                     " exercice"
                                                 : item.exerciseCount +
                                                     " exercices",
-                                        color: isEditMode ||
-                                                item.exerciseCount == null ||
+                                        color: item.exerciseCount == null ||
                                                 int.parse(item.exerciseCount) <
                                                     1
                                             ? Colors.grey
@@ -328,7 +535,7 @@ class _ProgramViewState extends State<ProgramView> {
                                     padding: EdgeInsets.only(left: 5, right: 5),
                                     child: Icon(
                                       Icons.show_chart,
-                                      color: isEditMode || item.tonnage == null
+                                      color: item.tonnage == null
                                           ? Colors.grey
                                           : StrongrColors.black,
                                     ),
@@ -341,10 +548,9 @@ class _ProgramViewState extends State<ProgramView> {
                                             ? "Tonnage de " +
                                                 item.tonnage.toString()
                                             : "Tonnage non calculé",
-                                        color:
-                                            isEditMode || item.tonnage == null
-                                                ? Colors.grey
-                                                : StrongrColors.black,
+                                        color: item.tonnage == null
+                                            ? Colors.grey
+                                            : StrongrColors.black,
                                         textAlign: TextAlign.start,
                                         maxLines: 1,
                                       ),
@@ -356,67 +562,69 @@ class _ProgramViewState extends State<ProgramView> {
                           ),
                         ),
                       ),
-                      Visibility(
-                        visible: isEditMode,
-                        child: Container(
-                          width: 35,
-                          child: RawMaterialButton(
-                            child: Icon(
-                              Icons.close,
-                              color: editButtonsEnabled
-                                  ? Colors.red[800]
-                                  : Colors.grey,
-                            ),
-                            onPressed: editButtonsEnabled ? () {} : null,
-                            shape: CircleBorder(),
-                          ),
-                        ),
+                      Container(
+                        width: 35,
+                        child: isEditMode
+                            ? RawMaterialButton(
+                                onPressed: editButtonsEnabled
+                                    ? () {
+                                        FocusScope.of(context).unfocus();
+                                        deleteSession(
+                                            sessionList.indexOf(item));
+                                      }
+                                    : null,
+                                child: Icon(
+                                  Icons.close,
+                                  color: editButtonsEnabled
+                                      ? Colors.red[800]
+                                      : Colors.grey,
+                                ),
+                                shape: CircleBorder(),
+                              )
+                            : null,
                       ),
-                      Visibility(
-                        visible: !isEditMode,
-                        child: Container(
-                          width: 35,
-                          height: 35,
-                          child: FloatingActionButton(
-                            elevation: 0,
-                            heroTag:
-                                "fp_session_play_fab_" + item.id.toString(),
-                            tooltip: "Démarrer",
-                            backgroundColor: editButtonsEnabled
-                                ? StrongrColors.blue
-                                : Colors.grey,
-                            child: Icon(
-                              Icons.play_arrow,
-                              color: Colors.white,
-                            ),
-                            onPressed: editButtonsEnabled ? () {} : null,
-                          ),
-                        ),
-                      )
+                      // Visibility(
+                      //   visible: !isEditMode,
+                      //   child: Container(
+                      //     width: 35,
+                      //     height: 35,
+                      //     child: FloatingActionButton(
+                      //       elevation: 0,
+                      //       heroTag:
+                      //           "fp_session_play_fab_" + item.id.toString(),
+                      //       tooltip: "Démarrer",
+                      //       backgroundColor: StrongrColors.blue,
+                      //       child: Icon(
+                      //         Icons.play_arrow,
+                      //         color: Colors.white,
+                      //       ),
+                      //       onPressed: () {},
+                      //     ),
+                      //   ),
+                      // )
                     ],
                   ),
-                  onPressed: editButtonsEnabled && !isEditMode
-                      ? () {
-                          Navigator.pushNamed(
-                            context,
-                            SESSION_ROUTE,
-                            arguments: SessionView(
-                              id: item.id,
-                              name: item.name,
-                              sessionTypeName: item.sessionTypeName,
-                              fromProgram: true,
-                            ),
-                          );
-                        }
-                      : null,
-                  onLongPressed: editButtonsEnabled && !isEditMode
-                      ? () => setState(() => isEditMode = true)
-                      : null,
+                  onPressed: () {
+                    FocusScope.of(context).unfocus();
+                    globalKey.currentState.hideCurrentSnackBar();
+                    Navigator.pushNamed(
+                      context,
+                      SESSION_ROUTE,
+                      arguments: SessionView(
+                        id: item.id,
+                        name: item.name,
+                        sessionTypeName: item.sessionTypeName,
+                        fromProgram: false,
+                        fromProgramCreation: true,
+                      ),
+                    );
+                  },
                 ),
               ),
             )
-          : builtexerciseList.add(
+          : builtSessionList.add(
               Container(
+                // color: Colors.red,
                 margin: sessionList.indexOf(item) == 0
                     ? EdgeInsets.only(top: 5)
                     : null,
@@ -424,7 +632,6 @@ class _ProgramViewState extends State<ProgramView> {
                 padding: EdgeInsets.all(5),
                 height: 110,
                 child: Container(
-                  width: ScreenSize.width(context) / 1.2,
                   height: 60,
                   margin: EdgeInsets.only(left: 5, right: 5),
                   decoration: BoxDecoration(
@@ -438,16 +645,13 @@ class _ProgramViewState extends State<ProgramView> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25.0),
                     ),
-                    onPressed: editButtonsEnabled && isEditMode ? () {} : null,
                     child: Stack(
                       children: <Widget>[
                         Center(
                           child: StrongrText(
                             getShortWeekDay(item.place),
                             size: 42,
-                            color: !isEditMode
-                                ? StrongrColors.greyC
-                                : StrongrColors.greyB,
+                            color: StrongrColors.greyB,
                           ),
                         ),
                         Container(
@@ -460,20 +664,28 @@ class _ProgramViewState extends State<ProgramView> {
                               width: 35,
                               child: Icon(
                                 Icons.add,
-                                color: editButtonsEnabled
-                                    ? Colors.grey
-                                    : Colors.transparent,
+                                color: Colors.grey,
                               ),
                             ),
                           ),
                         ),
                       ],
                     ),
+                    onPressed: isEditMode
+                        ? () {
+                            FocusScope.of(context).unfocus();
+                            globalKey.currentState.hideCurrentSnackBar();
+                            lastIndexPressed = sessionList.indexOf(item);
+                            Navigator.pushNamed(
+                                    context, PROGRAM_NEW_SESSION_ROUTE)
+                                .then(addSession);
+                          }
+                        : null,
                   ),
                 ),
               ),
             );
-    return builtexerciseList;
+    return builtSessionList;
   }
 
   @override
@@ -486,7 +698,12 @@ class _ProgramViewState extends State<ProgramView> {
         leading: isEditMode
             ? IconButton(
                 icon: Icon(Icons.close),
-                onPressed: () => setState(() => isEditMode = false),
+                onPressed: () => setState(() {
+                  isEditMode = false;
+                  isEdited = false;
+                  futureProgram = ProgramService.getProgram(id: widget.id);
+                  sessionsOfProgram = [];
+                }),
               )
             : BackButton(),
         actions: <Widget>[
@@ -494,9 +711,17 @@ class _ProgramViewState extends State<ProgramView> {
               ? IconButton(
                   icon: Icon(
                     Icons.check,
-                    color: !editButtonsEnabled ? Colors.grey : Colors.white,
+                    color: isEdited &&
+                            editButtonsEnabled &&
+                            sessionsOfProgram.length != 0
+                        ? Colors.white
+                        : Colors.grey,
                   ),
-                  onPressed: () {},
+                  onPressed: isEdited &&
+                          editButtonsEnabled &&
+                          sessionsOfProgram.length != 0
+                      ? () async => sendToServer()
+                      : null,
                 )
               : IconButton(
                   icon: Icon(
@@ -582,10 +807,11 @@ class _ProgramViewState extends State<ProgramView> {
                 future: futureProgram,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
+                    sessionsOfProgram = snapshot.data.sessions;
                     return ListView(
                       physics: BouncingScrollPhysics(),
                       children:
-                          buildSessionList(sessionList: snapshot.data.sessions),
+                          buildSessionList(sessionList: sessionsOfProgram),
                     );
                   }
                   if (snapshot.hasError)

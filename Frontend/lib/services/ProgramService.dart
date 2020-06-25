@@ -104,10 +104,13 @@ class ProgramService {
   /// Modifie le programme [id] d'un utilisateur.
   static Future<int> putProgram({
     @required int id,
-    @required int programGoalId,
+    @required String programGoalName,
     @required String name,
     @required List<SessionPreview> sessions,
   }) async {
+    List<SessionPreview> definitiveSessions = List<SessionPreview>();
+    for (final item in sessions)
+      if (item.id != null) definitiveSessions.add(item);
     try {
       Response response = await put(
         Uri.encodeFull(
@@ -118,9 +121,9 @@ class ProgramService {
           'Authorization': 'Bearer ' + Global.token
         },
         body: jsonEncode({
-          'id_program_goal': programGoalId,
+          'program_goal_name': programGoalName,
           'name': name,
-          'sessions': sessions
+          'sessions': definitiveSessions
         }),
       );
       return response.statusCode;

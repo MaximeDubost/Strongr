@@ -49,7 +49,7 @@ router.get("/appexercise/:id_app_exercise", AppExerciseController.getDetailAppEx
 router.post("/exercise", middleware.checkAuth, ExerciseController.createExercise);
 router.get("/exercises", middleware.checkAuth, ExerciseController.readExercises);
 router.get("/exercise/:id_exercise", middleware.checkAuth, ExerciseController.detailExercise);
-router.put("/exercise/:id_exercise", middleware.checkAuth, ExerciseController.updateExercise);
+router.all("/exercise/:id_exercise", middleware.checkAuth, ExerciseController.updateExercise);
 router.delete("/exercise/:id_exercise", middleware.checkAuth, ExerciseController.deleteExercise);
 
 /**
@@ -58,7 +58,7 @@ router.delete("/exercise/:id_exercise", middleware.checkAuth, ExerciseController
 router.post("/session", middleware.checkAuth, SessionController.addSession);
 router.get("/sessions", middleware.checkAuth, SessionController.getSessions);
 router.get("/session/:id_session", middleware.checkAuth, SessionController.getSessionDetail);
-router.put("/session/:id_session", middleware.checkAuth, SessionController.updateSession);
+router.all("/session/:id_session", middleware.checkAuth, SessionController.updateSession);
 router.delete("/session/:id_session", middleware.checkAuth, SessionController.deleteSession);
 
 /**
@@ -68,6 +68,7 @@ router.post("/program", middleware.checkAuth, ProgramController.addProgram);
 router.get("/programs", middleware.checkAuth, ProgramController.readProgram);
 router.get("/program/:id_program", middleware.checkAuth, ProgramController.readDetailProgram);
 router.delete("/program/:id_program", middleware.checkAuth, ProgramController.deleteProgram);
+router.all("/program/:id_program", middleware.checkAuth, ProgramController.updateProgram);
 
 /**
  * Program Goal

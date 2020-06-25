@@ -106,9 +106,18 @@ repository.deleteSession = async (req) => {
 }
 
 repository.updateSession = async (req) => {
-    var sqlUpdateSession = "UPDATE _session SET name_session = $1, last_update = $2 WHERE id_user = $3 AND id_session = $4"
+    let sql = "UPDATE _session SET name = $1, last_update = $2 WHERE id_user = $3 AND id_session = $4"
     try {
-        await clt.query(sqlUpdateSession, [req.body.session_name, new Date(), req.user.id, req.params.id_session])
+        await clt.query(sql, [req.body.name, new Date(), req.user.id, req.params.id_session])
+        sql = "DELETE FROM _session_exercise WHERE id_user = $1 AND id_user_1 = $2 AND id_session = $3"
+        await clt.query(sql, [req.user.id, req.user.id, req.params.id_session])
+        sql = "INSERT INTO _session_exercise (id_user, id_user_1, id_session, id_exercise, id_app_exercise, place) VALUES ($1,$2,$3,$4,$5,$6)"
+        req.body.exercises.forEach(async exercise => {
+            let exercises_parsed = JSON.parse(exercise)
+            let result = await clt.query("SELECT id_app_exercise FROM _app_exercise WHERE name = $1", [exercises_parsed.appExerciseName])
+            console.log(result);
+            await clt.query(sql, [req.user.id, req.user.id, req.params.id_session, exercises_parsed.id, result.rows[0].id_app_exercise, exercises_parsed.place])
+        })
         return 200
     } catch (error) {
         console.log(error)

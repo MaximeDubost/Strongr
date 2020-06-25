@@ -17,9 +17,6 @@ class _RestTimeDialogState extends State<RestTimeDialog> {
   int minutes;
   int seconds;
 
-  int restTimeInMinutes;
-  int restTimeInSeconds;
-
   @override
   void initState() {
     minutes = TimeFormater.getMinutes(widget.restTime);

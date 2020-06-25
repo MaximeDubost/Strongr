@@ -437,12 +437,11 @@ class _ProgramCreateViewState extends State<ProgramCreateView> {
                               : null,
                           child: Icon(
                             Icons.close,
-                            color: Colors.red[800],
+                            color: editButtonsEnabled ? Colors.red[800] : Colors.grey,
                           ),
                           shape: CircleBorder(),
                         ),
                       ),
-
                       // Visibility(
                       //   visible: !isEditMode,
                       //   child: Container(
