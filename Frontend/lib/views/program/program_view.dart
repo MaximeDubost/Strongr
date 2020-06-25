@@ -363,7 +363,7 @@ class _ProgramViewState extends State<ProgramView> {
                                       onPressed: sessionList.indexOf(item) ==
                                                   0 ||
                                               !editButtonsEnabled
-                                          ? () {}
+                                          ? null
                                           : () {
                                               FocusScope.of(context).unfocus();
                                               changePlaceOfSession(
@@ -416,7 +416,7 @@ class _ProgramViewState extends State<ProgramView> {
                                                   sessionList.indexOf(
                                                       sessionList.last) ||
                                               !editButtonsEnabled
-                                          ? () {}
+                                          ? null
                                           : () {
                                               FocusScope.of(context).unfocus();
                                               changePlaceOfSession(
@@ -604,7 +604,7 @@ class _ProgramViewState extends State<ProgramView> {
                       // )
                     ],
                   ),
-                  onPressed: () {
+                  onPressed: editButtonsEnabled ? () {
                     FocusScope.of(context).unfocus();
                     globalKey.currentState.hideCurrentSnackBar();
                     Navigator.pushNamed(
@@ -618,7 +618,7 @@ class _ProgramViewState extends State<ProgramView> {
                         fromProgramCreation: true,
                       ),
                     );
-                  },
+                  } : null,
                 ),
               ),
             )
@@ -659,7 +659,7 @@ class _ProgramViewState extends State<ProgramView> {
                           width: ScreenSize.width(context),
                           alignment: Alignment.centerRight,
                           child: Visibility(
-                            visible: isEditMode,
+                            visible: isEditMode && editButtonsEnabled,
                             child: Container(
                               width: 35,
                               child: Icon(
@@ -671,7 +671,7 @@ class _ProgramViewState extends State<ProgramView> {
                         ),
                       ],
                     ),
-                    onPressed: isEditMode
+                    onPressed: isEditMode && editButtonsEnabled
                         ? () {
                             FocusScope.of(context).unfocus();
                             globalKey.currentState.hideCurrentSnackBar();
@@ -720,7 +720,7 @@ class _ProgramViewState extends State<ProgramView> {
                   onPressed: isEdited &&
                           editButtonsEnabled &&
                           sessionsOfProgram.length != 0
-                      ? () async => sendToServer()
+                      ? () => sendToServer()
                       : null,
                 )
               : IconButton(
@@ -728,9 +728,12 @@ class _ProgramViewState extends State<ProgramView> {
                     Icons.edit,
                     color: !editButtonsEnabled ? Colors.grey : Colors.white,
                   ),
-                  onPressed: editButtonsEnabled
-                      ? () => setState(() => isEditMode = true)
-                      : null,
+                   onPressed: editButtonsEnabled
+                          ? () {
+                            globalKey.currentState.hideCurrentSnackBar();
+                            setState(() => isEditMode = true);
+                          } 
+                          : null,
                 )
         ],
       ),
