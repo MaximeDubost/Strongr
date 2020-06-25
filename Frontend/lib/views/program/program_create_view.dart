@@ -120,9 +120,38 @@ class _ProgramCreateViewState extends State<ProgramCreateView> {
 
   void addSession(Object returnedSession) {
     if (returnedSession != null) {
+      bool alreadyExists = false;
       SessionPreview session = returnedSession;
-      session.place = lastIndexPressed + 1;
-      setState(() => sessionsOfProgram[lastIndexPressed] = session);
+      for (final item in sessionsOfProgram)
+        if (session.id == item.id) alreadyExists = true;
+      if (!alreadyExists) {
+        SessionPreview session = returnedSession;
+        session.place = lastIndexPressed + 1;
+        setState(() => sessionsOfProgram[lastIndexPressed] = session);
+      } else {
+        globalKey.currentState.hideCurrentSnackBar();
+        globalKey.currentState.showSnackBar(
+          SnackBar(
+            behavior: SnackBarBehavior.floating,
+            content: GestureDetector(
+              onVerticalDragStart: (_) => null,
+              child: InkWell(
+                onTap: () => globalKey.currentState.hideCurrentSnackBar(),
+                child: StrongrSnackBarContent(
+                  icon: Icons.close,
+                  message: "Cette séance a déjà été ajoutée",
+                ),
+              ),
+            ),
+            backgroundColor: Colors.red.withOpacity(0.8),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(15),
+              ),
+            ),
+          ),
+        );
+      }
     }
     toggleCreateButton(sessionsOfProgram);
   }
@@ -437,7 +466,9 @@ class _ProgramCreateViewState extends State<ProgramCreateView> {
                               : null,
                           child: Icon(
                             Icons.close,
-                            color: editButtonsEnabled ? Colors.red[800] : Colors.grey,
+                            color: editButtonsEnabled
+                                ? Colors.red[800]
+                                : Colors.grey,
                           ),
                           shape: CircleBorder(),
                         ),
@@ -531,6 +562,7 @@ class _ProgramCreateViewState extends State<ProgramCreateView> {
                     ),
                     onPressed: () {
                       FocusScope.of(context).unfocus();
+                      globalKey.currentState.hideCurrentSnackBar();
                       lastIndexPressed = sessionList.indexOf(item);
                       Navigator.pushNamed(context, PROGRAM_NEW_SESSION_ROUTE)
                           .then(addSession);

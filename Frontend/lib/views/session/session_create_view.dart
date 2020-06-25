@@ -89,11 +89,40 @@ class _SessionCreateViewState extends State<SessionCreateView> {
 
   void addExercise(Object returnedExercise) {
     if (returnedExercise != null) {
-      setState(() {
-        exercisesOfSession.add(returnedExercise);
-      });
-      exercisesOfSession[exercisesOfSession.length - 1].place =
-          exercisesOfSession.length;
+      bool alreadyExists = false;
+      ExercisePreview exercise = returnedExercise;
+      for (final item in exercisesOfSession)
+        if (exercise.id == item.id) alreadyExists = true;
+      if (!alreadyExists) {
+        setState(() {
+          exercisesOfSession.add(returnedExercise);
+        });
+        exercisesOfSession[exercisesOfSession.length - 1].place =
+            exercisesOfSession.length;
+      } else {
+        globalKey.currentState.hideCurrentSnackBar();
+        globalKey.currentState.showSnackBar(
+          SnackBar(
+            behavior: SnackBarBehavior.floating,
+            content: GestureDetector(
+              onVerticalDragStart: (_) => null,
+              child: InkWell(
+                onTap: () => globalKey.currentState.hideCurrentSnackBar(),
+                child: StrongrSnackBarContent(
+                  icon: Icons.close,
+                  message: "Cet exercice a déjà été ajouté",
+                ),
+              ),
+            ),
+            backgroundColor: Colors.red.withOpacity(0.8),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(15),
+              ),
+            ),
+          ),
+        );
+      }
     }
     toggleCreateButton(exercisesOfSession);
   }
@@ -476,6 +505,7 @@ class _SessionCreateViewState extends State<SessionCreateView> {
                         onPressed: editButtonsEnabled
                             ? () {
                                 FocusScope.of(context).unfocus();
+                                globalKey.currentState.hideCurrentSnackBar();
                                 Navigator.pushNamed(
                                   context,
                                   SESSION_NEW_EXERCISE_ROUTE,
