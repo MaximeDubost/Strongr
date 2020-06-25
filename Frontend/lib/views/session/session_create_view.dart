@@ -81,7 +81,7 @@ class _SessionCreateViewState extends State<SessionCreateView> {
   }
 
   void toggleCreateButton(List<dynamic> list) {
-    if (list.length < 1)
+    if (list.length < 2)
       setState(() => createButtonEnabled = false);
     else
       setState(() => createButtonEnabled = true);

@@ -529,13 +529,13 @@ class _ExerciseViewState extends State<ExerciseView> {
                       icon: Icon(
                         Icons.check,
                         color: isEdited &&
-                                editButtonsEnabled &&
+                                validateButtonEnabled &&
                                 setsOfExercise.length != 0
                             ? Colors.white
                             : Colors.grey,
                       ),
                       onPressed: isEdited &&
-                              editButtonsEnabled &&
+                              validateButtonEnabled &&
                               setsOfExercise.length != 0
                           ? () => sendToServer()
                           : null,

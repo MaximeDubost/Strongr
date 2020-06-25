@@ -105,14 +105,19 @@ class _ProgramCreateViewState extends State<ProgramCreateView> {
   }
 
   void toggleCreateButton(List<dynamic> list) {
-    bool atLeastOneNotNullId = false;
+    bool atLeastTwoElements = false;
+    int elementCount = 0;
     for (final item in list) {
       if (item.id != null) {
-        atLeastOneNotNullId = true;
-        break;
+        elementCount++;
+        if (elementCount >= 2) {
+          atLeastTwoElements = true;
+          break;
+        }
       }
     }
-    if (atLeastOneNotNullId)
+
+    if (atLeastTwoElements)
       setState(() => createButtonEnabled = true);
     else
       setState(() => createButtonEnabled = false);

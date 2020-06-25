@@ -194,7 +194,7 @@ class _SessionViewState extends State<SessionView> {
   }
 
   void toggleCreateButton(List<dynamic> list) {
-    if (list.length < 1)
+    if (list.length < 2)
       setState(() => validateButtonEnabled = false);
     else
       setState(() => validateButtonEnabled = true);
@@ -575,13 +575,13 @@ class _SessionViewState extends State<SessionView> {
                       icon: Icon(
                         Icons.check,
                         color: isEdited &&
-                                editButtonsEnabled &&
+                                validateButtonEnabled &&
                                 exercisesOfSession.length != 0
                             ? Colors.white
                             : Colors.grey,
                       ),
                       onPressed: isEdited &&
-                              editButtonsEnabled &&
+                              validateButtonEnabled &&
                               exercisesOfSession.length != 0
                           ? () => sendToServer()
                           : null,
