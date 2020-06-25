@@ -4,6 +4,7 @@ import Set from "../Models/Set"
 import DetailExercise from "../Models/DetailExercise"
 import clt from "../core/config/database";
 import { json } from "express";
+import Equipment from "../Models/Equipment";
 
 const repository = {};
 
@@ -89,6 +90,7 @@ repository.deleteExercise = async (req) => {
 }
 
 repository.detailExercise = async (req) => {
+    let equipment = []
     let set_list = []
     let sql = `
     SELECT id_set, place, repetitions_count, rest_time, null as tonnage
@@ -113,7 +115,19 @@ repository.detailExercise = async (req) => {
         // console.log("result.rows: ", result.rows)
         let app_exercise = new AppExercise(result.rows[0].id_app_exercise, result.rows[0].name_app_exercise)
         // console.log("app_exercise: ", app_exercise)
-        return new DetailExercise(result.rows[0].id_exercise, result.rows[0].name_exercise, app_exercise, set_list, result.rows[0].creation_date, result.rows[0].last_update)
+        sql = `
+        SELECT eq.id_equipment, eq.name 
+        FROM _exercise e JOIN _equipment eq ON eq.id_equipment = e.id_equipment
+        WHERE e.id_exercise = $1 AND e.id_user = $2 AND e.id_app_exercise = $3
+        `
+        let result_equipment = await clt.query(sql, [req.params.id_exercise, req.user.id, result.rows[0].id_app_exercise])
+        console.log(result_equipment)
+
+        if (result_equipment.rowCount > 0) {
+            equipment = new Equipment(result_equipment.rows[0].id_equipment, result_equipment.rows[0].name)
+        }
+
+        return new DetailExercise(result.rows[0].id_exercise, result.rows[0].name_exercise, app_exercise, equipment, set_list, result.rows[0].creation_date, result.rows[0].last_update)
 
     } catch (error) {
         console.log(error)
