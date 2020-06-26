@@ -95,7 +95,8 @@ repository.detailExercise = async (req) => {
     let sql = `
     SELECT id_set, place, repetitions_count, rest_time, null as tonnage
     FROM _set s 
-    WHERE s.id_exercise = $1;
+    WHERE s.id_exercise = $1
+    ORDER BY s.place;
     `
     try {
 

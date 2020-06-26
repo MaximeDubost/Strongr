@@ -193,7 +193,7 @@ class _SessionViewState extends State<SessionView> {
     });
   }
 
-  void toggleCreateButton(List<dynamic> list) {
+  void toggleValidateButton(List<dynamic> list) {
     if (list.length < 2)
       setState(() => validateButtonEnabled = false);
     else
@@ -238,7 +238,7 @@ class _SessionViewState extends State<SessionView> {
         );
       }
     }
-    toggleCreateButton(exercisesOfSession);
+    toggleValidateButton(exercisesOfSession);
   }
 
   void deleteExercise(int index) {
@@ -248,7 +248,7 @@ class _SessionViewState extends State<SessionView> {
       for (final item in exercisesOfSession)
         item.place = exercisesOfSession.indexOf(item) + 1;
     });
-    toggleCreateButton(exercisesOfSession);
+    toggleValidateButton(exercisesOfSession);
   }
 
   void changePlaceOfExercise(int index, AxisDirection direction) {
@@ -552,262 +552,265 @@ class _SessionViewState extends State<SessionView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: globalKey,
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(widget.name),
-        leading: isEditMode
-            ? IconButton(
-                icon: Icon(Icons.close),
-                onPressed: () => setState(() {
-                  isEditMode = false;
-                  isEdited = false;
-                  futureSession = SessionService.getSession(id: widget.id);
-                  exercisesOfSession = [];
-                }),
-              )
-            : BackButton(),
-        actions: <Widget>[
-          !widget.fromProgramCreation
-              ? isEditMode
-                  ? IconButton(
-                      icon: Icon(
-                        Icons.check,
-                        color: isEdited &&
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        key: globalKey,
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text(widget.name),
+          leading: isEditMode
+              ? IconButton(
+                  icon: Icon(Icons.close),
+                  onPressed: () => setState(() {
+                    isEditMode = false;
+                    isEdited = false;
+                    futureSession = SessionService.getSession(id: widget.id);
+                    exercisesOfSession = [];
+                  }),
+                )
+              : BackButton(),
+          actions: <Widget>[
+            !widget.fromProgramCreation
+                ? isEditMode
+                    ? IconButton(
+                        icon: Icon(
+                          Icons.check,
+                          color: isEdited &&
+                                  validateButtonEnabled &&
+                                  exercisesOfSession.length != 0
+                              ? Colors.white
+                              : Colors.grey,
+                        ),
+                        onPressed: isEdited &&
                                 validateButtonEnabled &&
                                 exercisesOfSession.length != 0
-                            ? Colors.white
-                            : Colors.grey,
-                      ),
-                      onPressed: isEdited &&
-                              validateButtonEnabled &&
-                              exercisesOfSession.length != 0
-                          ? () => sendToServer()
-                          : null,
-                    )
-                  : IconButton(
-                      icon: Icon(
-                        Icons.edit,
-                        color: !editButtonsEnabled ? Colors.grey : Colors.white,
-                      ),
-                       onPressed: editButtonsEnabled
-                          ? () {
-                            globalKey.currentState.hideCurrentSnackBar();
-                            setState(() => isEditMode = true);
-                          } 
-                          : null,
-                    )
-              : SizedBox(),
-        ],
-      ),
-      body: Container(
-        child: Column(
-          children: <Widget>[
-            FutureBuilder(
-              future: futureSession,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  // print(snapshot.data);
-                  return Container(
-                    // color: Colors.red,
-                    child: InkWell(
-                      onTap: !editButtonsEnabled || isEditMode ? null : () {},
-                      child: Stack(
-                        children: <Widget>[
-                          Container(
-                            width: ScreenSize.width(context),
-                            padding: EdgeInsets.all(20),
-                            child: StrongrText(
-                              widget.sessionTypeName,
-                              bold: true,
-                            ),
-                          ),
-                          Container(
-                            padding: EdgeInsets.only(
-                              top: 20,
-                              bottom: 20,
-                              left: 15,
-                              right: 15,
-                            ),
-                            alignment: Alignment.centerRight,
-                            child: Opacity(
-                              opacity: isEditMode ? 0 : 1,
-                              child: Container(
-                                child: Icon(
-                                  Icons.info_outline,
-                                  color: editButtonsEnabled
-                                      ? StrongrColors.black
-                                      : Colors.grey,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                }
-                if (snapshot.hasError) {
-                  return Text(snapshot.error, textAlign: TextAlign.center);
-                } else {
-                  return Container(
-                    width: ScreenSize.width(context),
-                    padding: EdgeInsets.all(20),
-                    child: StrongrText(
-                      widget.sessionTypeName,
-                      bold: true,
-                    ),
-                  );
-                }
-              },
-            ),
-            Container(
-              width: ScreenSize.width(context),
-              height: 1,
-              color: Colors.grey[350],
-            ),
-            Container(
-              // color: Colors.red,
-              height: ScreenSize.height(context) / 1.6,
-              child: FutureBuilder(
+                            ? () => sendToServer()
+                            : null,
+                      )
+                    : IconButton(
+                        icon: Icon(
+                          Icons.edit,
+                          color: !editButtonsEnabled ? Colors.grey : Colors.white,
+                        ),
+                         onPressed: editButtonsEnabled
+                            ? () {
+                              globalKey.currentState.hideCurrentSnackBar();
+                              setState(() => isEditMode = true);
+                            } 
+                            : null,
+                      )
+                : SizedBox(),
+          ],
+        ),
+        body: Container(
+          child: Column(
+            children: <Widget>[
+              FutureBuilder(
                 future: futureSession,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    exercisesOfSession = snapshot.data.exercises;
-                    return ListView(
-                      physics: BouncingScrollPhysics(),
-                      children: buildExerciseList(
-                          exerciseList: exercisesOfSession),
+                    // print(snapshot.data);
+                    return Container(
+                      // color: Colors.red,
+                      child: InkWell(
+                        onTap: !editButtonsEnabled || isEditMode ? null : () {},
+                        child: Stack(
+                          children: <Widget>[
+                            Container(
+                              width: ScreenSize.width(context),
+                              padding: EdgeInsets.all(20),
+                              child: StrongrText(
+                                widget.sessionTypeName,
+                                bold: true,
+                              ),
+                            ),
+                            Container(
+                              padding: EdgeInsets.only(
+                                top: 20,
+                                bottom: 20,
+                                left: 15,
+                                right: 15,
+                              ),
+                              alignment: Alignment.centerRight,
+                              child: Opacity(
+                                opacity: isEditMode ? 0 : 1,
+                                child: Container(
+                                  child: Icon(
+                                    Icons.info_outline,
+                                    color: editButtonsEnabled
+                                        ? StrongrColors.black
+                                        : Colors.grey,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+                  if (snapshot.hasError) {
+                    return Text(snapshot.error, textAlign: TextAlign.center);
+                  } else {
+                    return Container(
+                      width: ScreenSize.width(context),
+                      padding: EdgeInsets.all(20),
+                      child: StrongrText(
+                        widget.sessionTypeName,
+                        bold: true,
+                      ),
+                    );
+                  }
+                },
+              ),
+              Container(
+                width: ScreenSize.width(context),
+                height: 1,
+                color: Colors.grey[350],
+              ),
+              Container(
+                // color: Colors.red,
+                height: ScreenSize.height(context) / 1.6,
+                child: FutureBuilder(
+                  future: futureSession,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      exercisesOfSession = snapshot.data.exercises;
+                      return ListView(
+                        physics: BouncingScrollPhysics(),
+                        children: buildExerciseList(
+                            exerciseList: exercisesOfSession),
+                      );
+                    }
+                    if (snapshot.hasError)
+                      return Text(snapshot.error, textAlign: TextAlign.center);
+                    else
+                      return Container(
+                        alignment: Alignment.center,
+                        height: ScreenSize.height(context) / 1.75,
+                        child: CircularProgressIndicator(
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(StrongrColors.blue),
+                        ),
+                      );
+                  },
+                ),
+              ),
+              Container(
+                width: ScreenSize.width(context),
+                height: 1,
+                color: Colors.grey[350],
+              ),
+              FutureBuilder(
+                future: futureSession,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Visibility(
+                      visible: !isEditMode,
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                        width: ScreenSize.width(context),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            StrongrText(
+                              "Créé le " +
+                                  DateFormater.format(
+                                      snapshot.data.creationDate.toString()) +
+                                  " à " +
+                                  DateFormater.format(
+                                    snapshot.data.creationDate.toString(),
+                                    timeOnly: true,
+                                  ),
+                              color: Colors.grey,
+                              size: 16,
+                            ),
+                            StrongrText(
+                              snapshot.data.creationDate !=
+                                      snapshot.data.lastUpdate
+                                  ? "Mis à jour le " +
+                                      DateFormater.format(
+                                          snapshot.data.lastUpdate.toString()) +
+                                      " à " +
+                                      DateFormater.format(
+                                        snapshot.data.lastUpdate.toString(),
+                                        timeOnly: true,
+                                      )
+                                  : "",
+                              color: Colors.grey,
+                              size: 16,
+                            ),
+                          ],
+                        ),
+                      ),
                     );
                   }
                   if (snapshot.hasError)
                     return Text(snapshot.error, textAlign: TextAlign.center);
                   else
-                    return Container(
-                      alignment: Alignment.center,
-                      height: ScreenSize.height(context) / 1.75,
-                      child: CircularProgressIndicator(
-                        valueColor:
-                            AlwaysStoppedAnimation<Color>(StrongrColors.blue),
-                      ),
-                    );
+                    return Container();
                 },
               ),
-            ),
-            Container(
-              width: ScreenSize.width(context),
-              height: 1,
-              color: Colors.grey[350],
-            ),
-            FutureBuilder(
-              future: futureSession,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return Visibility(
-                    visible: !isEditMode,
-                    child: Container(
-                      padding: EdgeInsets.all(10),
-                      width: ScreenSize.width(context),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          StrongrText(
-                            "Créé le " +
-                                DateFormater.format(
-                                    snapshot.data.creationDate.toString()) +
-                                " à " +
-                                DateFormater.format(
-                                  snapshot.data.creationDate.toString(),
-                                  timeOnly: true,
-                                ),
-                            color: Colors.grey,
-                            size: 16,
-                          ),
-                          StrongrText(
-                            snapshot.data.creationDate !=
-                                    snapshot.data.lastUpdate
-                                ? "Mis à jour le " +
-                                    DateFormater.format(
-                                        snapshot.data.lastUpdate.toString()) +
-                                    " à " +
-                                    DateFormater.format(
-                                      snapshot.data.lastUpdate.toString(),
-                                      timeOnly: true,
-                                    )
-                                : "",
-                            color: Colors.grey,
-                            size: 16,
-                          ),
-                        ],
+              Visibility(
+                visible: isEditMode,
+                child: Container(
+                  padding: EdgeInsets.all(10),
+                  width: ScreenSize.width(context),
+                  child: Center(
+                    child: FloatingActionButton.extended(
+                      heroTag: "add_fab",
+                      backgroundColor:
+                          !editButtonsEnabled || exercisesOfSession.length >= 20
+                              ? Colors.grey
+                              : StrongrColors.black,
+                      label: StrongrText(
+                        "Nouvel exercice",
+                        color: Colors.white,
                       ),
+                      icon: Icon(
+                        Icons.add,
+                        color: Colors.white,
+                      ),
+                      onPressed:
+                          !editButtonsEnabled || exercisesOfSession.length >= 20
+                              ? null
+                              : () {
+                                  Navigator.pushNamed(
+                                    context,
+                                    SESSION_NEW_EXERCISE_ROUTE,
+                                  ).then(addExercise);
+                                },
                     ),
-                  );
-                }
-                if (snapshot.hasError)
-                  return Text(snapshot.error, textAlign: TextAlign.center);
-                else
-                  return Container();
-              },
-            ),
-            Visibility(
-              visible: isEditMode,
-              child: Container(
-                padding: EdgeInsets.all(10),
-                width: ScreenSize.width(context),
-                child: Center(
-                  child: FloatingActionButton.extended(
-                    heroTag: "add_fab",
-                    backgroundColor:
-                        !editButtonsEnabled || exercisesOfSession.length >= 20
-                            ? Colors.grey
-                            : StrongrColors.black,
-                    label: StrongrText(
-                      "Nouvel exercice",
-                      color: Colors.white,
-                    ),
-                    icon: Icon(
-                      Icons.add,
-                      color: Colors.white,
-                    ),
-                    onPressed:
-                        !editButtonsEnabled || exercisesOfSession.length >= 20
-                            ? null
-                            : () {
-                                Navigator.pushNamed(
-                                  context,
-                                  SESSION_NEW_EXERCISE_ROUTE,
-                                ).then(addExercise);
-                              },
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
+        floatingActionButton: !widget.fromProgramCreation
+            ? FloatingActionButton.extended(
+                heroTag: !widget.fromProgram
+                    ? 'session_play_fab_' + widget.id.toString()
+                    : 'fp_session_play_fab_' + widget.id.toString(),
+                backgroundColor: !editButtonsEnabled
+                    ? Colors.grey
+                    : isEditMode ? Colors.red[800] : StrongrColors.blue,
+                icon: Icon(
+                  isEditMode ? Icons.delete_outline : Icons.play_arrow,
+                  color: Colors.white,
+                ),
+                label: StrongrText(
+                  isEditMode ? "Supprimer" : "Démarrer",
+                  color: Colors.white,
+                ),
+                onPressed: editButtonsEnabled
+                    ? isEditMode ? () => showDeleteDialog() : () {}
+                    : null,
+              )
+            : null,
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
-      floatingActionButton: !widget.fromProgramCreation
-          ? FloatingActionButton.extended(
-              heroTag: !widget.fromProgram
-                  ? 'session_play_fab_' + widget.id.toString()
-                  : 'fp_session_play_fab_' + widget.id.toString(),
-              backgroundColor: !editButtonsEnabled
-                  ? Colors.grey
-                  : isEditMode ? Colors.red[800] : StrongrColors.blue,
-              icon: Icon(
-                isEditMode ? Icons.delete_outline : Icons.play_arrow,
-                color: Colors.white,
-              ),
-              label: StrongrText(
-                isEditMode ? "Supprimer" : "Démarrer",
-                color: Colors.white,
-              ),
-              onPressed: editButtonsEnabled
-                  ? isEditMode ? () => showDeleteDialog() : () {}
-                  : null,
-            )
-          : null,
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }

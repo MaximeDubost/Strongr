@@ -89,6 +89,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
           name: args.name,
           isBelonged: args.isBelonged,
           fromExercises: args.fromExercises,
+          selectedEquipmentId: args.selectedEquipmentId,
         ),
       );
 
