@@ -74,6 +74,7 @@ router.all("/program/:id_program", middleware.checkAuth, ProgramController.updat
  * Program Goal
  */
 router.get("/programgoals", ProgramGoalController.readProgramGoal);
+router.get("/programgoal/:id_program_goal", ProgramGoalController.readProgramGoalById);
 
 /**
  * Equipement

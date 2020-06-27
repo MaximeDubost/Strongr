@@ -7,6 +7,7 @@ import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/string_constants.dart';
 import 'package:strongr/utils/strongr_colors.dart';
+import 'package:strongr/views/program/program_goal_view.dart';
 import 'package:strongr/views/session/session_view.dart';
 import 'package:strongr/widgets/dialogs/delete_dialog.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
@@ -609,21 +610,23 @@ class _ProgramViewState extends State<ProgramView> {
                       // )
                     ],
                   ),
-                  onPressed: editButtonsEnabled ? () {
-                    FocusScope.of(context).unfocus();
-                    globalKey.currentState.hideCurrentSnackBar();
-                    Navigator.pushNamed(
-                      context,
-                      SESSION_ROUTE,
-                      arguments: SessionView(
-                        id: item.id,
-                        name: item.name,
-                        sessionTypeName: item.sessionTypeName,
-                        fromProgram: false,
-                        fromProgramCreation: true,
-                      ),
-                    );
-                  } : null,
+                  onPressed: editButtonsEnabled
+                      ? () {
+                          FocusScope.of(context).unfocus();
+                          globalKey.currentState.hideCurrentSnackBar();
+                          Navigator.pushNamed(
+                            context,
+                            SESSION_ROUTE,
+                            arguments: SessionView(
+                              id: item.id,
+                              name: item.name,
+                              sessionTypeName: item.sessionTypeName,
+                              fromProgram: false,
+                              fromProgramCreation: true,
+                            ),
+                          );
+                        }
+                      : null,
                 ),
               ),
             )
@@ -735,12 +738,12 @@ class _ProgramViewState extends State<ProgramView> {
                       Icons.edit,
                       color: !editButtonsEnabled ? Colors.grey : Colors.white,
                     ),
-                     onPressed: editButtonsEnabled
-                            ? () {
-                              globalKey.currentState.hideCurrentSnackBar();
-                              setState(() => isEditMode = true);
-                            } 
-                            : null,
+                    onPressed: editButtonsEnabled
+                        ? () {
+                            globalKey.currentState.hideCurrentSnackBar();
+                            setState(() => isEditMode = true);
+                          }
+                        : null,
                   )
           ],
         ),
@@ -755,7 +758,18 @@ class _ProgramViewState extends State<ProgramView> {
                     return Container(
                       // color: Colors.red,
                       child: InkWell(
-                        onTap: !editButtonsEnabled || isEditMode ? null : () {},
+                        onTap: !editButtonsEnabled || isEditMode
+                            ? null
+                            : () {
+                                Navigator.pushNamed(
+                                  context,
+                                  PROGRAM_GOAL_ROUTE,
+                                  arguments: ProgramGoalView(
+                                    id: snapshot.data.programGoal.id,
+                                    name: snapshot.data.programGoal.name,
+                                  ),
+                                );
+                              },
                         child: Stack(
                           children: <Widget>[
                             Container(
@@ -906,7 +920,8 @@ class _ProgramViewState extends State<ProgramView> {
                     ? Colors.grey
                     : isEditMode
                         ? Colors.red[800]
-                        : snapshot.data.sessions[DateTime.now().weekday - 1].id !=
+                        : snapshot.data.sessions[DateTime.now().weekday - 1]
+                                    .id !=
                                 null
                             ? StrongrColors.blue
                             : Colors.grey,
@@ -917,7 +932,8 @@ class _ProgramViewState extends State<ProgramView> {
                 onPressed: editButtonsEnabled
                     ? isEditMode
                         ? () => showDeleteDialog()
-                        : snapshot.data.sessions[DateTime.now().weekday - 1].id !=
+                        : snapshot.data.sessions[DateTime.now().weekday - 1]
+                                    .id !=
                                 null
                             ? () {}
                             : null

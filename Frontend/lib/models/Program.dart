@@ -1,14 +1,14 @@
 import 'dart:convert';
 
 import 'package:collection/collection.dart';
+import 'package:strongr/models/ProgramGoal.dart';
 
 import 'SessionPreview.dart';
 
 class Program {
   int id;
-  int place;
   String name;
-  String programGoalName;
+  ProgramGoal programGoal;
   List<SessionPreview> sessions;
   double tonnage;
   DateTime creationDate;
@@ -16,9 +16,8 @@ class Program {
 
   Program({
     this.id,
-    this.place,
     this.name,
-    this.programGoalName,
+    this.programGoal,
     this.sessions,
     this.tonnage,
     this.creationDate,
@@ -37,9 +36,8 @@ class Program {
   }) {
     return Program(
       id: id ?? this.id,
-      place: place ?? this.place,
       name: name ?? this.name,
-      programGoalName: programGoalName ?? this.programGoalName,
+      programGoal: programGoal ?? this.programGoal,
       sessions: sessions ?? this.sessions,
       tonnage: tonnage ?? this.tonnage,
       creationDate: creationDate ?? this.creationDate,
@@ -50,9 +48,8 @@ class Program {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'place': place,
       'name': name,
-      'programGoalName': programGoalName,
+      'programGoalName': programGoal,
       'sessions': sessions?.map((x) => x?.toMap())?.toList(),
       'tonnage': tonnage,
       'creationDate': creationDate?.millisecondsSinceEpoch,
@@ -65,9 +62,8 @@ class Program {
   
     return Program(
       id: map['id'],
-      place: map['place'],
       name: map['name'],
-      programGoalName: map['program_goal_name'],
+      programGoal: ProgramGoal.fromMap(map['program_goal']),
       sessions: List<SessionPreview>.from(map['sessions']?.map((x) => SessionPreview.fromMap(x))),
       tonnage: map['tonnage'],
       creationDate: DateTime.parse(map['creation_date']),
@@ -81,7 +77,7 @@ class Program {
 
   @override
   String toString() {
-    return 'Program(id: $id, place: $place, name: $name, programGoalName: $programGoalName, sessions: $sessions, tonnage: $tonnage, creationDate: $creationDate, lastUpdate: $lastUpdate)';
+    return 'Program(id: $id, name: $name, programGoal: $programGoal, sessions: $sessions, tonnage: $tonnage, creationDate: $creationDate, lastUpdate: $lastUpdate)';
   }
 
   @override
@@ -91,9 +87,8 @@ class Program {
   
     return o is Program &&
       o.id == id &&
-      o.place == place &&
       o.name == name &&
-      o.programGoalName == programGoalName &&
+      o.programGoal == programGoal &&
       listEquals(o.sessions, sessions) &&
       o.tonnage == tonnage &&
       o.creationDate == creationDate &&
@@ -103,9 +98,8 @@ class Program {
   @override
   int get hashCode {
     return id.hashCode ^
-      place.hashCode ^
       name.hashCode ^
-      programGoalName.hashCode ^
+      programGoal.hashCode ^
       sessions.hashCode ^
       tonnage.hashCode ^
       creationDate.hashCode ^
