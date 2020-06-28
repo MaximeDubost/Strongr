@@ -121,7 +121,11 @@ class _HomepageState extends State<Homepage> {
                       EXERCISES_ROUTE,
                     ).then(
                       (exerciseChanges) {
-                        if (exerciseChanges) refreshExercises();
+                        if (exerciseChanges) {
+                          refreshExercises();
+                          refreshSessions();
+                          refreshPrograms();
+                        }
                       },
                     );
                   },
@@ -493,7 +497,10 @@ class _HomepageState extends State<Homepage> {
                       SESSIONS_ROUTE,
                     ).then(
                       (sessionChanges) {
-                        if (sessionChanges) refreshSessions();
+                        if (sessionChanges) {
+                          refreshSessions();
+                          refreshPrograms();
+                        }
                       },
                     );
                   },
