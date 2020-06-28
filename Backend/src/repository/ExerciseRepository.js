@@ -134,4 +134,180 @@ repository.detailExercise = async (req) => {
     }
 }
 
+repository.testInsertForDeleteExercise = async (req) => {
+    let sqlInsert1 = `
+    INSERT INTO _exercise (id_app_exercise, id_user, id_equipment, name, creation_date, last_update)
+    VALUES (8, 1, 3, 'deleteExercise', '2020-06-14 22:50:36.342', '2020-06-14 22:50:36.342');
+    
+    INSERT INTO _session (id_user, id_session_type, name, creation_date, last_update)
+    VALUES (1, 3, 'deleteSession', '2020-06-14 22:50:36.342', '2020-06-14 22:50:36.342');
+    
+    INSERT INTO _program (id_user, id_program_goal, name, creation_date, last_update)
+    VALUES (1, 3, 'deleteProgram','2020-06-14 22:50:36.342', '2020-06-14 22:50:36.342');
+    `
+
+    let sqlGetFromExercise = `
+    SELECT id_exercise, id_app_exercise FROM _exercise WHERE name = 'deleteExercise'
+    `
+
+    let sqlGetFromSession = `
+    SELECT id_session FROM _session WHERE name = 'deleteSession'
+    `
+
+    let sqlGetFromProgram = `
+    SELECT id_program FROM _program WHERE name = 'deleteProgram'
+    `
+
+    let sqlInsert2 = `
+    INSERT INTO _session_exercise (id_user, id_user_1, id_session, id_exercise, id_app_exercise, place)
+    VALUES (1, 1, $1, $2, $3, 1);
+
+    `
+    let sqlInsert3 = `
+    INSERT INTO _program_session (id_user, id_user_1, id_program, id_session, place)
+    VALUES (1, 1, $1, $2, 1);
+    `
+    try {
+        // requête
+        await clt.query(sqlInsert1, [])
+        let resultExercise = await clt.query(sqlGetFromExercise, [])
+        let resultSession = await clt.query(sqlGetFromSession, [])
+        let resultProgram = await clt.query(sqlGetFromProgram, [])
+
+        // variable 
+        let id_exercise = resultExercise.rows[0].id_exercise
+        let id_app_exercise = resultExercise.rows[0].id_app_exercise
+        let id_session = resultSession.rows[0].id_session
+        let id_program = resultProgram.rows[0].id_program
+
+        // requête part 2 
+        await clt.query(sqlInsert2, [id_session, id_exercise, id_app_exercise])
+        await clt.query(sqlInsert3, [id_program, id_session])
+
+        // console.log 
+        console.log("id_exercise = " + id_exercise)
+        console.log("id_app_exercise = " + id_app_exercise)
+        console.log("id_session = " + id_session)
+        console.log("id_program = " + id_program)
+        return 201;
+    }
+    catch (error) {
+        console.error(error)
+    }
+}
+
+repository.deleteForTest = async (req) => {
+    let sqlGetFromExercise = `
+    SELECT id_exercise FROM _exercise WHERE name = 'deleteExercise'
+    `
+
+    let sqlGetFromSession = `
+    SELECT id_session FROM _session WHERE name = 'deleteSession'
+    `
+
+    let sqlFirst = `
+    DELETE FROM _session_exercise WHERE id_exercise = $1
+    `
+    let sqlSecond = `
+    DELETE FROM _program_session WHERE id_session = $1
+    `
+
+    let sql = `
+    DELETE FROM _exercise WHERE name = 'deleteExercise';
+    DELETE FROM _session  WHERE name = 'deleteSession';
+    DELETE FROM _program WHERE name = 'deleteProgram';    
+    `
+    try {
+        let resultExercise = await clt.query(sqlGetFromExercise, [])
+        let resultSession = await clt.query(sqlGetFromSession, [])
+        let id_exercise = resultExercise.rows[0].id_exercise
+        let id_session = resultSession.rows[0].id_session
+        await clt.query(sqlFirst, [id_exercise])
+        await clt.query(sqlSecond, [id_session])
+        await clt.query(sql, [])
+        return 201;
+    }
+    catch (error) {
+        console.error(error)
+    }
+}
+
+repository.deleteExerciseAll = async (req) => {
+    let sqlGetSession = `
+    SELECT id_session FROM _session_exercise WHERE id_exercise = $1 AND id_user = $2
+    `
+
+    let sqlGetAllExerciseFromSession = `
+    SELECT id_exercise FROM _session_exercise WHERE id_session = $1 AND id_user = $2
+    `
+
+    let sqlGetProgram = `
+    SELECT id_program FROM _program_session WHERE id_session = $1 and id_user = $2
+    `
+
+    let sqlGetAllSessionFromProgram = `
+    SELECT id_session FROM _program_session WHERE id_program = $1 AND id_user = $2
+    `
+
+    let sqlDeleteSessionExercise = `
+    DELETE FROM _session_exercise WHERE id_exercise = $1 AND id_user = $2
+    `
+
+    let sqlDeleteProgramSession = `
+    DELETE FROM _program_session WHERE id_session = $1 AND id_user = $2
+    `
+
+    let sqlDeleteExercise = `
+    DELETE FROM _exercise WHERE id_exercise = $1 AND id_user = $2
+    `
+
+    let sqlDeleteSession = `
+    DELETE FROM _session WHERE id_session = $1 AND id_user = $2
+    `
+
+    let sqlDeleteProgram = `
+    DELETE FROM _program WHERE id_program = $1 AND id_user = $2
+    `
+
+    try {
+        let resultForIdSession = await clt.query(sqlGetSession, [req.params.id_exercise, req.user.id])
+        let allSession = resultForIdSession.rows[0].id_session
+        resultForIdSession.rows.forEach(async row => {
+            let resultAnyExercise = await clt.query(sqlGetAllExerciseFromSession, [row.id_session, req.user.id])
+            let allExercise = resultAnyExercise.rows
+            if (allExercise.length !== 1) { // fonctionne
+                await clt.query(sqlDeleteSessionExercise, [req.params.id_exercise, req.user.id])
+                await clt.query(sqlDeleteExercise, [req.params.id_exercise, req.user.id])
+
+            } else {
+                let resultForIdProgram = await clt.query(sqlGetProgram, [row.id_session, req.user.id])
+                resultForIdProgram.rows.forEach(async r => {
+                    let resultAnySession = await clt.query(sqlGetAllSessionFromProgram, [r.id_program, req.user.id])
+                    let allSession = resultAnySession.rows
+                    if (allSession.length !== 1) {
+                        allSession.forEach(async session => { // NON TESTE POUR L'INSTANT
+                            await clt.query(sqlDeleteSessionExercise, [allExercise[0].id_exercise, req.user.id])
+                            await clt.query(sqlDeleteProgramSession, [allSession[0].id_session, req.user.id])
+                            await clt.query(sqlDeleteExercise, [allExercise[0].id_exercise, req.user.id])
+                            await clt.query(sqlDeleteSession, [allSession[0].id_session, req.user.id])
+                        })
+                    } else { // fonctionne
+                        await clt.query(sqlDeleteSessionExercise, [req.params.id_exercise, req.user.id])
+                        await clt.query(sqlDeleteProgramSession, [allSession[0].id_session, req.user.id])
+                        await clt.query(sqlDeleteExercise, [req.params.id_exercise, req.user.id])
+                        await clt.query(sqlDeleteSession, [allSession[0].id_session, req.user.id])
+                        await clt.query(sqlDeleteProgram, [r.id_program, req.user.id])
+                    }
+                })
+            }
+        })
+        return 201;
+    }
+    catch (error) {
+        console.error(error)
+    }
+
+
+}
+
 export default repository;
