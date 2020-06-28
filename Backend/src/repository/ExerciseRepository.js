@@ -272,21 +272,39 @@ repository.deleteExerciseAll = async (req) => {
     try {
         // get session dans lequel id_exercise present
         let resultForIdSession = await clt.query(sqlGetSession, [req.params.id_exercise, req.user.id])
-        let allSession = resultForIdSession.rows[0].id_session
+        let allSession
+        console.log("resultForIdSession : "+resultForIdSession)
+        if(resultForIdSession.rowCount == 0)
+        {
+            await clt.query(sqlDeleteExercise, [req.params.id_exercise, req.user.id])
+        }
+        else{
+            allSession = resultForIdSession.rows[0].id_session
+        }
         // Pour chaque session 
         resultForIdSession.rows.forEach(async row => {
             // get exercice de chaque session 
             let resultAnyExercise = await clt.query(sqlGetAllExerciseFromSession, [row.id_session, req.user.id])
             let allExercise = resultAnyExercise.rows
+
             // si session a plus d'un exercice
-            if (allExercise.length > 1) { // fonctionne
+            if (allExercise.length > 1) { // fonction
+
                 await clt.query(sqlDeleteSessionExercise, [req.params.id_exercise, req.user.id])
                 await clt.query(sqlDeleteExercise, [req.params.id_exercise, req.user.id])
-
             } else {
+
                 // si session a un seul exercice 
                 // get program dans lequel cette session est presente 
                 let resultForIdProgram = await clt.query(sqlGetProgram, [row.id_session, req.user.id])
+                let selectIdSession = row.id_session
+                // si la seance n'appartient à aucun programme 
+                if (resultForIdProgram.rowCount == 0) {
+                    await clt.query(sqlDeleteSessionExercise, [req.params.id_exercise, req.user.id])
+                    await clt.query(sqlDeleteProgramSession, [selectIdSession, req.user.id])
+                    await clt.query(sqlDeleteExercise, [req.params.id_exercise, req.user.id])
+                    await clt.query(sqlDeleteSession, [selectIdSession, req.user.id])
+                }
                 resultForIdProgram.rows.forEach(async r => {
                     // get toutes sessions de chaque programme dans lequel la session existe  
                     let resultAnySession = await clt.query(sqlGetAllSessionFromProgram, [r.id_program, req.user.id])
@@ -295,9 +313,10 @@ repository.deleteExerciseAll = async (req) => {
                     if (allSession.length > 1) {
                         allSession.forEach(async session => { // NON TESTE POUR L'INSTANT
                             await clt.query(sqlDeleteSessionExercise, [allExercise[0].id_exercise, req.user.id])
-                            await clt.query(sqlDeleteProgramSession, [allSession[0].id_session, req.user.id])
+                            await clt.query(sqlDeleteProgramSession, [selectIdSession, req.user.id])
                             await clt.query(sqlDeleteExercise, [allExercise[0].id_exercise, req.user.id])
-                            await clt.query(sqlDeleteSession, [allSession[0].id_session, req.user.id])
+                            await clt.query(sqlDeleteSession, [selectIdSession, req.user.id])
+
                         })
                     } else { // si session unique dans programme 
                         await clt.query(sqlDeleteSessionExercise, [req.params.id_exercise, req.user.id])
