@@ -163,10 +163,10 @@ repository.testInsertForDeleteExercise = async (req) => {
         await clt.query(sqlInsert3, [id_program, id_session])
 
         // console.log 
-        console.log("id_exercise = "+id_exercise)
-        console.log("id_app_exercise = "+id_app_exercise)
-        console.log("id_session = "+id_session)
-        console.log("id_program = "+id_program)
+        console.log("id_exercise = " + id_exercise)
+        console.log("id_app_exercise = " + id_app_exercise)
+        console.log("id_session = " + id_session)
+        console.log("id_program = " + id_program)
         return 201;
     }
     catch (error) {
@@ -189,7 +189,7 @@ repository.deleteForTest = async (req) => {
     let sqlSecond = `
     DELETE FROM _program_session WHERE id_session = $1
     `
-    
+
     let sql = `
     DELETE FROM _exercise WHERE name = 'deleteExercise';
     DELETE FROM _session  WHERE name = 'deleteSession';
@@ -253,31 +253,26 @@ repository.deleteExerciseAll = async (req) => {
         resultForIdSession.rows.forEach(async row => {
             let resultAnyExercise = await clt.query(sqlGetAllExerciseFromSession, [row.id_session, req.user.id])
             let allExercise = resultAnyExercise.rows
-            if (allExercise.length !== 1)
-            {
-                allExercise.forEach(async exercise => { // NON TESTE POUR L'INSTANT
-                            await clt.query(sqlDeleteSessionExercise, [exercise.id_exercise, req.user.id])
-                            await clt.query(sqlDeleteExercise, [exercise.id_exercise, req.user.id])
-                        })
-            } else 
-            {
+            if (allExercise.length !== 1) { // fonctionne
+                await clt.query(sqlDeleteSessionExercise, [req.params.id_exercise, req.user.id])
+                await clt.query(sqlDeleteExercise, [req.params.id_exercise, req.user.id])
+
+            } else {
                 let resultForIdProgram = await clt.query(sqlGetProgram, [row.id_session, req.user.id])
                 resultForIdProgram.rows.forEach(async r => {
                     let resultAnySession = await clt.query(sqlGetAllSessionFromProgram, [r.id_program, req.user.id])
                     let allSession = resultAnySession.rows
-                    if (allSession.length !== 1)
-                    {
+                    if (allSession.length !== 1) {
                         allSession.forEach(async session => { // NON TESTE POUR L'INSTANT
                             await clt.query(sqlDeleteSessionExercise, [allExercise[0].id_exercise, req.user.id])
-                            await clt.query(sqlDeleteProgramSession, [session.id_session, req.user.id])
+                            await clt.query(sqlDeleteProgramSession, [allSession[0].id_session, req.user.id])
                             await clt.query(sqlDeleteExercise, [allExercise[0].id_exercise, req.user.id])
-                            await clt.query(sqlDeleteSession, [session.id_session, req.user.id])
+                            await clt.query(sqlDeleteSession, [allSession[0].id_session, req.user.id])
                         })
-                    }else
-                    {
-                        await clt.query(sqlDeleteSessionExercise, [allExercise[0].id_exercise, req.user.id])
+                    } else { // fonctionne
+                        await clt.query(sqlDeleteSessionExercise, [req.params.id_exercise, req.user.id])
                         await clt.query(sqlDeleteProgramSession, [allSession[0].id_session, req.user.id])
-                        await clt.query(sqlDeleteExercise, [allExercise[0].id_exercise, req.user.id])
+                        await clt.query(sqlDeleteExercise, [req.params.id_exercise, req.user.id])
                         await clt.query(sqlDeleteSession, [allSession[0].id_session, req.user.id])
                         await clt.query(sqlDeleteProgram, [r.id_program, req.user.id])
                     }
