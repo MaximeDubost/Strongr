@@ -36,6 +36,12 @@ const String PROGRAM_ROUTE = "program";
 const String PROGRAM_CREATE_ROUTE = "program_create";
 const String PROGRAM_NEW_SESSION_ROUTE = "program_new_session";
 
+// Session type
+const String SESSION_TYPE_ROUTE = "session_type";
+
+// Program goal
+const String PROGRAM_GOAL_ROUTE = "program_goal";
+
 // Profile
 const String PROFILE_ROUTE = "profile";
 

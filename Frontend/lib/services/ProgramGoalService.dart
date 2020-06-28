@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:strongr/models/ProgramGoal.dart';
 import 'dart:convert';
 import 'package:http/http.dart';
@@ -7,7 +8,7 @@ class ProgramGoalService
 {
   /// [GET] /programgoals
   ///
-  /// Retourne la liste des equipements de l'exercice [idAppExercise] de l'application.
+  /// Retourne la liste des objectifs de programme.
   static Future<List<ProgramGoal>> getProgramGoals() async {
     try {
       Response response = await get(
@@ -21,6 +22,22 @@ class ProgramGoalService
       return programGoals;
     } catch (e) {
       return [];
+    }
+  }
+
+  /// [GET] /programgoal/[id]
+  ///
+  /// Retourne l'objectif de programme [id].
+  static Future<ProgramGoal> getProgramGoal({@required int id}) async {
+    try {
+      Response response = await get(
+        Uri.encodeFull(
+          Global.SERVER_URL + '/programgoal/' + id.toString(),
+        ),
+      );
+      return ProgramGoal.fromJson(response.body);
+    } catch (e) {
+      return ProgramGoal();
     }
   }
 }

@@ -15,12 +15,15 @@ class AppExerciseView extends StatefulWidget {
   final String name;
   final bool isBelonged;
   final bool fromExercises;
+  final int selectedEquipmentId;
 
-  AppExerciseView(
-      {this.id,
-      this.name,
-      this.isBelonged = false,
-      this.fromExercises = false});
+  AppExerciseView({
+    this.id,
+    this.name,
+    this.isBelonged = false,
+    this.fromExercises = false,
+    this.selectedEquipmentId,
+  });
 
   @override
   _AppExerciseViewState createState() => _AppExerciseViewState();
@@ -161,6 +164,14 @@ class _AppExerciseViewState extends State<AppExerciseView> {
                                       ],
                                     ),
                                   ),
+                                  borderColor:
+                                      widget.selectedEquipmentId == item.id
+                                          ? StrongrColors.blue80
+                                          : StrongrColors.greyD,
+                                  borderWidth:
+                                      widget.selectedEquipmentId == item.id
+                                          ? 2
+                                          : 1,
                                   onPressed: () {},
                                 ),
                                 SizedBox(height: 5),

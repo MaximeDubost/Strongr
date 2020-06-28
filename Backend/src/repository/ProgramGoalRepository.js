@@ -25,5 +25,20 @@ repository.readProgramGoal = async (req) => {
 
 }
 
+repository.readProgramGoalById = async (req) => {
+    let sql = `
+        SELECT id_program_goal, name, description
+        FROM _program_goal
+        WHERE id_program_goal = $1
+    `
+    try {
+        let result = await clt.query(sql, [req.params.id_program_goal]);
+        return result.rows[0];
+    } catch (error) {
+        console.log(error);
+    }
+
+}
+
 
 export default repository;

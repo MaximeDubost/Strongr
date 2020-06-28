@@ -7,6 +7,7 @@ import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/string_constants.dart';
 import 'package:strongr/utils/strongr_colors.dart';
+import 'package:strongr/views/program/program_goal_view.dart';
 import 'package:strongr/views/session/session_view.dart';
 import 'package:strongr/widgets/dialogs/delete_dialog.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
@@ -225,7 +226,7 @@ class _ProgramViewState extends State<ProgramView> {
     });
   }
 
-  void toggleCreateButton(List<dynamic> list) {
+  void toggleValidateButton(List<dynamic> list) {
     bool atLeastTwoElements = false;
     int elementCount = 0;
     for (final item in list) {
@@ -281,7 +282,7 @@ class _ProgramViewState extends State<ProgramView> {
         );
       }
     }
-    toggleCreateButton(sessionsOfProgram);
+    toggleValidateButton(sessionsOfProgram);
   }
 
   void deleteSession(int index) {
@@ -289,7 +290,7 @@ class _ProgramViewState extends State<ProgramView> {
       isEdited = true;
       sessionsOfProgram[index] = SessionPreview(place: index + 1);
     });
-    toggleCreateButton(sessionsOfProgram);
+    toggleValidateButton(sessionsOfProgram);
   }
 
   void changePlaceOfSession(int index, AxisDirection direction) {
@@ -609,21 +610,23 @@ class _ProgramViewState extends State<ProgramView> {
                       // )
                     ],
                   ),
-                  onPressed: editButtonsEnabled ? () {
-                    FocusScope.of(context).unfocus();
-                    globalKey.currentState.hideCurrentSnackBar();
-                    Navigator.pushNamed(
-                      context,
-                      SESSION_ROUTE,
-                      arguments: SessionView(
-                        id: item.id,
-                        name: item.name,
-                        sessionTypeName: item.sessionTypeName,
-                        fromProgram: false,
-                        fromProgramCreation: true,
-                      ),
-                    );
-                  } : null,
+                  onPressed: editButtonsEnabled
+                      ? () {
+                          FocusScope.of(context).unfocus();
+                          globalKey.currentState.hideCurrentSnackBar();
+                          Navigator.pushNamed(
+                            context,
+                            SESSION_ROUTE,
+                            arguments: SessionView(
+                              id: item.id,
+                              name: item.name,
+                              sessionTypeName: item.sessionTypeName,
+                              fromProgram: false,
+                              fromProgramCreation: true,
+                            ),
+                          );
+                        }
+                      : null,
                 ),
               ),
             )
@@ -695,261 +698,277 @@ class _ProgramViewState extends State<ProgramView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: globalKey,
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(widget.name),
-        leading: isEditMode
-            ? IconButton(
-                icon: Icon(Icons.close),
-                onPressed: () => setState(() {
-                  isEditMode = false;
-                  isEdited = false;
-                  futureProgram = ProgramService.getProgram(id: widget.id);
-                  sessionsOfProgram = [];
-                }),
-              )
-            : BackButton(),
-        actions: <Widget>[
-          isEditMode
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        key: globalKey,
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text(widget.name),
+          leading: isEditMode
               ? IconButton(
-                  icon: Icon(
-                    Icons.check,
-                    color: isEdited &&
+                  icon: Icon(Icons.close),
+                  onPressed: () => setState(() {
+                    isEditMode = false;
+                    isEdited = false;
+                    futureProgram = ProgramService.getProgram(id: widget.id);
+                    sessionsOfProgram = [];
+                  }),
+                )
+              : BackButton(),
+          actions: <Widget>[
+            isEditMode
+                ? IconButton(
+                    icon: Icon(
+                      Icons.check,
+                      color: isEdited &&
+                              validateButtonEnabled &&
+                              sessionsOfProgram.length != 0
+                          ? Colors.white
+                          : Colors.grey,
+                    ),
+                    onPressed: isEdited &&
                             validateButtonEnabled &&
                             sessionsOfProgram.length != 0
-                        ? Colors.white
-                        : Colors.grey,
-                  ),
-                  onPressed: isEdited &&
-                          validateButtonEnabled &&
-                          sessionsOfProgram.length != 0
-                      ? () => sendToServer()
-                      : null,
-                )
-              : IconButton(
-                  icon: Icon(
-                    Icons.edit,
-                    color: !editButtonsEnabled ? Colors.grey : Colors.white,
-                  ),
-                   onPressed: editButtonsEnabled
-                          ? () {
+                        ? () => sendToServer()
+                        : null,
+                  )
+                : IconButton(
+                    icon: Icon(
+                      Icons.edit,
+                      color: !editButtonsEnabled ? Colors.grey : Colors.white,
+                    ),
+                    onPressed: editButtonsEnabled
+                        ? () {
                             globalKey.currentState.hideCurrentSnackBar();
                             setState(() => isEditMode = true);
-                          } 
-                          : null,
-                )
-        ],
-      ),
-      body: Container(
-        child: Column(
-          children: <Widget>[
-            FutureBuilder(
-              future: futureProgram,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  // print(snapshot.data);
-                  return Container(
-                    // color: Colors.red,
-                    child: InkWell(
-                      onTap: !editButtonsEnabled || isEditMode ? null : () {},
-                      child: Stack(
-                        children: <Widget>[
-                          Container(
-                            width: ScreenSize.width(context),
-                            padding: EdgeInsets.all(20),
-                            child: StrongrText(
-                              widget.programGoalName,
-                              bold: true,
-                            ),
-                          ),
-                          Container(
-                            padding: EdgeInsets.only(
-                              top: 20,
-                              bottom: 20,
-                              left: 15,
-                              right: 15,
-                            ),
-                            alignment: Alignment.centerRight,
-                            child: Opacity(
-                              opacity: isEditMode ? 0 : 1,
-                              child: Container(
-                                child: Icon(
-                                  Icons.info_outline,
-                                  color: editButtonsEnabled
-                                      ? StrongrColors.black
-                                      : Colors.grey,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                }
-                if (snapshot.hasError) {
-                  return Text(snapshot.error, textAlign: TextAlign.center);
-                } else {
-                  return Container(
-                    width: ScreenSize.width(context),
-                    padding: EdgeInsets.all(20),
-                    child: StrongrText(
-                      widget.programGoalName,
-                      bold: true,
-                    ),
-                  );
-                }
-              },
-            ),
-            Container(
-              width: ScreenSize.width(context),
-              height: 1,
-              color: Colors.grey[350],
-            ),
-            Container(
-              // color: Colors.red,
-              height: ScreenSize.height(context) / 1.6,
-              child: FutureBuilder(
+                          }
+                        : null,
+                  )
+          ],
+        ),
+        body: Container(
+          child: Column(
+            children: <Widget>[
+              FutureBuilder(
                 future: futureProgram,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    sessionsOfProgram = snapshot.data.sessions;
-                    return ListView(
-                      physics: BouncingScrollPhysics(),
-                      children:
-                          buildSessionList(sessionList: sessionsOfProgram),
+                    // print(snapshot.data);
+                    return Container(
+                      // color: Colors.red,
+                      child: InkWell(
+                        onTap: !editButtonsEnabled || isEditMode
+                            ? null
+                            : () {
+                                Navigator.pushNamed(
+                                  context,
+                                  PROGRAM_GOAL_ROUTE,
+                                  arguments: ProgramGoalView(
+                                    id: snapshot.data.programGoal.id,
+                                    name: snapshot.data.programGoal.name,
+                                  ),
+                                );
+                              },
+                        child: Stack(
+                          children: <Widget>[
+                            Container(
+                              width: ScreenSize.width(context),
+                              padding: EdgeInsets.all(20),
+                              child: StrongrText(
+                                widget.programGoalName,
+                                bold: true,
+                              ),
+                            ),
+                            Container(
+                              padding: EdgeInsets.only(
+                                top: 20,
+                                bottom: 20,
+                                left: 15,
+                                right: 15,
+                              ),
+                              alignment: Alignment.centerRight,
+                              child: Opacity(
+                                opacity: isEditMode ? 0 : 1,
+                                child: Container(
+                                  child: Icon(
+                                    Icons.info_outline,
+                                    color: editButtonsEnabled
+                                        ? StrongrColors.black
+                                        : Colors.grey,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+                  if (snapshot.hasError) {
+                    return Text(snapshot.error, textAlign: TextAlign.center);
+                  } else {
+                    return Container(
+                      width: ScreenSize.width(context),
+                      padding: EdgeInsets.all(20),
+                      child: StrongrText(
+                        widget.programGoalName,
+                        bold: true,
+                      ),
+                    );
+                  }
+                },
+              ),
+              Container(
+                width: ScreenSize.width(context),
+                height: 1,
+                color: Colors.grey[350],
+              ),
+              Container(
+                // color: Colors.red,
+                height: ScreenSize.height(context) / 1.6,
+                child: FutureBuilder(
+                  future: futureProgram,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      sessionsOfProgram = snapshot.data.sessions;
+                      return ListView(
+                        physics: BouncingScrollPhysics(),
+                        children:
+                            buildSessionList(sessionList: sessionsOfProgram),
+                      );
+                    }
+                    if (snapshot.hasError)
+                      return Text(snapshot.error, textAlign: TextAlign.center);
+                    else
+                      return Container(
+                        alignment: Alignment.center,
+                        height: ScreenSize.height(context) / 1.75,
+                        child: CircularProgressIndicator(
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(StrongrColors.blue),
+                        ),
+                      );
+                  },
+                ),
+              ),
+              Container(
+                width: ScreenSize.width(context),
+                height: 1,
+                color: Colors.grey[350],
+              ),
+              FutureBuilder(
+                future: futureProgram,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Visibility(
+                      visible: !isEditMode,
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                        width: ScreenSize.width(context),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            StrongrText(
+                              "Créé le " +
+                                  DateFormater.format(
+                                      snapshot.data.creationDate.toString()) +
+                                  " à " +
+                                  DateFormater.format(
+                                    snapshot.data.creationDate.toString(),
+                                    timeOnly: true,
+                                  ),
+                              color: Colors.grey,
+                              size: 16,
+                            ),
+                            StrongrText(
+                              snapshot.data.creationDate !=
+                                      snapshot.data.lastUpdate
+                                  ? "Mis à jour le " +
+                                      DateFormater.format(
+                                          snapshot.data.lastUpdate.toString()) +
+                                      " à " +
+                                      DateFormater.format(
+                                        snapshot.data.lastUpdate.toString(),
+                                        timeOnly: true,
+                                      )
+                                  : "",
+                              color: Colors.grey,
+                              size: 16,
+                            ),
+                          ],
+                        ),
+                      ),
                     );
                   }
                   if (snapshot.hasError)
                     return Text(snapshot.error, textAlign: TextAlign.center);
                   else
-                    return Container(
-                      alignment: Alignment.center,
-                      height: ScreenSize.height(context) / 1.75,
-                      child: CircularProgressIndicator(
-                        valueColor:
-                            AlwaysStoppedAnimation<Color>(StrongrColors.blue),
-                      ),
-                    );
+                    return Container();
                 },
               ),
-            ),
-            Container(
-              width: ScreenSize.width(context),
-              height: 1,
-              color: Colors.grey[350],
-            ),
-            FutureBuilder(
-              future: futureProgram,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return Visibility(
-                    visible: !isEditMode,
-                    child: Container(
-                      padding: EdgeInsets.all(10),
-                      width: ScreenSize.width(context),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          StrongrText(
-                            "Créé le " +
-                                DateFormater.format(
-                                    snapshot.data.creationDate.toString()) +
-                                " à " +
-                                DateFormater.format(
-                                  snapshot.data.creationDate.toString(),
-                                  timeOnly: true,
-                                ),
-                            color: Colors.grey,
-                            size: 16,
-                          ),
-                          StrongrText(
-                            snapshot.data.creationDate !=
-                                    snapshot.data.lastUpdate
-                                ? "Mis à jour le " +
-                                    DateFormater.format(
-                                        snapshot.data.lastUpdate.toString()) +
-                                    " à " +
-                                    DateFormater.format(
-                                      snapshot.data.lastUpdate.toString(),
-                                      timeOnly: true,
-                                    )
-                                : "",
-                            color: Colors.grey,
-                            size: 16,
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                }
-                if (snapshot.hasError)
-                  return Text(snapshot.error, textAlign: TextAlign.center);
-                else
-                  return Container();
-              },
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-      floatingActionButton: FutureBuilder(
-        future: futureProgram,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return FloatingActionButton.extended(
-              heroTag: 'program_play_fab_' + widget.id.toString(),
-              backgroundColor: !editButtonsEnabled
-                  ? Colors.grey
-                  : isEditMode
-                      ? Colors.red[800]
-                      : snapshot.data.sessions[DateTime.now().weekday - 1].id !=
-                              null
-                          ? StrongrColors.blue
-                          : Colors.grey,
-              icon: Icon(
-                isEditMode ? Icons.delete_outline : Icons.play_arrow,
-                color: Colors.white,
-              ),
-              onPressed: editButtonsEnabled
-                  ? isEditMode
-                      ? () => showDeleteDialog()
-                      : snapshot.data.sessions[DateTime.now().weekday - 1].id !=
-                              null
-                          ? () {}
-                          : null
-                  : null,
-              label: StrongrText(
-                isEditMode ? "Supprimer" : "Démarrer (" + weekday + ")",
-                color: Colors.white,
-              ),
-            );
-          }
-          if (snapshot.hasError)
-            return Text(snapshot.error, textAlign: TextAlign.center);
-          else
-            // return Container();
-            return FloatingActionButton.extended(
-              heroTag: 'program_play_fab_' + widget.id.toString(),
-              backgroundColor: isEditMode ? Colors.red[800] : Colors.grey,
-              onPressed: isEditMode ? () {} : null,
-              label: Container(
-                height: 25,
-                width: 100,
-                child: Center(
-                  child: Container(
-                    width: 25,
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+        floatingActionButton: FutureBuilder(
+          future: futureProgram,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return FloatingActionButton.extended(
+                heroTag: 'program_play_fab_' + widget.id.toString(),
+                backgroundColor: !editButtonsEnabled
+                    ? Colors.grey
+                    : isEditMode
+                        ? Colors.red[800]
+                        : snapshot.data.sessions[DateTime.now().weekday - 1]
+                                    .id !=
+                                null
+                            ? StrongrColors.blue
+                            : Colors.grey,
+                icon: Icon(
+                  isEditMode ? Icons.delete_outline : Icons.play_arrow,
+                  color: Colors.white,
+                ),
+                onPressed: editButtonsEnabled
+                    ? isEditMode
+                        ? () => showDeleteDialog()
+                        : snapshot.data.sessions[DateTime.now().weekday - 1]
+                                    .id !=
+                                null
+                            ? () {}
+                            : null
+                    : null,
+                label: StrongrText(
+                  isEditMode ? "Supprimer" : "Démarrer (" + weekday + ")",
+                  color: Colors.white,
+                ),
+              );
+            }
+            if (snapshot.hasError)
+              return Text(snapshot.error, textAlign: TextAlign.center);
+            else
+              // return Container();
+              return FloatingActionButton.extended(
+                heroTag: 'program_play_fab_' + widget.id.toString(),
+                backgroundColor: isEditMode ? Colors.red[800] : Colors.grey,
+                onPressed: isEditMode ? () {} : null,
+                label: Container(
+                  height: 25,
+                  width: 100,
+                  child: Center(
+                    child: Container(
+                      width: 25,
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            );
-        },
+              );
+          },
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }

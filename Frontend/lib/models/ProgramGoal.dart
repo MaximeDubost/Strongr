@@ -3,19 +3,23 @@ import 'dart:convert';
 class ProgramGoal {
   int id;
   String name;
+  String description;
   
   ProgramGoal({
     this.id,
     this.name,
+    this.description,
   });
 
   ProgramGoal copyWith({
     int id,
     String name,
+    String description,
   }) {
     return ProgramGoal(
       id: id ?? this.id,
       name: name ?? this.name,
+      description: description ?? this.description,
     );
   }
 
@@ -23,6 +27,7 @@ class ProgramGoal {
     return {
       'id': id,
       'name': name,
+      'description': description,
     };
   }
 
@@ -32,6 +37,7 @@ class ProgramGoal {
     return ProgramGoal(
       id: map['id'],
       name: map['name'],
+      description: map['description'],
     );
   }
 
@@ -40,7 +46,7 @@ class ProgramGoal {
   static ProgramGoal fromJson(String source) => fromMap(json.decode(source));
 
   @override
-  String toString() => 'ProgramGoal(id: $id, name: $name)';
+  String toString() => 'ProgramGoal(id: $id, name: $name, description: $description)';
 
   @override
   bool operator ==(Object o) {
@@ -48,9 +54,10 @@ class ProgramGoal {
   
     return o is ProgramGoal &&
       o.id == id &&
-      o.name == name;
+      o.name == name &&
+      o.description == description;
   }
 
   @override
-  int get hashCode => id.hashCode ^ name.hashCode;
+  int get hashCode => id.hashCode ^ name.hashCode ^ description.hashCode;
 }
