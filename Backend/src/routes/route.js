@@ -49,11 +49,11 @@ router.get("/appexercise/:id_app_exercise", AppExerciseController.getDetailAppEx
 router.post("/exercise", middleware.checkAuth, ExerciseController.createExercise);
 router.get("/exercises", middleware.checkAuth, ExerciseController.readExercises);
 router.get("/exercise/:id_exercise", middleware.checkAuth, ExerciseController.detailExercise);
-router.all("/exercise/:id_exercise", middleware.checkAuth, ExerciseController.updateExercise);
+router.put("/exercise/:id_exercise", middleware.checkAuth, ExerciseController.updateExercise);
 router.delete("/exercise/:id_exercise", middleware.checkAuth, ExerciseController.deleteExercise);
-router.all("/exercise/insertForTestDelete", middleware.checkAuth, ExerciseController.testInsertForDeleteExercise);
-router.all("/exercise/deleteForTest", middleware.checkAuth, ExerciseController.deleteForTest);
-router.all("/exercise/deleteAll/:id_exercise", middleware.checkAuth, ExerciseController.deleteExerciseAll);
+router.delete("/exercise/insertForTestDelete", middleware.checkAuth, ExerciseController.testInsertForDeleteExercise);
+router.delete("/exercise/deleteForTest", middleware.checkAuth, ExerciseController.deleteForTest);
+router.delete("/exercise/deleteAll/:id_exercise", middleware.checkAuth, ExerciseController.deleteExerciseAll);
 
 /**
  * Session
@@ -61,7 +61,7 @@ router.all("/exercise/deleteAll/:id_exercise", middleware.checkAuth, ExerciseCon
 router.post("/session", middleware.checkAuth, SessionController.addSession);
 router.get("/sessions", middleware.checkAuth, SessionController.getSessions);
 router.get("/session/:id_session", middleware.checkAuth, SessionController.getSessionDetail);
-router.all("/session/:id_session", middleware.checkAuth, SessionController.updateSession);
+router.put("/session/:id_session", middleware.checkAuth, SessionController.updateSession);
 router.delete("/session/:id_session", middleware.checkAuth, SessionController.deleteSession);
 
 /**
@@ -71,7 +71,7 @@ router.post("/program", middleware.checkAuth, ProgramController.addProgram);
 router.get("/programs", middleware.checkAuth, ProgramController.readProgram);
 router.get("/program/:id_program", middleware.checkAuth, ProgramController.readDetailProgram);
 router.delete("/program/:id_program", middleware.checkAuth, ProgramController.deleteProgram);
-router.all("/program/:id_program", middleware.checkAuth, ProgramController.updateProgram);
+router.put("/program/:id_program", middleware.checkAuth, ProgramController.updateProgram);
 
 /**
  * Program Goal
