@@ -152,7 +152,7 @@ repository.getDetailAppExercise = async (body) => {
 
 repository.getAppExercisesByIdMuscle = async (req) => {
   let sql =
-    "SELECT ae.id_app_exercise, ae.name FROM _app_exercise ae JOIN _app_exercise_muscle aem ON ae.id_app_exercise = aem.id_app_exercise WHERE aem.id_muscle = $1";
+    "SELECT ae.id_app_exercise as id, ae.name FROM _app_exercise ae JOIN _app_exercise_muscle aem ON ae.id_app_exercise = aem.id_app_exercise WHERE aem.id_muscle = $1";
   try {
     let result = await clt.query(sql, [req.params.id_muscle]);
     return result.rows;
@@ -163,7 +163,7 @@ repository.getAppExercisesByIdMuscle = async (req) => {
 
 repository.getAppExercisesByIdEquipment = async (req) => {
   let sql =
-    "SELECT ae.id_app_exercise, ae.name FROM _app_exercise ae JOIN _app_exercise_equipment aee ON ae.id_app_exercise = aee.id_app_exercise WHERE aee.id_equipment = $1";
+    "SELECT ae.id_app_exercise as id, ae.name FROM _app_exercise ae JOIN _app_exercise_equipment aee ON ae.id_app_exercise = aee.id_app_exercise WHERE aee.id_equipment = $1";
   try {
     let result = await clt.query(sql, [req.params.id_equipment]);
     return result.rows;
