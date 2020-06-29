@@ -183,7 +183,7 @@ class _ExercisesViewState extends State<ExercisesView> {
                                         ? "Tonnage de " +
                                             item.tonnage.toString() +
                                             "kg"
-                                        : "Tonnage non calculé",
+                                        : "Tonnage inconnu",
                                     color: item.tonnage != null
                                         ? StrongrColors.black
                                         : Colors.grey,

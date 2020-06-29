@@ -168,8 +168,14 @@ class _SessionViewState extends State<SessionView> {
       globalKey.currentState.showSnackBar(
         SnackBar(
           behavior: SnackBarBehavior.floating,
-          content: StrongrSnackBarContent(
-            message: "Séance mise à jour avec succès",
+          content: GestureDetector(
+            onVerticalDragStart: (_) => null,
+            child: InkWell(
+              onTap: () => globalKey.currentState.hideCurrentSnackBar(),
+              child: StrongrSnackBarContent(
+                message: "Séance mise à jour avec succès",
+              ),
+            ),
           ),
           backgroundColor: StrongrColors.blue80,
           shape: RoundedRectangleBorder(
@@ -296,6 +302,7 @@ class _SessionViewState extends State<SessionView> {
         }
         break;
     }
+    toggleValidateButton(exercisesOfSession);
   }
 
   List<Widget> buildExerciseList({List exerciseList}) {
@@ -504,7 +511,7 @@ class _SessionViewState extends State<SessionView> {
                                 child: StrongrText(
                                   item.tonnage != null
                                       ? "Tonnage de " + item.tonnage.toString()
-                                      : "Tonnage non calculé",
+                                      : "Tonnage inconnu",
                                   color: item.tonnage == null
                                       ? Colors.grey
                                       : StrongrColors.black,
@@ -539,9 +546,28 @@ class _SessionViewState extends State<SessionView> {
                         )
                       : null,
                 ),
+                Visibility(
+                  visible: !isEditMode,
+                  child: Container(
+                    // color: Colors.red,
+                    width: 35,
+                    height: 35,
+                    child: FloatingActionButton(
+                      elevation: 0,
+                      heroTag: "fs_exercise_play_fab_" + item.id.toString(),
+                      tooltip: "Démarrer",
+                      backgroundColor: StrongrColors.blue,
+                      child: Icon(
+                        Icons.play_arrow,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {},
+                    ),
+                  ),
+                ),
               ],
             ),
-            onPressed: editButtonsEnabled
+            onPressed: editButtonsEnabled && !isEditMode
                 ? () {
                     Navigator.pushNamed(
                       context,
@@ -550,7 +576,8 @@ class _SessionViewState extends State<SessionView> {
                         id: item.id,
                         name: item.name.toString(),
                         appExerciseName: item.appExerciseName.toString(),
-                        fromSessionCreation: true,
+                        fromSession: true,
+                        fromSessionCreation: false,
                       ),
                     );
                   }

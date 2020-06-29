@@ -446,7 +446,7 @@ class _ProgramCreateViewState extends State<ProgramCreateView> {
                                         item.tonnage != null
                                             ? "Tonnage de " +
                                                 item.tonnage.toString()
-                                            : "Tonnage non calculé",
+                                            : "Tonnage inconnu",
                                         color: item.tonnage == null
                                             ? Colors.grey
                                             : StrongrColors.black,
