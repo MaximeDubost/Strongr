@@ -500,7 +500,7 @@ class _ProgramViewState extends State<ProgramView> {
                                             ? Colors.grey
                                             : StrongrColors.black,
                                         textAlign: TextAlign.start,
-                                        maxLines: 2,
+                                        maxLines: 1,
                                       ),
                                     ),
                                   ),

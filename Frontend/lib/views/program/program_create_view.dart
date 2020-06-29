@@ -7,6 +7,7 @@ import 'package:strongr/services/ProgramService.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
+import 'package:strongr/views/program/program_goal_view.dart';
 import 'package:strongr/views/session/session_view.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
 import 'package:strongr/widgets/strongr_rounded_textformfield.dart';
@@ -702,6 +703,14 @@ class _ProgramCreateViewState extends State<ProgramCreateView> {
                                               ? () {
                                                   FocusScope.of(context)
                                                       .unfocus();
+                                                  Navigator.pushNamed(
+                                                    context,
+                                                    PROGRAM_GOAL_ROUTE,
+                                                    arguments: ProgramGoalView(
+                                                      id: item.id,
+                                                      name: item.name,
+                                                    ),
+                                                  );
                                                 }
                                               : null,
                                         ),

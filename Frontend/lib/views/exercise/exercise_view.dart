@@ -803,7 +803,7 @@ class _ExerciseViewState extends State<ExerciseView> {
                               color: Colors.white,
                             ),
                             onPressed: !editButtonsEnabled ||
-                                    setsOfExercise.length >= 20
+                                    setsOfExercise.length >= 10
                                 ? null
                                 : () => showDialog(
                                       context: context,

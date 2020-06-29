@@ -130,6 +130,7 @@ class _HomepageState extends State<Homepage> {
                     );
                   },
                   child: Container(
+                    // color: Colors.red,
                     // height: ScreenSize.height(context) / 12,
                     padding: EdgeInsets.all(5),
                     child: Row(
