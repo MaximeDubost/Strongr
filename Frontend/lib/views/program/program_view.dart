@@ -27,16 +27,25 @@ class ProgramView extends StatefulWidget {
 
 class _ProgramViewState extends State<ProgramView> {
   final globalKey = GlobalKey<ScaffoldState>();
-  bool isEditMode, validateButtonEnabled, editButtonsEnabled, isEdited;
+  bool isEditMode, validateButtonEnabled, editButtonsEnabled, isEdited, programUpdated;
   String weekday;
   int lastIndexPressed;
   Future<Program> futureProgram;
   List<SessionPreview> sessionsOfProgram;
+  TextEditingController programNameController;
+  int programGoalId;
+  String programName;
+  Color textFieldBackgroundColor;
 
   @override
   void initState() {
-    isEditMode = validateButtonEnabled = isEdited = false;
+    isEditMode = validateButtonEnabled = isEdited = programUpdated = false;
     editButtonsEnabled = true;
+    futureProgram = ProgramService.getProgram(id: widget.id);
+    sessionsOfProgram = List<SessionPreview>();
+    programName = widget.name;
+    programNameController = TextEditingController(text: programName);
+    textFieldBackgroundColor = StrongrColors.blue80;
     switch (DateTime.now().weekday) {
       case DateTime.monday:
         weekday = "Lundi";
@@ -60,8 +69,6 @@ class _ProgramViewState extends State<ProgramView> {
         weekday = "Dimanche";
         break;
     }
-    futureProgram = ProgramService.getProgram(id: widget.id);
-    sessionsOfProgram = List<SessionPreview>();
     sessionsOfProgram.addAll([
       SessionPreview(place: 1),
       SessionPreview(place: 2),
@@ -199,6 +206,7 @@ class _ProgramViewState extends State<ProgramView> {
         ),
       );
       setState(() {
+        programUpdated = true;
         isEditMode = false;
         isEdited = false;
       });
@@ -715,7 +723,16 @@ class _ProgramViewState extends State<ProgramView> {
                     sessionsOfProgram = [];
                   }),
                 )
-              : BackButton(),
+              : BackButton(onPressed: () {
+                  if (programUpdated)
+                    Navigator.pop(context, {
+                      CREATE: false,
+                      UPDATE: true,
+                      DELETE: false,
+                    });
+                  else
+                    Navigator.pop(context);
+                }),
           actions: <Widget>[
             isEditMode
                 ? IconButton(

@@ -34,19 +34,33 @@ class SessionView extends StatefulWidget {
 
 class _SessionViewState extends State<SessionView> {
   final globalKey = GlobalKey<ScaffoldState>();
-  bool isEditMode, validateButtonEnabled, editButtonsEnabled, isEdited;
+  bool isEditMode,
+      validateButtonEnabled,
+      editButtonsEnabled,
+      isEdited,
+      sessionUpdated;
   Future<Session> futureSession;
   List<ExercisePreview> exercisesOfSession;
   TextEditingController sessionNameController;
+  String sessionName;
+  Color textFieldBackgroundColor;
 
   @override
   void initState() {
-    sessionNameController = TextEditingController(text: "");
-    isEditMode = validateButtonEnabled = isEdited = false;
+    isEditMode = validateButtonEnabled = isEdited = sessionUpdated = false;
     editButtonsEnabled = true;
     exercisesOfSession = List<ExercisePreview>();
     futureSession = SessionService.getSession(id: widget.id);
+    sessionName = widget.name;
+    sessionNameController = TextEditingController(text: sessionName);
+    textFieldBackgroundColor = StrongrColors.blue80;
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    sessionNameController.dispose();
+    super.dispose();
   }
 
   void showDeleteDialog() {
@@ -146,7 +160,7 @@ class _SessionViewState extends State<SessionView> {
     });
     int statusCode = await SessionService.putSession(
       id: widget.id,
-      name: widget.name,
+      name: sessionName,
       exercises: exercisesOfSession,
     );
     if (statusCode == 200) {
@@ -166,9 +180,11 @@ class _SessionViewState extends State<SessionView> {
         ),
       );
       setState(() {
+        sessionUpdated = true;
         isEditMode = false;
         isEdited = false;
-      } );
+        textFieldBackgroundColor = StrongrColors.blue80;
+      });
     } else {
       globalKey.currentState.hideCurrentSnackBar();
       globalKey.currentState.showSnackBar(
@@ -287,9 +303,8 @@ class _SessionViewState extends State<SessionView> {
     for (final item in exerciseList)
       builtExerciseList.add(
         Container(
-          margin: exerciseList.indexOf(item) == 0
-              ? EdgeInsets.only(top: 5)
-              : null,
+          margin:
+              exerciseList.indexOf(item) == 0 ? EdgeInsets.only(top: 5) : null,
           key: ValueKey(item.id),
           padding: EdgeInsets.all(5),
           height: 110,
@@ -319,16 +334,14 @@ class _SessionViewState extends State<SessionView> {
                                           AxisDirection.up,
                                         );
                                       },
-                                hoverColor:
-                                    exerciseList.indexOf(item) == 0 ||
-                                            !editButtonsEnabled
-                                        ? Colors.transparent
-                                        : StrongrColors.greyE,
-                                splashColor:
-                                    exerciseList.indexOf(item) == 0 ||
-                                            !editButtonsEnabled
-                                        ? Colors.transparent
-                                        : StrongrColors.greyD,
+                                hoverColor: exerciseList.indexOf(item) == 0 ||
+                                        !editButtonsEnabled
+                                    ? Colors.transparent
+                                    : StrongrColors.greyE,
+                                splashColor: exerciseList.indexOf(item) == 0 ||
+                                        !editButtonsEnabled
+                                    ? Colors.transparent
+                                    : StrongrColors.greyD,
                                 enableFeedback:
                                     exerciseList.indexOf(item) == 0 ||
                                             !editButtonsEnabled
@@ -364,8 +377,8 @@ class _SessionViewState extends State<SessionView> {
                         child: isEditMode
                             ? RawMaterialButton(
                                 onPressed: exerciseList.indexOf(item) ==
-                                            exerciseList.indexOf(
-                                                exerciseList.last) ||
+                                            exerciseList
+                                                .indexOf(exerciseList.last) ||
                                         !editButtonsEnabled
                                     ? null
                                     : () {
@@ -375,28 +388,28 @@ class _SessionViewState extends State<SessionView> {
                                         );
                                       },
                                 hoverColor: exerciseList.indexOf(item) ==
-                                            exerciseList.indexOf(
-                                                exerciseList.last) ||
+                                            exerciseList
+                                                .indexOf(exerciseList.last) ||
                                         !editButtonsEnabled
                                     ? Colors.transparent
                                     : StrongrColors.greyE,
                                 splashColor: exerciseList.indexOf(item) ==
-                                            exerciseList.indexOf(
-                                                exerciseList.last) ||
+                                            exerciseList
+                                                .indexOf(exerciseList.last) ||
                                         !editButtonsEnabled
                                     ? Colors.transparent
                                     : StrongrColors.greyD,
                                 enableFeedback: exerciseList.indexOf(item) ==
-                                            exerciseList.indexOf(
-                                                exerciseList.last) ||
+                                            exerciseList
+                                                .indexOf(exerciseList.last) ||
                                         !editButtonsEnabled
                                     ? false
                                     : true,
                                 child: Icon(
                                   Icons.keyboard_arrow_down,
                                   color: exerciseList.indexOf(item) ==
-                                              exerciseList.indexOf(
-                                                  exerciseList.last) ||
+                                              exerciseList
+                                                  .indexOf(exerciseList.last) ||
                                           !editButtonsEnabled
                                       ? Colors.grey
                                       : StrongrColors.black,
@@ -528,18 +541,20 @@ class _SessionViewState extends State<SessionView> {
                 ),
               ],
             ),
-            onPressed: editButtonsEnabled ? () {
-              Navigator.pushNamed(
-                context,
-                EXERCISE_ROUTE,
-                arguments: ExerciseView(
-                  id: item.id,
-                  name: item.name.toString(),
-                  appExerciseName: item.appExerciseName.toString(),
-                  fromSessionCreation: true,
-                ),
-              );
-            } : null,
+            onPressed: editButtonsEnabled
+                ? () {
+                    Navigator.pushNamed(
+                      context,
+                      EXERCISE_ROUTE,
+                      arguments: ExerciseView(
+                        id: item.id,
+                        name: item.name.toString(),
+                        appExerciseName: item.appExerciseName.toString(),
+                        fromSessionCreation: true,
+                      ),
+                    );
+                  }
+                : null,
             onLongPressed:
                 editButtonsEnabled && !isEditMode && !widget.fromProgramCreation
                     ? () => setState(() => isEditMode = true)
@@ -558,18 +573,50 @@ class _SessionViewState extends State<SessionView> {
         key: globalKey,
         appBar: AppBar(
           centerTitle: true,
-          title: Text(widget.name),
+          title: isEditMode
+              ? TextField(
+                  controller: sessionNameController,
+                  textAlign: TextAlign.center,
+                  onChanged: (value) {
+                    if (value != "" && value != null)
+                      setState(() {
+                        sessionName = value;
+                        isEdited = true;
+                        toggleValidateButton(exercisesOfSession);
+                      });
+                  },
+                  onTap: () => setState(
+                      () => textFieldBackgroundColor = Colors.transparent),
+                  style: TextStyle(
+                    color: Colors.white,
+                    backgroundColor: textFieldBackgroundColor,
+                    fontSize: 20,
+                  ),
+                  decoration: InputDecoration(border: InputBorder.none),
+                )
+              : Text(sessionName),
           leading: isEditMode
               ? IconButton(
                   icon: Icon(Icons.close),
                   onPressed: () => setState(() {
                     isEditMode = false;
                     isEdited = false;
+                    textFieldBackgroundColor = StrongrColors.blue80;
+                    sessionNameController.text = sessionName;
                     futureSession = SessionService.getSession(id: widget.id);
                     exercisesOfSession = [];
                   }),
                 )
-              : BackButton(),
+              : BackButton(onPressed: () {
+                  if (sessionUpdated)
+                    Navigator.pop(context, {
+                      CREATE: false,
+                      UPDATE: true,
+                      DELETE: false,
+                    });
+                  else
+                    Navigator.pop(context);
+                }),
           actions: <Widget>[
             !widget.fromProgramCreation
                 ? isEditMode
@@ -591,13 +638,14 @@ class _SessionViewState extends State<SessionView> {
                     : IconButton(
                         icon: Icon(
                           Icons.edit,
-                          color: !editButtonsEnabled ? Colors.grey : Colors.white,
+                          color:
+                              !editButtonsEnabled ? Colors.grey : Colors.white,
                         ),
-                         onPressed: editButtonsEnabled
+                        onPressed: editButtonsEnabled
                             ? () {
-                              globalKey.currentState.hideCurrentSnackBar();
-                              setState(() => isEditMode = true);
-                            } 
+                                globalKey.currentState.hideCurrentSnackBar();
+                                setState(() => isEditMode = true);
+                              }
                             : null,
                       )
                 : SizedBox(),
@@ -679,8 +727,8 @@ class _SessionViewState extends State<SessionView> {
                       exercisesOfSession = snapshot.data.exercises;
                       return ListView(
                         physics: BouncingScrollPhysics(),
-                        children: buildExerciseList(
-                            exerciseList: exercisesOfSession),
+                        children:
+                            buildExerciseList(exerciseList: exercisesOfSession),
                       );
                     }
                     if (snapshot.hasError)
