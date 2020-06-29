@@ -34,19 +34,33 @@ class SessionView extends StatefulWidget {
 
 class _SessionViewState extends State<SessionView> {
   final globalKey = GlobalKey<ScaffoldState>();
-  bool isEditMode, validateButtonEnabled, editButtonsEnabled, isEdited;
+  bool isEditMode,
+      validateButtonEnabled,
+      editButtonsEnabled,
+      isEdited,
+      sessionUpdated;
   Future<Session> futureSession;
   List<ExercisePreview> exercisesOfSession;
   TextEditingController sessionNameController;
+  String sessionName;
+  Color textFieldBackgroundColor;
 
   @override
   void initState() {
-    sessionNameController = TextEditingController(text: "");
-    isEditMode = validateButtonEnabled = isEdited = false;
+    isEditMode = validateButtonEnabled = isEdited = sessionUpdated = false;
     editButtonsEnabled = true;
     exercisesOfSession = List<ExercisePreview>();
     futureSession = SessionService.getSession(id: widget.id);
+    sessionName = widget.name;
+    sessionNameController = TextEditingController(text: sessionName);
+    textFieldBackgroundColor = StrongrColors.blue80;
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    sessionNameController.dispose();
+    super.dispose();
   }
 
   void showDeleteDialog() {
@@ -146,7 +160,7 @@ class _SessionViewState extends State<SessionView> {
     });
     int statusCode = await SessionService.putSession(
       id: widget.id,
-      name: widget.name,
+      name: sessionName,
       exercises: exercisesOfSession,
     );
     if (statusCode == 200) {
@@ -154,8 +168,14 @@ class _SessionViewState extends State<SessionView> {
       globalKey.currentState.showSnackBar(
         SnackBar(
           behavior: SnackBarBehavior.floating,
-          content: StrongrSnackBarContent(
-            message: "Séance mise à jour avec succès",
+          content: GestureDetector(
+            onVerticalDragStart: (_) => null,
+            child: InkWell(
+              onTap: () => globalKey.currentState.hideCurrentSnackBar(),
+              child: StrongrSnackBarContent(
+                message: "Séance mise à jour avec succès",
+              ),
+            ),
           ),
           backgroundColor: StrongrColors.blue80,
           shape: RoundedRectangleBorder(
@@ -166,9 +186,11 @@ class _SessionViewState extends State<SessionView> {
         ),
       );
       setState(() {
+        sessionUpdated = true;
         isEditMode = false;
         isEdited = false;
-      } );
+        textFieldBackgroundColor = StrongrColors.blue80;
+      });
     } else {
       globalKey.currentState.hideCurrentSnackBar();
       globalKey.currentState.showSnackBar(
@@ -280,6 +302,7 @@ class _SessionViewState extends State<SessionView> {
         }
         break;
     }
+    toggleValidateButton(exercisesOfSession);
   }
 
   List<Widget> buildExerciseList({List exerciseList}) {
@@ -287,9 +310,8 @@ class _SessionViewState extends State<SessionView> {
     for (final item in exerciseList)
       builtExerciseList.add(
         Container(
-          margin: exerciseList.indexOf(item) == 0
-              ? EdgeInsets.only(top: 5)
-              : null,
+          margin:
+              exerciseList.indexOf(item) == 0 ? EdgeInsets.only(top: 5) : null,
           key: ValueKey(item.id),
           padding: EdgeInsets.all(5),
           height: 110,
@@ -319,16 +341,14 @@ class _SessionViewState extends State<SessionView> {
                                           AxisDirection.up,
                                         );
                                       },
-                                hoverColor:
-                                    exerciseList.indexOf(item) == 0 ||
-                                            !editButtonsEnabled
-                                        ? Colors.transparent
-                                        : StrongrColors.greyE,
-                                splashColor:
-                                    exerciseList.indexOf(item) == 0 ||
-                                            !editButtonsEnabled
-                                        ? Colors.transparent
-                                        : StrongrColors.greyD,
+                                hoverColor: exerciseList.indexOf(item) == 0 ||
+                                        !editButtonsEnabled
+                                    ? Colors.transparent
+                                    : StrongrColors.greyE,
+                                splashColor: exerciseList.indexOf(item) == 0 ||
+                                        !editButtonsEnabled
+                                    ? Colors.transparent
+                                    : StrongrColors.greyD,
                                 enableFeedback:
                                     exerciseList.indexOf(item) == 0 ||
                                             !editButtonsEnabled
@@ -364,8 +384,8 @@ class _SessionViewState extends State<SessionView> {
                         child: isEditMode
                             ? RawMaterialButton(
                                 onPressed: exerciseList.indexOf(item) ==
-                                            exerciseList.indexOf(
-                                                exerciseList.last) ||
+                                            exerciseList
+                                                .indexOf(exerciseList.last) ||
                                         !editButtonsEnabled
                                     ? null
                                     : () {
@@ -375,28 +395,28 @@ class _SessionViewState extends State<SessionView> {
                                         );
                                       },
                                 hoverColor: exerciseList.indexOf(item) ==
-                                            exerciseList.indexOf(
-                                                exerciseList.last) ||
+                                            exerciseList
+                                                .indexOf(exerciseList.last) ||
                                         !editButtonsEnabled
                                     ? Colors.transparent
                                     : StrongrColors.greyE,
                                 splashColor: exerciseList.indexOf(item) ==
-                                            exerciseList.indexOf(
-                                                exerciseList.last) ||
+                                            exerciseList
+                                                .indexOf(exerciseList.last) ||
                                         !editButtonsEnabled
                                     ? Colors.transparent
                                     : StrongrColors.greyD,
                                 enableFeedback: exerciseList.indexOf(item) ==
-                                            exerciseList.indexOf(
-                                                exerciseList.last) ||
+                                            exerciseList
+                                                .indexOf(exerciseList.last) ||
                                         !editButtonsEnabled
                                     ? false
                                     : true,
                                 child: Icon(
                                   Icons.keyboard_arrow_down,
                                   color: exerciseList.indexOf(item) ==
-                                              exerciseList.indexOf(
-                                                  exerciseList.last) ||
+                                              exerciseList
+                                                  .indexOf(exerciseList.last) ||
                                           !editButtonsEnabled
                                       ? Colors.grey
                                       : StrongrColors.black,
@@ -435,7 +455,7 @@ class _SessionViewState extends State<SessionView> {
                                       ? Colors.grey
                                       : StrongrColors.black,
                                   textAlign: TextAlign.start,
-                                  maxLines: 2,
+                                  maxLines: 1,
                                 ),
                               ),
                             ),
@@ -491,7 +511,7 @@ class _SessionViewState extends State<SessionView> {
                                 child: StrongrText(
                                   item.tonnage != null
                                       ? "Tonnage de " + item.tonnage.toString()
-                                      : "Tonnage non calculé",
+                                      : "Tonnage inconnu",
                                   color: item.tonnage == null
                                       ? Colors.grey
                                       : StrongrColors.black,
@@ -526,20 +546,42 @@ class _SessionViewState extends State<SessionView> {
                         )
                       : null,
                 ),
+                Visibility(
+                  visible: !isEditMode,
+                  child: Container(
+                    // color: Colors.red,
+                    width: 35,
+                    height: 35,
+                    child: FloatingActionButton(
+                      elevation: 0,
+                      heroTag: "fs_exercise_play_fab_" + item.id.toString(),
+                      tooltip: "Démarrer",
+                      backgroundColor: StrongrColors.blue,
+                      child: Icon(
+                        Icons.play_arrow,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {},
+                    ),
+                  ),
+                ),
               ],
             ),
-            onPressed: editButtonsEnabled ? () {
-              Navigator.pushNamed(
-                context,
-                EXERCISE_ROUTE,
-                arguments: ExerciseView(
-                  id: item.id,
-                  name: item.name.toString(),
-                  appExerciseName: item.appExerciseName.toString(),
-                  fromSessionCreation: true,
-                ),
-              );
-            } : null,
+            onPressed: editButtonsEnabled && !isEditMode
+                ? () {
+                    Navigator.pushNamed(
+                      context,
+                      EXERCISE_ROUTE,
+                      arguments: ExerciseView(
+                        id: item.id,
+                        name: item.name.toString(),
+                        appExerciseName: item.appExerciseName.toString(),
+                        fromSession: true,
+                        fromSessionCreation: false,
+                      ),
+                    );
+                  }
+                : null,
             onLongPressed:
                 editButtonsEnabled && !isEditMode && !widget.fromProgramCreation
                     ? () => setState(() => isEditMode = true)
@@ -558,18 +600,50 @@ class _SessionViewState extends State<SessionView> {
         key: globalKey,
         appBar: AppBar(
           centerTitle: true,
-          title: Text(widget.name),
+          title: isEditMode
+              ? TextField(
+                  controller: sessionNameController,
+                  textAlign: TextAlign.center,
+                  onChanged: (value) {
+                    if (value != "" && value != null)
+                      setState(() {
+                        sessionName = value;
+                        isEdited = true;
+                        toggleValidateButton(exercisesOfSession);
+                      });
+                  },
+                  onTap: () => setState(
+                      () => textFieldBackgroundColor = Colors.transparent),
+                  style: TextStyle(
+                    color: Colors.white,
+                    backgroundColor: textFieldBackgroundColor,
+                    fontSize: 20,
+                  ),
+                  decoration: InputDecoration(border: InputBorder.none),
+                )
+              : Text(sessionName),
           leading: isEditMode
               ? IconButton(
                   icon: Icon(Icons.close),
                   onPressed: () => setState(() {
                     isEditMode = false;
                     isEdited = false;
+                    textFieldBackgroundColor = StrongrColors.blue80;
+                    sessionNameController.text = sessionName;
                     futureSession = SessionService.getSession(id: widget.id);
                     exercisesOfSession = [];
                   }),
                 )
-              : BackButton(),
+              : BackButton(onPressed: () {
+                  if (sessionUpdated)
+                    Navigator.pop(context, {
+                      CREATE: false,
+                      UPDATE: true,
+                      DELETE: false,
+                    });
+                  else
+                    Navigator.pop(context);
+                }),
           actions: <Widget>[
             !widget.fromProgramCreation
                 ? isEditMode
@@ -591,13 +665,14 @@ class _SessionViewState extends State<SessionView> {
                     : IconButton(
                         icon: Icon(
                           Icons.edit,
-                          color: !editButtonsEnabled ? Colors.grey : Colors.white,
+                          color:
+                              !editButtonsEnabled ? Colors.grey : Colors.white,
                         ),
-                         onPressed: editButtonsEnabled
+                        onPressed: editButtonsEnabled
                             ? () {
-                              globalKey.currentState.hideCurrentSnackBar();
-                              setState(() => isEditMode = true);
-                            } 
+                                globalKey.currentState.hideCurrentSnackBar();
+                                setState(() => isEditMode = true);
+                              }
                             : null,
                       )
                 : SizedBox(),
@@ -669,147 +744,289 @@ class _SessionViewState extends State<SessionView> {
                 height: 1,
                 color: Colors.grey[350],
               ),
-              Container(
-                // color: Colors.red,
-                height: ScreenSize.height(context) / 1.6,
-                child: FutureBuilder(
-                  future: futureSession,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      exercisesOfSession = snapshot.data.exercises;
-                      return ListView(
-                        physics: BouncingScrollPhysics(),
-                        children: buildExerciseList(
-                            exerciseList: exercisesOfSession),
-                      );
-                    }
-                    if (snapshot.hasError)
-                      return Text(snapshot.error, textAlign: TextAlign.center);
-                    else
-                      return Container(
-                        alignment: Alignment.center,
-                        height: ScreenSize.height(context) / 1.75,
-                        child: CircularProgressIndicator(
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(StrongrColors.blue),
-                        ),
-                      );
-                  },
+              Flexible(
+                child: Container(
+                  // color: Colors.red,
+                  // height: ScreenSize.height(context) / 1.6,
+                  child: FutureBuilder(
+                    future: futureSession,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        exercisesOfSession = snapshot.data.exercises;
+                        return ListView(
+                          physics: BouncingScrollPhysics(),
+                          children: buildExerciseList(
+                              exerciseList: exercisesOfSession),
+                        );
+                      }
+                      if (snapshot.hasError)
+                        return Text(snapshot.error,
+                            textAlign: TextAlign.center);
+                      else
+                        return Container(
+                          alignment: Alignment.center,
+                          height: ScreenSize.height(context) / 1.75,
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                                StrongrColors.blue),
+                          ),
+                        );
+                    },
+                  ),
                 ),
               ),
+              // Container(
+              //   width: ScreenSize.width(context),
+              //   height: 1,
+              //   color: Colors.grey[350],
+              // ),
+              // FutureBuilder(
+              //   future: futureSession,
+              //   builder: (context, snapshot) {
+              //     if (snapshot.hasData) {
+              //       return Visibility(
+              //         visible: !isEditMode,
+              //         child: Container(
+              //           padding: EdgeInsets.all(10),
+              //           width: ScreenSize.width(context),
+              //           child: Column(
+              //             crossAxisAlignment: CrossAxisAlignment.start,
+              //             children: <Widget>[
+              //               StrongrText(
+              //                 "Créé le " +
+              //                     DateFormater.format(
+              //                         snapshot.data.creationDate.toString()) +
+              //                     " à " +
+              //                     DateFormater.format(
+              //                       snapshot.data.creationDate.toString(),
+              //                       timeOnly: true,
+              //                     ),
+              //                 color: Colors.grey,
+              //                 size: 16,
+              //               ),
+              //               StrongrText(
+              //                 snapshot.data.creationDate !=
+              //                         snapshot.data.lastUpdate
+              //                     ? "Mis à jour le " +
+              //                         DateFormater.format(
+              //                             snapshot.data.lastUpdate.toString()) +
+              //                         " à " +
+              //                         DateFormater.format(
+              //                           snapshot.data.lastUpdate.toString(),
+              //                           timeOnly: true,
+              //                         )
+              //                     : "",
+              //                 color: Colors.grey,
+              //                 size: 16,
+              //               ),
+              //             ],
+              //           ),
+              //         ),
+              //       );
+              //     }
+              //     if (snapshot.hasError)
+              //       return Text(snapshot.error, textAlign: TextAlign.center);
+              //     else
+              //       return Container();
+              //   },
+              // ),
+              // Visibility(
+              //   visible: isEditMode,
+              //   child: Container(
+              //     padding: EdgeInsets.all(10),
+              //     width: ScreenSize.width(context),
+              //     child: Center(
+              //       child: FloatingActionButton.extended(
+              //         heroTag: "add_fab",
+              //         backgroundColor:
+              //             !editButtonsEnabled || exercisesOfSession.length >= 20
+              //                 ? Colors.grey
+              //                 : StrongrColors.black,
+              //         label: StrongrText(
+              //           "Nouvel exercice",
+              //           color: Colors.white,
+              //         ),
+              //         icon: Icon(
+              //           Icons.add,
+              //           color: Colors.white,
+              //         ),
+              //         onPressed:
+              //             !editButtonsEnabled || exercisesOfSession.length >= 20
+              //                 ? null
+              //                 : () {
+              //                     Navigator.pushNamed(
+              //                       context,
+              //                       SESSION_NEW_EXERCISE_ROUTE,
+              //                     ).then(addExercise);
+              //                   },
+              //       ),
+              //     ),
+              //   ),
+              // ),
+            ],
+          ),
+        ),
+        // floatingActionButton: !widget.fromProgramCreation
+        //     ? FloatingActionButton.extended(
+        //         // heroTag: !widget.fromProgram
+        //         //     ? 'session_play_fab_' + widget.id.toString()
+        //         //     : 'fp_session_play_fab_' + widget.id.toString(),
+        //         backgroundColor: !editButtonsEnabled
+        //             ? Colors.grey
+        //             : isEditMode ? Colors.red[800] : StrongrColors.blue,
+        //         icon: Icon(
+        //           isEditMode ? Icons.delete_outline : Icons.play_arrow,
+        //           color: Colors.white,
+        //         ),
+        //         label: StrongrText(
+        //           isEditMode ? "Supprimer" : "Démarrer",
+        //           color: Colors.white,
+        //         ),
+        //         onPressed: editButtonsEnabled
+        //             ? isEditMode ? () => showDeleteDialog() : () {}
+        //             : null,
+        //       )
+        //     : null,
+        // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        bottomNavigationBar: Container(
+          height: 140,
+          // color: Colors.blue,
+          child: Column(
+            // mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
               Container(
                 width: ScreenSize.width(context),
                 height: 1,
                 color: Colors.grey[350],
               ),
-              FutureBuilder(
-                future: futureSession,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Visibility(
-                      visible: !isEditMode,
-                      child: Container(
+              Container(
+                height: 70,
+                child: !isEditMode
+                    ? FutureBuilder(
+                        future: futureSession,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            return Container(
+                              padding: EdgeInsets.all(10),
+                              width: ScreenSize.width(context),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  StrongrText(
+                                    "Créé le " +
+                                        DateFormater.format(snapshot
+                                            .data.creationDate
+                                            .toString()) +
+                                        " à " +
+                                        DateFormater.format(
+                                          snapshot.data.creationDate.toString(),
+                                          timeOnly: true,
+                                        ),
+                                    color: Colors.grey,
+                                    size: 16,
+                                  ),
+                                  StrongrText(
+                                    snapshot.data.creationDate !=
+                                            snapshot.data.lastUpdate
+                                        ? "Mis à jour le " +
+                                            DateFormater.format(snapshot
+                                                .data.lastUpdate
+                                                .toString()) +
+                                            " à " +
+                                            DateFormater.format(
+                                              snapshot.data.lastUpdate
+                                                  .toString(),
+                                              timeOnly: true,
+                                            )
+                                        : "",
+                                    color: Colors.grey,
+                                    size: 16,
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
+                          if (snapshot.hasError)
+                            return Text(
+                              snapshot.error,
+                              textAlign: TextAlign.center,
+                            );
+                          else
+                            return Container();
+                        },
+                      )
+                    : Container(
                         padding: EdgeInsets.all(10),
                         width: ScreenSize.width(context),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            StrongrText(
-                              "Créé le " +
-                                  DateFormater.format(
-                                      snapshot.data.creationDate.toString()) +
-                                  " à " +
-                                  DateFormater.format(
-                                    snapshot.data.creationDate.toString(),
-                                    timeOnly: true,
-                                  ),
-                              color: Colors.grey,
-                              size: 16,
+                        child: Center(
+                          child: FloatingActionButton.extended(
+                            heroTag: "add_fab",
+                            backgroundColor: !editButtonsEnabled ||
+                                    exercisesOfSession.length >= 20
+                                ? Colors.grey
+                                : StrongrColors.black,
+                            label: StrongrText(
+                              "Nouvel exercice",
+                              color: Colors.white,
                             ),
-                            StrongrText(
-                              snapshot.data.creationDate !=
-                                      snapshot.data.lastUpdate
-                                  ? "Mis à jour le " +
-                                      DateFormater.format(
-                                          snapshot.data.lastUpdate.toString()) +
-                                      " à " +
-                                      DateFormater.format(
-                                        snapshot.data.lastUpdate.toString(),
-                                        timeOnly: true,
-                                      )
-                                  : "",
-                              color: Colors.grey,
-                              size: 16,
+                            icon: Icon(
+                              Icons.add,
+                              color: Colors.white,
                             ),
-                          ],
+                            onPressed: !editButtonsEnabled ||
+                                    exercisesOfSession.length >= 20
+                                ? null
+                                : () {
+                                    Navigator.pushNamed(
+                                      context,
+                                      SESSION_NEW_EXERCISE_ROUTE,
+                                    ).then(addExercise);
+                                  },
+                            // : () => showDialog(
+                            //       context: context,
+                            //       builder: (context) => NewSetDialog(
+                            //         repetitionCount: 10,
+                            //         restTime: Duration(seconds: 90),
+                            //       ),
+                            //     ).then((value) {
+                            //       if (value != null) {
+                            //         Set returnedSet = Set(
+                            //           repetitionCount:
+                            //               value["repetitionCount"],
+                            //           restTime: value["restTime"].inSeconds,
+                            //         );
+                            //         addSet(returnedSet);
+                            //       }
+                            //     }),
+                          ),
                         ),
                       ),
-                    );
-                  }
-                  if (snapshot.hasError)
-                    return Text(snapshot.error, textAlign: TextAlign.center);
-                  else
-                    return Container();
-                },
               ),
               Visibility(
-                visible: isEditMode,
-                child: Container(
-                  padding: EdgeInsets.all(10),
-                  width: ScreenSize.width(context),
-                  child: Center(
-                    child: FloatingActionButton.extended(
-                      heroTag: "add_fab",
-                      backgroundColor:
-                          !editButtonsEnabled || exercisesOfSession.length >= 20
-                              ? Colors.grey
-                              : StrongrColors.black,
-                      label: StrongrText(
-                        "Nouvel exercice",
-                        color: Colors.white,
-                      ),
-                      icon: Icon(
-                        Icons.add,
-                        color: Colors.white,
-                      ),
-                      onPressed:
-                          !editButtonsEnabled || exercisesOfSession.length >= 20
-                              ? null
-                              : () {
-                                  Navigator.pushNamed(
-                                    context,
-                                    SESSION_NEW_EXERCISE_ROUTE,
-                                  ).then(addExercise);
-                                },
-                    ),
+                visible: !widget.fromProgramCreation,
+                child: FloatingActionButton.extended(
+                  heroTag: !widget.fromProgram
+                      ? 'session_play_fab_' + widget.id.toString()
+                      : 'fp_session_play_fab_' + widget.id.toString(),
+                  backgroundColor: !editButtonsEnabled
+                      ? Colors.grey
+                      : isEditMode ? Colors.red[800] : StrongrColors.blue,
+                  icon: Icon(
+                    isEditMode ? Icons.delete_outline : Icons.play_arrow,
+                    color: Colors.white,
                   ),
+                  label: StrongrText(
+                    isEditMode ? "Supprimer" : "Démarrer",
+                    color: Colors.white,
+                  ),
+                  onPressed: editButtonsEnabled
+                      ? isEditMode ? () => showDeleteDialog() : () {}
+                      : null,
                 ),
               ),
             ],
           ),
         ),
-        floatingActionButton: !widget.fromProgramCreation
-            ? FloatingActionButton.extended(
-                heroTag: !widget.fromProgram
-                    ? 'session_play_fab_' + widget.id.toString()
-                    : 'fp_session_play_fab_' + widget.id.toString(),
-                backgroundColor: !editButtonsEnabled
-                    ? Colors.grey
-                    : isEditMode ? Colors.red[800] : StrongrColors.blue,
-                icon: Icon(
-                  isEditMode ? Icons.delete_outline : Icons.play_arrow,
-                  color: Colors.white,
-                ),
-                label: StrongrText(
-                  isEditMode ? "Supprimer" : "Démarrer",
-                  color: Colors.white,
-                ),
-                onPressed: editButtonsEnabled
-                    ? isEditMode ? () => showDeleteDialog() : () {}
-                    : null,
-              )
-            : null,
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
     );
   }

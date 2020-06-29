@@ -35,29 +35,34 @@ class _ProgramGoalViewState extends State<ProgramGoalView> {
         centerTitle: true,
         title: Text(widget.name),
       ),
-      body: Container(
-        padding: EdgeInsets.all(15),
-        child: FutureBuilder(
-          future: futureProgramGoal,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return StrongrText(
-                snapshot.data.description,
-                textAlign: TextAlign.justify,
-                maxLines: 24,
-              );
-            } else if (snapshot.hasError) {
-              return Text(snapshot.error, textAlign: TextAlign.center);
-            } else
-              return Container(
-                alignment: Alignment.center,
-                height: ScreenSize.height(context) / 1.25,
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(StrongrColors.blue),
-                ),
-              );
-          },
-        ),
+      body: ListView(
+        physics: BouncingScrollPhysics(),
+        children: <Widget>[
+          Container(
+            padding: EdgeInsets.all(15),
+            child: FutureBuilder(
+              future: futureProgramGoal,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return StrongrText(
+                    snapshot.data.description,
+                    textAlign: TextAlign.justify,
+                    maxLines: 512,
+                  );
+                } else if (snapshot.hasError) {
+                  return Text(snapshot.error, textAlign: TextAlign.center);
+                } else
+                  return Container(
+                    alignment: Alignment.center,
+                    height: ScreenSize.height(context) / 1.25,
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(StrongrColors.blue),
+                    ),
+                  );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

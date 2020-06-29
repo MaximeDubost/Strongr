@@ -172,8 +172,14 @@ class _ExerciseViewState extends State<ExerciseView> {
       globalKey.currentState.showSnackBar(
         SnackBar(
           behavior: SnackBarBehavior.floating,
-          content: StrongrSnackBarContent(
-            message: "Exercice mis à jour avec succès",
+          content: GestureDetector(
+            onVerticalDragStart: (_) => null,
+            child: InkWell(
+              onTap: () => globalKey.currentState.hideCurrentSnackBar(),
+              child: StrongrSnackBarContent(
+                message: "Exercice mis à jour avec succès",
+              ),
+            ),
           ),
           backgroundColor: StrongrColors.blue80,
           shape: RoundedRectangleBorder(
@@ -270,6 +276,7 @@ class _ExerciseViewState extends State<ExerciseView> {
         }
         break;
     }
+    toggleValidateButton(setsOfExercise);
   }
 
   List<Widget> buildSetList({List<Set> setList}) {
@@ -471,7 +478,7 @@ class _ExerciseViewState extends State<ExerciseView> {
                               child: Container(
                                 // width: 185,
                                 child: StrongrText(
-                                  "Tonnage non calculé",
+                                  "Tonnage inconnu",
                                   color: Colors.grey,
                                   textAlign: TextAlign.start,
                                   maxLines: 1,
@@ -803,7 +810,7 @@ class _ExerciseViewState extends State<ExerciseView> {
                               color: Colors.white,
                             ),
                             onPressed: !editButtonsEnabled ||
-                                    setsOfExercise.length >= 20
+                                    setsOfExercise.length >= 10
                                 ? null
                                 : () => showDialog(
                                       context: context,

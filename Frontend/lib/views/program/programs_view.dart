@@ -180,7 +180,7 @@ class _ProgramsViewState extends State<ProgramsView> {
                                         ? "Tonnage de " +
                                             item.tonnage.toString() +
                                             "kg"
-                                        : "Tonnage non calculé",
+                                        : "Tonnage inconnu",
                                     color: item.tonnage != null
                                         ? StrongrColors.black
                                         : Colors.grey,

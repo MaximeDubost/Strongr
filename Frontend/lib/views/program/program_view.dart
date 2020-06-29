@@ -27,16 +27,29 @@ class ProgramView extends StatefulWidget {
 
 class _ProgramViewState extends State<ProgramView> {
   final globalKey = GlobalKey<ScaffoldState>();
-  bool isEditMode, validateButtonEnabled, editButtonsEnabled, isEdited;
+  bool isEditMode,
+      validateButtonEnabled,
+      editButtonsEnabled,
+      isEdited,
+      programUpdated;
   String weekday;
   int lastIndexPressed;
   Future<Program> futureProgram;
   List<SessionPreview> sessionsOfProgram;
+  TextEditingController programNameController;
+  int programGoalId;
+  String programName;
+  Color textFieldBackgroundColor;
 
   @override
   void initState() {
-    isEditMode = validateButtonEnabled = isEdited = false;
+    isEditMode = validateButtonEnabled = isEdited = programUpdated = false;
     editButtonsEnabled = true;
+    futureProgram = ProgramService.getProgram(id: widget.id);
+    sessionsOfProgram = List<SessionPreview>();
+    programName = widget.name;
+    programNameController = TextEditingController(text: programName);
+    textFieldBackgroundColor = StrongrColors.blue80;
     switch (DateTime.now().weekday) {
       case DateTime.monday:
         weekday = "Lundi";
@@ -60,8 +73,6 @@ class _ProgramViewState extends State<ProgramView> {
         weekday = "Dimanche";
         break;
     }
-    futureProgram = ProgramService.getProgram(id: widget.id);
-    sessionsOfProgram = List<SessionPreview>();
     sessionsOfProgram.addAll([
       SessionPreview(place: 1),
       SessionPreview(place: 2),
@@ -72,6 +83,12 @@ class _ProgramViewState extends State<ProgramView> {
       SessionPreview(place: 7),
     ]);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    programNameController.dispose();
+    super.dispose();
   }
 
   String getShortWeekDay(int day) {
@@ -179,7 +196,7 @@ class _ProgramViewState extends State<ProgramView> {
     int statusCode = await ProgramService.putProgram(
       id: widget.id,
       programGoalName: widget.programGoalName,
-      name: widget.name,
+      name: programName,
       sessions: sessionsOfProgram,
     );
     if (statusCode == 200) {
@@ -187,8 +204,14 @@ class _ProgramViewState extends State<ProgramView> {
       globalKey.currentState.showSnackBar(
         SnackBar(
           behavior: SnackBarBehavior.floating,
-          content: StrongrSnackBarContent(
-            message: "Programme mis à jour avec succès",
+          content: GestureDetector(
+            onVerticalDragStart: (_) => null,
+            child: InkWell(
+              onTap: () => globalKey.currentState.hideCurrentSnackBar(),
+              child: StrongrSnackBarContent(
+                message: "Programme mis à jour avec succès",
+              ),
+            ),
           ),
           backgroundColor: StrongrColors.blue80,
           shape: RoundedRectangleBorder(
@@ -199,8 +222,10 @@ class _ProgramViewState extends State<ProgramView> {
         ),
       );
       setState(() {
+        programUpdated = true;
         isEditMode = false;
         isEdited = false;
+        textFieldBackgroundColor = StrongrColors.blue80;
       });
     } else {
       globalKey.currentState.hideCurrentSnackBar();
@@ -322,6 +347,7 @@ class _ProgramViewState extends State<ProgramView> {
         }
         break;
     }
+    toggleValidateButton(sessionsOfProgram);
   }
 
   List<Widget> buildSessionList({List sessionList}) {
@@ -492,7 +518,7 @@ class _ProgramViewState extends State<ProgramView> {
                                             ? Colors.grey
                                             : StrongrColors.black,
                                         textAlign: TextAlign.start,
-                                        maxLines: 2,
+                                        maxLines: 1,
                                       ),
                                     ),
                                   ),
@@ -553,7 +579,7 @@ class _ProgramViewState extends State<ProgramView> {
                                         item.tonnage != null
                                             ? "Tonnage de " +
                                                 item.tonnage.toString()
-                                            : "Tonnage non calculé",
+                                            : "Tonnage inconnu",
                                         color: item.tonnage == null
                                             ? Colors.grey
                                             : StrongrColors.black,
@@ -589,28 +615,29 @@ class _ProgramViewState extends State<ProgramView> {
                               )
                             : null,
                       ),
-                      // Visibility(
-                      //   visible: !isEditMode,
-                      //   child: Container(
-                      //     width: 35,
-                      //     height: 35,
-                      //     child: FloatingActionButton(
-                      //       elevation: 0,
-                      //       heroTag:
-                      //           "fp_session_play_fab_" + item.id.toString(),
-                      //       tooltip: "Démarrer",
-                      //       backgroundColor: StrongrColors.blue,
-                      //       child: Icon(
-                      //         Icons.play_arrow,
-                      //         color: Colors.white,
-                      //       ),
-                      //       onPressed: () {},
-                      //     ),
-                      //   ),
-                      // )
+                      Visibility(
+                        visible: !isEditMode,
+                        child: Container(
+                          // color: Colors.red,
+                          width: 35,
+                          height: 35,
+                          child: FloatingActionButton(
+                            elevation: 0,
+                            heroTag:
+                                "fp_session_play_fab_" + item.id.toString(),
+                            tooltip: "Démarrer",
+                            backgroundColor: StrongrColors.blue,
+                            child: Icon(
+                              Icons.play_arrow,
+                              color: Colors.white,
+                            ),
+                            onPressed: () {},
+                          ),
+                        ),
+                      ),
                     ],
                   ),
-                  onPressed: editButtonsEnabled
+                  onPressed: editButtonsEnabled && !isEditMode
                       ? () {
                           FocusScope.of(context).unfocus();
                           globalKey.currentState.hideCurrentSnackBar();
@@ -621,11 +648,14 @@ class _ProgramViewState extends State<ProgramView> {
                               id: item.id,
                               name: item.name,
                               sessionTypeName: item.sessionTypeName,
-                              fromProgram: false,
-                              fromProgramCreation: true,
+                              fromProgram: true,
+                              fromProgramCreation: false,
                             ),
                           );
                         }
+                      : null,
+                  onLongPressed: editButtonsEnabled && !isEditMode
+                      ? () => setState(() => isEditMode = true)
                       : null,
                 ),
               ),
@@ -704,18 +734,50 @@ class _ProgramViewState extends State<ProgramView> {
         key: globalKey,
         appBar: AppBar(
           centerTitle: true,
-          title: Text(widget.name),
+          title: isEditMode
+              ? TextField(
+                  controller: programNameController,
+                  textAlign: TextAlign.center,
+                  onChanged: (value) {
+                    if (value != "" && value != null)
+                      setState(() {
+                        programName = value;
+                        isEdited = true;
+                        toggleValidateButton(sessionsOfProgram);
+                      });
+                  },
+                  onTap: () => setState(
+                      () => textFieldBackgroundColor = Colors.transparent),
+                  style: TextStyle(
+                    color: Colors.white,
+                    backgroundColor: textFieldBackgroundColor,
+                    fontSize: 20,
+                  ),
+                  decoration: InputDecoration(border: InputBorder.none),
+                )
+              : Text(programName),
           leading: isEditMode
               ? IconButton(
                   icon: Icon(Icons.close),
                   onPressed: () => setState(() {
                     isEditMode = false;
                     isEdited = false;
+                    textFieldBackgroundColor = StrongrColors.blue80;
+                    programNameController.text = programName;
                     futureProgram = ProgramService.getProgram(id: widget.id);
                     sessionsOfProgram = [];
                   }),
                 )
-              : BackButton(),
+              : BackButton(onPressed: () {
+                  if (programUpdated)
+                    Navigator.pop(context, {
+                      CREATE: false,
+                      UPDATE: true,
+                      DELETE: false,
+                    });
+                  else
+                    Navigator.pop(context);
+                }),
           actions: <Widget>[
             isEditMode
                 ? IconButton(
@@ -754,9 +816,7 @@ class _ProgramViewState extends State<ProgramView> {
                 future: futureProgram,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    // print(snapshot.data);
                     return Container(
-                      // color: Colors.red,
                       child: InkWell(
                         onTap: !editButtonsEnabled || isEditMode
                             ? null
@@ -824,150 +884,172 @@ class _ProgramViewState extends State<ProgramView> {
                 height: 1,
                 color: Colors.grey[350],
               ),
-              Container(
-                // color: Colors.red,
-                height: ScreenSize.height(context) / 1.6,
-                child: FutureBuilder(
-                  future: futureProgram,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      sessionsOfProgram = snapshot.data.sessions;
-                      return ListView(
-                        physics: BouncingScrollPhysics(),
-                        children:
-                            buildSessionList(sessionList: sessionsOfProgram),
-                      );
-                    }
-                    if (snapshot.hasError)
-                      return Text(snapshot.error, textAlign: TextAlign.center);
-                    else
-                      return Container(
-                        alignment: Alignment.center,
-                        height: ScreenSize.height(context) / 1.75,
-                        child: CircularProgressIndicator(
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(StrongrColors.blue),
-                        ),
-                      );
-                  },
+              Flexible(
+                child: Container(
+                  // color: Colors.red,
+                  // height: ScreenSize.height(context) / 1.6,
+                  child: FutureBuilder(
+                    future: futureProgram,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        sessionsOfProgram = snapshot.data.sessions;
+                        return ListView(
+                          physics: BouncingScrollPhysics(),
+                          children:
+                              buildSessionList(sessionList: sessionsOfProgram),
+                        );
+                      }
+                      if (snapshot.hasError)
+                        return Text(snapshot.error,
+                            textAlign: TextAlign.center);
+                      else
+                        return Container(
+                          alignment: Alignment.center,
+                          height: ScreenSize.height(context) / 1.75,
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                                StrongrColors.blue),
+                          ),
+                        );
+                    },
+                  ),
                 ),
               ),
+            ],
+          ),
+        ),
+        bottomNavigationBar: Container(
+          height: 140,
+          child: Column(
+            children: <Widget>[
               Container(
                 width: ScreenSize.width(context),
                 height: 1,
                 color: Colors.grey[350],
               ),
+              Container(
+                height: 70,
+                child: FutureBuilder(
+                  future: futureProgram,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return Visibility(
+                        visible: !isEditMode,
+                        child: Container(
+                          padding: EdgeInsets.all(10),
+                          width: ScreenSize.width(context),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              StrongrText(
+                                "Créé le " +
+                                    DateFormater.format(
+                                        snapshot.data.creationDate.toString()) +
+                                    " à " +
+                                    DateFormater.format(
+                                      snapshot.data.creationDate.toString(),
+                                      timeOnly: true,
+                                    ),
+                                color: Colors.grey,
+                                size: 16,
+                              ),
+                              StrongrText(
+                                snapshot.data.creationDate !=
+                                        snapshot.data.lastUpdate
+                                    ? "Mis à jour le " +
+                                        DateFormater.format(snapshot
+                                            .data.lastUpdate
+                                            .toString()) +
+                                        " à " +
+                                        DateFormater.format(
+                                          snapshot.data.lastUpdate.toString(),
+                                          timeOnly: true,
+                                        )
+                                    : "",
+                                color: Colors.grey,
+                                size: 16,
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }
+                    if (snapshot.hasError)
+                      return Text(
+                        snapshot.error,
+                        textAlign: TextAlign.center,
+                      );
+                    else
+                      return Container();
+                  },
+                ),
+              ),
               FutureBuilder(
                 future: futureProgram,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    return Visibility(
-                      visible: !isEditMode,
-                      child: Container(
-                        padding: EdgeInsets.all(10),
-                        width: ScreenSize.width(context),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            StrongrText(
-                              "Créé le " +
-                                  DateFormater.format(
-                                      snapshot.data.creationDate.toString()) +
-                                  " à " +
-                                  DateFormater.format(
-                                    snapshot.data.creationDate.toString(),
-                                    timeOnly: true,
-                                  ),
-                              color: Colors.grey,
-                              size: 16,
-                            ),
-                            StrongrText(
-                              snapshot.data.creationDate !=
-                                      snapshot.data.lastUpdate
-                                  ? "Mis à jour le " +
-                                      DateFormater.format(
-                                          snapshot.data.lastUpdate.toString()) +
-                                      " à " +
-                                      DateFormater.format(
-                                        snapshot.data.lastUpdate.toString(),
-                                        timeOnly: true,
-                                      )
-                                  : "",
-                              color: Colors.grey,
-                              size: 16,
-                            ),
-                          ],
-                        ),
+                    return FloatingActionButton.extended(
+                      heroTag: 'program_play_fab_' + widget.id.toString(),
+                      backgroundColor: !editButtonsEnabled
+                          ? Colors.grey
+                          : isEditMode
+                              ? Colors.red[800]
+                              : snapshot
+                                          .data
+                                          .sessions[DateTime.now().weekday - 1]
+                                          .id !=
+                                      null
+                                  ? StrongrColors.blue
+                                  : Colors.grey,
+                      icon: Icon(
+                        isEditMode ? Icons.delete_outline : Icons.play_arrow,
+                        color: Colors.white,
+                      ),
+                      onPressed: editButtonsEnabled
+                          ? isEditMode
+                              ? () => showDeleteDialog()
+                              : snapshot
+                                          .data
+                                          .sessions[DateTime.now().weekday - 1]
+                                          .id !=
+                                      null
+                                  ? () {}
+                                  : null
+                          : null,
+                      label: StrongrText(
+                        isEditMode ? "Supprimer" : "Démarrer (" + weekday + ")",
+                        color: Colors.white,
                       ),
                     );
                   }
                   if (snapshot.hasError)
                     return Text(snapshot.error, textAlign: TextAlign.center);
                   else
-                    return Container();
+                    // return Container();
+                    return FloatingActionButton.extended(
+                      heroTag: 'program_play_fab_' + widget.id.toString(),
+                      backgroundColor:
+                          isEditMode ? Colors.red[800] : Colors.grey,
+                      onPressed: isEditMode ? () {} : null,
+                      label: Container(
+                        height: 25,
+                        width: 100,
+                        child: Center(
+                          child: Container(
+                            width: 25,
+                            child: CircularProgressIndicator(
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(Colors.white),
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
                 },
               ),
             ],
           ),
         ),
-        floatingActionButton: FutureBuilder(
-          future: futureProgram,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return FloatingActionButton.extended(
-                heroTag: 'program_play_fab_' + widget.id.toString(),
-                backgroundColor: !editButtonsEnabled
-                    ? Colors.grey
-                    : isEditMode
-                        ? Colors.red[800]
-                        : snapshot.data.sessions[DateTime.now().weekday - 1]
-                                    .id !=
-                                null
-                            ? StrongrColors.blue
-                            : Colors.grey,
-                icon: Icon(
-                  isEditMode ? Icons.delete_outline : Icons.play_arrow,
-                  color: Colors.white,
-                ),
-                onPressed: editButtonsEnabled
-                    ? isEditMode
-                        ? () => showDeleteDialog()
-                        : snapshot.data.sessions[DateTime.now().weekday - 1]
-                                    .id !=
-                                null
-                            ? () {}
-                            : null
-                    : null,
-                label: StrongrText(
-                  isEditMode ? "Supprimer" : "Démarrer (" + weekday + ")",
-                  color: Colors.white,
-                ),
-              );
-            }
-            if (snapshot.hasError)
-              return Text(snapshot.error, textAlign: TextAlign.center);
-            else
-              // return Container();
-              return FloatingActionButton.extended(
-                heroTag: 'program_play_fab_' + widget.id.toString(),
-                backgroundColor: isEditMode ? Colors.red[800] : Colors.grey,
-                onPressed: isEditMode ? () {} : null,
-                label: Container(
-                  height: 25,
-                  width: 100,
-                  child: Center(
-                    child: Container(
-                      width: 25,
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                      ),
-                    ),
-                  ),
-                ),
-              );
-          },
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
     );
   }
