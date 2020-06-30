@@ -42,6 +42,12 @@ const String SESSION_TYPE_ROUTE = "session_type";
 // Program goal
 const String PROGRAM_GOAL_ROUTE = "program_goal";
 
+// Muscle
+const String MUSCLE_ROUTE = "muscle";
+
+// Equipment
+const String EQUIPMENT_ROUTE = "equipment";
+
 // Profile
 const String PROFILE_ROUTE = "profile";
 

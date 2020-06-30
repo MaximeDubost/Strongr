@@ -8,11 +8,13 @@ import 'package:strongr/views/connection/reset_password_view.dart';
 import 'package:strongr/views/connection/sign_in_next_view.dart';
 import 'package:strongr/views/connection/sign_in_view.dart';
 import 'package:strongr/views/app_exercise/app_exercise_view.dart';
+import 'package:strongr/views/equipment/equipment_view.dart';
 import 'package:strongr/views/exercise/exercise_add_view.dart';
 import 'package:strongr/views/exercise/exercise_create_view.dart';
 import 'package:strongr/views/exercise/exercise_view.dart';
 import 'package:strongr/views/exercise/exercises_view.dart';
 import 'package:strongr/views/homepage/homepage_view.dart';
+import 'package:strongr/views/muscle/muscle_view.dart';
 import 'package:strongr/views/program/program_create_view.dart';
 import 'package:strongr/views/program/program_goal_view.dart';
 import 'package:strongr/views/program/program_new_session.dart';
@@ -201,6 +203,30 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       ProgramGoalView args = settings.arguments;
       return CupertinoPageRoute(
         builder: (context) => ProgramGoalView(
+          id: args.id,
+          name: args.name,
+        ),
+      );
+
+    ///
+    /// Muscle
+    ///
+    case MUSCLE_ROUTE:
+      MuscleView args = settings.arguments;
+      return CupertinoPageRoute(
+        builder: (context) => MuscleView(
+          id: args.id,
+          name: args.name,
+        ),
+      );
+
+    ///
+    /// Equipment
+    ///
+    case EQUIPMENT_ROUTE:
+      EquipmentView args = settings.arguments;
+      return CupertinoPageRoute(
+        builder: (context) => EquipmentView(
           id: args.id,
           name: args.name,
         ),
