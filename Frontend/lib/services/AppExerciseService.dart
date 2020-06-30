@@ -41,4 +41,42 @@ class AppExerciseService {
       return AppExercise();
     }
   }
+
+  /// [GET] /appexercises/muscle/[id]
+  ///
+  /// Retourne la liste des exercices de l'application concernant le muscle [id].
+  static Future<List<AppExercise>> getAppExercisesOfMuscle({@required int id}) async {
+    try {
+      Response response = await get(
+        Uri.encodeFull(
+          Global.SERVER_URL + '/appexercises/muscle/' + id.toString(),
+        ),
+      );
+      List<AppExercise> appExercisesList = List<AppExercise>();
+      for (final appExercise in jsonDecode(response.body))
+        appExercisesList.add(AppExercise.fromMap(appExercise));
+      return appExercisesList;
+    } catch (e) {
+      return [];
+    }
+  }
+
+  /// [GET] /appexercises/muscle/[id]
+  ///
+  /// Retourne la liste des exercices de l'application concernant l'équipement [id].
+  static Future<List<AppExercise>> getAppExercisesOfEquipment({@required int id}) async {
+    try {
+      Response response = await get(
+        Uri.encodeFull(
+          Global.SERVER_URL + '/appexercises/muscle/' + id.toString(),
+        ),
+      );
+      List<AppExercise> appExercisesList = List<AppExercise>();
+      for (final appExercise in jsonDecode(response.body))
+        appExercisesList.add(AppExercise.fromMap(appExercise));
+      return appExercisesList;
+    } catch (e) {
+      return [];
+    }
+  }
 }

@@ -5,7 +5,9 @@ import 'package:strongr/services/AppExerciseService.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
+import 'package:strongr/views/equipment/equipment_view.dart';
 import 'package:strongr/views/exercise/exercise_create_view.dart';
+import 'package:strongr/views/muscle/muscle_view.dart';
 import 'package:strongr/widgets/dialogs/new_exercise_from_list_dialog.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
 import 'package:strongr/widgets/strongr_text.dart';
@@ -107,7 +109,14 @@ class _AppExerciseViewState extends State<AppExerciseView> {
                                       ],
                                     ),
                                   ),
-                                  onPressed: () {},
+                                  onPressed: () => Navigator.pushNamed(
+                                    context,
+                                    MUSCLE_ROUTE,
+                                    arguments: MuscleView(
+                                      id: item.id,
+                                      name: item.name,
+                                    ),
+                                  ),
                                 ),
                                 SizedBox(height: 5),
                               ],
@@ -172,7 +181,14 @@ class _AppExerciseViewState extends State<AppExerciseView> {
                                       widget.selectedEquipmentId == item.id
                                           ? 2
                                           : 1,
-                                  onPressed: () {},
+                                  onPressed: () => Navigator.pushNamed(
+                                    context,
+                                    EQUIPMENT_ROUTE,
+                                    arguments: EquipmentView(
+                                      id: item.id,
+                                      name: item.name,
+                                    ),
+                                  ),
                                 ),
                                 SizedBox(height: 5),
                               ],
