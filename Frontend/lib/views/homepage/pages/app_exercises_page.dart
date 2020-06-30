@@ -155,16 +155,25 @@ class _AppExercisesPageState extends State<AppExercisesPage> {
                                   Icons.add,
                                   color: Colors.white,
                                 ),
-                                onPressed: () => showDialog(
-                                  context: context,
-                                  builder: (context) =>
-                                      NewExerciseFromListDialog(
+                                // onPressed: () => showDialog(
+                                //   context: context,
+                                //   builder: (context) =>
+                                //       NewExerciseFromListDialog(
+                                //     id: appExercise.id,
+                                //     name: appExercise.name,
+                                //   ),
+                                // ).then(
+                                onPressed: () => Navigator.pushNamed(
+                                  context,
+                                  EXERCISE_CREATE_ROUTE,
+                                  arguments: ExerciseCreateView(
                                     id: appExercise.id,
                                     name: appExercise.name,
                                   ),
                                 ).then(
                                   (exerciseCreated) {
-                                    if (exerciseCreated) {
+                                    if (exerciseCreated != null &&
+                                        exerciseCreated) {
                                       globalKey.currentState
                                           .hideCurrentSnackBar();
                                       globalKey.currentState.showSnackBar(

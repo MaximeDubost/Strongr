@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:strongr/models/AppExercise.dart';
 import 'package:strongr/services/AppExerciseService.dart';
+import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
+import 'package:strongr/views/app_exercise/app_exercise_view.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
@@ -25,7 +27,8 @@ class _EquipmentViewState extends State<EquipmentView> {
 
   @override
   void initState() {
-    futureAppExercises = AppExerciseService.getAppExercisesOfEquipment(id: widget.id);
+    futureAppExercises =
+        AppExerciseService.getAppExercisesOfEquipment(id: widget.id);
     super.initState();
   }
 
@@ -98,12 +101,20 @@ class _EquipmentViewState extends State<EquipmentView> {
                           ),
                           borderColor: StrongrColors.greyD,
                           borderWidth: 1,
-                          onPressed: () {},
+                          onPressed: () => Navigator.pushNamed(
+                            context,
+                            APP_EXERCISE_ROUTE,
+                            arguments: AppExerciseView(
+                              id: item.id,
+                              name: item.name,
+                              isBelonged: true,
+                            ),
+                          ),
                         ),
                         SizedBox(height: 5),
                       ],
                     ),
-                  SizedBox(height: 75),
+                  SizedBox(height: 25),
                 ],
               ));
             } else if (snapshot.hasError) {

@@ -108,6 +108,7 @@ class _MuscleViewState extends State<MuscleView> {
                               arguments: AppExerciseView(
                                 id: item.id,
                                 name: item.name,
+                                isBelonged: true,
                               ),
                             ),
                           ),
