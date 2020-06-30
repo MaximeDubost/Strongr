@@ -613,45 +613,130 @@ class _ExerciseViewState extends State<ExerciseView> {
         body: Container(
           child: Column(
             children: <Widget>[
-              FutureBuilder(
-                future: futureExercise,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    // print(snapshot.data);
-                    return Container(
-                      // color: Colors.red,
-                      child: InkWell(
-                        onTap: !editButtonsEnabled || isEditMode
-                            ? null
-                            : () {
-                                Navigator.pushNamed(
-                                  context,
-                                  APP_EXERCISE_ROUTE,
-                                  arguments: AppExerciseView(
-                                    id: snapshot.data.appExercise.id,
-                                    name: snapshot.data.appExercise.name,
-                                    isBelonged: true,
-                                    selectedEquipmentId: equipmentId,
-                                  ),
-                                );
-                              },
-                        child: Stack(
-                          children: <Widget>[
-                            Container(
-                              width: ScreenSize.width(context),
-                              padding: EdgeInsets.all(20),
-                              child: StrongrText(
-                                widget.appExerciseName,
-                                bold: true,
-                              ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.only(
-                                  top: 20, bottom: 20, left: 15, right: 15),
-                              alignment: Alignment.centerRight,
-                              child: Opacity(
-                                opacity: isEditMode ? 0 : 1,
+              Container(
+                height: 90,
+                child: FutureBuilder(
+                  future: futureExercise,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return Container(
+                        child: InkWell(
+                          onTap: !editButtonsEnabled || isEditMode
+                              ? null
+                              : () {
+                                  Navigator.pushNamed(
+                                    context,
+                                    APP_EXERCISE_ROUTE,
+                                    arguments: AppExerciseView(
+                                      id: snapshot.data.appExercise.id,
+                                      name: snapshot.data.appExercise.name,
+                                      isBelonged: true,
+                                      selectedEquipmentId: equipmentId,
+                                    ),
+                                  );
+                                },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Visibility(
+                                visible: !isEditMode,
                                 child: Container(
+                                  width: 50,
+                                  // color: Colors.red[200],
+                                ),
+                              ),
+                              Flexible(
+                                child: Container(
+                                  // color: Colors.blue[100],
+                                  // width: ScreenSize.width(context),
+                                  // padding: EdgeInsets.all(20),
+                                  child: !isEditMode
+                                      ? Center(
+                                          child: StrongrText(
+                                            widget.appExerciseName,
+                                            bold: true,
+                                          ),
+                                        )
+                                      : Container(
+                                          height: 90,
+                                          // color: Colors.red,
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            children: <Widget>[
+                                              Container(
+                                                child: Container(
+                                                  width: ScreenSize.width(
+                                                          context) /
+                                                      2.5,
+                                                  child: StrongrText(
+                                                    widget.appExerciseName,
+                                                    bold: true,
+                                                    maxLines: 3,
+                                                  ),
+                                                ),
+                                              ),
+                                              Container(
+                                                height: 60,
+                                                width: 1,
+                                                color: Colors.grey[350],
+                                              ),
+                                              InkWell(
+                                                child: Container(
+                                                  height: 90,
+                                                  // color: Colors.red,
+                                                  width: ScreenSize.width(
+                                                          context) /
+                                                      2.5,
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceAround,
+                                                    children: <Widget>[
+                                                      Flexible(
+                                                        child: Container(
+                                                          child: Center(
+                                                            child: StrongrText(
+                                                              snapshot.data
+                                                                          .equipment !=
+                                                                      null
+                                                                  ? snapshot
+                                                                      .data
+                                                                      .equipment
+                                                                      .name
+                                                                  : "Aucun équipement",
+                                                              color: snapshot
+                                                                          .data
+                                                                          .equipment !=
+                                                                      null
+                                                                  ? StrongrColors
+                                                                      .black
+                                                                  : Colors.grey,
+                                                              maxLines: 3,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Icon(
+                                                        Icons.arrow_drop_down,
+                                                        color:
+                                                            StrongrColors.black,
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                                onTap: () {},
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                ),
+                              ),
+                              Visibility(
+                                visible: !isEditMode,
+                                child: Container(
+                                  width: 50,
+                                  // color: Colors.red[200],
                                   child: Icon(
                                     Icons.info_outline,
                                     color: editButtonsEnabled
@@ -660,25 +745,25 @@ class _ExerciseViewState extends State<ExerciseView> {
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    );
-                  }
-                  if (snapshot.hasError) {
-                    return Text(snapshot.error, textAlign: TextAlign.center);
-                  } else {
-                    return Container(
-                      width: ScreenSize.width(context),
-                      padding: EdgeInsets.all(20),
-                      child: StrongrText(
-                        widget.appExerciseName,
-                        bold: true,
-                      ),
-                    );
-                  }
-                },
+                      );
+                    }
+                    if (snapshot.hasError) {
+                      return Text(snapshot.error, textAlign: TextAlign.center);
+                    } else {
+                      return Container(
+                        width: ScreenSize.width(context),
+                        padding: EdgeInsets.all(20),
+                        child: StrongrText(
+                          widget.appExerciseName,
+                          bold: true,
+                        ),
+                      );
+                    }
+                  },
+                ),
               ),
               Container(
                 width: ScreenSize.width(context),

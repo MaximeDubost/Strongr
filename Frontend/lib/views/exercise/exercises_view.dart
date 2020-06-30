@@ -106,11 +106,14 @@ class _ExercisesViewState extends State<ExercisesView> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            child: StrongrText(
-                              item.name,
-                              bold: true,
+                          Flexible(
+                            child: Container(
+                              alignment: Alignment.centerLeft,
+                              child: StrongrText(
+                                item.name,
+                                bold: true,
+                                maxLines: 1,
+                              ),
                             ),
                           ),
                           Container(
@@ -123,15 +126,18 @@ class _ExercisesViewState extends State<ExercisesView> {
                                       ? StrongrColors.black
                                       : Colors.grey,
                                 ),
-                                Container(
-                                  padding: EdgeInsets.only(left: 10),
-                                  child: StrongrText(
-                                    item.appExerciseName != null
-                                        ? item.appExerciseName
-                                        : "Aucun exercice",
-                                    color: item.appExerciseName != null
-                                        ? StrongrColors.black
-                                        : Colors.grey,
+                                Flexible(
+                                  child: Container(
+                                    padding: EdgeInsets.only(left: 10),
+                                    child: StrongrText(
+                                      item.appExerciseName != null
+                                          ? item.appExerciseName
+                                          : "Aucun exercice",
+                                      color: item.appExerciseName != null
+                                          ? StrongrColors.black
+                                          : Colors.grey,
+                                      maxLines: 1,
+                                    ),
                                   ),
                                 ),
                               ],
