@@ -46,6 +46,7 @@ const String PROGRAM_GOAL_ROUTE = "program_goal";
 const String MUSCLE_ROUTE = "muscle";
 
 // Equipment
+const String EQUIPMENTS_ROUTE = "equipments";
 const String EQUIPMENT_ROUTE = "equipment";
 
 // Profile

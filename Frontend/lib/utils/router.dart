@@ -9,6 +9,7 @@ import 'package:strongr/views/connection/sign_in_next_view.dart';
 import 'package:strongr/views/connection/sign_in_view.dart';
 import 'package:strongr/views/app_exercise/app_exercise_view.dart';
 import 'package:strongr/views/equipment/equipment_view.dart';
+import 'package:strongr/views/equipment/equipments_view.dart';
 import 'package:strongr/views/exercise/exercise_add_view.dart';
 import 'package:strongr/views/exercise/exercise_create_view.dart';
 import 'package:strongr/views/exercise/exercise_view.dart';
@@ -223,6 +224,16 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     ///
     /// Equipment
     ///
+    case EQUIPMENTS_ROUTE:
+      EquipmentsView args = settings.arguments;
+      return CupertinoPageRoute(
+        builder: (context) => EquipmentsView(
+          appExerciseId: args.appExerciseId,
+          appExerciseName: args.appExerciseName,
+          selectedEquipmentId: args.selectedEquipmentId,
+        ),
+      );
+
     case EQUIPMENT_ROUTE:
       EquipmentView args = settings.arguments;
       return CupertinoPageRoute(
