@@ -42,7 +42,8 @@ class _ExerciseViewState extends State<ExerciseView> {
       validateButtonEnabled,
       editButtonsEnabled,
       isEdited,
-      exerciseUpdated;
+      exerciseUpdated,
+      initEquipmentId;
   Future<Exercise> futureExercise;
   List<Set> setsOfExercise;
   TextEditingController exerciseNameController;
@@ -52,7 +53,8 @@ class _ExerciseViewState extends State<ExerciseView> {
 
   @override
   void initState() {
-    isEditMode = validateButtonEnabled = isEdited = exerciseUpdated = false;
+    isEditMode = validateButtonEnabled =
+        isEdited = exerciseUpdated = initEquipmentId = false;
     editButtonsEnabled = true;
     futureExercise = ExerciseService.getExercise(id: widget.id);
     setsOfExercise = List<Set>();
@@ -807,8 +809,11 @@ class _ExerciseViewState extends State<ExerciseView> {
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       try {
-                        equipmentId = snapshot.data.equipment.id;
-                        equipmentName = snapshot.data.equipment.name;
+                        if (!initEquipmentId) {
+                          equipmentId = snapshot.data.equipment.id;
+                          equipmentName = snapshot.data.equipment.name;
+                          initEquipmentId = true;
+                        }
                       } catch (e) {}
                       setsOfExercise = snapshot.data.sets;
                       return ListView(
