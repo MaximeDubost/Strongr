@@ -1,6 +1,6 @@
-import Muscle from "../Models/Muscle";
-import AppExercise from "../Models/AppExercise";
-import Equipment from "../Models/Equipment";
+import Muscle from "../models/Muscle";
+import AppExercise from "../models/AppExercise";
+import Equipment from "../models/Equipment";
 import clt from "../core/config/database";
 
 const repository = {};
