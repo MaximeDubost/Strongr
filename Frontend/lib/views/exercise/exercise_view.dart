@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:strongr/models/Equipment.dart';
 import 'package:strongr/models/Exercise.dart';
 import 'package:strongr/models/Set.dart';
 import 'package:strongr/services/ExerciseService.dart';
@@ -9,6 +10,7 @@ import 'package:strongr/utils/string_constants.dart';
 import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/utils/time_formater.dart';
 import 'package:strongr/views/app_exercise/app_exercise_view.dart';
+import 'package:strongr/views/equipment/equipments_view.dart';
 import 'package:strongr/widgets/dialogs/delete_dialog.dart';
 import 'package:strongr/widgets/dialogs/new_set_dialog.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
@@ -40,17 +42,19 @@ class _ExerciseViewState extends State<ExerciseView> {
       validateButtonEnabled,
       editButtonsEnabled,
       isEdited,
-      exerciseUpdated;
+      exerciseUpdated,
+      initEquipmentId;
   Future<Exercise> futureExercise;
   List<Set> setsOfExercise;
   TextEditingController exerciseNameController;
   int equipmentId;
-  String exerciseName;
+  String exerciseName, equipmentName;
   Color textFieldBackgroundColor;
 
   @override
   void initState() {
-    isEditMode = validateButtonEnabled = isEdited = exerciseUpdated = false;
+    isEditMode = validateButtonEnabled =
+        isEdited = exerciseUpdated = initEquipmentId = false;
     editButtonsEnabled = true;
     futureExercise = ExerciseService.getExercise(id: widget.id);
     setsOfExercise = List<Set>();
@@ -558,8 +562,8 @@ class _ExerciseViewState extends State<ExerciseView> {
               ? IconButton(
                   icon: Icon(Icons.close),
                   onPressed: () => setState(() {
-                    isEditMode = false;
-                    isEdited = false;
+                    equipmentId = equipmentName = null;
+                    isEditMode = isEdited = false;
                     textFieldBackgroundColor = StrongrColors.blue80;
                     exerciseNameController.text = exerciseName;
                     futureExercise = ExerciseService.getExercise(id: widget.id);
@@ -610,119 +614,229 @@ class _ExerciseViewState extends State<ExerciseView> {
                 : SizedBox(),
           ],
         ),
-        body: Container(
-          child: Column(
-            children: <Widget>[
-              FutureBuilder(
-                future: futureExercise,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    // print(snapshot.data);
-                    return Container(
-                      // color: Colors.red,
-                      child: InkWell(
-                        onTap: !editButtonsEnabled || isEditMode
-                            ? null
-                            : () {
-                                Navigator.pushNamed(
-                                  context,
-                                  APP_EXERCISE_ROUTE,
-                                  arguments: AppExerciseView(
-                                    id: snapshot.data.appExercise.id,
-                                    name: snapshot.data.appExercise.name,
-                                    isBelonged: true,
-                                    selectedEquipmentId: equipmentId,
-                                  ),
-                                );
-                              },
-                        child: Stack(
-                          children: <Widget>[
-                            Container(
-                              width: ScreenSize.width(context),
-                              padding: EdgeInsets.all(20),
-                              child: StrongrText(
-                                widget.appExerciseName,
-                                bold: true,
-                              ),
+        body: Column(
+          children: <Widget>[
+            FutureBuilder(
+              future: futureExercise,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Container(
+                    child: InkWell(
+                      onTap: !editButtonsEnabled || isEditMode
+                          ? null
+                          : () {
+                              Navigator.pushNamed(
+                                context,
+                                APP_EXERCISE_ROUTE,
+                                arguments: AppExerciseView(
+                                  id: snapshot.data.appExercise.id,
+                                  name: snapshot.data.appExercise.name,
+                                  isBelonged: true,
+                                  selectedEquipmentId: equipmentId,
+                                ),
+                              );
+                            },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Visibility(
+                            visible: !isEditMode,
+                            child: Container(
+                              width: 50,
                             ),
-                            Container(
-                              padding: EdgeInsets.only(
-                                  top: 20, bottom: 20, left: 15, right: 15),
-                              alignment: Alignment.centerRight,
-                              child: Opacity(
-                                opacity: isEditMode ? 0 : 1,
-                                child: Container(
-                                  child: Icon(
-                                    Icons.info_outline,
-                                    color: editButtonsEnabled
-                                        ? StrongrColors.black
-                                        : Colors.grey,
+                          ),
+                          Visibility(
+                            visible: !isEditMode,
+                            child: Flexible(
+                              child: Container(
+                                height: 75,
+                                padding: EdgeInsets.all(8),
+                                // color: Colors.red,
+                                child: Center(
+                                  child: StrongrText(
+                                    widget.appExerciseName,
+                                    bold: true,
+                                    maxLines: 2,
                                   ),
                                 ),
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                    );
-                  }
-                  if (snapshot.hasError) {
-                    return Text(snapshot.error, textAlign: TextAlign.center);
-                  } else {
-                    return Container(
-                      width: ScreenSize.width(context),
-                      padding: EdgeInsets.all(20),
-                      child: StrongrText(
-                        widget.appExerciseName,
-                        bold: true,
-                      ),
-                    );
-                  }
-                },
-              ),
-              Container(
-                width: ScreenSize.width(context),
-                height: 1,
-                color: Colors.grey[350],
-              ),
-              Flexible(
-                child: Container(
-                  // color: Colors.red,
-                  // height: 100,
-                  // height: ScreenSize.height(context) / 1.6,
-                  child: FutureBuilder(
-                    future: futureExercise,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        try {
-                          equipmentId = snapshot.data.equipment.id;
-                        } catch (e) {
-                          equipmentId = null;
-                        }
-                        setsOfExercise = snapshot.data.sets;
-                        return ListView(
-                          physics: BouncingScrollPhysics(),
-                          children: buildSetList(setList: setsOfExercise),
-                        );
-                      }
-                      if (snapshot.hasError)
-                        return Text(snapshot.error,
-                            textAlign: TextAlign.center);
-                      else
-                        return Container(
-                          alignment: Alignment.center,
-                          height: ScreenSize.height(context) / 1.75,
-                          child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                                StrongrColors.blue),
                           ),
-                        );
-                    },
-                  ),
+                          Visibility(
+                            visible: isEditMode,
+                            child: Flexible(
+                              child: Container(
+                                height: 75,
+                                child: Row(
+                                  children: <Widget>[
+                                    Flexible(
+                                      child: Container(
+                                        // color: Colors.blue,
+                                        padding: EdgeInsets.all(8),
+                                        child: Center(
+                                          child: StrongrText(
+                                            widget.appExerciseName,
+                                            bold: true,
+                                            maxLines: 2,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Center(
+                                      child: Container(
+                                        height: 50,
+                                        width: 1,
+                                        color: Colors.grey[350],
+                                      ),
+                                    ),
+                                    Flexible(
+                                      child: InkWell(
+                                        child: Container(
+                                          // color: Colors.green,
+                                          padding: EdgeInsets.all(8),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceAround,
+                                            children: <Widget>[
+                                              Flexible(
+                                                child: Container(
+                                                  child: Center(
+                                                    child: StrongrText(
+                                                      equipmentName != null
+                                                          ? equipmentName
+                                                          : "Aucun équipement",
+                                                      color: equipmentName !=
+                                                              null
+                                                          ? StrongrColors.black
+                                                          : Colors.grey,
+                                                      maxLines: 2,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              Icon(
+                                                Icons.arrow_drop_down,
+                                                color: StrongrColors.black,
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                        onTap: () {
+                                          FocusScope.of(context).unfocus();
+                                          Navigator.pushNamed(
+                                            context,
+                                            EQUIPMENTS_ROUTE,
+                                            arguments: EquipmentsView(
+                                              appExerciseId:
+                                                  snapshot.data.appExercise.id,
+                                              appExerciseName: snapshot
+                                                  .data.appExercise.name,
+                                              selectedEquipmentId: equipmentId,
+                                            ),
+                                          ).then(
+                                            (selectedEquipment) {
+                                              if (selectedEquipment != null) {
+                                                Equipment equipment =
+                                                    selectedEquipment;
+                                                if (equipment.id != equipmentId)
+                                                  setState(() {
+                                                    equipmentId = equipment.id;
+                                                    equipmentName =
+                                                        equipment.name;
+                                                  });
+                                                else
+                                                  setState(() {
+                                                    equipmentId = null;
+                                                    equipmentName = null;
+                                                  });
+                                                setState(() => isEdited = true);
+                                                toggleValidateButton(
+                                                    setsOfExercise);
+                                              }
+                                            },
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          Visibility(
+                            visible: !isEditMode,
+                            child: SizedBox(
+                              width: 50,
+                              child: Icon(
+                                Icons.info_outline,
+                                color: editButtonsEnabled
+                                    ? StrongrColors.black
+                                    : Colors.grey,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }
+                if (snapshot.hasError) {
+                  return Text(snapshot.error, textAlign: TextAlign.center);
+                } else {
+                  return Container(
+                    width: ScreenSize.width(context),
+                    padding: EdgeInsets.all(20),
+                    child: StrongrText(
+                      widget.appExerciseName,
+                      bold: true,
+                    ),
+                  );
+                }
+              },
+            ),
+            Container(
+              width: ScreenSize.width(context),
+              height: 1,
+              color: Colors.grey[350],
+            ),
+            Flexible(
+              child: Container(
+                // color: Colors.red,
+                // height: 100,
+                // height: ScreenSize.height(context) / 1.6,
+                child: FutureBuilder(
+                  future: futureExercise,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      try {
+                        if (!initEquipmentId) {
+                          equipmentId = snapshot.data.equipment.id;
+                          equipmentName = snapshot.data.equipment.name;
+                          initEquipmentId = true;
+                        }
+                      } catch (e) {}
+                      setsOfExercise = snapshot.data.sets;
+                      return ListView(
+                        physics: BouncingScrollPhysics(),
+                        children: buildSetList(setList: setsOfExercise),
+                      );
+                    }
+                    if (snapshot.hasError)
+                      return Text(snapshot.error, textAlign: TextAlign.center);
+                    else
+                      return Container(
+                        alignment: Alignment.center,
+                        height: ScreenSize.height(context) / 1.75,
+                        child: CircularProgressIndicator(
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(StrongrColors.blue),
+                        ),
+                      );
+                  },
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
         bottomNavigationBar: Container(
           height: 140,
