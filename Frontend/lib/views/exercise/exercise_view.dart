@@ -562,8 +562,7 @@ class _ExerciseViewState extends State<ExerciseView> {
               ? IconButton(
                   icon: Icon(Icons.close),
                   onPressed: () => setState(() {
-                    equipmentId = equipmentName = null;
-                    isEditMode = isEdited = false;
+                    isEditMode = isEdited = initEquipmentId = false;
                     textFieldBackgroundColor = StrongrColors.blue80;
                     exerciseNameController.text = exerciseName;
                     futureExercise = ExerciseService.getExercise(id: widget.id);
@@ -620,6 +619,13 @@ class _ExerciseViewState extends State<ExerciseView> {
               future: futureExercise,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
+                  try {
+                    if (!initEquipmentId) {
+                      equipmentId = snapshot.data.equipment.id;
+                      equipmentName = snapshot.data.equipment.name;
+                      initEquipmentId = true;
+                    }
+                  } catch (e) {}
                   return Container(
                     child: InkWell(
                       onTap: !editButtonsEnabled || isEditMode
@@ -808,13 +814,6 @@ class _ExerciseViewState extends State<ExerciseView> {
                   future: futureExercise,
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                      try {
-                        if (!initEquipmentId) {
-                          equipmentId = snapshot.data.equipment.id;
-                          equipmentName = snapshot.data.equipment.name;
-                          initEquipmentId = true;
-                        }
-                      } catch (e) {}
                       setsOfExercise = snapshot.data.sets;
                       return ListView(
                         physics: BouncingScrollPhysics(),

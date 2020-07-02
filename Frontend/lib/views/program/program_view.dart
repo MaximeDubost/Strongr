@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:strongr/models/Program.dart';
+import 'package:strongr/models/ProgramGoal.dart';
 import 'package:strongr/models/SessionPreview.dart';
 import 'package:strongr/services/ProgramService.dart';
 import 'package:strongr/utils/date_formater.dart';
@@ -7,7 +8,8 @@ import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/string_constants.dart';
 import 'package:strongr/utils/strongr_colors.dart';
-import 'package:strongr/views/program/program_goal_view.dart';
+import 'package:strongr/views/program_goal/program_goal_view.dart';
+import 'package:strongr/views/program_goal/program_goals_view.dart';
 import 'package:strongr/views/session/session_view.dart';
 import 'package:strongr/widgets/dialogs/delete_dialog.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
@@ -31,19 +33,20 @@ class _ProgramViewState extends State<ProgramView> {
       validateButtonEnabled,
       editButtonsEnabled,
       isEdited,
-      programUpdated;
-  String weekday;
-  int lastIndexPressed;
+      programUpdated,
+      initProgramGoalId;
+  String weekday, programName, programGoalName;
+  int programGoalId, lastIndexPressed;
   Future<Program> futureProgram;
   List<SessionPreview> sessionsOfProgram;
   TextEditingController programNameController;
-  int programGoalId;
-  String programName;
   Color textFieldBackgroundColor;
 
   @override
   void initState() {
-    isEditMode = validateButtonEnabled = isEdited = programUpdated = false;
+    programGoalName = widget.programGoalName;
+    isEditMode = validateButtonEnabled =
+        isEdited = programUpdated = initProgramGoalId = false;
     editButtonsEnabled = true;
     futureProgram = ProgramService.getProgram(id: widget.id);
     sessionsOfProgram = List<SessionPreview>();
@@ -195,7 +198,7 @@ class _ProgramViewState extends State<ProgramView> {
     });
     int statusCode = await ProgramService.putProgram(
       id: widget.id,
-      programGoalName: widget.programGoalName,
+      programGoalName: programGoalName,
       name: programName,
       sessions: sessionsOfProgram,
     );
@@ -760,8 +763,7 @@ class _ProgramViewState extends State<ProgramView> {
               ? IconButton(
                   icon: Icon(Icons.close),
                   onPressed: () => setState(() {
-                    isEditMode = false;
-                    isEdited = false;
+                    isEditMode = isEdited = initProgramGoalId = false;
                     textFieldBackgroundColor = StrongrColors.blue80;
                     programNameController.text = programName;
                     futureProgram = ProgramService.getProgram(id: widget.id);
@@ -816,27 +818,58 @@ class _ProgramViewState extends State<ProgramView> {
                 future: futureProgram,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
+                    try {
+                      if (!initProgramGoalId) {
+                        programGoalId = snapshot.data.programGoal.id;
+                        programGoalName = snapshot.data.programGoal.name;
+                        initProgramGoalId = true;
+                      }
+                    } catch (e) {}
                     return Container(
                       child: InkWell(
-                        onTap: !editButtonsEnabled || isEditMode
-                            ? null
-                            : () {
-                                Navigator.pushNamed(
-                                  context,
-                                  PROGRAM_GOAL_ROUTE,
-                                  arguments: ProgramGoalView(
-                                    id: snapshot.data.programGoal.id,
-                                    name: snapshot.data.programGoal.name,
-                                  ),
-                                );
-                              },
+                        onTap: editButtonsEnabled
+                            ? !isEditMode
+                                ? () {
+                                    Navigator.pushNamed(
+                                      context,
+                                      PROGRAM_GOAL_ROUTE,
+                                      arguments: ProgramGoalView(
+                                        id: snapshot.data.programGoal.id,
+                                        name: snapshot.data.programGoal.name,
+                                      ),
+                                    );
+                                  }
+                                : () {
+                                    Navigator.pushNamed(
+                                      context,
+                                      PROGRAM_GOALS_ROUTE,
+                                      arguments: ProgramGoalsView(
+                                        selectedProgramGoalId: programGoalId,
+                                      ),
+                                    ).then(
+                                      (selectedProgramGoal) {
+                                        if (selectedProgramGoal != null) {
+                                          ProgramGoal programGoal =
+                                              selectedProgramGoal;
+                                          setState(() {
+                                            programGoalId = programGoal.id;
+                                            programGoalName = programGoal.name;
+                                            isEdited = true;
+                                          });
+                                          toggleValidateButton(
+                                              sessionsOfProgram);
+                                        }
+                                      },
+                                    );
+                                  }
+                            : null,
                         child: Stack(
                           children: <Widget>[
                             Container(
                               width: ScreenSize.width(context),
                               padding: EdgeInsets.all(20),
                               child: StrongrText(
-                                widget.programGoalName,
+                                programGoalName,
                                 bold: true,
                               ),
                             ),
@@ -848,16 +881,13 @@ class _ProgramViewState extends State<ProgramView> {
                                 right: 15,
                               ),
                               alignment: Alignment.centerRight,
-                              child: Opacity(
-                                opacity: isEditMode ? 0 : 1,
-                                child: Container(
-                                  child: Icon(
-                                    Icons.info_outline,
-                                    color: editButtonsEnabled
-                                        ? StrongrColors.black
-                                        : Colors.grey,
-                                  ),
-                                ),
+                              child: Icon(
+                                !isEditMode
+                                    ? Icons.info_outline
+                                    : Icons.arrow_drop_down,
+                                color: editButtonsEnabled
+                                    ? StrongrColors.black
+                                    : Colors.grey,
                               ),
                             ),
                           ],

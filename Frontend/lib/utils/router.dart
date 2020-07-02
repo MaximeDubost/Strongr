@@ -17,10 +17,11 @@ import 'package:strongr/views/exercise/exercises_view.dart';
 import 'package:strongr/views/homepage/homepage_view.dart';
 import 'package:strongr/views/muscle/muscle_view.dart';
 import 'package:strongr/views/program/program_create_view.dart';
-import 'package:strongr/views/program/program_goal_view.dart';
+import 'package:strongr/views/program_goal/program_goal_view.dart';
 import 'package:strongr/views/program/program_new_session.dart';
 import 'package:strongr/views/program/program_view.dart';
 import 'package:strongr/views/program/programs_view.dart';
+import 'package:strongr/views/program_goal/program_goals_view.dart';
 import 'package:strongr/views/session/session_create_view.dart';
 import 'package:strongr/views/session/session_new_exercise_view.dart';
 import 'package:strongr/views/session/session_view.dart';
@@ -200,6 +201,14 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     ///
     /// Program goal
     ///
+    case PROGRAM_GOALS_ROUTE:
+      ProgramGoalsView args = settings.arguments;
+      return CupertinoPageRoute(
+        builder: (context) => ProgramGoalsView(
+          selectedProgramGoalId: args.selectedProgramGoalId,
+        ),
+      );
+
     case PROGRAM_GOAL_ROUTE:
       ProgramGoalView args = settings.arguments;
       return CupertinoPageRoute(

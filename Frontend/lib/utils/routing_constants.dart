@@ -40,6 +40,7 @@ const String PROGRAM_NEW_SESSION_ROUTE = "program_new_session";
 const String SESSION_TYPE_ROUTE = "session_type";
 
 // Program goal
+const String PROGRAM_GOALS_ROUTE = "program_goals";
 const String PROGRAM_GOAL_ROUTE = "program_goal";
 
 // Muscle
