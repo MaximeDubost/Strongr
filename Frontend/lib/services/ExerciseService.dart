@@ -122,4 +122,22 @@ class ExerciseService {
       return 503;
     }
   }
+
+  /// [POST] /exercises/targetmuscles
+  ///
+  /// Retourne la liste des muscles ciblés de chaque exercice dont les id sont passés en POST
+  static Future<Object> targetMusclesByExercise(List<int> exerciseIDs) async {
+    try {
+      Response response = await post(
+        Uri.encodeFull(
+          Global.SERVER_URL + '/exercise/targetmuscles',
+        ),
+        headers: {'Authorization': 'Bearer ' + Global.token},
+        body: jsonEncode(exerciseIDs),
+      );
+      return response.body;
+    } catch (e) {
+      return 503;
+    }
+  }
 }
