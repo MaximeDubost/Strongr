@@ -59,4 +59,9 @@ controller.deleteExerciseAll = async (req, res) => {
   res.status(200).json(rows);
 };
 
+controller.getExerciseMusclesTarget = async (req, res) => {
+  let rows = await ExerciseRepository.getExerciseMusclesTarget(req);
+  res.status(200).json(rows);
+};
+
 export default controller;
