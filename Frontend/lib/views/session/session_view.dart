@@ -868,12 +868,14 @@ class _SessionViewState extends State<SessionView> {
           ),
         ),
         floatingActionButton: FloatingActionButton(
+          
           backgroundColor: Colors.orange,
           onPressed: () {
             SessionTypeDefinitor.ofExercises(exercisesOfSession);
           },
           child: Icon(Icons.developer_mode),
         ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         // floatingActionButton: !widget.fromProgramCreation
         //     ? FloatingActionButton.extended(
         //         // heroTag: !widget.fromProgram
