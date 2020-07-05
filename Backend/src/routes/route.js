@@ -82,6 +82,12 @@ router.delete(
   ExerciseController.deleteExercise
 );
 
+router.get(
+  "/exercises/targetmuscles",
+  middleware.checkAuth,
+  ExerciseController.getExerciseMusclesTarget
+);
+
 /**
  * Session
  */
@@ -128,7 +134,10 @@ router.all(
  * Program Goal
  */
 router.get("/programgoals", ProgramGoalController.readProgramGoal);
-router.get("/programgoal/:id_program_goal", ProgramGoalController.readProgramGoalById);
+router.get(
+  "/programgoal/:id_program_goal",
+  ProgramGoalController.readProgramGoalById
+);
 
 /**
  * Equipement
