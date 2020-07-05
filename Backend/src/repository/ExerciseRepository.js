@@ -348,7 +348,7 @@ repository.deleteExerciseAll = async (req) => {
 repository.getExerciseMusclesTarget = async (req) => {
   var muscle_list = [];
   var list_exercise_muscles_target = [];
-  var list_id_exercises = req.body.id_exercises;
+  var list_id_exercises = JSON.parse(req.body.id_exercises);
   try {
     for (let i = 0; i < list_id_exercises.length; i++) {
       let sql = `SELECT * FROM _exercise e WHERE e.id_exercise = $1 AND e.id_user = $2`;

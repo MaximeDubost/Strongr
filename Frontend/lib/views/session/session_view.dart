@@ -5,6 +5,7 @@ import 'package:strongr/services/SessionService.dart';
 import 'package:strongr/utils/date_formater.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
+import 'package:strongr/utils/session_type_definitor.dart';
 import 'package:strongr/utils/string_constants.dart';
 import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/views/exercise/exercise_view.dart';
@@ -865,6 +866,13 @@ class _SessionViewState extends State<SessionView> {
               // ),
             ],
           ),
+        ),
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.orange,
+          onPressed: () {
+            SessionTypeDefinitor.ofExercises(exercisesOfSession);
+          },
+          child: Icon(Icons.developer_mode),
         ),
         // floatingActionButton: !widget.fromProgramCreation
         //     ? FloatingActionButton.extended(

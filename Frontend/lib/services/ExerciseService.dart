@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:strongr/models/Exercise.dart';
 import 'package:strongr/models/ExercisePreview.dart';
+import 'package:strongr/models/TargetMusclesByExercise.dart';
 import 'package:strongr/utils/Global.dart';
 import 'package:strongr/models/Set.dart';
 
@@ -126,18 +127,23 @@ class ExerciseService {
   /// [POST] /exercises/targetmuscles
   ///
   /// Retourne la liste des muscles ciblés de chaque exercice dont les id sont passés en POST
-  static Future<Object> targetMusclesByExercise(List<int> exerciseIDs) async {
+  static Future<List<ExerciseTargetMuscles>> targetMusclesByExercise(List<int> exerciseIDs) async {
     try {
       Response response = await post(
         Uri.encodeFull(
-          Global.SERVER_URL + '/exercise/targetmuscles',
+          Global.SERVER_URL + '/exercises/targetmuscles',
         ),
         headers: {'Authorization': 'Bearer ' + Global.token},
-        body: jsonEncode(exerciseIDs),
+        body: {
+          'id_exercises': jsonEncode(exerciseIDs),
+        }
       );
-      return response.body;
+      List<ExerciseTargetMuscles> exercises = List<ExerciseTargetMuscles>();
+      for (final exercise in jsonDecode(response.body))
+        exercises.add(ExerciseTargetMuscles.fromMap(exercise));
+      return exercises;
     } catch (e) {
-      return 503;
+      return [];
     }
   }
 }

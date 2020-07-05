@@ -4,19 +4,20 @@ import 'package:collection/collection.dart';
 
 import 'Muscle.dart';
 
-class TargetMusclesByExercise {
+class ExerciseTargetMuscles {
   int id;
   List<Muscle> targetMuscles;
-  TargetMusclesByExercise({
+
+  ExerciseTargetMuscles({
     this.id,
     this.targetMuscles,
   });
 
-  TargetMusclesByExercise copyWith({
+  ExerciseTargetMuscles copyWith({
     int id,
     List<Muscle> targetMuscles,
   }) {
-    return TargetMusclesByExercise(
+    return ExerciseTargetMuscles(
       id: id ?? this.id,
       targetMuscles: targetMuscles ?? this.targetMuscles,
     );
@@ -29,10 +30,10 @@ class TargetMusclesByExercise {
     };
   }
 
-  static TargetMusclesByExercise fromMap(Map<String, dynamic> map) {
+  static ExerciseTargetMuscles fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
   
-    return TargetMusclesByExercise(
+    return ExerciseTargetMuscles(
       id: map['id'],
       targetMuscles: List<Muscle>.from(map['target_muscles']?.map((x) => Muscle.fromMap(x))),
     );
@@ -40,17 +41,17 @@ class TargetMusclesByExercise {
 
   String toJson() => json.encode(toMap());
 
-  static TargetMusclesByExercise fromJson(String source) => fromMap(json.decode(source));
+  static ExerciseTargetMuscles fromJson(String source) => fromMap(json.decode(source));
 
   @override
-  String toString() => 'TargetMusclesByExercise(id: $id, targetMuscles: $targetMuscles)';
+  String toString() => 'ExerciseTargetMuscles(id: $id, targetMuscles: $targetMuscles)';
 
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
     final listEquals = const DeepCollectionEquality().equals;
   
-    return o is TargetMusclesByExercise &&
+    return o is ExerciseTargetMuscles &&
       o.id == id &&
       listEquals(o.targetMuscles, targetMuscles);
   }
