@@ -82,7 +82,7 @@ router.delete(
   ExerciseController.deleteExercise
 );
 
-router.get(
+router.post(
   "/exercises/targetmuscles",
   middleware.checkAuth,
   ExerciseController.getExerciseMusclesTarget

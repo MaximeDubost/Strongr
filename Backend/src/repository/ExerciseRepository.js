@@ -357,6 +357,7 @@ repository.getExerciseMusclesTarget = async (req) => {
       let result_app_exercise_muscle = await clt.query(sql, [
         result.rows[0].id_app_exercise,
       ]);
+      console.log("Rows muscle", result_app_exercise_muscle.rows);
       result_app_exercise_muscle.rows.forEach((muscle) => {
         let muscle_found = muscle_list.filter(
           (_muscle) => muscle.id_muscle === _muscle.id
@@ -365,9 +366,16 @@ repository.getExerciseMusclesTarget = async (req) => {
         if (muscle_found.length === 0)
           muscle_list.push(new Muscle(muscle.id_muscle, muscle.name));
       });
+
+      console.log("Muscle list ", muscle_list);
+
       list_exercise_muscles_target.push(
         new ExerciseMusclesTarget(list_id_exercises[i], muscle_list)
       );
+
+      console.log("in for ", list_exercise_muscles_target);
+
+      muscle_list = [];
     }
 
     return list_exercise_muscles_target;
