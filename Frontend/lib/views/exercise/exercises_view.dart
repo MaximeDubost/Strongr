@@ -101,7 +101,8 @@ class _ExercisesViewState extends State<ExercisesView> {
                 content: Stack(
                   children: <Widget>[
                     Container(
-                      padding: EdgeInsets.only(left: 10, top: 8, bottom: 8),
+                      // color: Colors.red,
+                      padding: EdgeInsets.only(left: 10, top: 8, right: 40, bottom: 8),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -113,6 +114,7 @@ class _ExercisesViewState extends State<ExercisesView> {
                                 item.name,
                                 bold: true,
                                 maxLines: 1,
+                                textAlign: TextAlign.start,
                               ),
                             ),
                           ),
@@ -137,6 +139,7 @@ class _ExercisesViewState extends State<ExercisesView> {
                                           ? StrongrColors.black
                                           : Colors.grey,
                                       maxLines: 1,
+                                      textAlign: TextAlign.start,
                                     ),
                                   ),
                                 ),

@@ -110,6 +110,14 @@ router.delete(
 );
 
 /**
+ * Session Type
+ */
+router.get(
+  "/sessiontype/:id_session_type",
+  SessionTypeController.readSessionTypeById
+);
+
+/**
  * Program
  */
 router.post("/program", middleware.checkAuth, ProgramController.addProgram);

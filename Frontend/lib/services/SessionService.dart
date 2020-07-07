@@ -5,6 +5,7 @@ import 'package:http/http.dart';
 import 'package:strongr/models/ExercisePreview.dart';
 import 'package:strongr/models/Session.dart';
 import 'package:strongr/models/SessionPreview.dart';
+import 'package:strongr/models/SessionType.dart';
 import 'package:strongr/utils/global.dart';
 
 class SessionService {
@@ -50,6 +51,7 @@ class SessionService {
   /// Crée une séance pour un utilisateur.
   static Future<int> postSession({
     @required String name,
+    @required SessionType sessionType,
     @required List<ExercisePreview> exercises,
   }) async {
     try {
@@ -62,7 +64,7 @@ class SessionService {
           'Authorization': 'Bearer ' + Global.token
         },
         body: jsonEncode(
-            {'id_session_type': 3, 'name': name, 'exercises': exercises}),
+            {'id_session_type': sessionType.id, 'name': name, 'exercises': exercises}),
       );
       return response.statusCode;
     } catch (e) {
@@ -76,6 +78,7 @@ class SessionService {
   static Future<int> putSession({
     @required int id,
     @required String name,
+    @required SessionType sessionType,
     @required List<ExercisePreview> exercises,
   }) async {
     try {
@@ -89,6 +92,7 @@ class SessionService {
         },
         body: jsonEncode({
           'name': name,
+          'session_type': sessionType,
           'exercises': exercises,
         }),
       );
@@ -112,6 +116,23 @@ class SessionService {
       return response.statusCode;
     } catch (e) {
       return 503;
+    }
+  }
+
+  /// [GET] /sessiontype/[id]
+  ///
+  /// Retourne le détail d'un type de session [id].
+  static Future<SessionType> getSessionType({@required int id}) async {
+    try {
+      Response response = await get(
+        Uri.encodeFull(
+          Global.SERVER_URL + '/sessiontype/' + id.toString(),
+        ),
+        headers: {'Authorization': 'Bearer ' + Global.token},
+      );
+      return SessionType.fromJson(response.body);
+    } catch (e) {
+      return SessionType();
     }
   }
 }

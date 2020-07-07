@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:strongr/models/ExercisePreview.dart';
+import 'package:strongr/models/SessionType.dart';
 import 'package:strongr/services/SessionService.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
+import 'package:strongr/utils/session_type_definitor.dart';
 import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/views/exercise/exercise_view.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
@@ -46,10 +48,12 @@ class _SessionCreateViewState extends State<SessionCreateView> {
         createButtonEnabled = false;
         editButtonsEnabled = false;
       });
+      SessionType sessionType = await SessionTypeDefinitor.defineByExercises(exercisesOfSession);
       int statusCode = await SessionService.postSession(
         name: sessionNameController.text == ""
             ? "Séance perso."
             : sessionNameController.text,
+        sessionType: sessionType,
         exercises: exercisesOfSession,
       );
       if (statusCode == 201) {
@@ -306,7 +310,7 @@ class _SessionCreateViewState extends State<SessionCreateView> {
                                       ? Colors.grey
                                       : StrongrColors.black,
                                   textAlign: TextAlign.start,
-                                  maxLines: 2,
+                                  maxLines: 1,
                                 ),
                               ),
                             ),

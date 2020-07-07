@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:strongr/models/ExercisePreview.dart';
 import 'package:strongr/models/Session.dart';
+import 'package:strongr/models/SessionType.dart';
 import 'package:strongr/services/SessionService.dart';
 import 'package:strongr/utils/date_formater.dart';
 import 'package:strongr/utils/routing_constants.dart';
@@ -9,6 +10,7 @@ import 'package:strongr/utils/session_type_definitor.dart';
 import 'package:strongr/utils/string_constants.dart';
 import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/views/exercise/exercise_view.dart';
+import 'package:strongr/views/session_type/session_type_view.dart';
 import 'package:strongr/widgets/dialogs/delete_dialog.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
 import 'package:strongr/widgets/strongr_snackbar_content.dart';
@@ -39,16 +41,20 @@ class _SessionViewState extends State<SessionView> {
       validateButtonEnabled,
       editButtonsEnabled,
       isEdited,
-      sessionUpdated;
+      sessionUpdated,
+      initSessionType;
   Future<Session> futureSession;
   List<ExercisePreview> exercisesOfSession;
   TextEditingController sessionNameController;
   String sessionName;
+  SessionType sessionType;
   Color textFieldBackgroundColor;
 
   @override
   void initState() {
-    isEditMode = validateButtonEnabled = isEdited = sessionUpdated = false;
+    sessionType = SessionType(name: widget.sessionTypeName);
+    isEditMode = validateButtonEnabled =
+        isEdited = sessionUpdated = initSessionType = false;
     editButtonsEnabled = true;
     exercisesOfSession = List<ExercisePreview>();
     futureSession = SessionService.getSession(id: widget.id);
@@ -159,9 +165,11 @@ class _SessionViewState extends State<SessionView> {
       validateButtonEnabled = false;
       editButtonsEnabled = false;
     });
+    SessionType sessionType = await SessionTypeDefinitor.defineByExercises(exercisesOfSession);
     int statusCode = await SessionService.putSession(
       id: widget.id,
       name: sessionName,
+      sessionType: sessionType,
       exercises: exercisesOfSession,
     );
     if (statusCode == 200) {
@@ -223,7 +231,7 @@ class _SessionViewState extends State<SessionView> {
       setState(() => validateButtonEnabled = true);
   }
 
-  void addExercise(Object returnedExercise) {
+  Future<void> addExercise(Object returnedExercise) async {
     if (returnedExercise != null) {
       bool alreadyExists = false;
       ExercisePreview exercise = returnedExercise;
@@ -261,16 +269,20 @@ class _SessionViewState extends State<SessionView> {
         );
       }
     }
+    sessionType =
+        await SessionTypeDefinitor.defineByExercises(exercisesOfSession);
     toggleValidateButton(exercisesOfSession);
   }
 
-  void deleteExercise(int index) {
+  Future<void> deleteExercise(int index) async {
     setState(() {
       isEdited = true;
       exercisesOfSession.removeAt(index);
       for (final item in exercisesOfSession)
         item.place = exercisesOfSession.indexOf(item) + 1;
     });
+    sessionType =
+        await SessionTypeDefinitor.defineByExercises(exercisesOfSession);
     toggleValidateButton(exercisesOfSession);
   }
 
@@ -627,8 +639,7 @@ class _SessionViewState extends State<SessionView> {
               ? IconButton(
                   icon: Icon(Icons.close),
                   onPressed: () => setState(() {
-                    isEditMode = false;
-                    isEdited = false;
+                    isEditMode = isEdited = initSessionType = false;
                     textFieldBackgroundColor = StrongrColors.blue80;
                     sessionNameController.text = sessionName;
                     futureSession = SessionService.getSession(id: widget.id);
@@ -686,18 +697,36 @@ class _SessionViewState extends State<SessionView> {
                 future: futureSession,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    // print(snapshot.data);
+                    try {
+                      if (!initSessionType) {
+                        sessionType = SessionType(
+                          id: snapshot.data.sessionType.id,
+                          name: snapshot.data.sessionType.name,
+                        );
+                        initSessionType = true;
+                      }
+                    } catch (e) {}
                     return Container(
-                      // color: Colors.red,
                       child: InkWell(
-                        onTap: !editButtonsEnabled || isEditMode ? null : () {},
+                        onTap: !editButtonsEnabled || isEditMode
+                            ? null
+                            : () {
+                                Navigator.pushNamed(
+                                  context,
+                                  SESSION_TYPE_ROUTE,
+                                  arguments: SessionTypeView(
+                                    id: sessionType.id,
+                                    name: sessionType.name,
+                                  ),
+                                );
+                              },
                         child: Stack(
                           children: <Widget>[
                             Container(
                               width: ScreenSize.width(context),
                               padding: EdgeInsets.all(20),
                               child: StrongrText(
-                                widget.sessionTypeName,
+                                sessionType.name,
                                 bold: true,
                               ),
                             ),
@@ -733,7 +762,7 @@ class _SessionViewState extends State<SessionView> {
                       width: ScreenSize.width(context),
                       padding: EdgeInsets.all(20),
                       child: StrongrText(
-                        widget.sessionTypeName,
+                        sessionType.name,
                         bold: true,
                       ),
                     );
@@ -867,15 +896,17 @@ class _SessionViewState extends State<SessionView> {
             ],
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-          
-          backgroundColor: Colors.orange,
-          onPressed: () {
-            SessionTypeDefinitor.ofExercises(exercisesOfSession);
-          },
-          child: Icon(Icons.developer_mode),
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        // DEBUG
+        // floatingActionButton: FloatingActionButton(
+        //   backgroundColor: Colors.orange,
+        //   onPressed: () {
+        //     SessionTypeDefinitor.defineByExercises(exercisesOfSession);
+        //   },
+        //   child: Icon(Icons.developer_mode),
+        // ),
+        // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        // END DEBUG
+        //
         // floatingActionButton: !widget.fromProgramCreation
         //     ? FloatingActionButton.extended(
         //         // heroTag: !widget.fromProgram

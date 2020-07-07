@@ -44,7 +44,6 @@ repository.getSessionDetail = async (req) => {
         let resultSessionType = await clt.query(sql, [req.user.id, req.params.id_session])
 
         let sessionType = new SessionType(resultSessionType.rows[0].id_session_type, resultSessionType.rows[0].session_type_name)
-
         sql = `
         SELECT e.id_exercise, se.place, e.name as name_exercise, ae.name as app_exercise_name, COUNT(sett.id_set) as set_count, null as tonnage 
         FROM _session s
@@ -107,9 +106,10 @@ repository.deleteSession = async (req) => {
 }
 
 repository.updateSession = async (req) => {
-    let sql = "UPDATE _session SET name = $1, last_update = $2 WHERE id_user = $3 AND id_session = $4"
+    let session_type_parsed = JSON.parse(req.body.session_type)
+    let sql = "UPDATE _session SET name = $1, id_session_type = $2, last_update = $3 WHERE id_user = $4 AND id_session = $5"
     try {
-        await clt.query(sql, [req.body.name, new Date(), req.user.id, req.params.id_session])
+        await clt.query(sql, [req.body.name, session_type_parsed.id, new Date(), req.user.id, req.params.id_session])
         sql = "DELETE FROM _session_exercise WHERE id_user = $1 AND id_user_1 = $2 AND id_session = $3"
         await clt.query(sql, [req.user.id, req.user.id, req.params.id_session])
         sql = "INSERT INTO _session_exercise (id_user, id_user_1, id_session, id_exercise, id_app_exercise, place) VALUES ($1,$2,$3,$4,$5,$6)"

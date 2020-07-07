@@ -25,4 +25,18 @@ repository.readSessionType = async (req) => {
   }
 };
 
+repository.readSessionTypeById = async (req) => {
+  let sql = `
+        SELECT id_session_type, name, description
+        FROM _session_type
+        WHERE id_session_type = $1
+    `;
+  try {
+    let result = await clt.query(sql, [req.params.id_session_type]);
+    return result.rows[0];
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export default repository;

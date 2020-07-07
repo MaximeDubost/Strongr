@@ -26,6 +26,7 @@ import 'package:strongr/views/session/session_create_view.dart';
 import 'package:strongr/views/session/session_new_exercise_view.dart';
 import 'package:strongr/views/session/session_view.dart';
 import 'package:strongr/views/session/sessions_view.dart';
+import 'package:strongr/views/session_type/session_type_view.dart';
 import 'package:strongr/views/unknown_view.dart';
 import 'routing_constants.dart';
 
@@ -194,8 +195,12 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     /// Session type
     ///
     case SESSION_TYPE_ROUTE:
+      SessionTypeView args = settings.arguments;
       return CupertinoPageRoute(
-        builder: (context) => UnknownView(),
+        builder: (context) => SessionTypeView(
+          id: args.id,
+          name: args.name,
+        ),
       );
 
     ///
