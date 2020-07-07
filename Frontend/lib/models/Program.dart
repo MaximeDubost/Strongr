@@ -49,7 +49,7 @@ class Program {
     return {
       'id': id,
       'name': name,
-      'programGoalName': programGoal,
+      'programGoal': programGoal?.toMap(),
       'sessions': sessions?.map((x) => x?.toMap())?.toList(),
       'tonnage': tonnage,
       'creationDate': creationDate?.millisecondsSinceEpoch,

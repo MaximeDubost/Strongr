@@ -82,6 +82,12 @@ router.delete(
   ExerciseController.deleteExercise
 );
 
+router.post(
+  "/exercises/targetmuscles",
+  middleware.checkAuth,
+  ExerciseController.getExerciseMusclesTarget
+);
+
 /**
  * Session
  */
@@ -101,6 +107,14 @@ router.delete(
   "/session/:id_session",
   middleware.checkAuth,
   SessionController.deleteSession
+);
+
+/**
+ * Session Type
+ */
+router.get(
+  "/sessiontype/:id_session_type",
+  SessionTypeController.readSessionTypeById
 );
 
 /**
@@ -128,7 +142,10 @@ router.all(
  * Program Goal
  */
 router.get("/programgoals", ProgramGoalController.readProgramGoal);
-router.get("/programgoal/:id_program_goal", ProgramGoalController.readProgramGoalById);
+router.get(
+  "/programgoal/:id_program_goal",
+  ProgramGoalController.readProgramGoalById
+);
 
 /**
  * Equipement

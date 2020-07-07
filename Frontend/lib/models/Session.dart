@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'ExercisePreview.dart';
+import 'SessionType.dart';
 
 class Session {
   int id;
   int place;
   String name;
-  String sessionTypeName;
+  SessionType sessionType;
   List<ExercisePreview> exercises;
   double tonnage;
   DateTime creationDate;
@@ -16,7 +17,7 @@ class Session {
     this.id,
     this.place,
     this.name,
-    this.sessionTypeName,
+    this.sessionType,
     this.exercises,
     this.tonnage,
     this.creationDate,
@@ -27,7 +28,7 @@ class Session {
     int id,
     int place,
     String name,
-    String sessionTypeName,
+    SessionType sessionType,
     List<ExercisePreview> exercises,
     double tonnage,
     DateTime creationDate,
@@ -37,7 +38,7 @@ class Session {
       id: id ?? this.id,
       place: place ?? this.place,
       name: name ?? this.name,
-      sessionTypeName: sessionTypeName ?? this.sessionTypeName,
+      sessionType: sessionType ?? this.sessionType,
       exercises: exercises ?? this.exercises,
       tonnage: tonnage ?? this.tonnage,
       creationDate: creationDate ?? this.creationDate,
@@ -50,7 +51,7 @@ class Session {
       'id': id,
       'place': place,
       'name': name,
-      'sessionTypeName': sessionTypeName,
+      'sessionType': sessionType?.toMap(),
       'exercises': exercises?.map((x) => x?.toMap())?.toList(),
       'tonnage': tonnage,
       'creationDate': creationDate?.millisecondsSinceEpoch,
@@ -65,7 +66,7 @@ class Session {
       id: map['id'],
       place: map['place'],
       name: map['name'],
-      sessionTypeName: map['session_type_name'],
+      sessionType: SessionType.fromMap(map['session_type']),
       exercises: List<ExercisePreview>.from(map['exercises']?.map((x) => ExercisePreview.fromMap(x))),
       tonnage: map['tonnage'],
       creationDate: DateTime.parse(map['creation_date']),
@@ -79,7 +80,7 @@ class Session {
 
   @override
   String toString() {
-    return 'Session(id: $id, place: $place, name: $name, sessionTypeName: $sessionTypeName, exercises: $exercises, tonnage: $tonnage, creationDate: $creationDate, lastUpdate: $lastUpdate)';
+    return 'Session(id: $id, place: $place, name: $name, sessionType: $sessionType, exercises: $exercises, tonnage: $tonnage, creationDate: $creationDate, lastUpdate: $lastUpdate)';
   }
 
   @override
@@ -91,7 +92,7 @@ class Session {
       o.id == id &&
       o.place == place &&
       o.name == name &&
-      o.sessionTypeName == sessionTypeName &&
+      o.sessionType == sessionType &&
       listEquals(o.exercises, exercises) &&
       o.tonnage == tonnage &&
       o.creationDate == creationDate &&
@@ -103,7 +104,7 @@ class Session {
     return id.hashCode ^
       place.hashCode ^
       name.hashCode ^
-      sessionTypeName.hashCode ^
+      sessionType.hashCode ^
       exercises.hashCode ^
       tonnage.hashCode ^
       creationDate.hashCode ^

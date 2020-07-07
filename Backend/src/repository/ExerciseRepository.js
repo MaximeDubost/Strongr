@@ -2,6 +2,8 @@ import AppExercise from "../models/AppExercise";
 import Exercise from "../models/Exercise";
 import Set from "../models/Set";
 import DetailExercise from "../models/DetailExercise";
+import ExerciseMusclesTarget from "../models/ExerciseMusclesTarget";
+import Muscle from "../models/Muscle";
 import clt from "../core/config/database";
 import Equipment from "../models/Equipment";
 
@@ -338,6 +340,45 @@ repository.deleteExerciseAll = async (req) => {
       }
     });
     return 201;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+repository.getExerciseMusclesTarget = async (req) => {
+  var muscle_list = [];
+  var list_exercise_muscles_target = [];
+  var list_id_exercises = JSON.parse(req.body.id_exercises);
+  try {
+    for (let i = 0; i < list_id_exercises.length; i++) {
+      let sql = `SELECT * FROM _exercise e WHERE e.id_exercise = $1 AND e.id_user = $2`;
+      let result = await clt.query(sql, [list_id_exercises[i], req.user.id]);
+      sql = `SELECT aem.id_app_exercise, aem.id_muscle, m.name FROM _app_exercise_muscle aem JOIN _muscle m ON aem.id_muscle = m.id_muscle WHERE aem.id_app_exercise = $1`;
+      let result_app_exercise_muscle = await clt.query(sql, [
+        result.rows[0].id_app_exercise,
+      ]);
+      console.log("Rows muscle", result_app_exercise_muscle.rows);
+      result_app_exercise_muscle.rows.forEach((muscle) => {
+        let muscle_found = muscle_list.filter(
+          (_muscle) => muscle.id_muscle === _muscle.id
+        );
+
+        if (muscle_found.length === 0)
+          muscle_list.push(new Muscle(muscle.id_muscle, muscle.name));
+      });
+
+      console.log("Muscle list ", muscle_list);
+
+      list_exercise_muscles_target.push(
+        new ExerciseMusclesTarget(list_id_exercises[i], muscle_list)
+      );
+
+      console.log("in for ", list_exercise_muscles_target);
+
+      muscle_list = [];
+    }
+
+    return list_exercise_muscles_target;
   } catch (error) {
     console.error(error);
   }

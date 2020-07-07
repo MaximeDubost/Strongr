@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:strongr/services/UserService.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
-import 'package:strongr/utils/strongr_colors.dart';
+// import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/views/connection/sign_in_next_view.dart';
 import 'package:strongr/widgets/strongr_raised_button.dart';
 import 'package:strongr/widgets/strongr_rounded_textformfield.dart';
 import 'package:strongr/widgets/strongr_text.dart';
-import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
+// import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 
 class SignInView extends StatefulWidget {
 
@@ -280,42 +280,42 @@ class _SignInViewState extends State<SignInView> {
                                       }
                                     : null,
                               ),
-                              SizedBox(height: 15),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: <Widget>[
-                                  Container(
-                                    height: 2,
-                                    width: ScreenSize.width(context) / 3,
-                                    color: StrongrColors.greyA,
-                                  ),
-                                  StrongrText(
-                                    "OU",
-                                    size: 16,
-                                  ),
-                                  Container(
-                                    height: 2,
-                                    width: ScreenSize.width(context) / 3,
-                                    color: StrongrColors.greyA,
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 10),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: <Widget>[
-                                  GoogleSignInButton(
-                                    text: "S'inscrire",
-                                    onPressed: () {},
-                                  ),
-                                  FacebookSignInButton(
-                                    text: "S'inscrire",
-                                    onPressed: () {},
-                                  ),
-                                ],
-                              ),
+                              // SizedBox(height: 15),
+                              // Row(
+                              //   mainAxisAlignment:
+                              //       MainAxisAlignment.spaceAround,
+                              //   children: <Widget>[
+                              //     Container(
+                              //       height: 2,
+                              //       width: ScreenSize.width(context) / 3,
+                              //       color: StrongrColors.greyA,
+                              //     ),
+                              //     StrongrText(
+                              //       "OU",
+                              //       size: 16,
+                              //     ),
+                              //     Container(
+                              //       height: 2,
+                              //       width: ScreenSize.width(context) / 3,
+                              //       color: StrongrColors.greyA,
+                              //     ),
+                              //   ],
+                              // ),
+                              // SizedBox(height: 10),
+                              // Row(
+                              //   mainAxisAlignment:
+                              //       MainAxisAlignment.spaceEvenly,
+                              //   children: <Widget>[
+                              //     GoogleSignInButton(
+                              //       text: "S'inscrire",
+                              //       onPressed: () {},
+                              //     ),
+                              //     FacebookSignInButton(
+                              //       text: "S'inscrire",
+                              //       onPressed: () {},
+                              //     ),
+                              //   ],
+                              // ),
                             ],
                           ),
                         ),
