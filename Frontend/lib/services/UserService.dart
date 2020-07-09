@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:strongr/utils/Global.dart';
@@ -74,8 +75,12 @@ class UserService {
         },
       );
       if (response.statusCode == 200)
+      {
+        var token = jsonDecode(response.body);
         // Global.token = response.headers['authorization'];
-        Global.token = response.body;
+        Global.token = token['token'];
+      }
+        
       return response.statusCode;
     } catch (e) {
       return 503;

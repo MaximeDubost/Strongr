@@ -13,6 +13,7 @@ class SessionService {
   /// Retourne la liste des sessions d'un utilisateur.
   static Future<List<SessionPreview>> getSessions() async {
     try {
+      print(Global.token);
       Response response = await get(
         Uri.encodeFull(
           Global.SERVER_URL + '/sessions',
