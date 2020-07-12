@@ -16,7 +16,6 @@ class SessionService {
   static Future<List<SessionPreview>> getSessions() async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      //String token = await Global.getToken();
       Response response = await get(
         Uri.encodeFull(
           Global.SERVER_URL + '/sessions',
@@ -37,12 +36,12 @@ class SessionService {
   /// Retourne le détail d'une session [id] d'un utilisateur.
   static Future<Session> getSession({@required int id}) async {
     try {
-      String token = await Global.getToken();
+      SharedPreferences prefs = await SharedPreferences.getInstance();
       Response response = await get(
         Uri.encodeFull(
           Global.SERVER_URL + '/session/' + id.toString(),
         ),
-        headers: {'Authorization': 'Bearer ' + token},
+        headers: {'Authorization': 'Bearer ' + prefs.getString("token")},
       );
       return Session.fromJson(response.body);
     } catch (e) {
@@ -59,14 +58,14 @@ class SessionService {
     @required List<ExercisePreview> exercises,
   }) async {
     try {
-      String token = await Global.getToken();
+      SharedPreferences prefs = await SharedPreferences.getInstance();
       Response response = await post(
         Uri.encodeFull(
           Global.SERVER_URL + '/session',
         ),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + token
+          'Authorization': 'Bearer ' + prefs.getString("token")
         },
         body: jsonEncode({
           'id_session_type': sessionType.id,
@@ -90,14 +89,14 @@ class SessionService {
     @required List<ExercisePreview> exercises,
   }) async {
     try {
-      String token = await Global.getToken();
+      SharedPreferences prefs = await SharedPreferences.getInstance();
       Response response = await put(
         Uri.encodeFull(
           Global.SERVER_URL + '/session/' + id.toString(),
         ),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + token
+          'Authorization': 'Bearer ' + prefs.getString("token")
         },
         body: jsonEncode({
           'name': name,
@@ -116,12 +115,12 @@ class SessionService {
   /// Supprime la séance [id] d'un utilisateur.
   static Future<int> deleteSession({@required int id}) async {
     try {
-      String token = await Global.getToken();
+      SharedPreferences prefs = await SharedPreferences.getInstance();
       Response response = await delete(
         Uri.encodeFull(
           Global.SERVER_URL + '/session/' + id.toString(),
         ),
-        headers: {'Authorization': 'Bearer ' + token},
+        headers: {'Authorization': 'Bearer ' + prefs.getString("token")},
       );
       return response.statusCode;
     } catch (e) {
@@ -134,12 +133,12 @@ class SessionService {
   /// Retourne le détail d'un type de session [id].
   static Future<SessionType> getSessionType({@required int id}) async {
     try {
-      String token = await Global.getToken();
+      SharedPreferences prefs = await SharedPreferences.getInstance();
       Response response = await get(
         Uri.encodeFull(
           Global.SERVER_URL + '/sessiontype/' + id.toString(),
         ),
-        headers: {'Authorization': 'Bearer ' + token},
+        headers: {'Authorization': 'Bearer ' + prefs.getString("token")},
       );
       return SessionType.fromJson(response.body);
     } catch (e) {

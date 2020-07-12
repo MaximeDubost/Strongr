@@ -3,7 +3,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:strongr/services/UserService.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
-import 'package:strongr/utils/Global.dart';
 import 'package:strongr/widgets/strongr_raised_button.dart';
 import 'package:strongr/widgets/strongr_rounded_textformfield.dart';
 import 'package:strongr/widgets/strongr_text.dart';
@@ -105,7 +104,6 @@ class _LogInViewState extends State<LogInView> {
       );
       if (result == 200) {
         SharedPreferences prefs = await SharedPreferences.getInstance();
-        //String token = await Global.getToken();
         print("TOKEN : " + prefs.getString("token"));
         setState(() {
           _validate = false;

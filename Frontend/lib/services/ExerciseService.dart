@@ -16,7 +16,6 @@ class ExerciseService {
   static Future<List<ExercisePreview>> getExercises() async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      //String token = await Global.getToken();
       Response response = await get(
         Uri.encodeFull(
           Global.SERVER_URL + '/exercises',
@@ -38,7 +37,6 @@ class ExerciseService {
   static Future<Exercise> getExercise({@required int id}) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      //String token = await Global.getToken();
       Response response = await get(
         Uri.encodeFull(
           Global.SERVER_URL + '/exercise/' + id.toString(),
@@ -61,14 +59,14 @@ class ExerciseService {
     @required List<Set> sets,
   }) async {
     try {
-      String token = await Global.getToken();
+      SharedPreferences prefs = await SharedPreferences.getInstance();
       Response response = await post(
         Uri.encodeFull(
           Global.SERVER_URL + '/exercise',
         ),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + token
+          'Authorization': 'Bearer ' + prefs.getString("token")
         },
         body: jsonEncode({
           'id_app_exercise': appExerciseId,
@@ -93,14 +91,14 @@ class ExerciseService {
     @required List<Set> sets,
   }) async {
     try {
-      String token = await Global.getToken();
+            SharedPreferences prefs = await SharedPreferences.getInstance();
       Response response = await put(
         Uri.encodeFull(
           Global.SERVER_URL + '/exercise/' + id.toString(),
         ),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + token
+          'Authorization': 'Bearer ' + prefs.getString("token")
         },
         body: jsonEncode(
             {'id_equipment': equipmentId, 'name': name, 'sets': sets}),
@@ -116,12 +114,12 @@ class ExerciseService {
   /// Supprime l'exercice [id] d'un utilisateur.
   static Future<int> deleteExercise({@required int id}) async {
     try {
-      String token = await Global.getToken();
+      SharedPreferences prefs = await SharedPreferences.getInstance();
       Response response = await delete(
         Uri.encodeFull(
           Global.SERVER_URL + '/exercise/' + id.toString(),
         ),
-        headers: {'Authorization': 'Bearer ' + token},
+        headers: {'Authorization': 'Bearer ' + prefs.getString("token")},
       );
       return response.statusCode;
     } catch (e) {
@@ -135,13 +133,13 @@ class ExerciseService {
   static Future<List<ExerciseTargetMuscles>> targetMusclesByExercise(
       List<int> exerciseIDs) async {
     try {
-      String token = await Global.getToken();
+      SharedPreferences prefs = await SharedPreferences.getInstance();
       Response response = await post(
           Uri.encodeFull(
             Global.SERVER_URL + '/exercises/targetmuscles',
           ),
           headers: {
-            'Authorization': 'Bearer ' + token
+            'Authorization': 'Bearer ' + prefs.getString("token")
           },
           body: {
             'id_exercises': jsonEncode(exerciseIDs),
