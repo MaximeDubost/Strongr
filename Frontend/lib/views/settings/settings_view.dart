@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/widgets/dialogs/delete_account_dialog.dart';
+import 'package:strongr/widgets/strongr_snackbar_content.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
 class SettingsView extends StatefulWidget {
@@ -12,6 +13,7 @@ class SettingsView extends StatefulWidget {
 }
 
 class _SettingsViewState extends State<SettingsView> {
+  final globalKey = GlobalKey<ScaffoldState>();
   final List<String> settingsList = [
     "Conditions générales",
     "Unité de mesure de masse",
@@ -75,12 +77,32 @@ class _SettingsViewState extends State<SettingsView> {
       builder: (context) {
         return DeleteAccountDialog();
       },
-    );
+    ).then((deletionFailed) {
+      if (deletionFailed != null && deletionFailed) {
+        globalKey.currentState.hideCurrentSnackBar();
+        globalKey.currentState.showSnackBar(
+          SnackBar(
+            content: StrongrSnackBarContent(
+              icon: Icons.close,
+              message: "Échec lors de la suppression du compte",
+            ),
+            backgroundColor: Colors.red.withOpacity(0.8),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(15),
+                topRight: Radius.circular(15),
+              ),
+            ),
+          ),
+        );
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: globalKey,
       appBar: AppBar(
         centerTitle: true,
         title: Text("Réglages"),

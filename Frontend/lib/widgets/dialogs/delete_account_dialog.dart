@@ -14,6 +14,7 @@ class DeleteAccountDialog extends StatefulWidget {
 class _DeleteAccountDialogState extends State<DeleteAccountDialog> {
   int _counter;
   Timer _timer;
+  bool counterEnded, buttonPressed;
 
   @override
   void initState() {
@@ -24,11 +25,26 @@ class _DeleteAccountDialogState extends State<DeleteAccountDialog> {
       else
         timer.cancel();
     });
+    counterEnded = _counter == 0;
+    buttonPressed = false;
     super.initState();
+  }
+
+  sendToServer() async {
+    setState(() => buttonPressed = true);
+    int statusCode = await UserService.deleteUser();
+    if (statusCode == 200) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.remove("token");
+      Navigator.pushNamedAndRemoveUntil(
+          context, LOG_IN_ROUTE, ModalRoute.withName(HOMEPAGE_ROUTE));
+    } else
+      setState(() => Navigator.pop(context, true));
   }
 
   @override
   Widget build(BuildContext context) {
+    counterEnded = _counter == 0;
     return WillPopScope(
       onWillPop: () async {
         _timer.cancel();
@@ -42,7 +58,8 @@ class _DeleteAccountDialogState extends State<DeleteAccountDialog> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               StrongrText(
-                  "Êtes-vous sûr(e) de vouloir supprimer votre compte ?"),
+                "Êtes-vous sûr(e) de vouloir supprimer votre compte ?",
+              ),
               Column(
                 children: <Widget>[
                   Container(
@@ -50,30 +67,19 @@ class _DeleteAccountDialogState extends State<DeleteAccountDialog> {
                     child: Stack(
                       children: <Widget>[
                         FloatingActionButton.extended(
-                          backgroundColor:
-                              _counter != 0 ? Colors.grey : Colors.red[800],
+                          backgroundColor: !counterEnded || buttonPressed
+                              ? Colors.grey
+                              : Colors.red[800],
                           label: Opacity(
-                            opacity: _counter == 0 ? 1 : 0,
+                            opacity: counterEnded ? 1 : 0,
                             child: StrongrText(
                               "Supprimer le compte",
                               color: Colors.white,
                             ),
                           ),
-                          onPressed: _counter != 0
+                          onPressed: !counterEnded || buttonPressed
                               ? null
-                              : () async {
-                                  int statusCode =
-                                      await UserService.deleteUser();
-                                  if (statusCode == 200) {
-                                    SharedPreferences prefs =
-                                        await SharedPreferences.getInstance();
-                                    prefs.remove("token");
-                                    Navigator.pushNamedAndRemoveUntil(
-                                        context,
-                                        LOG_IN_ROUTE,
-                                        ModalRoute.withName(HOMEPAGE_ROUTE));
-                                  }
-                                },
+                              : () => sendToServer(),
                         ),
                         _counter != 0
                             ? SizedBox(
@@ -90,15 +96,19 @@ class _DeleteAccountDialogState extends State<DeleteAccountDialog> {
                     ),
                   ),
                   FlatButton(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      child: StrongrText(
-                        "Annuler",
-                        size: 18,
-                        color: Colors.grey,
-                      ),
-                      onPressed: () => Navigator.pop(context)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: StrongrText(
+                      "Annuler",
+                      size: 18,
+                      color: Colors.grey,
+                    ),
+                    onPressed: () {
+                      _timer.cancel();
+                      Navigator.pop(context);
+                    },
+                  ),
                 ],
               )
             ],
