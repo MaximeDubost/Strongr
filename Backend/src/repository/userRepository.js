@@ -6,7 +6,7 @@ const repository = {};
 /**
  * @param id_user int
  */
-repository.getUser = async () => {
+repository.getUser = async (req) => {
   let sqlGetUser = "SELECT * FROM _user as u WHERE u.id_user = $1::int";
   try {
     var result = await clt.query(sqlGetUser, [req.user.id]);
@@ -67,20 +67,20 @@ repository.checkEmail = async (email) => {
   }
 };
 
-repository.updateUser = async (body) => {
+repository.updateUser = async (req) => {
   let res;
-  let birth_to_datetime = new Date(body.birthdate);
+  let birth_to_datetime = new Date(req.body.birthdate);
   let sqlUpdate =
     "UPDATE _user SET firstname = $1::varchar, lastname = $2::varchar, username = $3::varchar, email = $4::varchar, birthdate = $5::date, phonenumber = $6::varchar, password = $7::varchar  WHERE id_user = $8::int";
   try {
     await clt.query(sqlUpdate, [
-      body.firstname,
-      body.lastname,
-      body.username,
-      body.email,
+      req.body.firstname,
+      req.body.lastname,
+      req.body.username,
+      req.body.email,
       birth_to_datetime,
-      body.phonenumber,
-      bcrypt.hashSync(body.password, bcrypt.genSaltSync(10)),
+      req.body.phonenumber,
+      bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10)),
       req.user.id,
     ]);
     res = 200;
@@ -91,9 +91,11 @@ repository.updateUser = async (body) => {
   return res;
 };
 
-repository.deleteUser = async () => {
-  let sqlDelete = "DELETE FROM _user as u WHERE u.id_user = $1::int";
+repository.deleteUser = async (req) => {
+  let sqlDelete = "DELETE FROM _set WHERE id_user = $1::int";
   try {
+    await clt.query(sqlDelete, [req.user.id]);
+    sqlDelete = "DELETE FROM _user WHERE id_user = $1";
     await clt.query(sqlDelete, [req.user.id]);
     return 200;
   } catch (error) {

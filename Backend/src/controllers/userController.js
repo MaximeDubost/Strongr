@@ -67,7 +67,7 @@ controller.checkEmail = async (req, res) => {
  */
 controller.updateUser = async (req, res) => {
   try {
-    let userUpdated = await UserRepository.updateUser(req.body);
+    let userUpdated = await UserRepository.updateUser(req);
     res.sendStatus(userUpdated);
   } catch (error) {
     console.error(error);
@@ -78,7 +78,7 @@ controller.updateUser = async (req, res) => {
  */
 controller.deleteUser = async (req, res) => {
   try {
-    let userDeleted = await UserRepository.deleteUser();
+    let userDeleted = await UserRepository.deleteUser(req);
     res.sendStatus(userDeleted);
   } catch (error) {
     console.error(error);
