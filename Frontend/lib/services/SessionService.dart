@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:strongr/models/ExercisePreview.dart';
 import 'package:strongr/models/Session.dart';
 import 'package:strongr/models/SessionPreview.dart';
@@ -14,12 +15,13 @@ class SessionService {
   /// Retourne la liste des sessions d'un utilisateur.
   static Future<List<SessionPreview>> getSessions() async {
     try {
-      String token = await Global.getToken();
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      //String token = await Global.getToken();
       Response response = await get(
         Uri.encodeFull(
           Global.SERVER_URL + '/sessions',
         ),
-        headers: {'Authorization': 'Bearer ' + token},
+        headers: {'Authorization': 'Bearer ' + prefs.getString("token")},
       );
       List<SessionPreview> sessions = List<SessionPreview>();
       for (final session in jsonDecode(response.body))
@@ -66,8 +68,11 @@ class SessionService {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + token
         },
-        body: jsonEncode(
-            {'id_session_type': sessionType.id, 'name': name, 'exercises': exercises}),
+        body: jsonEncode({
+          'id_session_type': sessionType.id,
+          'name': name,
+          'exercises': exercises
+        }),
       );
       return response.statusCode;
     } catch (e) {

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:strongr/models/Program.dart';
 import 'package:strongr/models/ProgramPreview.dart';
 import 'package:strongr/models/SessionPreview.dart';
@@ -13,12 +14,13 @@ class ProgramService {
   /// Retourne la liste des programmes.
   static Future<List<ProgramPreview>> getPrograms() async {
     try {
-      String token = await Global.getToken();
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      //String token = await Global.getToken();
       Response response = await get(
         Uri.encodeFull(
           Global.SERVER_URL + '/programs',
         ),
-        headers: {'Authorization': 'Bearer ' + token},
+        headers: {'Authorization': 'Bearer ' + prefs.getString("token")},
       );
       List<ProgramPreview> programs = List<ProgramPreview>();
       for (final program in jsonDecode(response.body))

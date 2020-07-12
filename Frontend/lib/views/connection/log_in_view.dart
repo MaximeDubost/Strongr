@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:strongr/services/UserService.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
@@ -74,7 +75,8 @@ class _LogInViewState extends State<LogInView> {
 
   String validatePassword(String value) {
     if (!_buttonPressSuccess) {
-      String pattern = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$';
+      String pattern =
+          r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$';
       RegExp regExp = new RegExp(pattern);
       if (value.length == 0 || !regExp.hasMatch(value))
         return "Le mot de passe est invalide";
@@ -102,8 +104,9 @@ class _LogInViewState extends State<LogInView> {
         password: password,
       );
       if (result == 200) {
-        String token = await Global.getToken();
-        print("TOKEN : " + token);
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        //String token = await Global.getToken();
+        print("TOKEN : " + prefs.getString("token"));
         setState(() {
           _validate = false;
           warning = null;

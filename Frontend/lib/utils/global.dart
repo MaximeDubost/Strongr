@@ -8,6 +8,7 @@ class Global {
   // static String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJjaGlhcmEuYmVyYXJkaUBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImNiZXJhcmRpIiwiaWF0IjoxNTg2NjE5MDUzfQ.oqfUBj0NMrba1To3qLMEOEimuba8CxBGbdCpt_f9ZzU";
 
   static Future<String> getToken() async {
+    print("In getToken() " + prefs.getString("token"));
     return prefs.getString("token");
   }
 

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:strongr/models/Exercise.dart';
 import 'package:strongr/models/ExercisePreview.dart';
 import 'package:strongr/models/TargetMusclesByExercise.dart';
@@ -14,12 +15,13 @@ class ExerciseService {
   /// Retourne la liste des exercices d'un utilisateur.
   static Future<List<ExercisePreview>> getExercises() async {
     try {
-      String token = await Global.getToken();
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      //String token = await Global.getToken();
       Response response = await get(
         Uri.encodeFull(
           Global.SERVER_URL + '/exercises',
         ),
-        headers: {'Authorization': 'Bearer ' + token},
+        headers: {'Authorization': 'Bearer ' + prefs.getString("token")},
       );
       List<ExercisePreview> exercises = List<ExercisePreview>();
       for (final exercise in jsonDecode(response.body))
@@ -35,12 +37,13 @@ class ExerciseService {
   /// Retourne le détail d'un exercice [id] d'un utilisateur.
   static Future<Exercise> getExercise({@required int id}) async {
     try {
-      String token = await Global.getToken();
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      //String token = await Global.getToken();
       Response response = await get(
         Uri.encodeFull(
           Global.SERVER_URL + '/exercise/' + id.toString(),
         ),
-        headers: {'Authorization': 'Bearer ' + token},
+        headers: {'Authorization': 'Bearer ' + prefs.getString("token")},
       );
       return Exercise.fromJson(response.body);
     } catch (e) {
@@ -99,11 +102,8 @@ class ExerciseService {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + token
         },
-        body: jsonEncode({
-          'id_equipment': equipmentId,
-          'name': name,
-          'sets': sets
-        }),
+        body: jsonEncode(
+            {'id_equipment': equipmentId, 'name': name, 'sets': sets}),
       );
       return response.statusCode;
     } catch (e) {
@@ -132,18 +132,20 @@ class ExerciseService {
   /// [POST] /exercises/targetmuscles
   ///
   /// Retourne la liste des muscles ciblés de chaque exercice dont les id sont passés en POST
-  static Future<List<ExerciseTargetMuscles>> targetMusclesByExercise(List<int> exerciseIDs) async {
+  static Future<List<ExerciseTargetMuscles>> targetMusclesByExercise(
+      List<int> exerciseIDs) async {
     try {
       String token = await Global.getToken();
       Response response = await post(
-        Uri.encodeFull(
-          Global.SERVER_URL + '/exercises/targetmuscles',
-        ),
-        headers: {'Authorization': 'Bearer ' + token},
-        body: {
-          'id_exercises': jsonEncode(exerciseIDs),
-        }
-      );
+          Uri.encodeFull(
+            Global.SERVER_URL + '/exercises/targetmuscles',
+          ),
+          headers: {
+            'Authorization': 'Bearer ' + token
+          },
+          body: {
+            'id_exercises': jsonEncode(exerciseIDs),
+          });
       List<ExerciseTargetMuscles> exercises = List<ExerciseTargetMuscles>();
       for (final exercise in jsonDecode(response.body))
         exercises.add(ExerciseTargetMuscles.fromMap(exercise));

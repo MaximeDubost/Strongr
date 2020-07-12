@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -74,16 +75,16 @@ class UserService {
           'password': password,
         },
       );
-      if (response.statusCode == 200)
-      {
-        Global.prefs = await SharedPreferences.getInstance();
+      if (response.statusCode == 200) {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        //print(Global.prefs);
 
         /// Hors debug :
-        // var token = jsonDecode(response.body);
-        // Global.prefs.setString("token", token['token']);
+        var token = jsonDecode(response.body);
+        prefs.setString("token", token['token']);
 
         /// Debug :
-        Global.setStringDebug();
+        //Global.setStringDebug();
       }
       return response.statusCode;
     } catch (e) {
