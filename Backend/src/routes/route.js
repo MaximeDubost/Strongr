@@ -30,7 +30,7 @@ router.post("/checkEmail", UserController.checkEmail);
 /**
  * User
  */
-router.post("/user", middleware.checkAuth, UserController.register);
+router.post("/user", UserController.register);
 router.get("/user", middleware.checkAuth, UserController.getUser);
 router.put("/user", middleware.checkAuth, UserController.updateUser);
 router.delete("/user", middleware.checkAuth, UserController.deleteUser);
