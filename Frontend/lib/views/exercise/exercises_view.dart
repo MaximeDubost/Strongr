@@ -340,7 +340,7 @@ class _ExercisesViewState extends State<ExercisesView> {
                 leading: BackButton(
                   onPressed: () => Navigator.pop(context, exerciseChanges),
                 ),
-                title: Text("Vos exerices"),
+                title: Text("Vos exercices"),
                 actions: <Widget>[
                   // PopupMenuButton<String>(
                   //   tooltip: "Menu",

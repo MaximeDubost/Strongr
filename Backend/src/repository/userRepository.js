@@ -9,7 +9,7 @@ const repository = {};
 repository.getUser = async (id_user) => {
   let sqlGetUser = "SELECT * FROM _user as u WHERE u.id_user = $1::int";
   try {
-    var result = await clt.query(sqlGetUser, [id_user]);
+    var result = await clt.query(sqlGetUser, [req.user.id]);
 
     if (result.rows[0]) {
       return result.rows[0];
@@ -81,7 +81,7 @@ repository.updateUser = async (id_user, body) => {
       birth_to_datetime,
       body.phonenumber,
       bcrypt.hashSync(body.password, bcrypt.genSaltSync(10)),
-      id_user,
+      req.user.id,
     ]);
     res = 200;
   } catch (error) {
@@ -91,10 +91,10 @@ repository.updateUser = async (id_user, body) => {
   return res;
 };
 
-repository.deleteUser = async (id_user) => {
+repository.deleteUser = async () => {
   let sqlDelete = "DELETE FROM _user as u WHERE u.id_user = $1::int";
   try {
-    await clt.query(sqlDelete, [id_user]);
+    await clt.query(sqlDelete, [req.user.id]);
     return 200;
   } catch (error) {
     console.log(error);

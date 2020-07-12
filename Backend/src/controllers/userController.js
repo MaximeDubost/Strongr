@@ -79,7 +79,7 @@ controller.updateUser = async (req, res) => {
  */
 controller.deleteUser = async (req, res) => {
     try {
-        let userDeleted = await UserRepository.deleteUser(req.params.id_user);
+        let userDeleted = await UserRepository.deleteUser();
         res.sendStatus(userDeleted);
     } catch (error) {
         console.error(error);
@@ -112,9 +112,6 @@ controller.login = async (req, res) => {
     }
 }
 
-controller.logout = (req, res) => {
-    res.sendStatus(200);
-}
 /**
  * @param email
  */
