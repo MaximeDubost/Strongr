@@ -15,10 +15,9 @@ import EquipmentController from "../controllers/EquipmentController";
 let router = express.Router();
 
 /**
- * User (Login/Logout)
+ * User (Login)
  */
 router.post("/login", UserController.login);
-router.post("/logout", middleware.checkAuth, UserController.logout);
 
 /**
  * User (Reset password)
@@ -31,10 +30,10 @@ router.post("/checkEmail", UserController.checkEmail);
 /**
  * User
  */
-router.post("/user/add", UserController.register);
-router.get("/user/:id_user", UserController.getUser);
-router.put("/user/update/:id_user", UserController.updateUser);
-router.delete("/user/delete/:id_user", UserController.deleteUser);
+router.post("/user", middleware.checkAuth, UserController.register);
+router.get("/user", middleware.checkAuth, UserController.getUser);
+router.put("/user", middleware.checkAuth, UserController.updateUser);
+router.delete("/user", middleware.checkAuth, UserController.deleteUser);
 
 /**
  * AppExercise

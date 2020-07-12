@@ -16,6 +16,7 @@ class ExerciseService {
   static Future<List<ExercisePreview>> getExercises() async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
+      print(prefs.getString("token"));
       Response response = await get(
         Uri.encodeFull(
           Global.SERVER_URL + '/exercises',

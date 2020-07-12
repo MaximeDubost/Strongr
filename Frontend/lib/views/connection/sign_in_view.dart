@@ -10,8 +10,6 @@ import 'package:strongr/widgets/strongr_text.dart';
 // import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 
 class SignInView extends StatefulWidget {
-
-
   @override
   _SignInViewState createState() => _SignInViewState();
 }
@@ -79,8 +77,10 @@ class _SignInViewState extends State<SignInView> {
       String pattern =
           r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$';
       RegExp regExp = new RegExp(pattern);
-      if (value.length == 0 || !regExp.hasMatch(value))
+      if (value.length == 0)
         return "Le mot de passe est invalide";
+      else if (!regExp.hasMatch(value))
+        return "Le format du mot de passe est invalide";
       else
         return null;
     } else {
@@ -91,12 +91,7 @@ class _SignInViewState extends State<SignInView> {
 
   String validateConfirmPassword(String value) {
     if (!_buttonPressSuccess) {
-      String pattern =
-          r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$';
-      RegExp regExp = new RegExp(pattern);
-      if (value.length == 0 ||
-          !regExp.hasMatch(value) ||
-          value != _passwordController.text)
+      if (value != _passwordController.text)
         return "Les mots de passe ne sont pas identiques";
       else
         return null;
@@ -116,7 +111,8 @@ class _SignInViewState extends State<SignInView> {
         _isLoading = true;
       });
 
-      dynamic result = await UserService.postCheckEmail(email: email.toLowerCase());
+      dynamic result =
+          await UserService.postCheckEmail(email: email.toLowerCase());
       if (result == 200) {
         setState(() {
           _validate = _isLoading = _isButtonEnabled =
@@ -133,16 +129,11 @@ class _SignInViewState extends State<SignInView> {
             password: password,
           ),
         );
-      } else if (result == 409) {
-        setState(() {
-          warning = "Cette adresse e-mail est déjà utilisée.";
-        });
-      } else // 503
-      {
-        setState(() {
-          warning = "Service indisponible. Veuillez réessayer ultérieurement.";
-        });
-      }
+      } else if (result == 409)
+        setState(() => warning = "Cette adresse e-mail est déjà utilisée.");
+      else
+        setState(() => warning =
+            "Service indisponible. Veuillez réessayer ultérieurement.");
       setState(() {
         _isButtonEnabled = true;
         _isLoading = false;
@@ -215,8 +206,8 @@ class _SignInViewState extends State<SignInView> {
                                 controller: _passwordController,
                                 validator: validatePassword,
                                 obscureText: !passwordVisibility,
-                                onSaved: (String value) =>
-                                    setState(() => password = value,
+                                onSaved: (String value) => setState(
+                                  () => password = value,
                                 ),
                                 onChanged: (String value) {
                                   setState(() {

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:strongr/models/User.dart';
 import 'package:strongr/utils/Global.dart';
 
 class UserService {
@@ -25,7 +26,7 @@ class UserService {
     }
   }
 
-  /// [POST] /user/add
+  /// [POST] /user
   ///
   /// Crée l'utilisateur avec les attributs [email], [password], [firstname], [lastname], [birthdate], [phonenumber] et [username].
   static Future<int> postSignIn({
@@ -40,7 +41,7 @@ class UserService {
     try {
       Response response = await post(
         Uri.encodeFull(
-          Global.SERVER_URL + '/user/add',
+          Global.SERVER_URL + '/user',
         ),
         body: {
           'email': email,
@@ -150,6 +151,75 @@ class UserService {
           'email': email,
           'password': password,
         },
+      );
+      return response.statusCode;
+    } catch (e) {
+      return 503;
+    }
+  }
+
+  /// [GET] /user
+  ///
+  /// Retourne les informations de l'utilisateur connecté
+  static Future<User> getUser() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      Response response = await get(
+        Uri.encodeFull(
+          Global.SERVER_URL + '/user',
+        ),
+        headers: {'Authorization': 'Bearer ' + prefs.getString("token")},
+      );
+      return User.fromJson(response.body);
+    } catch (e) {
+      return User();
+    }
+  }
+
+  /// [PUT] /user
+  ///
+  /// Met à jour les informations de l'utilisateur connecté
+  static Future<int> putUser({
+    String password,
+    String firstName,
+    String lastName,
+    String phoneNumber,
+    String birthdate,
+    double weight,
+  }) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      Response response = await put(
+        Uri.encodeFull(
+          Global.SERVER_URL + '/user',
+        ),
+        headers: {'Authorization': 'Bearer ' + prefs.getString("token")},
+        body: {
+          'password': password,
+          'firstName': firstName,
+          'lastName': lastName,
+          'phoneNumber': phoneNumber,
+          'birthdate': birthdate,
+          'weight': weight,
+        },
+      );
+      return response.statusCode;
+    } catch (e) {
+      return 503;
+    }
+  }
+
+  /// [DELETE] /user
+  ///
+  /// Supprime le compte de l'utilisateur connecté
+  static Future<int> deleteUser() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      Response response = await delete(
+        Uri.encodeFull(
+          Global.SERVER_URL + '/user',
+        ),
+        headers: {'Authorization': 'Bearer ' + prefs.getString("token")},
       );
       return response.statusCode;
     } catch (e) {

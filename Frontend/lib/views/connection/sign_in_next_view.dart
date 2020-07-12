@@ -84,14 +84,12 @@ class _SignInNextViewState extends State<SignInNextView> {
     // }
   }
 
-  String validator(String value, RegExp regExp, String warning, {bool optional = false}) {
+  String validator(String value, RegExp regExp, String warning,
+      {bool optional = false}) {
     bool condition;
-    if(optional)
-    {
+    if (optional) {
       condition = value.length == 0 ? false : !regExp.hasMatch(value);
-    }
-    else
-    {
+    } else {
       condition = value.length == 0 || !regExp.hasMatch(value);
     }
     if (condition)
@@ -127,7 +125,11 @@ class _SignInNextViewState extends State<SignInNextView> {
           passwordVisibility = false;
           confirmPasswordVisibility = false;
         });
-        Navigator.pushNamedAndRemoveUntil(context, HOMEPAGE_ROUTE, (Route<dynamic> route) => false);
+        int statusCode = await UserService.postLogIn(
+            connectId: widget.email, password: widget.password);
+        if (statusCode == 200)
+          Navigator.pushNamedAndRemoveUntil(
+              context, HOMEPAGE_ROUTE, (Route<dynamic> route) => false);
       } else if (result == 409) {
         setState(() {
           warning = "Ce nom d'utilisateur n'est pas disponible.";
