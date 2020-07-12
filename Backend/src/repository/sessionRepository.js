@@ -94,7 +94,7 @@ repository.addSession = async (req) => {
 }
 
 repository.deleteSession = async (req) => {
-    console.log(req.body)
+    console.log("BODY : ", req.body)
     var sqlDeleteSession = "DELETE FROM _session WHERE id_user = $1 AND id_session = $2"
     try {
         await clt.query(sqlDeleteSession, [req.user.id, req.params.id_session])

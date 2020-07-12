@@ -8,8 +8,8 @@ import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/views/equipment/equipment_view.dart';
 import 'package:strongr/views/exercise/exercise_create_view.dart';
 import 'package:strongr/views/muscle/muscle_view.dart';
-import 'package:strongr/widgets/dialogs/new_exercise_from_list_dialog.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
+import 'package:strongr/widgets/strongr_snackbar_content.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
 class AppExerciseView extends StatefulWidget {
@@ -32,6 +32,7 @@ class AppExerciseView extends StatefulWidget {
 }
 
 class _AppExerciseViewState extends State<AppExerciseView> {
+  final globalKey = GlobalKey<ScaffoldState>();
   Future<AppExercise> futureAppExercise;
 
   @override
@@ -43,6 +44,7 @@ class _AppExerciseViewState extends State<AppExerciseView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: globalKey,
       appBar: AppBar(
         centerTitle: true,
         title: Text(widget.name),
@@ -236,13 +238,37 @@ class _AppExerciseViewState extends State<AppExerciseView> {
                           name: widget.name,
                         ),
                       )
-                  : () => showDialog(
-                        context: context,
-                        builder: (context) => NewExerciseFromListDialog(
-                          id: widget.id,
-                          name: widget.name,
-                        ),
-                      ),
+                  : () => Navigator.pushNamed(
+                                  context,
+                                  EXERCISE_CREATE_ROUTE,
+                                  arguments: ExerciseCreateView(
+                                    id: widget.id,
+                                    name: widget.name,
+                                  ),
+                                ).then(
+                                  (exerciseCreated) {
+                                    if (exerciseCreated != null &&
+                                        exerciseCreated) {
+                                      globalKey.currentState
+                                          .hideCurrentSnackBar();
+                                      globalKey.currentState.showSnackBar(
+                                        SnackBar(
+                                          content: StrongrSnackBarContent(
+                                            message:
+                                                "Exercice créé avec succès",
+                                          ),
+                                          backgroundColor: StrongrColors.blue80,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(15),
+                                              topRight: Radius.circular(15),
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                ),
               label: StrongrText(
                 "Ajouter",
                 color: Colors.white,

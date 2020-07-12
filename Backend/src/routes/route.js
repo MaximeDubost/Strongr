@@ -71,7 +71,7 @@ router.get(
   middleware.checkAuth,
   ExerciseController.detailExercise
 );
-router.all(
+router.put(
   "/exercise/:id_exercise",
   middleware.checkAuth,
   ExerciseController.updateExercise
@@ -98,7 +98,7 @@ router.get(
   middleware.checkAuth,
   SessionController.getSessionDetail
 );
-router.all(
+router.put(
   "/session/:id_session",
   middleware.checkAuth,
   SessionController.updateSession
@@ -132,7 +132,7 @@ router.delete(
   middleware.checkAuth,
   ProgramController.deleteProgram
 );
-router.all(
+router.put(
   "/program/:id_program",
   middleware.checkAuth,
   ProgramController.updateProgram
