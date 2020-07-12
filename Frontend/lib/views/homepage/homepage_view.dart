@@ -15,7 +15,7 @@ class _HomepageViewState extends State<HomepageView> {
   // GlobalKey<dynamic> _homepageKey;
   List<Widget> pagesList;
   List<String> popupMenuItems,
-      homepagePopupMenuItems,
+      // homepagePopupMenuItems,
       appExercisesPopupMenuItems;
   int currentPage;
 
@@ -29,10 +29,13 @@ class _HomepageViewState extends State<HomepageView> {
       Homepage(),
       StatisticsPage(),
     ];
-    homepagePopupMenuItems = ["Profil", "Paramètres"];
-    appExercisesPopupMenuItems = ["Profil", "Paramètres", "Filtres"];
+    // homepagePopupMenuItems = ["Profil", "Paramètres"];
+    appExercisesPopupMenuItems 
+    = ["Filtres", "Paramètres"];
+    // = ["Profil", "Paramètres", "Filtres"];
     popupMenuItems =
-        currentPage != 0 ? homepagePopupMenuItems : appExercisesPopupMenuItems;
+        // currentPage != 0 ? homepagePopupMenuItems :
+        appExercisesPopupMenuItems;
     super.initState();
   }
 
@@ -44,9 +47,15 @@ class _HomepageViewState extends State<HomepageView> {
         resizeToAvoidBottomPadding: false,
         appBar: AppBar(
           centerTitle: true,
+          // leading: IconButton(
+          //   tooltip: "Notifications",
+          //   icon: Icon(Icons.notifications_none),
+          //   color: Colors.white,
+          //   onPressed: () {},
+          // ),
           leading: IconButton(
-            tooltip: "Notifications",
-            icon: Icon(Icons.notifications_none),
+            tooltip: "Profil",
+            icon: Icon(Icons.account_circle),
             color: Colors.white,
             onPressed: () {},
           ),
@@ -56,37 +65,44 @@ class _HomepageViewState extends State<HomepageView> {
                 : currentPage == 0 ? "Exercices" : "Statistiques",
           ),
           actions: <Widget>[
-            PopupMenuButton<String>(
-              tooltip: "Menu",
-              onSelected: (value) async {
-                switch (value) {
-                  case "Profil":
-                    break;
-                  case "Paramètres":
-                    break;
-                  case "Filtres":
-                    await showDialog(
-                      context: context,
-                      builder: (context) => FiltersDialog(),
-                    ).then((val) {
-                      if (val == true) {
-                        _appExercisesPageKey.currentState.refresh();
+            currentPage == 0
+                ? PopupMenuButton<String>(
+                    tooltip: "Menu",
+                    onSelected: (value) async {
+                      switch (value) {
+                        // case "Profil":
+                        //   break;
+                        case "Paramètres":
+                          break;
+                        case "Filtres":
+                          await showDialog(
+                            context: context,
+                            builder: (context) => FiltersDialog(),
+                          ).then((val) {
+                            if (val == true) {
+                              _appExercisesPageKey.currentState.refresh();
+                            }
+                          });
+                          break;
                       }
-                    });
-                    break;
-                }
-              },
-              itemBuilder: (BuildContext context) {
-                return popupMenuItems.map(
-                  (String choice) {
-                    return PopupMenuItem<String>(
-                      value: choice,
-                      child: Text(choice),
-                    );
-                  },
-                ).toList();
-              },
-            ),
+                    },
+                    itemBuilder: (BuildContext context) {
+                      return popupMenuItems.map(
+                        (String choice) {
+                          return PopupMenuItem<String>(
+                            value: choice,
+                            child: Text(choice),
+                          );
+                        },
+                      ).toList();
+                    },
+                  )
+                : IconButton(
+                    tooltip: "Paramètres",
+                    icon: Icon(Icons.settings),
+                    color: Colors.white,
+                    onPressed: () {},
+                  ),
           ],
         ),
         body: pagesList[currentPage],
@@ -105,9 +121,9 @@ class _HomepageViewState extends State<HomepageView> {
       onTap: (index) {
         setState(() {
           currentPage = index;
-          popupMenuItems = currentPage != 0
-              ? homepagePopupMenuItems
-              : appExercisesPopupMenuItems;
+          popupMenuItems = 
+          // currentPage != 0 ? homepagePopupMenuItems : 
+          appExercisesPopupMenuItems;
         });
       },
       items: <BottomNavigationBarItem>[

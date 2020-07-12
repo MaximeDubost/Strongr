@@ -24,6 +24,8 @@ dependencies:
   flutter_auth_buttons: ^0.7.0
   flutter_cupertino_date_picker: ^1.0.12
   numberpicker: ^1.2.0
+  # shared_preferences: ^>=0.5.y+x <2.0.0
+  shared_preferences: ^0.5.4+9
   # Localiszation :
   flutter_localizations:
     sdk: flutter

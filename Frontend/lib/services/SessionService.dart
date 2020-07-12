@@ -14,11 +14,12 @@ class SessionService {
   /// Retourne la liste des sessions d'un utilisateur.
   static Future<List<SessionPreview>> getSessions() async {
     try {
+      String token = await Global.getToken();
       Response response = await get(
         Uri.encodeFull(
           Global.SERVER_URL + '/sessions',
         ),
-        headers: {'Authorization': 'Bearer ' + Global.token},
+        headers: {'Authorization': 'Bearer ' + token},
       );
       List<SessionPreview> sessions = List<SessionPreview>();
       for (final session in jsonDecode(response.body))
@@ -34,11 +35,12 @@ class SessionService {
   /// Retourne le détail d'une session [id] d'un utilisateur.
   static Future<Session> getSession({@required int id}) async {
     try {
+      String token = await Global.getToken();
       Response response = await get(
         Uri.encodeFull(
           Global.SERVER_URL + '/session/' + id.toString(),
         ),
-        headers: {'Authorization': 'Bearer ' + Global.token},
+        headers: {'Authorization': 'Bearer ' + token},
       );
       return Session.fromJson(response.body);
     } catch (e) {
@@ -55,13 +57,14 @@ class SessionService {
     @required List<ExercisePreview> exercises,
   }) async {
     try {
+      String token = await Global.getToken();
       Response response = await post(
         Uri.encodeFull(
           Global.SERVER_URL + '/session',
         ),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + Global.token
+          'Authorization': 'Bearer ' + token
         },
         body: jsonEncode(
             {'id_session_type': sessionType.id, 'name': name, 'exercises': exercises}),
@@ -82,13 +85,14 @@ class SessionService {
     @required List<ExercisePreview> exercises,
   }) async {
     try {
+      String token = await Global.getToken();
       Response response = await put(
         Uri.encodeFull(
           Global.SERVER_URL + '/session/' + id.toString(),
         ),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + Global.token
+          'Authorization': 'Bearer ' + token
         },
         body: jsonEncode({
           'name': name,
@@ -107,11 +111,12 @@ class SessionService {
   /// Supprime la séance [id] d'un utilisateur.
   static Future<int> deleteSession({@required int id}) async {
     try {
+      String token = await Global.getToken();
       Response response = await delete(
         Uri.encodeFull(
           Global.SERVER_URL + '/session/' + id.toString(),
         ),
-        headers: {'Authorization': 'Bearer ' + Global.token},
+        headers: {'Authorization': 'Bearer ' + token},
       );
       return response.statusCode;
     } catch (e) {
@@ -124,11 +129,12 @@ class SessionService {
   /// Retourne le détail d'un type de session [id].
   static Future<SessionType> getSessionType({@required int id}) async {
     try {
+      String token = await Global.getToken();
       Response response = await get(
         Uri.encodeFull(
           Global.SERVER_URL + '/sessiontype/' + id.toString(),
         ),
-        headers: {'Authorization': 'Bearer ' + Global.token},
+        headers: {'Authorization': 'Bearer ' + token},
       );
       return SessionType.fromJson(response.body);
     } catch (e) {

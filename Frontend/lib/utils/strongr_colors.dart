@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class StrongrColors {
   static final Color black = Color.fromRGBO(10, 21, 27, 1);
+  static final Color black80 = Color.fromRGBO(10, 21, 27, 0.8);
   static final Color blue = Color.fromRGBO(46, 80, 115, 1);
   static final Color blue80 = Color.fromRGBO(46, 80, 115, 0.8);
   static final Color blue20 = Color.fromRGBO(46, 80, 115, 0.2);

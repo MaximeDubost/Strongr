@@ -102,7 +102,8 @@ class _LogInViewState extends State<LogInView> {
         password: password,
       );
       if (result == 200) {
-        print(Global.token);
+        String token = await Global.getToken();
+        print("TOKEN : " + token);
         setState(() {
           _validate = false;
           warning = null;

@@ -13,11 +13,12 @@ class ProgramService {
   /// Retourne la liste des programmes.
   static Future<List<ProgramPreview>> getPrograms() async {
     try {
+      String token = await Global.getToken();
       Response response = await get(
         Uri.encodeFull(
           Global.SERVER_URL + '/programs',
         ),
-        headers: {'Authorization': 'Bearer ' + Global.token},
+        headers: {'Authorization': 'Bearer ' + token},
       );
       List<ProgramPreview> programs = List<ProgramPreview>();
       for (final program in jsonDecode(response.body))
@@ -33,11 +34,12 @@ class ProgramService {
   /// Retourne le détail d'une programme [id].
   static Future<Program> getProgram({@required int id}) async {
     try {
+      String token = await Global.getToken();
       Response response = await get(
         Uri.encodeFull(
           Global.SERVER_URL + '/program/' + id.toString(),
         ),
-        headers: {'Authorization': 'Bearer ' + Global.token},
+        headers: {'Authorization': 'Bearer ' + token},
       );
       Program program = Program.fromJson(response.body);
       List<SessionPreview> sessionsFullList = List<SessionPreview>();
@@ -79,13 +81,14 @@ class ProgramService {
     for (final item in sessions)
       if (item.id != null) definitiveSessions.add(item);
     try {
+      String token = await Global.getToken();
       Response response = await post(
         Uri.encodeFull(
           Global.SERVER_URL + '/program',
         ),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + Global.token
+          'Authorization': 'Bearer ' + token
         },
         body: jsonEncode({
           'id_program_goal': programGoalId,
@@ -112,13 +115,14 @@ class ProgramService {
     for (final item in sessions)
       if (item.id != null) definitiveSessions.add(item);
     try {
+      String token = await Global.getToken();
       Response response = await put(
         Uri.encodeFull(
           Global.SERVER_URL + '/program/' + id.toString(),
         ),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + Global.token
+          'Authorization': 'Bearer ' + token
         },
         body: jsonEncode({
           'program_goal_name': programGoalName,
@@ -137,11 +141,12 @@ class ProgramService {
   /// Supprime le programme [id] d'un utilisateur.
   static Future<int> deleteProgram({@required int id}) async {
     try {
+      String token = await Global.getToken();
       Response response = await delete(
         Uri.encodeFull(
           Global.SERVER_URL + '/program/' + id.toString(),
         ),
-        headers: {'Authorization': 'Bearer ' + Global.token},
+        headers: {'Authorization': 'Bearer ' + token},
       );
       return response.statusCode;
     } catch (e) {

@@ -14,11 +14,12 @@ class ExerciseService {
   /// Retourne la liste des exercices d'un utilisateur.
   static Future<List<ExercisePreview>> getExercises() async {
     try {
+      String token = await Global.getToken();
       Response response = await get(
         Uri.encodeFull(
           Global.SERVER_URL + '/exercises',
         ),
-        headers: {'Authorization': 'Bearer ' + Global.token},
+        headers: {'Authorization': 'Bearer ' + token},
       );
       List<ExercisePreview> exercises = List<ExercisePreview>();
       for (final exercise in jsonDecode(response.body))
@@ -34,11 +35,12 @@ class ExerciseService {
   /// Retourne le détail d'un exercice [id] d'un utilisateur.
   static Future<Exercise> getExercise({@required int id}) async {
     try {
+      String token = await Global.getToken();
       Response response = await get(
         Uri.encodeFull(
           Global.SERVER_URL + '/exercise/' + id.toString(),
         ),
-        headers: {'Authorization': 'Bearer ' + Global.token},
+        headers: {'Authorization': 'Bearer ' + token},
       );
       return Exercise.fromJson(response.body);
     } catch (e) {
@@ -56,13 +58,14 @@ class ExerciseService {
     @required List<Set> sets,
   }) async {
     try {
+      String token = await Global.getToken();
       Response response = await post(
         Uri.encodeFull(
           Global.SERVER_URL + '/exercise',
         ),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + Global.token
+          'Authorization': 'Bearer ' + token
         },
         body: jsonEncode({
           'id_app_exercise': appExerciseId,
@@ -87,13 +90,14 @@ class ExerciseService {
     @required List<Set> sets,
   }) async {
     try {
+      String token = await Global.getToken();
       Response response = await put(
         Uri.encodeFull(
           Global.SERVER_URL + '/exercise/' + id.toString(),
         ),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + Global.token
+          'Authorization': 'Bearer ' + token
         },
         body: jsonEncode({
           'id_equipment': equipmentId,
@@ -112,11 +116,12 @@ class ExerciseService {
   /// Supprime l'exercice [id] d'un utilisateur.
   static Future<int> deleteExercise({@required int id}) async {
     try {
+      String token = await Global.getToken();
       Response response = await delete(
         Uri.encodeFull(
           Global.SERVER_URL + '/exercise/' + id.toString(),
         ),
-        headers: {'Authorization': 'Bearer ' + Global.token},
+        headers: {'Authorization': 'Bearer ' + token},
       );
       return response.statusCode;
     } catch (e) {
@@ -129,11 +134,12 @@ class ExerciseService {
   /// Retourne la liste des muscles ciblés de chaque exercice dont les id sont passés en POST
   static Future<List<ExerciseTargetMuscles>> targetMusclesByExercise(List<int> exerciseIDs) async {
     try {
+      String token = await Global.getToken();
       Response response = await post(
         Uri.encodeFull(
           Global.SERVER_URL + '/exercises/targetmuscles',
         ),
-        headers: {'Authorization': 'Bearer ' + Global.token},
+        headers: {'Authorization': 'Bearer ' + token},
         body: {
           'id_exercises': jsonEncode(exerciseIDs),
         }
