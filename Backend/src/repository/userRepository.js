@@ -6,7 +6,7 @@ const repository = {};
 /**
  * @param id_user int
  */
-repository.getUser = async (id_user) => {
+repository.getUser = async () => {
   let sqlGetUser = "SELECT * FROM _user as u WHERE u.id_user = $1::int";
   try {
     var result = await clt.query(sqlGetUser, [req.user.id]);
@@ -67,7 +67,7 @@ repository.checkEmail = async (email) => {
   }
 };
 
-repository.updateUser = async (id_user, body) => {
+repository.updateUser = async (body) => {
   let res;
   let birth_to_datetime = new Date(body.birthdate);
   let sqlUpdate =
