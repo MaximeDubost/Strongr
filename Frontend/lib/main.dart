@@ -19,8 +19,8 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Futura',
       ),
       onGenerateRoute: router.generateRoute,
-      initialRoute: HOMEPAGE_ROUTE
-      // initialRoute: LOG_IN_ROUTE,
+      // initialRoute: HOMEPAGE_ROUTE
+      initialRoute: LOG_IN_ROUTE,
       // localizationsDelegates: [
       //   GlobalMaterialLocalizations.delegate,
       //   GlobalWidgetsLocalizations.delegate,

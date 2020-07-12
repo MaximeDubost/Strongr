@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:strongr/services/UserService.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
-import 'package:strongr/utils/Global.dart';
 import 'package:strongr/widgets/strongr_raised_button.dart';
 import 'package:strongr/widgets/strongr_rounded_textformfield.dart';
 import 'package:strongr/widgets/strongr_text.dart';
@@ -74,7 +74,8 @@ class _LogInViewState extends State<LogInView> {
 
   String validatePassword(String value) {
     if (!_buttonPressSuccess) {
-      String pattern = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$';
+      String pattern =
+          r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$';
       RegExp regExp = new RegExp(pattern);
       if (value.length == 0 || !regExp.hasMatch(value))
         return "Le mot de passe est invalide";
@@ -102,8 +103,8 @@ class _LogInViewState extends State<LogInView> {
         password: password,
       );
       if (result == 200) {
-        String token = await Global.getToken();
-        print("TOKEN : " + token);
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        print("TOKEN : " + prefs.getString("token"));
         setState(() {
           _validate = false;
           warning = null;
@@ -112,7 +113,7 @@ class _LogInViewState extends State<LogInView> {
           _isButtonEnabled = false;
           passwordVisibility = false;
         });
-        Navigator.pushNamed(context, HOMEPAGE_ROUTE);
+        Navigator.pushNamedAndRemoveUntil(context, HOMEPAGE_ROUTE, ModalRoute.withName(LOG_IN_ROUTE));
       } else if (result == 401 || result == 404) {
         setState(() {
           warning = "Identifiant ou mot de passe incorrect.";
