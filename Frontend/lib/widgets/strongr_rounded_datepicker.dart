@@ -32,7 +32,7 @@ class _StrongrRoundedDatePickerState extends State<StrongrRoundedDatePicker> {
       decoration: new BoxDecoration(
         color: Colors.white,
         border: Border.all(color: Colors.black54, width: 1),
-        borderRadius: new BorderRadius.all(Radius.circular(10.0)),
+        borderRadius: BorderRadius.circular(20),
       ),
       child: FlatButton(
         onPressed: widget.onPressed,
