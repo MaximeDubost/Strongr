@@ -1,6 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:strongr/services/UserService.dart';
+import 'package:strongr/utils/routing_constants.dart';
 import '../strongr_text.dart';
 
 class DeleteAccountDialog extends StatefulWidget {
@@ -38,7 +41,8 @@ class _DeleteAccountDialogState extends State<DeleteAccountDialog> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              StrongrText("Êtes-vous sûr(e) de vouloir supprimer votre compte ?"),
+              StrongrText(
+                  "Êtes-vous sûr(e) de vouloir supprimer votre compte ?"),
               Column(
                 children: <Widget>[
                   Container(
@@ -58,12 +62,17 @@ class _DeleteAccountDialogState extends State<DeleteAccountDialog> {
                           onPressed: _counter != 0
                               ? null
                               : () async {
-
-                                  // SharedPreferences prefs =
-                                  //     await SharedPreferences.getInstance();
-                                  // prefs.remove("token");
-                                  // Navigator.pushNamedAndRemoveUntil(context, LOG_IN_ROUTE,
-                                  //     ModalRoute.withName(HOMEPAGE_ROUTE));
+                                  int statusCode =
+                                      await UserService.deleteUser();
+                                  if (statusCode == 200) {
+                                    SharedPreferences prefs =
+                                        await SharedPreferences.getInstance();
+                                    prefs.remove("token");
+                                    Navigator.pushNamedAndRemoveUntil(
+                                        context,
+                                        LOG_IN_ROUTE,
+                                        ModalRoute.withName(HOMEPAGE_ROUTE));
+                                  }
                                 },
                         ),
                         _counter != 0
