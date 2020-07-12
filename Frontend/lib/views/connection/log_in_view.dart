@@ -113,7 +113,7 @@ class _LogInViewState extends State<LogInView> {
           _isButtonEnabled = false;
           passwordVisibility = false;
         });
-        Navigator.pushNamed(context, HOMEPAGE_ROUTE);
+        Navigator.pushNamedAndRemoveUntil(context, HOMEPAGE_ROUTE, ModalRoute.withName(LOG_IN_ROUTE));
       } else if (result == 401 || result == 404) {
         setState(() {
           warning = "Identifiant ou mot de passe incorrect.";
