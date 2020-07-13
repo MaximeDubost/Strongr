@@ -116,18 +116,24 @@ class _HomepageState extends State<Homepage> {
                   onPressed: () async {
                     AppExercisesFilters.disableAll();
                     globalKey.currentState.hideCurrentSnackBar();
-                    await Navigator.pushNamed(
-                      context,
-                      EXERCISES_ROUTE,
-                    ).then(
-                      (exerciseChanges) {
-                        if (exerciseChanges) {
-                          refreshExercises();
-                          refreshSessions();
-                          refreshPrograms();
-                        }
-                      },
-                    );
+                    try {
+                      await Navigator.pushNamed(
+                        context,
+                        EXERCISES_ROUTE,
+                      ).then(
+                        (exerciseChanges) {
+                          if (exerciseChanges) {
+                            refreshExercises();
+                            refreshSessions();
+                            refreshPrograms();
+                          }
+                        },
+                      );
+                    } catch (e) {
+                      refreshExercises();
+                      refreshSessions();
+                      refreshPrograms();
+                    }
                   },
                   child: Container(
                     // color: Colors.red,
@@ -493,17 +499,22 @@ class _HomepageState extends State<Homepage> {
                 child: FlatButton(
                   onPressed: () {
                     globalKey.currentState.hideCurrentSnackBar();
-                    Navigator.pushNamed(
-                      context,
-                      SESSIONS_ROUTE,
-                    ).then(
-                      (sessionChanges) {
-                        if (sessionChanges) {
-                          refreshSessions();
-                          refreshPrograms();
-                        }
-                      },
-                    );
+                    try {
+                      Navigator.pushNamed(
+                        context,
+                        SESSIONS_ROUTE,
+                      ).then(
+                        (sessionChanges) {
+                          if (sessionChanges) {
+                            refreshSessions();
+                            refreshPrograms();
+                          }
+                        },
+                      );
+                    } catch (e) {
+                      refreshSessions();
+                      refreshPrograms();
+                    }
                   },
                   child: Container(
                     // height: ScreenSize.height(context) / 12,
@@ -862,14 +873,18 @@ class _HomepageState extends State<Homepage> {
                 child: FlatButton(
                   onPressed: () {
                     globalKey.currentState.hideCurrentSnackBar();
-                    Navigator.pushNamed(
-                      context,
-                      PROGRAMS_ROUTE,
-                    ).then(
-                      (programChanges) {
-                        if (programChanges) refreshPrograms();
-                      },
-                    );
+                    try {
+                      Navigator.pushNamed(
+                        context,
+                        PROGRAMS_ROUTE,
+                      ).then(
+                        (programChanges) {
+                          if (programChanges) refreshPrograms();
+                        },
+                      );
+                    } catch (e) {
+                      refreshPrograms();
+                    }
                   },
                   child: Container(
                     // height: ScreenSize.height(context) / 12,
