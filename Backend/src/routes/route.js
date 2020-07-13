@@ -87,6 +87,8 @@ router.post(
   ExerciseController.getExerciseMusclesTarget
 );
 
+
+
 /**
  * Session
  */
@@ -153,6 +155,7 @@ router.get(
   "/equipments/appexercise/:id_app_exercise",
   AppExerciseEquipementController.getEquipementByIDAppExercice
 );
+
 router.get("/equipment/:id_equipment", EquipmentController.getEquipmentByID);
 
 export default router;
