@@ -7,15 +7,26 @@ const repository = {};
  * @param id_user int
  */
 repository.getUser = async (req) => {
-  let sqlGetUser = "SELECT * FROM _user as u WHERE u.id_user = $1::int";
+  let sqlGetUser = `
+  SELECT u.id_user, u.email, u.password, u.firstname, u.lastname, u.phonenumber, u.birthdate, u.username, u.weight, u.signeddate, u.recoverycode,
+	(
+		SELECT COUNT(*) FROM _exercise e WHERE e.id_user = $1
+	) as nb_exercises, 
+	(
+		SELECT COUNT(*) FROM _program prog WHERE prog.id_user = $1
+	) as nb_programs,
+		(
+		SELECT COUNT(*) FROM _session sess WHERE sess.id_user = $1
+	) as nb_sessions
+	FROM _user u 
+	JOIN _exercise e ON u.id_user = e.id_user 
+	JOIN _program prog ON prog.id_user = u.id_user 
+	WHERE u.id_user = $1
+	GROUP BY u.id_user, u.email, u.password, u.firstname, u.lastname, u.phonenumber, u.birthdate, u.username, u.weight, u.signeddate, u.recoverycode
+  `;
   try {
     var result = await clt.query(sqlGetUser, [req.user.id]);
-
-    if (result.rows[0]) {
-      return result.rows[0];
-    } else {
-      return null;
-    }
+    return result.rows[0];
   } catch (error) {
     console.error(error);
   }
