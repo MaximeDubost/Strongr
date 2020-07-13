@@ -16,6 +16,7 @@ import 'package:strongr/views/exercise/exercise_view.dart';
 import 'package:strongr/views/exercise/exercises_view.dart';
 import 'package:strongr/views/homepage/homepage_view.dart';
 import 'package:strongr/views/muscle/muscle_view.dart';
+import 'package:strongr/views/profile/profile_view.dart';
 import 'package:strongr/views/program/program_create_view.dart';
 import 'package:strongr/views/program_goal/program_goal_view.dart';
 import 'package:strongr/views/program/program_new_session.dart';
@@ -259,10 +260,20 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       );
 
     ///
+    /// Profile
+    ///
+    case PROFILE_ROUTE:
+      return CupertinoPageRoute(
+        builder: (context) => ProfileView(),
+      );
+
+    ///
     /// Settings
     ///
     case SETTINGS_ROUTE:
-      return CupertinoPageRoute(builder: (context) => SettingsView());
+      return CupertinoPageRoute(
+        builder: (context) => SettingsView(),
+      );
 
     ///
     /// UnknownView
