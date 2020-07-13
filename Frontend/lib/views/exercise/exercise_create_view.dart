@@ -5,6 +5,7 @@ import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/views/app_exercise/app_exercise_view.dart';
+import 'package:strongr/views/equipment/equipment_view.dart';
 import 'package:strongr/widgets/dialogs/repetition_count_dialog.dart';
 import 'package:strongr/widgets/dialogs/rest_time_dialog.dart';
 import 'package:strongr/widgets/dialogs/set_count_dialog.dart';
@@ -446,8 +447,16 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
                                                 ? StrongrColors.blue
                                                 : Colors.grey,
                                           ),
-                                          onPressed:
-                                              editButtonsEnabled ? () {} : null,
+                                          onPressed: editButtonsEnabled
+                                              ? () => Navigator.pushNamed(
+                                                    context,
+                                                    EQUIPMENT_ROUTE,
+                                                    arguments: EquipmentView(
+                                                      id: item.id,
+                                                      name: item.name,
+                                                    ),
+                                                  )
+                                              : null,
                                         ),
                                       ],
                                     ),
