@@ -11,9 +11,9 @@ class User {
   String username;
   double weight;
   String signedDate;
-  int exerciseCount;
-  int sessionCount;
-  int programCount;
+  String exerciseCount;
+  String sessionCount;
+  String programCount;
   double volumeAverage;
 
   User({
@@ -90,7 +90,7 @@ class User {
     if (map == null) return null;
   
     return User(
-      id: map['id'],
+      id: map['id_user'],
       email: map['email'],
       password: map['password'],
       firstName: map['firstname'],
@@ -103,7 +103,6 @@ class User {
       exerciseCount: map['nb_exercises'],
       sessionCount: map['nb_sessions'],
       programCount: map['nb_programs'],
-      volumeAverage: null,
     );
   }
 
