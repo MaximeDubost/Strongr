@@ -19,8 +19,6 @@ repository.getUser = async (req) => {
 		SELECT COUNT(*) FROM _session sess WHERE sess.id_user = $1
 	) as nb_sessions
 	FROM _user u 
-	JOIN _exercise e ON u.id_user = e.id_user 
-	JOIN _program prog ON prog.id_user = u.id_user 
 	WHERE u.id_user = $1
 	GROUP BY u.id_user, u.email, u.password, u.firstname, u.lastname, u.phonenumber, u.birthdate, u.username, u.weight, u.signeddate, u.recoverycode
   `;
