@@ -129,7 +129,7 @@ CREATE TABLE _set
    expected_performance INT,
    realized_performance INT,
    PRIMARY KEY(id_app_exercise, id_user, id_exercise, id_set),
-   FOREIGN KEY(id_app_exercise, id_user, id_exercise) REFERENCES _exercise(id_app_exercise, id_user, id_exercise)
+   FOREIGN KEY(id_app_exercise, id_user, id_exercise) REFERENCES _exercise(id_app_exercise, id_user, id_exercise) ON DELETE CASCADE
 );
 
 -- 
