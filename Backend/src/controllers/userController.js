@@ -19,17 +19,8 @@ let transport = nodemailer.createTransport({
  * @param id_user int
  */
 controller.getUser = async (req, res) => {
-  let body = {};
-  let user = await UserRepository.getUser();
-  if (user) {
-    body = {
-      message: "User found",
-      user_info: user,
-    };
-    res.status(200).json(body);
-  } else {
-    res.sendStatus(404);
-  }
+  let user = await UserRepository.getUser(req);
+  res.status(200).json(user);
 };
 /**
  * @param username varchar,
