@@ -6,7 +6,7 @@ import 'package:strongr/services/ProgramService.dart';
 import 'package:strongr/utils/date_formater.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
-import 'package:strongr/utils/string_constants.dart';
+import 'package:strongr/utils/strings.dart';
 import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/views/program_goal/program_goal_view.dart';
 import 'package:strongr/views/program_goal/program_goals_view.dart';

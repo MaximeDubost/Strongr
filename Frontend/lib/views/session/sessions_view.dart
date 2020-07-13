@@ -6,7 +6,7 @@ import 'package:strongr/utils/app_exercises_filters.dart';
 import 'package:strongr/utils/diacritics.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
-import 'package:strongr/utils/string_constants.dart';
+import 'package:strongr/utils/strings.dart';
 import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/views/session/session_view.dart';
 import 'package:strongr/widgets/dialogs/filters_dialog.dart';
@@ -116,7 +116,7 @@ class _SessionsViewState extends State<SessionsView> {
                             child: Row(
                               children: <Widget>[
                                 Icon(
-                                  Icons.fitness_center,
+                                  Icons.accessibility,
                                   color: item.sessionTypeName != null
                                       ? StrongrColors.black
                                       : Colors.grey,
@@ -140,7 +140,7 @@ class _SessionsViewState extends State<SessionsView> {
                             child: Row(
                               children: <Widget>[
                                 Icon(
-                                  Icons.refresh,
+                                  Icons.fitness_center,
                                   color: int.parse(item.exerciseCount) > 0 ||
                                           int.parse(item.exerciseCount) != null
                                       ? StrongrColors.black
@@ -234,7 +234,7 @@ class _SessionsViewState extends State<SessionsView> {
                                       id: item.id,
                                       name: item.name,
                                       sessionTypeName: item.sessionTypeName,
-                                      fromProgram: true,
+                                      fromProgramCreation: widget.fromProgramCreation,
                                     ),
                                   );
                                 },

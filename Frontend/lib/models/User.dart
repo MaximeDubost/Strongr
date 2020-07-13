@@ -11,6 +11,10 @@ class User {
   String username;
   double weight;
   String signedDate;
+  int exerciseCount;
+  int sessionCount;
+  int programCount;
+  double volumeAverage;
 
   User({
     this.id,
@@ -23,6 +27,10 @@ class User {
     this.username,
     this.weight,
     this.signedDate,
+    this.exerciseCount,
+    this.sessionCount,
+    this.programCount,
+    this.volumeAverage,
   });
 
   User copyWith({
@@ -36,6 +44,10 @@ class User {
     String username,
     double weight,
     String signedDate,
+    int exerciseCount,
+    int sessionCount,
+    int programCount,
+    double volumeAverage,
   }) {
     return User(
       id: id ?? this.id,
@@ -48,6 +60,10 @@ class User {
       username: username ?? this.username,
       weight: weight ?? this.weight,
       signedDate: signedDate ?? this.signedDate,
+      exerciseCount: exerciseCount ?? this.exerciseCount,
+      sessionCount: sessionCount ?? this.sessionCount,
+      programCount: programCount ?? this.programCount,
+      volumeAverage: volumeAverage ?? this.volumeAverage,
     );
   }
 
@@ -56,13 +72,17 @@ class User {
       'id': id,
       'email': email,
       'password': password,
-      'firstname': firstName,
-      'lastname': lastName,
-      'phonenumber': phoneNumber,
+      'firstName': firstName,
+      'lastName': lastName,
+      'phoneNumber': phoneNumber,
       'birthdate': birthdate,
       'username': username,
       'weight': weight,
-      'signeddate': signedDate,
+      'signedDate': signedDate,
+      'exerciseCount': exerciseCount,
+      'sessionCount': sessionCount,
+      'programCount': programCount,
+      'volumeAverage': volumeAverage,
     };
   }
 
@@ -80,6 +100,10 @@ class User {
       username: map['username'],
       weight: map['weight'],
       signedDate: map['signeddate'],
+      exerciseCount: map['nb_exercises'],
+      sessionCount: map['nb_sessions'],
+      programCount: map['nb_programs'],
+      volumeAverage: null,
     );
   }
 
@@ -89,7 +113,7 @@ class User {
 
   @override
   String toString() {
-    return 'User(id: $id, email: $email, password: $password, firstName: $firstName, lastName: $lastName, phoneNumber: $phoneNumber, birthdate: $birthdate, username: $username, weight: $weight, signedDate: $signedDate)';
+    return 'User(id: $id, email: $email, password: $password, firstName: $firstName, lastName: $lastName, phoneNumber: $phoneNumber, birthdate: $birthdate, username: $username, weight: $weight, signedDate: $signedDate, exerciseCount: $exerciseCount, sessionCount: $sessionCount, programCount: $programCount, volumeAverage: $volumeAverage)';
   }
 
   @override
@@ -106,7 +130,11 @@ class User {
       o.birthdate == birthdate &&
       o.username == username &&
       o.weight == weight &&
-      o.signedDate == signedDate;
+      o.signedDate == signedDate &&
+      o.exerciseCount == exerciseCount &&
+      o.sessionCount == sessionCount &&
+      o.programCount == programCount &&
+      o.volumeAverage == volumeAverage;
   }
 
   @override
@@ -120,6 +148,10 @@ class User {
       birthdate.hashCode ^
       username.hashCode ^
       weight.hashCode ^
-      signedDate.hashCode;
+      signedDate.hashCode ^
+      exerciseCount.hashCode ^
+      sessionCount.hashCode ^
+      programCount.hashCode ^
+      volumeAverage.hashCode;
   }
 }
