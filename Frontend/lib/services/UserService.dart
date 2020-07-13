@@ -172,7 +172,7 @@ class UserService {
       );
       return User.fromJson(response.body);
     } catch (e) {
-      return User();
+      return null;
     }
   }
 

@@ -7,7 +7,7 @@ import 'package:strongr/utils/date_formater.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/session_type_definitor.dart';
-import 'package:strongr/utils/string_constants.dart';
+import 'package:strongr/utils/strings.dart';
 import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/views/exercise/exercise_view.dart';
 import 'package:strongr/views/session_type/session_type_view.dart';
@@ -560,7 +560,7 @@ class _SessionViewState extends State<SessionView> {
                       : null,
                 ),
                 Visibility(
-                  visible: !isEditMode,
+                  visible: !isEditMode && !widget.fromProgramCreation,
                   child: Container(
                     // color: Colors.red,
                     width: 35,
@@ -590,7 +590,7 @@ class _SessionViewState extends State<SessionView> {
                         name: item.name.toString(),
                         appExerciseName: item.appExerciseName.toString(),
                         fromSession: true,
-                        fromSessionCreation: false,
+                        fromSessionCreation: widget.fromProgramCreation,
                       ),
                     );
                   }

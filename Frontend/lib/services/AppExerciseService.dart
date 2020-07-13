@@ -61,14 +61,14 @@ class AppExerciseService {
     }
   }
 
-  /// [GET] /appexercises/muscle/[id]
+  /// [GET] /appexercises/equipment/[id]
   ///
   /// Retourne la liste des exercices de l'application concernant l'équipement [id].
   static Future<List<AppExercise>> getAppExercisesOfEquipment({@required int id}) async {
     try {
       Response response = await get(
         Uri.encodeFull(
-          Global.SERVER_URL + '/appexercises/muscle/' + id.toString(),
+          Global.SERVER_URL + '/appexercises/equipment/' + id.toString(),
         ),
       );
       List<AppExercise> appExercisesList = List<AppExercise>();

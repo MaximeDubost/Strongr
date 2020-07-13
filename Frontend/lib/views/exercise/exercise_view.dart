@@ -6,7 +6,7 @@ import 'package:strongr/services/ExerciseService.dart';
 import 'package:strongr/utils/date_formater.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
-import 'package:strongr/utils/string_constants.dart';
+import 'package:strongr/utils/strings.dart';
 import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/utils/time_formater.dart';
 import 'package:strongr/views/app_exercise/app_exercise_view.dart';

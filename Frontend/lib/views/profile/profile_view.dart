@@ -1,6 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:strongr/models/User.dart';
+import 'package:strongr/services/UserService.dart';
+import 'package:strongr/utils/date_formater.dart';
 import 'package:strongr/utils/strongr_colors.dart';
+import 'package:strongr/utils/strings.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
 class ProfileView extends StatefulWidget {
@@ -9,6 +13,14 @@ class ProfileView extends StatefulWidget {
 }
 
 class _ProfileViewState extends State<ProfileView> {
+  Future<User> futureUser;
+
+  @override
+  void initState() {
+    super.initState();
+    futureUser = UserService.getUser();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,41 +34,92 @@ class _ProfileViewState extends State<ProfileView> {
           )
         ],
       ),
-      body: Container(
-        padding: EdgeInsets.all(8),
-        child: ListView(
-          physics: BouncingScrollPhysics(),
-          children: <Widget>[
-            Padding(
+      body: FutureBuilder(
+        future: futureUser,
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.none:
+              return buildMessage(NO_DATA_MESSAGE);
+              break;
+            case ConnectionState.done:
+              if (snapshot.hasData) return buildProfile(snapshot.data);
+              if (snapshot.hasError)
+                return buildMessage(snapshot.error.toString());
+              else
+                return buildMessage(NULL_DATA_MESSAGE);
+              break;
+            default:
+              return buildLoading();
+          }
+        },
+      ),
+    );
+  }
+
+  Widget buildLoading() {
+    return Center(
+      child: CircularProgressIndicator(
+        valueColor: AlwaysStoppedAnimation<Color>(StrongrColors.blue),
+      ),
+    );
+  }
+
+  Widget buildMessage(String message) {
+    return Center(
+      child: StrongrText(
+        message,
+      ),
+    );
+  }
+
+  Widget buildProfile(dynamic data) {
+    return Container(
+      padding: EdgeInsets.all(8),
+      child: ListView(
+        physics: BouncingScrollPhysics(),
+        children: <Widget>[
+          Container(
+            child: Padding(
               padding: EdgeInsets.all(8),
-              child: StrongrText(
-                "username",
-                size: 24,
-                textAlign: TextAlign.start,
-                bold: true,
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      StrongrText("Inscrit depuis le ???"),
-                      StrongrText("??? exercices"),
-                      StrongrText("??? séances"),
-                      StrongrText("??? programmes"),
+                      StrongrText(
+                        data.firstName + " " + data.lastName,
+                        size: 22,
+                        textAlign: TextAlign.start,
+                        bold: true,
+                      ),
+                      StrongrText(
+                        data.username,
+                        size: 16,
+                        color: StrongrColors.black,
+                        textAlign: TextAlign.start,
+                      ),
+                      StrongrText(
+                        DateFormater.age(data.birthdate).toString() +
+                            (DateFormater.age(data.birthdate) < 2
+                                ? " an"
+                                : " ans"),
+                        size: 16,
+                        color: Colors.grey,
+                        textAlign: TextAlign.start,
+                      ),
+                      StrongrText(
+                        "Inscrit depuis le " +
+                            DateFormater.format(data.signedDate),
+                        size: 16,
+                        color: Colors.grey,
+                        textAlign: TextAlign.start,
+                      ),
                     ],
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 8),
-                  child: SizedBox(
-                    height: 100,
-                    width: 100,
+                  SizedBox(
+                    height: 80,
+                    width: 80,
                     child: CircleAvatar(
                       /// https://avatars.dicebear.com/
                       backgroundColor: StrongrColors.black,
@@ -67,11 +130,113 @@ class _ProfileViewState extends State<ProfileView> {
                       ),
                     ),
                   ),
-                )
+                ],
+              ),
+            ),
+          ),
+          Container(
+            // color: Colors.red,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Flexible(
+                  child: Container(
+                    // color: Colors.green,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Row(
+                            children: <Widget>[
+                              Padding(
+                                padding: EdgeInsets.only(right: 8),
+                                child: Icon(
+                                  Icons.fitness_center,
+                                  size: 20,
+                                  color: int.parse(data.exerciseCount) == 0
+                                      ? Colors.grey
+                                      : StrongrColors.black,
+                                ),
+                              ),
+                              StrongrText(
+                                (int.parse(data.exerciseCount) == 0
+                                        ? "Aucun"
+                                        : data.exerciseCount) +
+                                    (int.parse(data.exerciseCount) < 2
+                                        ? " exercice"
+                                        : " exercices"),
+                                color: int.parse(data.exerciseCount) == 0
+                                    ? Colors.grey
+                                    : StrongrColors.black,
+                                textAlign: TextAlign.start,
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: <Widget>[
+                              Padding(
+                                padding: EdgeInsets.only(right: 8),
+                                child: Icon(
+                                  Icons.calendar_today,
+                                  size: 20,
+                                  color: int.parse(data.sessionCount) == 0
+                                      ? Colors.grey
+                                      : StrongrColors.black,
+                                ),
+                              ),
+                              StrongrText(
+                                (int.parse(data.sessionCount) == 0
+                                        ? "Aucune"
+                                        : data.sessionCount) +
+                                    (int.parse(data.sessionCount) < 2
+                                        ? " séance"
+                                        : " séances"),
+                                color: int.parse(data.sessionCount) == 0
+                                    ? Colors.grey
+                                    : StrongrColors.black,
+                                textAlign: TextAlign.start,
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: <Widget>[
+                              Padding(
+                                padding: EdgeInsets.only(right: 8),
+                                child: Icon(
+                                  Icons.date_range,
+                                  size: 20,
+                                  color: int.parse(data.programCount) == 0
+                                      ? Colors.grey
+                                      : StrongrColors.black,
+                                ),
+                              ),
+                              StrongrText(
+                                (int.parse(data.programCount) == 0
+                                        ? "Aucun"
+                                        : data.programCount) +
+                                    (int.parse(data.programCount) < 2
+                                        ? " programme"
+                                        : " programmes"),
+                                color: int.parse(data.programCount) == 0
+                                    ? Colors.grey
+                                    : StrongrColors.black,
+                                textAlign: TextAlign.start,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
-            Padding(
-              padding: EdgeInsets.only(top: 16),
+          ),
+          Container(
+            child: Padding(
+              padding: EdgeInsets.only(top: 16, bottom: 16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
@@ -102,13 +267,17 @@ class _ProfileViewState extends State<ProfileView> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 StrongrText(
-                                  "72.5 kg",
+                                  data.weight ?? "Inconnu",
                                   color: Colors.white,
                                 ),
-                                StrongrText(
-                                  "(159.8 lbs)",
-                                  color: Colors.white,
-                                ),
+                                data.weight != null
+                                    ? StrongrText(
+                                        "(" +
+                                            data.weight.toStringAsFixed(1) +
+                                            ")",
+                                        color: Colors.white,
+                                      )
+                                    : SizedBox(),
                               ],
                             )
                           ],
@@ -132,31 +301,16 @@ class _ProfileViewState extends State<ProfileView> {
                           borderRadius: BorderRadius.circular(25.0),
                         ),
                         onPressed: () {},
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: <Widget>[
-                            Flexible(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                children: <Widget>[
-                                  StrongrText(
-                                    "Volume moyen :",
-                                    color: Colors.white,
-                                  ),
-                                  StrongrText(
-                                    "???",
-                                    color: Colors.white,
-                                  ),
-                                ],
-                              ),
+                            StrongrText(
+                              "Volume moyen :",
+                              color: Colors.white,
                             ),
-                            SizedBox(
-                              width: 32,
-                              child: RawMaterialButton(
-                                shape: CircleBorder(),
-                                child: Icon(Icons.info, color: Colors.white,),
-                                onPressed: () {},
-                              ),
+                            StrongrText(
+                              "Inconnu",
+                              color: Colors.white,
                             ),
                           ],
                         ),
@@ -165,9 +319,9 @@ class _ProfileViewState extends State<ProfileView> {
                   ),
                 ],
               ),
-            )
-          ],
-        ),
+            ),
+          )
+        ],
       ),
     );
   }

@@ -56,7 +56,7 @@ class _HomepageViewState extends State<HomepageView> {
           // ),
           leading: IconButton(
             tooltip: "Profil",
-            icon: Icon(Icons.account_circle),
+            icon: Icon(Icons.person),
             color: Colors.white,
             onPressed: () {
               Navigator.pushNamed(context, PROFILE_ROUTE);

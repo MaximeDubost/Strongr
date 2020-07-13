@@ -133,6 +133,7 @@ class _AppExercisesPageState extends State<AppExercisesPage> {
                               displayMuscleListToString(appExercises[
                                       appExercises.indexOf(appExercise)]
                                   .muscleList),
+                              size: 18,
                               textAlign: TextAlign.start,
                             ),
                           ],
