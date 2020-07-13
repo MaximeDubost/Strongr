@@ -50,29 +50,53 @@ repository.createExercise = async (req) => {
 /// READ
 repository.readExercises = async (req) => {
   let exercise_list = [];
+  let sqlExerciseID = `Select id_exercise
+  FROM _exercise 
+  WHERE id_user = $1
+  `;
   let sqlReadAllExercices = `
-    SELECT e.id_exercise, e.name as name_exercise, ae.name as name_app_exercise, COUNT(s.id_set) as set_count, null as tonnage
+    SELECT e.id_exercise, e.name as name_exercise, ae.name as name_app_exercise, 
+    COUNT(s.id_set) as set_count, 
+    (
+      Select SUM(s.repetitions_count)
+      From _set s
+      WHERE s.id_exercise = $2
+      ) * 
+      (
+      Select MAX(s.place)
+      From _set s
+      WHERE s.id_exercise = $2
+      ) as volume
     FROM _exercise e
     JOIN _app_exercise ae ON ae.id_app_exercise = e.id_app_exercise
     JOIN _set s ON s.id_exercise = e.id_exercise
-    WHERE e.id_user = $1
+    WHERE e.id_user = $1 AND e.id_exercise = $2
     GROUP BY e.id_exercise, e.name, ae.name, e.last_update
     ORDER BY e.last_update DESC
     `;
   try {
-    var result = await clt.query(sqlReadAllExercices, [req.user.id]);
-    if (result.rowCount > 0) {
-      result.rows.forEach((row) => {
+    let exercisesID = await clt.query(sqlExerciseID, [req.user.id]);
+    if (exercisesID.rowCount > 0) {
+      for (let index = 0; index < exercisesID.rows.length; index++) {
+        let result = await clt.query(sqlReadAllExercices, [req.user.id, exercisesID.rows[index].id_exercise]);
+        let id_exercise = result.rows[0].id_exercise
+        let name_exercise = result.rows[0].name_exercise
+        let name_app_exercise = result.rows[0].name_app_exercise
+        let set_count = result.rows[0].set_count
+        let volume = result.rows[0].volume
+
         exercise_list.push(
           new Exercise(
-            row.id_exercise,
-            row.name_exercise,
-            row.name_app_exercise,
-            row.set_count,
-            row.tonnage
+            id_exercise,
+            name_exercise,
+            name_app_exercise,
+            set_count,
+            volume
           )
         );
-      });
+      }
+
+      console.log("elements => ", exercise_list)
     }
 
     return exercise_list;
