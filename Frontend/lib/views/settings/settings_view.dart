@@ -16,10 +16,17 @@ class _SettingsViewState extends State<SettingsView> {
   final globalKey = GlobalKey<ScaffoldState>();
   final List<String> settingsList = [
     "Mentions légales",
-    "Unité de mesure de masse",
+    "Unité de masse",
     "Déconnexion",
     "Supprimer le compte"
   ];
+  bool switchValue;
+
+  @override
+  void initState() {
+    super.initState();
+    switchValue = false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +45,8 @@ class _SettingsViewState extends State<SettingsView> {
                 case "Mentions légales":
                   Navigator.pushNamed(context, LEGAL_NOTICE_ROUTE);
                   break;
-                case "Unité de mesure de masse":
+                case "Unité de masse":
+                  setState(() => switchValue = !switchValue);
                   break;
                 case "Déconnexion":
                   logout(context);
@@ -50,16 +58,18 @@ class _SettingsViewState extends State<SettingsView> {
             },
             child: SizedBox(
               height: 60,
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: StrongrText(
-                  settingsList[index],
-                  textAlign: TextAlign.start,
-                  color: settingsList[index] == "Supprimer le compte"
-                      ? Colors.red[800]
-                      : StrongrColors.black,
-                ),
-              ),
+              child: settingsList[index] != "Unité de masse"
+                  ? Align(
+                      alignment: Alignment.centerLeft,
+                      child: StrongrText(
+                        settingsList[index],
+                        textAlign: TextAlign.start,
+                        color: settingsList[index] == "Supprimer le compte"
+                            ? Colors.red[800]
+                            : StrongrColors.black,
+                      ),
+                    )
+                  : buildMassUnit(index),
             ),
           );
         },
@@ -69,6 +79,43 @@ class _SettingsViewState extends State<SettingsView> {
         itemCount: settingsList.length,
       ),
     );
+  }
+
+  Widget buildMassUnit(int index) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        StrongrText(
+          settingsList[index],
+          textAlign: TextAlign.start,
+        ),
+        Row(
+          children: <Widget>[
+            StrongrText(
+              "kg",
+              color: switchValue ? Colors.grey : StrongrColors.black80,
+            ),
+            Switch(
+              value: switchValue,
+              activeColor: Colors.white,
+              activeTrackColor: Colors.grey,
+              onChanged: (newValue) => setState(() => switchValue = newValue),
+            ),
+            StrongrText(
+              "lb",
+              color: !switchValue ? Colors.grey : StrongrColors.black80,
+            ),
+          ],
+        ),
+      ],
+    );
+    // return Align(
+    //   alignment: Alignment.centerLeft,
+    //   child: StrongrText(
+    //     settingsList[index],
+    //     textAlign: TextAlign.start,
+    //   ),
+    // );
   }
 
   logout(BuildContext context) {
