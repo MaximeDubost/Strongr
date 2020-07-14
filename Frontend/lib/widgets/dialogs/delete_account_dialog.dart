@@ -53,7 +53,7 @@ class _DeleteAccountDialogState extends State<DeleteAccountDialog> {
       child: AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
         content: Container(
-          height: 170,
+          height: 180,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[

@@ -28,6 +28,7 @@ import 'package:strongr/views/session/session_new_exercise_view.dart';
 import 'package:strongr/views/session/session_view.dart';
 import 'package:strongr/views/session/sessions_view.dart';
 import 'package:strongr/views/session_type/session_type_view.dart';
+import 'package:strongr/views/settings/legal_notice_view.dart';
 import 'package:strongr/views/settings/settings_view.dart';
 import 'package:strongr/views/unknown_view.dart';
 import 'routing_constants.dart';
@@ -273,6 +274,11 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case SETTINGS_ROUTE:
       return CupertinoPageRoute(
         builder: (context) => SettingsView(),
+      );
+
+    case LEGAL_NOTICE_ROUTE:
+      return CupertinoPageRoute(
+        builder: (context) => LegalNoticeView(),
       );
 
     ///

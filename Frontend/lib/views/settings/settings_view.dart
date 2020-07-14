@@ -15,11 +15,108 @@ class SettingsView extends StatefulWidget {
 class _SettingsViewState extends State<SettingsView> {
   final globalKey = GlobalKey<ScaffoldState>();
   final List<String> settingsList = [
-    "Conditions générales",
-    "Unité de mesure de masse",
+    "Mentions légales",
+    "Unité de masse",
     "Déconnexion",
     "Supprimer le compte"
   ];
+  bool switchValue;
+
+  @override
+  void initState() {
+    super.initState();
+    switchValue = false;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      key: globalKey,
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text("Réglages"),
+      ),
+      body: ListView.separated(
+        physics: BouncingScrollPhysics(),
+        itemBuilder: (_, index) {
+          return FlatButton(
+            onPressed: () async {
+              switch (settingsList[index]) {
+                case "Mentions légales":
+                  Navigator.pushNamed(context, LEGAL_NOTICE_ROUTE);
+                  break;
+                case "Unité de masse":
+                  setState(() => switchValue = !switchValue);
+                  break;
+                case "Déconnexion":
+                  logout(context);
+                  break;
+                case "Supprimer le compte":
+                  deleteAccount(context);
+                  break;
+              }
+            },
+            child: SizedBox(
+              height: 60,
+              child: settingsList[index] != "Unité de masse"
+                  ? Align(
+                      alignment: Alignment.centerLeft,
+                      child: StrongrText(
+                        settingsList[index],
+                        textAlign: TextAlign.start,
+                        color: settingsList[index] == "Supprimer le compte"
+                            ? Colors.red[800]
+                            : StrongrColors.black,
+                      ),
+                    )
+                  : buildMassUnit(index),
+            ),
+          );
+        },
+        separatorBuilder: (_, index) {
+          return Divider(height: 0);
+        },
+        itemCount: settingsList.length,
+      ),
+    );
+  }
+
+  Widget buildMassUnit(int index) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        StrongrText(
+          settingsList[index],
+          textAlign: TextAlign.start,
+        ),
+        Row(
+          children: <Widget>[
+            StrongrText(
+              "kg",
+              color: switchValue ? Colors.grey : StrongrColors.black80,
+            ),
+            Switch(
+              value: switchValue,
+              activeColor: Colors.white,
+              activeTrackColor: Colors.grey,
+              onChanged: (newValue) => setState(() => switchValue = newValue),
+            ),
+            StrongrText(
+              "lb",
+              color: !switchValue ? Colors.grey : StrongrColors.black80,
+            ),
+          ],
+        ),
+      ],
+    );
+    // return Align(
+    //   alignment: Alignment.centerLeft,
+    //   child: StrongrText(
+    //     settingsList[index],
+    //     textAlign: TextAlign.start,
+    //   ),
+    // );
+  }
 
   logout(BuildContext context) {
     showDialog(
@@ -29,7 +126,7 @@ class _SettingsViewState extends State<SettingsView> {
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
           content: Container(
-            height: 170,
+            height: 180,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
@@ -97,50 +194,5 @@ class _SettingsViewState extends State<SettingsView> {
         );
       }
     });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      key: globalKey,
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text("Réglages"),
-      ),
-      body: ListView.separated(
-        physics: BouncingScrollPhysics(),
-        itemBuilder: (_, index) {
-          return FlatButton(
-            onPressed: () async {
-              switch (settingsList[index]) {
-                case "Déconnexion":
-                  logout(context);
-                  break;
-                case "Supprimer le compte":
-                  deleteAccount(context);
-                  break;
-              }
-            },
-            child: SizedBox(
-              height: 60,
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: StrongrText(
-                  settingsList[index],
-                  textAlign: TextAlign.start,
-                  color: settingsList[index] == "Supprimer le compte"
-                      ? Colors.red[800]
-                      : StrongrColors.black,
-                ),
-              ),
-            ),
-          );
-        },
-        separatorBuilder: (_, index) {
-          return Divider();
-        },
-        itemCount: settingsList.length,
-      ),
-    );
   }
 }
