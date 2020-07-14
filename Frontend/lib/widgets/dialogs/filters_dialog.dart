@@ -256,20 +256,24 @@ class _FiltersDialogState extends State<FiltersDialog> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                FlatButton(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25.0),
-                  ),
-                  onPressed: () {
-                    if (switchValue) {
-                      setState(() => switchValue = !switchValue);
-                      filterModeChange();
-                    }
-                  },
-                  child: StrongrText(
-                    "Inclure",
-                    size: 18,
-                    color: !switchValue ? StrongrColors.blue : Colors.grey,
+                Flexible(
+                  // color: Colors.green,
+                  child: FlatButton(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25.0),
+                    ),
+                    onPressed: () {
+                      if (switchValue) {
+                        setState(() => switchValue = !switchValue);
+                        filterModeChange();
+                      }
+                    },
+                    child: StrongrText(
+                      "Inclure",
+                      size: 16,
+                      maxLines: 1,
+                      color: !switchValue ? StrongrColors.blue : Colors.grey,
+                    ),
                   ),
                 ),
                 Switch(
@@ -283,20 +287,23 @@ class _FiltersDialogState extends State<FiltersDialog> {
                     filterModeChange();
                   },
                 ),
-                FlatButton(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25.0),
-                  ),
-                  onPressed: () {
-                    if (!switchValue) {
-                      setState(() => switchValue = !switchValue);
-                      filterModeChange();
-                    }
-                  },
-                  child: StrongrText(
-                    "Exclure",
-                    size: 18,
-                    color: switchValue ? Colors.red[800] : Colors.grey,
+                Flexible(
+                  child: FlatButton(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25.0),
+                    ),
+                    onPressed: () {
+                      if (!switchValue) {
+                        setState(() => switchValue = !switchValue);
+                        filterModeChange();
+                      }
+                    },
+                    child: StrongrText(
+                      "Exclure",
+                      size: 16,
+                      maxLines: 1,
+                      color: switchValue ? Colors.red[800] : Colors.grey,
+                    ),
                   ),
                 ),
               ],

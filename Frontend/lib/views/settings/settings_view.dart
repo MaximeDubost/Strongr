@@ -134,7 +134,7 @@ class _SettingsViewState extends State<SettingsView> {
                 Column(
                   children: <Widget>[
                     FloatingActionButton.extended(
-                      backgroundColor: Colors.red[800],
+                      backgroundColor: StrongrColors.black,
                       label: StrongrText(
                         "Se déconnecter",
                         color: Colors.white,
