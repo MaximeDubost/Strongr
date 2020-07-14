@@ -73,9 +73,8 @@ class _HomepageViewState extends State<HomepageView> {
                     tooltip: "Menu",
                     onSelected: (value) async {
                       switch (value) {
-                        // case "Profil":
-                        //   break;
                         case "Paramètres":
+                          Navigator.pushNamed(context, SETTINGS_ROUTE);
                           break;
                         case "Filtres":
                           await showDialog(

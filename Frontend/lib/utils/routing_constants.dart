@@ -55,6 +55,4 @@ const String PROFILE_ROUTE = "profile";
 
 // Settings
 const String SETTINGS_ROUTE = "settings";
-
-// Debug Zone
-const String DEBUG_ZONE_ROUTE = "debug_zone";
+const String LEGAL_NOTICE_ROUTE = "legal_notice";

@@ -257,6 +257,9 @@ class _FiltersDialogState extends State<FiltersDialog> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 FlatButton(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25.0),
+                  ),
                   onPressed: () {
                     if (switchValue) {
                       setState(() => switchValue = !switchValue);
@@ -281,6 +284,9 @@ class _FiltersDialogState extends State<FiltersDialog> {
                   },
                 ),
                 FlatButton(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25.0),
+                  ),
                   onPressed: () {
                     if (!switchValue) {
                       setState(() => switchValue = !switchValue);
