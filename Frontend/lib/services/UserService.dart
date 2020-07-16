@@ -80,11 +80,11 @@ class UserService {
         //print(Global.prefs);
 
         /// Hors debug :
-        var token = jsonDecode(response.body);
-        prefs.setString("token", token['token']);
+      //  var token = jsonDecode(response.body); 
+      // prefs.setString("token", token['token']);
 
         /// Debug :
-        //Global.setStringDebug();
+        prefs.setString("token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJjaHJpc3QudWxjZUBnbWFpbC5jb20iLCJ1c2VybmFtZSI6InVsY2UzMSIsImlhdCI6MTU5MTcwNjc1OH0.3seWPlsA37QLcyJoNK55Z94OJdfsD6lbZYjSbAVhhxI");
       }
       return response.statusCode;
     } catch (e) {

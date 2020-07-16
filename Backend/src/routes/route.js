@@ -79,7 +79,7 @@ router.put(
 router.delete(
   "/exercise/:id_exercise",
   middleware.checkAuth,
-  ExerciseController.deleteExercise
+  ExerciseController.deleteExerciseAll
 );
 
 router.post(
