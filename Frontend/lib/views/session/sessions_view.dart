@@ -180,10 +180,10 @@ class _SessionsViewState extends State<SessionsView> {
                                   padding: EdgeInsets.only(left: 10),
                                   child: StrongrText(
                                     item.tonnage != null
-                                        ? "Tonnage de " +
+                                        ? "Volume de " +
                                             item.tonnage.toString() +
                                             "kg"
-                                        : "Tonnage inconnu",
+                                        : "Volume inconnu",
                                     color: item.tonnage != null
                                         ? StrongrColors.black
                                         : Colors.grey,

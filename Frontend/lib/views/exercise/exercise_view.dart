@@ -482,7 +482,7 @@ class _ExerciseViewState extends State<ExerciseView> {
                               child: Container(
                                 // width: 185,
                                 child: StrongrText(
-                                  "Tonnage inconnu",
+                                  "Volume inconnu",
                                   color: Colors.grey,
                                   textAlign: TextAlign.start,
                                   maxLines: 1,

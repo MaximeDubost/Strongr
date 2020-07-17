@@ -20,7 +20,7 @@ dependencies:
   flutter:
     sdk: flutter
   http: ^0.12.0+4
-  charts_flutter: ^0.8.1
+  charts_flutter: ^0.9.0
   flutter_auth_buttons: ^0.7.0
   flutter_cupertino_date_picker: ^1.0.12
   numberpicker: ^1.2.0

@@ -31,8 +31,7 @@ class _HomepageViewState extends State<HomepageView> {
       StatisticsPage(),
     ];
     // homepagePopupMenuItems = ["Profil", "Paramètres"];
-    appExercisesPopupMenuItems 
-    = ["Filtres", "Paramètres"];
+    appExercisesPopupMenuItems = ["Filtres", "Paramètres"];
     // = ["Profil", "Paramètres", "Filtres"];
     popupMenuItems =
         // currentPage != 0 ? homepagePopupMenuItems :
@@ -125,9 +124,9 @@ class _HomepageViewState extends State<HomepageView> {
       onTap: (index) {
         setState(() {
           currentPage = index;
-          popupMenuItems = 
-          // currentPage != 0 ? homepagePopupMenuItems : 
-          appExercisesPopupMenuItems;
+          popupMenuItems =
+              // currentPage != 0 ? homepagePopupMenuItems :
+              appExercisesPopupMenuItems;
         });
       },
       items: <BottomNavigationBarItem>[

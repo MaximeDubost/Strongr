@@ -523,8 +523,8 @@ class _SessionViewState extends State<SessionView> {
                                 // width: 185,
                                 child: StrongrText(
                                   item.tonnage != null
-                                      ? "Tonnage de " + item.tonnage.toString()
-                                      : "Tonnage inconnu",
+                                      ? "Volume de " + item.tonnage.toString()
+                                      : "Volume inconnu",
                                   color: item.tonnage == null
                                       ? Colors.grey
                                       : StrongrColors.black,

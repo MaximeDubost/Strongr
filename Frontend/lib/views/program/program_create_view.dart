@@ -444,9 +444,9 @@ class _ProgramCreateViewState extends State<ProgramCreateView> {
                                       // width: 185,
                                       child: StrongrText(
                                         item.tonnage != null
-                                            ? "Tonnage de " +
+                                            ? "Volume de " +
                                                 item.tonnage.toString()
-                                            : "Tonnage inconnu",
+                                            : "Volume inconnu",
                                         color: item.tonnage == null
                                             ? Colors.grey
                                             : StrongrColors.black,

@@ -103,8 +103,9 @@ class _LogInViewState extends State<LogInView> {
         password: password,
       );
       if (result == 200) {
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        print("TOKEN : " + prefs.getString("token"));
+        // SharedPreferences prefs = 
+        await SharedPreferences.getInstance();
+        // print("TOKEN : " + prefs.getString("token"));
         setState(() {
           _validate = false;
           warning = null;

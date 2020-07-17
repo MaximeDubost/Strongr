@@ -362,11 +362,11 @@ class _HomepageState extends State<Homepage> {
                                                                   left: 10),
                                                           child: StrongrText(
                                                             item.tonnage != null
-                                                                ? "Tonnage : " +
+                                                                ? "Volume : " +
                                                                     item.tonnage
                                                                         .toString() +
                                                                     "kg"
-                                                                : "Tonnage inconnu",
+                                                                : "Volume inconnu",
                                                             color: item
                                                                         .tonnage !=
                                                                     null
@@ -737,11 +737,11 @@ class _HomepageState extends State<Homepage> {
                                                                   left: 10),
                                                           child: StrongrText(
                                                             item.tonnage != null
-                                                                ? "Tonnage : " +
+                                                                ? "Volume : " +
                                                                     item.tonnage
                                                                         .toString() +
                                                                     "kg"
-                                                                : "Tonnage inconnu",
+                                                                : "Volume inconnu",
                                                             color: item
                                                                         .tonnage !=
                                                                     null
@@ -1108,11 +1108,11 @@ class _HomepageState extends State<Homepage> {
                                                                   left: 10),
                                                           child: StrongrText(
                                                             item.tonnage != null
-                                                                ? "Tonnage : " +
+                                                                ? "Volume : " +
                                                                     item.tonnage
                                                                         .toString() +
                                                                     "kg"
-                                                                : "Tonnage inconnu",
+                                                                : "Volume inconnu",
                                                             color: item
                                                                         .tonnage !=
                                                                     null
