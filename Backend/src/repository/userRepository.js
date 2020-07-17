@@ -7,6 +7,7 @@ const repository = {};
  * @param id_user int
  */
 repository.getUser = async (req) => {
+  console.log(req.user.id)
   let sqlGetUser = "SELECT * FROM _user as u WHERE u.id_user = $1::int";
   try {
     var result = await clt.query(sqlGetUser, [req.user.id]);

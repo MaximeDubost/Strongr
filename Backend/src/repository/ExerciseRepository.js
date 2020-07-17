@@ -48,12 +48,22 @@ repository.createExercise = async (req) => {
   }
 };
 /// READ
+repository.getExerciseID = async (id) => {
+  try {
+    let sqlExerciseID = `Select id_exercise
+    FROM _exercise 
+    WHERE id_user = $1
+    `;
+    return await clt.query(sqlExerciseID, [id]);
+  } catch (error) {
+    console.log(error)
+  }
+
+}
+
 repository.readExercises = async (req) => {
   let exercise_list = [];
-  let sqlExerciseID = `Select id_exercise
-  FROM _exercise 
-  WHERE id_user = $1
-  `;
+
   let sqlReadAllExercices = `
     SELECT e.id_exercise, e.name as name_exercise, ae.name as name_app_exercise, 
     COUNT(s.id_set) as set_count, 
@@ -75,7 +85,7 @@ repository.readExercises = async (req) => {
     ORDER BY e.last_update DESC
     `;
   try {
-    let exercisesID = await clt.query(sqlExerciseID, [req.user.id]);
+    let exercisesID = await getExerciseID(req.user.id);
     if (exercisesID.rowCount > 0) {
       for (let index = 0; index < exercisesID.rows.length; index++) {
         let result = await clt.query(sqlReadAllExercices, [req.user.id, exercisesID.rows[index].id_exercise]);
@@ -95,8 +105,6 @@ repository.readExercises = async (req) => {
           )
         );
       }
-
-      console.log("elements => ", exercise_list)
     }
 
     return exercise_list;
@@ -407,5 +415,31 @@ repository.getExerciseMusclesTarget = async (req) => {
     console.error(error);
   }
 };
+
+repository.getVolume = async (id_exercise, id_user) => {
+  let sql = `
+  SELECT
+  (
+     Select SUM(s.repetitions_count)
+     From _set s
+     WHERE s.id_exercise = $1::int
+   ) 
+  * 
+  (
+     Select MAX(s.place)
+     From _set s
+     WHERE s.id_exercise = $1::int
+  )as volume
+ FROM _exercise
+ WHERE id_exercise = $1::int AND id_user = $2::int
+ 
+  `
+  try {
+    return await clt.query(sql, [id_exercise, id_user]);
+  } catch (error) {
+    console.log(error)
+  }
+
+}
 
 export default repository;

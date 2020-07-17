@@ -20,7 +20,7 @@ let transport = nodemailer.createTransport({
  */
 controller.getUser = async (req, res) => {
   let body = {};
-  let user = await UserRepository.getUser();
+  let user = await UserRepository.getUser(req);
   if (user) {
     body = {
       message: "User found",
