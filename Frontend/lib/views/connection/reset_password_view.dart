@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:strongr/services/UserService.dart';
 import 'package:strongr/utils/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
+import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/views/connection/recovery_code_view.dart';
-import 'package:strongr/widgets/strongr_raised_button.dart';
 import 'package:strongr/widgets/strongr_rounded_textformfield.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
@@ -60,7 +60,8 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
         _isLoading = true;
       });
 
-      dynamic result = await UserService.postSendCode(email: email.toLowerCase());
+      dynamic result =
+          await UserService.postSendCode(email: email.toLowerCase());
       if (result == 200) {
         setState(() {
           _validate = false;
@@ -170,8 +171,15 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                                 ),
                               ),
                               SizedBox(height: 10),
-                              StrongrRaisedButton(
-                                "Envoyer un code",
+                              FloatingActionButton.extended(
+                                backgroundColor:
+                                    _isButtonEnabled
+                                        ? StrongrColors.black
+                                        : Colors.grey,
+                                label: StrongrText(
+                                  "Envoyer un code",
+                                  color: Colors.white,
+                                ),
                                 onPressed: _isButtonEnabled
                                     ? () async {
                                         FocusScope.of(context).unfocus();
