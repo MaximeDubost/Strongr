@@ -205,13 +205,13 @@ class _StatisticsPageState extends State<StatisticsPage> {
 
   _generateData() {
     var data1 = [
-      Bodyweight(54.0, DateTime.now().add(Duration(days: -6))),
-      Bodyweight(49.2, DateTime.now().add(Duration(days: -5))),
-      Bodyweight(52.5, DateTime.now().add(Duration(days: -4))),
-      Bodyweight(50.0, DateTime.now().add(Duration(days: -3))),
-      Bodyweight(55.0, DateTime.now().add(Duration(days: -2))),
-      Bodyweight(60.5, DateTime.now().add(Duration(days: -1))),
-      Bodyweight(70.0, DateTime.now()),
+      Bodyweight(value: 54.0, date: DateTime.now().add(Duration(days: -6))),
+      Bodyweight(value: 49.2, date: DateTime.now().add(Duration(days: -5))),
+      Bodyweight(value: 52.5, date: DateTime.now().add(Duration(days: -4))),
+      Bodyweight(value: 50.0, date: DateTime.now().add(Duration(days: -3))),
+      Bodyweight(value: 55.0, date: DateTime.now().add(Duration(days: -2))),
+      Bodyweight(value: 60.5, date: DateTime.now().add(Duration(days: -1))),
+      Bodyweight(value: 70.0, date: DateTime.now()),
     ];
 
     _seriesData.addAll([

@@ -10,13 +10,8 @@ class StrongrRoundedDatePicker extends StatefulWidget {
   final Color textColor;
   final Function onPressed;
 
-
-  StrongrRoundedDatePicker({
-    this.width,
-    this.text,
-    this.textColor,
-    @required this.onPressed
-  });
+  StrongrRoundedDatePicker(
+      {this.width, this.text, this.textColor, @required this.onPressed});
 
   @override
   _StrongrRoundedDatePickerState createState() =>
@@ -35,16 +30,23 @@ class _StrongrRoundedDatePickerState extends State<StrongrRoundedDatePicker> {
         borderRadius: BorderRadius.circular(20),
       ),
       child: FlatButton(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(20)),
+        ),
         onPressed: widget.onPressed,
         // onPressed: () {},
         child: Container(
           width:
               widget.width == null ? ScreenSize.width(context) : widget.width,
           child: Text(
-            widget.text == null || widget.text == "" ? "jj/mm/aaaa" : DateFormater.format(widget.text),
+            widget.text == null || widget.text == ""
+                ? "jj/mm/aaaa"
+                : DateFormater.format(widget.text),
             textAlign: TextAlign.start,
             style: TextStyle(
-              color: widget.text == null || widget.text == "" ? Colors.grey : StrongrColors.black,
+              color: widget.text == null || widget.text == ""
+                  ? Colors.grey
+                  : StrongrColors.black,
               fontSize: 16,
             ),
           ),
