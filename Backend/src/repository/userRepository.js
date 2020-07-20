@@ -50,7 +50,7 @@ repository.register = async (body) => {
         body.phonenumber,
         birth_to_datetime,
         body.username,
-        body.weight,
+        parseFloat(body.weight),
         new Date(),
       ]);
       res = 201;
