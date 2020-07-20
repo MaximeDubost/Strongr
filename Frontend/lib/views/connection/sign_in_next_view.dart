@@ -59,6 +59,7 @@ class _SignInNextViewState extends State<SignInNextView> {
     usernameRegExp = RegExp(r'^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{3,29}$');
     textInputWarning = "Format invalide";
     usernameWarning = "Nom d'utilisateur invalide";
+    bodyweight = Bodyweight();
     super.initState();
   }
 
@@ -117,8 +118,9 @@ class _SignInNextViewState extends State<SignInNextView> {
         firstname: firstname,
         lastname: lastname,
         birthdate: birthdate,
-        phonenumber: phonenumber,
         username: username.toLowerCase(),
+        bodyweight: bodyweight.value != null ? bodyweight.toKg() : null,
+        phonenumber: phonenumber,
       );
       if (result == 201) {
         setState(() {
@@ -138,7 +140,12 @@ class _SignInNextViewState extends State<SignInNextView> {
         setState(() {
           warning = "Ce nom d'utilisateur n'est pas disponible.";
         });
-      } else // 503
+      } else if (result == 123) {
+        setState(() {
+          warning = "OK";
+        });
+      }
+      else // 503
       {
         setState(() {
           warning = "Service indisponible. Veuillez réessayer ultérieurement.";
@@ -148,10 +155,8 @@ class _SignInNextViewState extends State<SignInNextView> {
         _isButtonEnabled = true;
         _isLoading = false;
       });
-    } else
-      setState(() {
-        _validate = true;
-      });
+    } 
+    else setState(() => _validate = true);
   }
 
   @override
@@ -395,7 +400,7 @@ class _SignInNextViewState extends State<SignInNextView> {
               showDialog(
                 context: context,
                 builder: (context) => BodyweightDialog(
-                  bodyweight: bodyweight ?? Bodyweight(value: 62.0, isLb: isLb),
+                  bodyweight: bodyweight.value != null ? bodyweight : Bodyweight(value: 62.0, isLb: isLb),
                 ),
               ).then((newBodyweight) {
                 if (newBodyweight != null) {
@@ -409,13 +414,13 @@ class _SignInNextViewState extends State<SignInNextView> {
             child: Container(
               width: ScreenSize.width(context) / 2.5,
               child: Text(
-                bodyweight != null
+                bodyweight.value != null
                     ? bodyweight.value.toString() +
                         (!bodyweight.isLb ? " kg" : " lbs")
                     : "(Facultatif)",
                 textAlign: TextAlign.start,
                 style: TextStyle(
-                  color: bodyweight != null ? StrongrColors.black : Colors.grey,
+                  color: bodyweight.value != null ? StrongrColors.black : Colors.grey,
                   fontSize: 16,
                 ),
               ),

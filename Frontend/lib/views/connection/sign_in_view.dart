@@ -116,8 +116,7 @@ class _SignInViewState extends State<SignInView> {
       if (result == 200) {
         setState(() {
           warning = null;
-          password = confirmPassword =
-              _passwordController.text = _confirmPasswordController.text = "";
+          _passwordController.text = _confirmPasswordController.text = "";
           _validate = _isLoading = _isButtonEnabled =
               passwordVisibility = confirmPasswordVisibility = false;
         });
@@ -136,7 +135,7 @@ class _SignInViewState extends State<SignInView> {
             "Service indisponible. Veuillez réessayer ultérieurement.");
       setState(() => _isButtonEnabled = _isLoading = false);
     }
-    setState(() => _validate = true);
+    else setState(() => _validate = true);
   }
 
   @override

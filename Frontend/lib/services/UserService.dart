@@ -28,15 +28,17 @@ class UserService {
 
   /// [POST] /user
   ///
-  /// Crée l'utilisateur avec les attributs [email], [password], [firstname], [lastname], [birthdate], [phonenumber] et [username].
+  /// Crée l'utilisateur avec les attributs [email], [password], [firstname], [lastname], [birthdate], [username], [bodyweight] et [phonenumber].
   static Future<int> postSignIn({
     @required String email,
     @required String password,
     @required String firstname,
     @required String lastname,
     @required String birthdate,
-    @required String phonenumber,
     @required String username,
+    @required double bodyweight,
+    @required String phonenumber,
+    
   }) async {
     try {
       Response response = await post(
@@ -49,8 +51,9 @@ class UserService {
           'firstname': firstname,
           'lastname': lastname,
           'birthdate': birthdate,
-          'phonenumber': phonenumber,
           'username': username,
+          'weight': bodyweight.toString(),
+          'phonenumber': phonenumber,
         },
       );
       return response.statusCode;

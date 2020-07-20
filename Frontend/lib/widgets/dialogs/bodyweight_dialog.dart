@@ -42,12 +42,19 @@ class _BodyweightDialogState extends State<BodyweightDialog> {
                 children: <Widget>[
                   StrongrText("Poids"),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: <Widget>[
-                      StrongrText(
-                        "kg",
-                        size: 18,
-                        color: !_switchValue ? StrongrColors.blue : Colors.grey,
+                      SizedBox(
+                        width: 30,
+                        child: RawMaterialButton(
+                          shape: CircleBorder(),
+                          onPressed: _switchValue ? () => setState(() => _switchValue = !_switchValue) : null,
+                          child: StrongrText(
+                            "kg",
+                            size: 18,
+                            color: !_switchValue ? StrongrColors.blue : Colors.grey,
+                          ),
+                        ),
                       ),
                       Switch(
                         activeColor: Colors.white,
@@ -56,10 +63,17 @@ class _BodyweightDialogState extends State<BodyweightDialog> {
                             setState(() => _switchValue = newValue),
                         value: _switchValue,
                       ),
-                      StrongrText(
-                        "lb",
-                        size: 18,
-                        color: _switchValue ? StrongrColors.blue : Colors.grey,
+                      SizedBox(
+                        width: 30,
+                        child: RawMaterialButton(
+                          shape: CircleBorder(),
+                          onPressed: !_switchValue ? () => setState(() => _switchValue = !_switchValue) : null,
+                          child: StrongrText(
+                            "lb",
+                            size: 18,
+                            color: _switchValue ? StrongrColors.blue : Colors.grey,
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -75,7 +89,7 @@ class _BodyweightDialogState extends State<BodyweightDialog> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      SizedBox(width: 24),
+                      SizedBox(width: 26),
                       SizedBox(
                         width: 50,
                         child: NumberPicker.integer(
@@ -111,9 +125,9 @@ class _BodyweightDialogState extends State<BodyweightDialog> {
                         ),
                       ),
                       SizedBox(
-                        width: 24,
+                        width: 26,
                         child: StrongrText(
-                          !_switchValue ? "kg" : "lb",
+                          !_switchValue ? "kg" : "lbs",
                           color: StrongrColors.black80
                         ),
                       ),
