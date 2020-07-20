@@ -29,7 +29,7 @@ repository.readProgram = async (req) => {
         );
       });
     }
-    console.log(program_list);
+    //console.log(program_list);
     return program_list;
   } catch (error) {
     console.log(error);

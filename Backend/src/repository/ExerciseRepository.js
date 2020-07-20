@@ -85,7 +85,7 @@ repository.readExercises = async (req) => {
     ORDER BY e.last_update DESC
     `;
   try {
-    let exercisesID = await getExerciseID(req.user.id);
+    let exercisesID = await repository.getExerciseID(req.user.id);
     if (exercisesID.rowCount > 0) {
       for (let index = 0; index < exercisesID.rows.length; index++) {
         let result = await clt.query(sqlReadAllExercices, [req.user.id, exercisesID.rows[index].id_exercise]);
@@ -106,7 +106,6 @@ repository.readExercises = async (req) => {
         );
       }
     }
-
     return exercise_list;
   } catch (error) {
     console.log(error);
@@ -417,6 +416,7 @@ repository.getExerciseMusclesTarget = async (req) => {
 };
 
 repository.getVolume = async (id_exercise, id_user) => {
+  console.log(id_exercise, id_user)
   let sql = `
   SELECT
   (
@@ -435,7 +435,9 @@ repository.getVolume = async (id_exercise, id_user) => {
  
   `
   try {
-    return await clt.query(sql, [id_exercise, id_user]);
+    let res = await clt.query(sql, [id_exercise, id_user]);
+    return res.rows[0]
+
   } catch (error) {
     console.log(error)
   }
@@ -443,3 +445,6 @@ repository.getVolume = async (id_exercise, id_user) => {
 }
 
 export default repository;
+
+
+
