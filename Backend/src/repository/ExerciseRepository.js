@@ -436,6 +436,7 @@ repository.getVolume = async (id_exercise, id_user) => {
   `
   try {
     let res = await clt.query(sql, [id_exercise, id_user]);
+    res.rows[0].volume = parseInt(res.rows[0].volume)
     return res.rows[0]
 
   } catch (error) {
