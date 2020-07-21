@@ -17,11 +17,10 @@ repository.getSessions = async (req) => {
     JOIN _session_exercise se ON s.id_session = se.id_session
     WHERE s.id_user = $1
     GROUP BY s.id_session, s.name, st.name, s.last_update
-    ORDER BY s.last_update DESC
     `
     try {
 
-        let sessionId = (await clt.query(`SELECT id_session FROM _session WHERE id_user = $1::int`, [req.user.id])).rows
+        let sessionId = (await clt.query(`SELECT id_session FROM _session WHERE id_user = $1::int ORDER BY s.last_update DESC`, [req.user.id])).rows
 
         let sessionList = []
         for (let index = 0; index < sessionId.length; index++) {
