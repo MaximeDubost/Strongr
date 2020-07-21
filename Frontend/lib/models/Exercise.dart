@@ -12,7 +12,7 @@ class Exercise {
   AppExercise appExercise;
   Equipment equipment;
   List<Set> sets;
-  double tonnage;
+  int volume;
   DateTime creationDate;
   DateTime lastUpdate;
   
@@ -22,7 +22,7 @@ class Exercise {
     this.appExercise,
     this.equipment,
     this.sets,
-    this.tonnage,
+    this.volume,
     this.creationDate,
     this.lastUpdate,
   });
@@ -34,7 +34,7 @@ class Exercise {
     AppExercise appExercise,
     Equipment equipment,
     List<Set> sets,
-    double tonnage,
+    int volume,
     DateTime creationDate,
     DateTime lastUpdate,
   }) {
@@ -44,7 +44,7 @@ class Exercise {
       appExercise: appExercise ?? this.appExercise,
       equipment: equipment ?? this.equipment,
       sets: sets ?? this.sets,
-      tonnage: tonnage ?? this.tonnage,
+      volume: volume ?? this.volume,
       creationDate: creationDate ?? this.creationDate,
       lastUpdate: lastUpdate ?? this.lastUpdate,
     );
@@ -57,7 +57,7 @@ class Exercise {
       'appExercise': appExercise?.toMap(),
       'equipment': equipment?.toMap(),
       'sets': sets,
-      'tonnage': tonnage,
+      'volume': volume,
       'creationDate': creationDate?.millisecondsSinceEpoch,
       'lastUpdate': lastUpdate?.millisecondsSinceEpoch,
     };
@@ -72,7 +72,7 @@ class Exercise {
       appExercise: AppExercise.fromMap(map['app_exercise']),
       equipment: map['equipment'].length == 0 ? null : Equipment.fromMap(map['equipment']),
       sets: List<Set>.from(map['sets']?.map((x) => Set.fromMap(x))) ?? null,
-      tonnage: map['tonnage'],
+      volume: map['volume'],
       creationDate: DateTime.parse(map['creation_date']),
       lastUpdate: DateTime.parse(map['last_update']),
     );
@@ -84,7 +84,7 @@ class Exercise {
 
   @override
   String toString() {
-    return 'Exercise(id: $id, name: $name, appExercise: $appExercise, equipment: $equipment, sets: $sets, tonnage: $tonnage, creationDate: $creationDate, lastUpdate: $lastUpdate)';
+    return 'Exercise(id: $id, name: $name, appExercise: $appExercise, equipment: $equipment, sets: $sets, volume: $volume, creationDate: $creationDate, lastUpdate: $lastUpdate)';
   }
 
   @override
@@ -98,7 +98,7 @@ class Exercise {
       o.appExercise == appExercise &&
       o.equipment == equipment &&
       listEquals(o.sets, sets) &&
-      o.tonnage == tonnage &&
+      o.volume == volume &&
       o.creationDate == creationDate &&
       o.lastUpdate == lastUpdate;
   }
@@ -110,7 +110,7 @@ class Exercise {
       appExercise.hashCode ^
       equipment.hashCode ^
       sets.hashCode ^
-      tonnage.hashCode ^
+      volume.hashCode ^
       creationDate.hashCode ^
       lastUpdate.hashCode;
   }

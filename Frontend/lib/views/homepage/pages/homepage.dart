@@ -349,7 +349,7 @@ class _HomepageState extends State<Homepage> {
                                                       Icon(
                                                         Icons.show_chart,
                                                         color:
-                                                            item.tonnage != null
+                                                            item.volume != null
                                                                 ? StrongrColors
                                                                     .black
                                                                 : Colors.grey,
@@ -361,14 +361,13 @@ class _HomepageState extends State<Homepage> {
                                                               EdgeInsets.only(
                                                                   left: 10),
                                                           child: StrongrText(
-                                                            item.tonnage != null
-                                                                ? "Volume : " +
-                                                                    item.tonnage
-                                                                        .toString() +
-                                                                    "kg"
+                                                            item.volume != null
+                                                                ? "Volume de " +
+                                                                    item.volume
+                                                                        .toString()
                                                                 : "Volume inconnu",
                                                             color: item
-                                                                        .tonnage !=
+                                                                        .volume !=
                                                                     null
                                                                 ? StrongrColors
                                                                     .black
@@ -724,7 +723,7 @@ class _HomepageState extends State<Homepage> {
                                                       Icon(
                                                         Icons.show_chart,
                                                         color:
-                                                            item.tonnage != null
+                                                            item.volume != null
                                                                 ? StrongrColors
                                                                     .black
                                                                 : Colors.grey,
@@ -736,14 +735,13 @@ class _HomepageState extends State<Homepage> {
                                                               EdgeInsets.only(
                                                                   left: 10),
                                                           child: StrongrText(
-                                                            item.tonnage != null
-                                                                ? "Volume : " +
-                                                                    item.tonnage
-                                                                        .toString() +
-                                                                    "kg"
+                                                            item.volume != null
+                                                                ? "Volume de " +
+                                                                    item.volume
+                                                                        .toString()
                                                                 : "Volume inconnu",
                                                             color: item
-                                                                        .tonnage !=
+                                                                        .volume !=
                                                                     null
                                                                 ? StrongrColors
                                                                     .black
@@ -1095,7 +1093,7 @@ class _HomepageState extends State<Homepage> {
                                                       Icon(
                                                         Icons.show_chart,
                                                         color:
-                                                            item.tonnage != null
+                                                            item.volume != null
                                                                 ? StrongrColors
                                                                     .black
                                                                 : Colors.grey,
@@ -1107,14 +1105,13 @@ class _HomepageState extends State<Homepage> {
                                                               EdgeInsets.only(
                                                                   left: 10),
                                                           child: StrongrText(
-                                                            item.tonnage != null
-                                                                ? "Volume : " +
-                                                                    item.tonnage
-                                                                        .toString() +
-                                                                    "kg"
+                                                            item.volume != null
+                                                                ? "Volume de " +
+                                                                    item.volume
+                                                                        .toString()
                                                                 : "Volume inconnu",
                                                             color: item
-                                                                        .tonnage !=
+                                                                        .volume !=
                                                                     null
                                                                 ? StrongrColors
                                                                     .black

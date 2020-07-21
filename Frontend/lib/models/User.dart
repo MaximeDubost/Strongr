@@ -14,7 +14,7 @@ class User {
   String exerciseCount;
   String sessionCount;
   String programCount;
-  double volumeAverage;
+  int volumeAverage;
 
   User({
     this.id,
@@ -47,7 +47,7 @@ class User {
     int exerciseCount,
     int sessionCount,
     int programCount,
-    double volumeAverage,
+    int volumeAverage,
   }) {
     return User(
       id: id ?? this.id,

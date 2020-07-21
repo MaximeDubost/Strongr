@@ -181,19 +181,18 @@ class _ExercisesViewState extends State<ExercisesView> {
                               children: <Widget>[
                                 Icon(
                                   Icons.show_chart,
-                                  color: item.tonnage != null
+                                  color: item.volume != null
                                       ? StrongrColors.black
                                       : Colors.grey,
                                 ),
                                 Container(
                                   padding: EdgeInsets.only(left: 10),
                                   child: StrongrText(
-                                    item.tonnage != null
+                                    item.volume != null
                                         ? "Volume de " +
-                                            item.tonnage.toString() +
-                                            "kg"
+                                            item.volume.toString()
                                         : "Volume inconnu",
-                                    color: item.tonnage != null
+                                    color: item.volume != null
                                         ? StrongrColors.black
                                         : Colors.grey,
                                   ),
@@ -309,7 +308,7 @@ class _ExercisesViewState extends State<ExercisesView> {
                             name: item.name,
                             appExerciseName: item.appExerciseName,
                             setCount: item.setCount,
-                            tonnage: item.tonnage,
+                            volume: item.volume,
                           ),
                         );
                 },

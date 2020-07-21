@@ -6,7 +6,7 @@ class ExercisePreview {
  String name;
  String appExerciseName;
  String setCount;
- double tonnage;
+ int volume;
 
   ExercisePreview({
     this.id,
@@ -14,7 +14,7 @@ class ExercisePreview {
     this.name,
     this.appExerciseName,
     this.setCount,
-    this.tonnage,
+    this.volume,
   });
 
   ExercisePreview copyWith({
@@ -23,7 +23,7 @@ class ExercisePreview {
     String name,
     String appExerciseName,
     int setCount,
-    double tonnage,
+    int volume,
   }) {
     return ExercisePreview(
       id: id ?? this.id,
@@ -31,7 +31,7 @@ class ExercisePreview {
       name: name ?? this.name,
       appExerciseName: appExerciseName ?? this.appExerciseName,
       setCount: setCount ?? this.setCount,
-      tonnage: tonnage ?? this.tonnage,
+      volume: volume ?? this.volume,
     );
   }
 
@@ -42,7 +42,7 @@ class ExercisePreview {
       'name': name,
       'appExerciseName': appExerciseName,
       'setCount': setCount,
-      'tonnage': tonnage,
+      'volume': volume,
     };
   }
 
@@ -55,7 +55,7 @@ class ExercisePreview {
       name: map['name'],
       appExerciseName: map['app_exercise_name'],
       setCount: map['set_count'],
-      tonnage: map['tonnage'],
+      volume: map['volume'],
     );
     // try
     // {
@@ -65,7 +65,7 @@ class ExercisePreview {
     //     name: null,
     //     appExerciseName: map['app_exercise_name'],
     //     setCount: map['set_count'],
-    //     tonnage: map['tonnage'],
+    //     volume: map['volume'],
     //   );
     // } 
     // catch(e)
@@ -76,7 +76,7 @@ class ExercisePreview {
     //     name: map['name'],
     //     appExerciseName: map['app_exercise_name'],
     //     setCount: map['set_count'],
-    //     tonnage: map['tonnage'],
+    //     volume: map['volume'],
     //   );
     // }
   }
@@ -87,7 +87,7 @@ class ExercisePreview {
 
   @override
   String toString() {
-    return 'ExercisePreview(id: $id, place: $place, name: $name, appExerciseName: $appExerciseName, setCount: $setCount, tonnage: $tonnage)';
+    return 'ExercisePreview(id: $id, place: $place, name: $name, appExerciseName: $appExerciseName, setCount: $setCount, volume: $volume)';
   }
 
   @override
@@ -100,7 +100,7 @@ class ExercisePreview {
       o.name == name &&
       o.appExerciseName == appExerciseName &&
       o.setCount == setCount &&
-      o.tonnage == tonnage;
+      o.volume == volume;
   }
 
   @override
@@ -110,6 +110,6 @@ class ExercisePreview {
       name.hashCode ^
       appExerciseName.hashCode ^
       setCount.hashCode ^
-      tonnage.hashCode;
+      volume.hashCode;
   }
 }

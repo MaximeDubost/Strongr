@@ -513,7 +513,7 @@ class _SessionViewState extends State<SessionView> {
                               padding: EdgeInsets.only(left: 5, right: 5),
                               child: Icon(
                                 Icons.show_chart,
-                                color: item.tonnage == null
+                                color: item.volume == null
                                     ? Colors.grey
                                     : StrongrColors.black,
                               ),
@@ -522,10 +522,10 @@ class _SessionViewState extends State<SessionView> {
                               child: Container(
                                 // width: 185,
                                 child: StrongrText(
-                                  item.tonnage != null
-                                      ? "Volume de " + item.tonnage.toString()
+                                  item.volume != null
+                                      ? "Volume de " + item.volume.toString()
                                       : "Volume inconnu",
-                                  color: item.tonnage == null
+                                  color: item.volume == null
                                       ? Colors.grey
                                       : StrongrColors.black,
                                   textAlign: TextAlign.start,

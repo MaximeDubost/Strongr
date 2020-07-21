@@ -50,9 +50,11 @@ repository.createExercise = async (req) => {
 /// READ
 repository.getExerciseID = async (id) => {
   try {
-    let sqlExerciseID = `Select id_exercise
+    let sqlExerciseID = `
+    SELECT id_exercise
     FROM _exercise 
     WHERE id_user = $1
+    ORDER BY last_update DESC
     `;
     return await clt.query(sqlExerciseID, [id]);
   } catch (error) {
@@ -82,7 +84,6 @@ repository.readExercises = async (req) => {
     JOIN _set s ON s.id_exercise = e.id_exercise
     WHERE e.id_user = $1 AND e.id_exercise = $2
     GROUP BY e.id_exercise, e.name, ae.name, e.last_update
-    ORDER BY e.last_update DESC
     `;
   try {
     let exercisesID = await repository.getExerciseID(req.user.id);
@@ -93,7 +94,7 @@ repository.readExercises = async (req) => {
         let name_exercise = result.rows[0].name_exercise
         let name_app_exercise = result.rows[0].name_app_exercise
         let set_count = result.rows[0].set_count
-        let volume = result.rows[0].volume
+        let volume = parseInt(result.rows[0].volume)
 
         exercise_list.push(
           new Exercise(
@@ -106,6 +107,7 @@ repository.readExercises = async (req) => {
         );
       }
     }
+    console.log("EXERCISE LIST : ", exercise_list)
     return exercise_list;
   } catch (error) {
     console.log(error);

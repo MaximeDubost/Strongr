@@ -5,14 +5,14 @@ class Set {
   int place;
   int repetitionCount;
   int restTime;
-  double tonnage;
+  int volume;
 
   Set({
     this.id,
     this.place,
     this.repetitionCount,
     this.restTime,
-    this.tonnage,
+    this.volume,
   });
 
   Set copyWith({
@@ -20,14 +20,14 @@ class Set {
     int place,
     int repetitionCount,
     int restTime,
-    double tonnage,
+    int volume,
   }) {
     return Set(
       id: id ?? this.id,
       place: place ?? this.place,
       repetitionCount: repetitionCount ?? this.repetitionCount,
       restTime: restTime ?? this.restTime,
-      tonnage: tonnage ?? this.tonnage,
+      volume: volume ?? this.volume,
     );
   }
 
@@ -37,7 +37,7 @@ class Set {
       'place': place,
       'repetitions_count': repetitionCount,
       'rest_time': restTime,
-      //'tonnage': 'tonnage'
+      //'volume': 'volume'
     };
   }
 
@@ -49,7 +49,7 @@ class Set {
       place: map['place'],
       repetitionCount: map['repetitions_count'],
       restTime: map['rest_time'],
-      tonnage: map['tonnage'],
+      volume: map['volume'],
     );
   }
 
@@ -60,7 +60,7 @@ class Set {
   @override
   String toString() {
     if (id != null) {
-      return 'Set(id: $id, place: $place, repetitionCount: $repetitionCount, restTime: $restTime, tonnage: $tonnage)';
+      return 'Set(id: $id, place: $place, repetitionCount: $repetitionCount, restTime: $restTime, volume: $volume)';
     } else {
       return 'Set(place: $place, repetitionCount: $repetitionCount, restTime: $restTime)';
     }
@@ -75,7 +75,7 @@ class Set {
         o.place == place &&
         o.repetitionCount == repetitionCount &&
         o.restTime == restTime &&
-        o.tonnage == tonnage;
+        o.volume == volume;
   }
 
   @override
@@ -84,6 +84,6 @@ class Set {
         place.hashCode ^
         repetitionCount.hashCode ^
         restTime.hashCode ^
-        tonnage.hashCode;
+        volume.hashCode;
   }
 }

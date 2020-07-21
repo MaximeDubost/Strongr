@@ -9,7 +9,7 @@ class Session {
   String name;
   SessionType sessionType;
   List<ExercisePreview> exercises;
-  double tonnage;
+  int volume;
   DateTime creationDate;
   DateTime lastUpdate;
 
@@ -19,7 +19,7 @@ class Session {
     this.name,
     this.sessionType,
     this.exercises,
-    this.tonnage,
+    this.volume,
     this.creationDate,
     this.lastUpdate,
   });
@@ -30,7 +30,7 @@ class Session {
     String name,
     SessionType sessionType,
     List<ExercisePreview> exercises,
-    double tonnage,
+    int volume,
     DateTime creationDate,
     DateTime lastUpdate,
   }) {
@@ -40,7 +40,7 @@ class Session {
       name: name ?? this.name,
       sessionType: sessionType ?? this.sessionType,
       exercises: exercises ?? this.exercises,
-      tonnage: tonnage ?? this.tonnage,
+      volume: volume ?? this.volume,
       creationDate: creationDate ?? this.creationDate,
       lastUpdate: lastUpdate ?? this.lastUpdate,
     );
@@ -53,7 +53,7 @@ class Session {
       'name': name,
       'sessionType': sessionType?.toMap(),
       'exercises': exercises?.map((x) => x?.toMap())?.toList(),
-      'tonnage': tonnage,
+      'volume': volume,
       'creationDate': creationDate?.millisecondsSinceEpoch,
       'lastUpdate': lastUpdate?.millisecondsSinceEpoch,
     };
@@ -68,7 +68,7 @@ class Session {
       name: map['name'],
       sessionType: SessionType.fromMap(map['session_type']),
       exercises: List<ExercisePreview>.from(map['exercises']?.map((x) => ExercisePreview.fromMap(x))),
-      tonnage: map['tonnage'],
+      volume: map['volume'],
       creationDate: DateTime.parse(map['creation_date']),
       lastUpdate: DateTime.parse(map['last_update']),
     );
@@ -80,7 +80,7 @@ class Session {
 
   @override
   String toString() {
-    return 'Session(id: $id, place: $place, name: $name, sessionType: $sessionType, exercises: $exercises, tonnage: $tonnage, creationDate: $creationDate, lastUpdate: $lastUpdate)';
+    return 'Session(id: $id, place: $place, name: $name, sessionType: $sessionType, exercises: $exercises, volume: $volume, creationDate: $creationDate, lastUpdate: $lastUpdate)';
   }
 
   @override
@@ -94,7 +94,7 @@ class Session {
       o.name == name &&
       o.sessionType == sessionType &&
       listEquals(o.exercises, exercises) &&
-      o.tonnage == tonnage &&
+      o.volume == volume &&
       o.creationDate == creationDate &&
       o.lastUpdate == lastUpdate;
   }
@@ -106,7 +106,7 @@ class Session {
       name.hashCode ^
       sessionType.hashCode ^
       exercises.hashCode ^
-      tonnage.hashCode ^
+      volume.hashCode ^
       creationDate.hashCode ^
       lastUpdate.hashCode;
   }
