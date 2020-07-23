@@ -4,7 +4,7 @@ import 'package:strongr/models/ProgramGoal.dart';
 import 'package:strongr/models/SessionPreview.dart';
 import 'package:strongr/services/ProgramGoalService.dart';
 import 'package:strongr/services/ProgramService.dart';
-import 'package:strongr/utils/routing_constants.dart';
+import 'package:strongr/route/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/views/program_goal/program_goal_view.dart';

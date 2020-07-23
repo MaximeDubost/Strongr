@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:strongr/models/Status.dart';
 
 class Set {
   int id;
@@ -6,6 +7,7 @@ class Set {
   int repetitionCount;
   int restTime;
   int volume;
+  Status status;
 
   Set({
     this.id,
@@ -13,6 +15,7 @@ class Set {
     this.repetitionCount,
     this.restTime,
     this.volume,
+    this.status = Status.none,
   });
 
   Set copyWith({
@@ -21,6 +24,7 @@ class Set {
     int repetitionCount,
     int restTime,
     int volume,
+    Status status,
   }) {
     return Set(
       id: id ?? this.id,
@@ -28,16 +32,18 @@ class Set {
       repetitionCount: repetitionCount ?? this.repetitionCount,
       restTime: restTime ?? this.restTime,
       volume: volume ?? this.volume,
+      status: status ?? this.status,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      //'id': id
+      'id': id,
       'place': place,
       'repetitions_count': repetitionCount,
       'rest_time': restTime,
-      //'volume': 'volume'
+      'volume': volume,
+      'status': status,
     };
   }
 
@@ -50,6 +56,7 @@ class Set {
       repetitionCount: map['repetitions_count'],
       restTime: map['rest_time'],
       volume: map['volume'],
+      status: map['status'],
     );
   }
 
@@ -59,11 +66,7 @@ class Set {
 
   @override
   String toString() {
-    if (id != null) {
-      return 'Set(id: $id, place: $place, repetitionCount: $repetitionCount, restTime: $restTime, volume: $volume)';
-    } else {
-      return 'Set(place: $place, repetitionCount: $repetitionCount, restTime: $restTime)';
-    }
+    return 'Set(id: $id, place: $place, repetitionCount: $repetitionCount, restTime: $restTime, volume: $volume, status: $status)';
   }
 
   @override
@@ -75,7 +78,8 @@ class Set {
         o.place == place &&
         o.repetitionCount == repetitionCount &&
         o.restTime == restTime &&
-        o.volume == volume;
+        o.volume == volume &&
+        o.status == status;
   }
 
   @override
@@ -84,6 +88,7 @@ class Set {
         place.hashCode ^
         repetitionCount.hashCode ^
         restTime.hashCode ^
-        volume.hashCode;
+        volume.hashCode ^
+        status.hashCode;
   }
 }

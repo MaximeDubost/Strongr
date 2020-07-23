@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:strongr/services/UserService.dart';
-import 'package:strongr/utils/routing_constants.dart';
+import 'package:strongr/route/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
 // import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/views/connection/sign_in_next_view.dart';

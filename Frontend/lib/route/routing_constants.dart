@@ -23,6 +23,7 @@ const String EXERCISES_ROUTE = "exercises";
 const String EXERCISE_ROUTE = "exercise";
 const String EXERCISE_ADD_ROUTE = "exercise_add";
 const String EXERCISE_CREATE_ROUTE = "exercise_create";
+const String EXERCISES_PLAY_ROUTE = "exercises_play";
 
 // Sessions
 const String SESSIONS_ROUTE = "sessions";

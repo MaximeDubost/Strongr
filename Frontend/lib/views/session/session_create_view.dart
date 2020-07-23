@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:strongr/models/ExercisePreview.dart';
 import 'package:strongr/models/SessionType.dart';
 import 'package:strongr/services/SessionService.dart';
-import 'package:strongr/utils/routing_constants.dart';
+import 'package:strongr/route/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/session_type_definitor.dart';
 import 'package:strongr/utils/strongr_colors.dart';

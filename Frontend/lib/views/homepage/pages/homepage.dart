@@ -7,11 +7,13 @@ import 'package:strongr/services/ExerciseService.dart';
 import 'package:strongr/services/ProgramService.dart';
 import 'package:strongr/services/SessionService.dart';
 import 'package:strongr/utils/app_exercises_filters.dart';
-import 'package:strongr/utils/routing_constants.dart';
+import 'package:strongr/route/routing_constants.dart';
+import 'package:strongr/utils/mock_data.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strings.dart';
 import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/views/exercise/exercise_view.dart';
+import 'package:strongr/views/exercise/exercises_play_view.dart';
 import 'package:strongr/views/program/program_view.dart';
 import 'package:strongr/views/session/session_view.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
@@ -412,7 +414,18 @@ class _HomepageState extends State<Homepage> {
                                                   Icons.play_arrow,
                                                   color: Colors.white,
                                                 ),
-                                                onPressed: () {},
+                                                onPressed: () {
+                                                  // TODO
+                                                  Navigator.pushNamed(
+                                                    context,
+                                                    EXERCISES_PLAY_ROUTE,
+                                                    arguments:
+                                                        ExercisesPlayView(
+                                                      exercises: MockData
+                                                          .exerciseList,
+                                                    ),
+                                                  );
+                                                },
                                               ),
                                             ),
                                           ),

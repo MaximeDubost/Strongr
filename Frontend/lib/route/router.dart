@@ -13,6 +13,7 @@ import 'package:strongr/views/equipment/equipments_view.dart';
 import 'package:strongr/views/exercise/exercise_add_view.dart';
 import 'package:strongr/views/exercise/exercise_create_view.dart';
 import 'package:strongr/views/exercise/exercise_view.dart';
+import 'package:strongr/views/exercise/exercises_play_view.dart';
 import 'package:strongr/views/exercise/exercises_view.dart';
 import 'package:strongr/views/homepage/homepage_view.dart';
 import 'package:strongr/views/muscle/muscle_view.dart';
@@ -133,6 +134,14 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         builder: (context) => ExerciseCreateView(
           id: args.id,
           name: args.name,
+        ),
+      );
+
+    case EXERCISES_PLAY_ROUTE:
+      ExercisesPlayView args = settings.arguments;
+      return CupertinoPageRoute(
+        builder: (context) => ExercisesPlayView(
+          exercises: args.exercises
         ),
       );
 

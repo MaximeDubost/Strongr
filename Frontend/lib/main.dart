@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:strongr/utils/routing_constants.dart';
-import 'package:strongr/utils/router.dart' as router;
+import 'package:strongr/route/routing_constants.dart';
+import 'package:strongr/route/router.dart' as router;
 import 'package:strongr/utils/strongr_colors.dart';
 
 void main() => runApp(MyApp());

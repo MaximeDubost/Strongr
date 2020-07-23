@@ -4,7 +4,7 @@ import 'package:strongr/models/Exercise.dart';
 import 'package:strongr/models/Set.dart';
 import 'package:strongr/services/ExerciseService.dart';
 import 'package:strongr/utils/date_formater.dart';
-import 'package:strongr/utils/routing_constants.dart';
+import 'package:strongr/route/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strings.dart';
 import 'package:strongr/utils/strongr_colors.dart';
@@ -413,7 +413,7 @@ class _ExerciseViewState extends State<ExerciseView> {
                               child: Icon(
                                 Icons.autorenew,
                                 color:
-                                    item.restTime == null || item.restTime == 0
+                                    item.repetitionCount == null || item.repetitionCount == 0
                                         ? Colors.grey
                                         : StrongrColors.black,
                               ),
