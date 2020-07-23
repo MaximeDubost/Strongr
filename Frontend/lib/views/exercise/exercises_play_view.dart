@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:strongr/models/Exercise.dart';
 import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/widgets/strongr_text.dart';
@@ -41,12 +42,15 @@ class _ExercisesPlayViewState extends State<ExercisesPlayView> {
     super.initState();
   }
 
-  refreshStatus() {
-
-  }
+  refreshStatus() {}
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        statusBarColor: Color(0xFF2E7D32),
+      ),
+    );
     return Scaffold(
       appBar: buildAppBar(),
       body: pageView,
@@ -59,7 +63,7 @@ class _ExercisesPlayViewState extends State<ExercisesPlayView> {
   Widget buildAppBar() {
     return PreferredSize(
       preferredSize: Size.fromHeight(90),
-      child: SafeArea(
+      child: Container(
         child: Container(
           // color: Colors.blue[200],
           child: AppBar(
