@@ -9,34 +9,27 @@ import clt from '../core/config/database';
 const repository = {};
 
 repository.getSessions = async (req) => {
+    let volume = 0
+    var sqlgetSession = `
+    SELECT s.id_session, s.name as name_session, st.name as session_type_name, COUNT(se.id_exercise) as exercise_count
+    FROM _session s
+    JOIN _session_type st ON s.id_session_type = st.id_session_type
+    JOIN _session_exercise se ON s.id_session = se.id_session
+    WHERE s.id_user = $1
+    GROUP BY s.id_session, s.name, st.name, s.last_update
+    `
     try {
-        let volume = 0
-        let sessionId = (await clt.query(`
-        SELECT id_session 
-        FROM _session 
-        WHERE id_user = $1::int 
-        ORDER BY last_update DESC
-        `,
-            [req.user.id])).rows
-        console.log("SESSION ID : ", sessionId)
-        var sqlgetSession = `
-        SELECT s.id_session, s.name as name_session, st.name as session_type_name, COUNT(se.id_exercise) as exercise_count
-        FROM _session s
-        JOIN _session_type st ON s.id_session_type = st.id_session_type
-        JOIN _session_exercise se ON s.id_session = se.id_session
-        WHERE s.id_user = $1
-        GROUP BY s.id_session, s.name, st.name, s.last_update
-        `
+
+        let sessionId = (await clt.query(`SELECT id_session FROM _session WHERE id_user = $1::int ORDER BY s.last_update DESC`, [req.user.id])).rows
+
         let sessionList = []
         for (let index = 0; index < sessionId.length; index++) {
             volume = await repository.getVolume(sessionId[index].id_session, req.user.id)
             var result = await clt.query(sqlgetSession, [req.user.id])
-            console.log("RESULT ROWS : ", result.rows)
-            if (result.rowCount != 0)
+            if (result.rowCount != 0) {
                 sessionList.push(new Session(result.rows[index].id_session, result.rows[index].name_session, result.rows[index].session_type_name, result.rows[index].exercise_count, volume))
-
+            }
         }
-        console.log("SESSION LIST : ", sessionList)
         return sessionList
     } catch (error) {
         console.log(error)
@@ -57,7 +50,7 @@ repository.getSessionDetail = async (req) => {
 
         let sessionType = new SessionType(resultSessionType.rows[0].id_session_type, resultSessionType.rows[0].session_type_name)
         sql = `
-        SELECT e.id_exercise, se.place, e.name as name_exercise, ae.name as app_exercise_name, COUNT(sett.id_set) as set_count, null as tonnage 
+        SELECT e.id_exercise, se.place, e.name as name_exercise, ae.name as app_exercise_name, COUNT(sett.id_set) as set_count 
         FROM _session s
         JOIN _session_exercise se on s.id_session = se.id_session 
         JOIN _exercise e on se.id_exercise = e.id_exercise 
@@ -69,11 +62,12 @@ repository.getSessionDetail = async (req) => {
         `
         let resultExercises = await clt.query(sql, [req.user.id, req.params.id_session])
         if (resultExercises.rowCount > 0) {
-            resultExercises.rows.map(row => {
-                console.log("ROW : " + row)
-                let exercise = new ExerciseSession(row.id_exercise, row.place, row.name_exercise, row.app_exercise_name, row.set_count, row.tonnage)
+            for (let index = 0; index < resultExercises.rowCount; index++) {
+                const element = resultExercises.rows[index];
+                let volume = (await ExerciseRepository.getVolume(element.id_exercise, req.user.id)).volume;
+                let exercise = new ExerciseSession(element.id_exercise, element.place, element.name_exercise, element.app_exercise_name, element.set_count, volume)
                 exercises_list.push(exercise)
-            })
+            }
         }
         let data = new SessionDetail(resultSessionType.rows[0].id_session, resultSessionType.rows[0].session_name, sessionType, exercises_list, resultSessionType.rows[0].creation_date, resultSessionType.rows[0].last_update)
         console.log(data)
@@ -152,8 +146,9 @@ repository.getVolume = async (id_session, id_user) => {
             [id_session, id_user])
         for (let idx = 0; idx < id_exercise_list.rows.length; idx++) {
             const elemt = id_exercise_list.rows[idx]["id_exercise"];
-            let exercisesVolumes = await ExerciseRepository.getVolume(elemt, id_user)
-            res += parseInt(exercisesVolumes.volume)
+            //let volume = (await ExerciseRepository.getVolume(elemt, id_user)).volume;
+            //let exercisesVolumes = await ExerciseRepository.getVolume(elemt, id_user)
+            res += (await ExerciseRepository.getVolume(elemt, id_user)).volume
         }
         return res
     } catch (error) { }
