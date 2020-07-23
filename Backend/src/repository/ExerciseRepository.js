@@ -78,12 +78,15 @@ repository.readExercises = async (req) => {
     let exercisesID = await clt.query(sqlExerciseID, [req.user.id]);
     if (exercisesID.rowCount > 0) {
       for (let index = 0; index < exercisesID.rows.length; index++) {
-        let result = await clt.query(sqlReadAllExercices, [req.user.id, exercisesID.rows[index].id_exercise]);
-        let id_exercise = result.rows[0].id_exercise
-        let name_exercise = result.rows[0].name_exercise
-        let name_app_exercise = result.rows[0].name_app_exercise
-        let set_count = result.rows[0].set_count
-        let volume = result.rows[0].volume
+        let result = await clt.query(sqlReadAllExercices, [
+          req.user.id,
+          exercisesID.rows[index].id_exercise,
+        ]);
+        let id_exercise = result.rows[0].id_exercise;
+        let name_exercise = result.rows[0].name_exercise;
+        let name_app_exercise = result.rows[0].name_app_exercise;
+        let set_count = result.rows[0].set_count;
+        let volume = result.rows[0].volume;
 
         exercise_list.push(
           new Exercise(
@@ -96,7 +99,7 @@ repository.readExercises = async (req) => {
         );
       }
 
-      console.log("elements => ", exercise_list)
+      console.log("elements => ", exercise_list);
     }
 
     return exercise_list;
@@ -222,7 +225,6 @@ repository.detailExercise = async (req) => {
   }
 };
 
-
 repository.getExerciseMusclesTarget = async (req) => {
   var muscle_list = [];
   var list_exercise_muscles_target = [];
@@ -288,7 +290,8 @@ repository.deleteExerciseAll = async (req) => {
       req.user.id,
     ]);
     let allSession;
-    if (resultForIdSession.rowCount == 0) { repository.deleteCibleExercice(req.params.id_exercise)
+    if (resultForIdSession.rowCount == 0) {
+      repository.deleteCibleExercice(req.params.id_exercise);
     } else {
       allSession = resultForIdSession.rows[0].id_session;
     }
@@ -306,7 +309,18 @@ repository.deleteExerciseAll = async (req) => {
           req.params.id_exercise,
           row.id_session,
         ]);
-        repository.deleteCibleExercice(req.params.id_exercise)
+        repository.deleteCibleExercice(req.params.id_exercise);
+        let result = await clt.query(
+          "SELECT id_exercise FROM _session_exercise WHERE id_session = $1",
+          [row.id_session]
+        );
+
+        for (let i = 0; i < result.rowCount; i++) {
+          await clt.query(
+            "UPDATE _session_exercise SET place = $1 WHERE id_exercise = $2 AND id_session = $3",
+            [i + 1, result.rows[i].id_exercise, row.id_session]
+          );
+        }
       } else {
         // si session a un seul exercice
         // get program dans lequel cette session est presente
@@ -325,7 +339,7 @@ repository.deleteExerciseAll = async (req) => {
             selectIdSession,
             req.user.id,
           ]);
-          repository.deleteCibleExercice(req.params.id_exercise)
+          repository.deleteCibleExercice(req.params.id_exercise);
           await clt.query(sqlDeleteSession, [selectIdSession, req.user.id]);
         }
         resultForIdProgram.rows.forEach(async (r) => {
@@ -337,7 +351,7 @@ repository.deleteExerciseAll = async (req) => {
           let allSession = resultAnySession.rows;
           // si session n'est pas unique dans chaque programme
           if (allSession.length > 1) {
-            console.log("Le programme a plus d'une session")
+            console.log("Le programme a plus d'une session");
             allSession.forEach(async (session) => {
               await clt.query(sqlDeleteSessionExercise, [
                 allExercise[0].id_exercise,
@@ -348,8 +362,11 @@ repository.deleteExerciseAll = async (req) => {
                 req.user.id,
               ]);
               // Vérification à faire ici
-              repository.deleteCibleExercice(req.params.id_exercise)
-              console.log("L'ID de mon exercice est : ",allExercise[0].id_exercise)
+              repository.deleteCibleExercice(req.params.id_exercise);
+              console.log(
+                "L'ID de mon exercice est : ",
+                allExercise[0].id_exercise
+              );
               // await clt.query(sqlDeleteExercise, [
               //   allExercise[0].id_exercise,
               //   req.user.id,
@@ -357,7 +374,6 @@ repository.deleteExerciseAll = async (req) => {
               await clt.query(sqlDeleteSession, [selectIdSession, req.user.id]);
             });
           } else {
-
             await clt.query(sqlDeleteSessionExercise, [
               req.params.id_exercise,
               row.id_session,
@@ -389,28 +405,26 @@ repository.deleteExerciseAll = async (req) => {
 repository.deleteCibleExercice = async (id_exercise) => {
   let sql = `DELETE FROM _exercise WHERE id_exercise = $1`;
   await clt.query(sql, [id_exercise]);
-}
+};
 
 repository.deleteCibleSession = async (id_session) => {
   let sql = `DELETE FROM _session WHERE id_session = $1 `;
   await clt.query(sql, [id_session]);
-}
+};
 
 repository.deleteCibleProgram = async (id_program) => {
   let sql = ` DELETE FROM _program WHERE id_program = $1`;
   await clt.query(sql, [id_program]);
-}
+};
 
 repository.deleteCibleProgramSession = async (id_program, id_session) => {
   let sql = `  DELETE FROM _program_session WHERE id_session = $1 AND id_user = $2 `;
   await clt.query(sql, [id_program]);
-}
+};
 
 repository.deleteCibleSessionExercise = async (id_session, id_exercise) => {
   let sql = `  DELETE FROM _session_exercise WHERE id_session = $1 AND id_exercise = $2 `;
   await clt.query(sql, [id_session, id_exercise]);
-}
-
-
+};
 
 export default repository;
