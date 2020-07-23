@@ -38,12 +38,12 @@ class Set {
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
+      // 'id': id,
       'place': place,
       'repetitions_count': repetitionCount,
       'rest_time': restTime,
-      'volume': volume,
-      'status': status,
+      // 'volume': volume,
+      // 'status': status,
     };
   }
 

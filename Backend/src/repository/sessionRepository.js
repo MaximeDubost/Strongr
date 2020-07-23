@@ -20,7 +20,7 @@ repository.getSessions = async (req) => {
     `
     try {
 
-        let sessionId = (await clt.query(`SELECT id_session FROM _session WHERE id_user = $1::int ORDER BY s.last_update DESC`, [req.user.id])).rows
+        let sessionId = (await clt.query(`SELECT id_session FROM _session s WHERE id_user = $1::int ORDER BY s.last_update DESC`, [req.user.id])).rows
 
         let sessionList = []
         for (let index = 0; index < sessionId.length; index++) {

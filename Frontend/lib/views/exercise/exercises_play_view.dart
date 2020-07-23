@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:strongr/models/Exercise.dart';
+import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
@@ -41,9 +42,7 @@ class _ExercisesPlayViewState extends State<ExercisesPlayView> {
     super.initState();
   }
 
-  refreshStatus() {
-
-  }
+  refreshStatus() {}
 
   @override
   Widget build(BuildContext context) {
@@ -72,39 +71,85 @@ class _ExercisesPlayViewState extends State<ExercisesPlayView> {
               ),
               onPressed: () => Navigator.pop(context),
             ),
-            title: Column(
-              children: <Widget>[
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(25),
-                  child: Container(
-                    height: 25,
-                    child: LinearProgressIndicator(
-                      value: 0.35,
-                      valueColor:
-                          AlwaysStoppedAnimation<Color>(StrongrColors.blue),
-                      backgroundColor: StrongrColors.blue20,
-                    ),
-                  ),
-                ),
-              ],
+            // title: Column(
+            //   children: <Widget>[
+            //     ClipRRect(
+            //       borderRadius: BorderRadius.circular(25),
+            //       child: Container(
+            //         height: 25,
+            //         child: LinearProgressIndicator(
+            //           value: 0.35,
+            //           valueColor:
+            //               AlwaysStoppedAnimation<Color>(StrongrColors.blue),
+            //           backgroundColor: StrongrColors.blue20,
+            //         ),
+            //       ),
+            //     ),
+            //   ],
+            // ),
+            title: StrongrText(
+              "Session name",
+              bold: true,
             ),
+            centerTitle: true,
+            // bottom: PreferredSize(
+            //   preferredSize: null,
+            //   child: Column(
+            //     children: <Widget>[
+            //       Container(
+            //         padding: EdgeInsets.only(bottom: 8),
+            //         alignment: Alignment.center,
+            //         child: StrongrText(
+            //           "Progression : 35%",
+            //           size: 18,
+            //           color: Colors.grey,
+            //           textAlign: TextAlign.start,
+            //         ),
+            //       ),
+            //       Divider(
+            //         thickness: 0.5,
+            //         height: 0.5,
+            //       ),
+            //     ],
+            //   ),
+            // ),
             bottom: PreferredSize(
               preferredSize: null,
               child: Column(
                 children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.only(bottom: 8),
-                    alignment: Alignment.center,
-                    child: StrongrText(
-                      "Progression : 35%",
-                      size: 18,
-                      color: Colors.grey,
-                      textAlign: TextAlign.start,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      // Container(
+                      //   // color: Colors.red,
+                      //   height: 25,
+                      //   width: 50,
+                      // ),
+                      Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(25),
+                          child: Container(
+                            height: 25,
+                            width: ScreenSize.width(context) / 1.5,
+                            child: LinearProgressIndicator(
+                              value: 0.35,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                  StrongrColors.blue),
+                              backgroundColor: StrongrColors.blue20,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 60,
+                        child: StrongrText("35%"),
+                      ),
+                    ],
                   ),
                   Divider(
-                    thickness: 0.5,
                     height: 0.5,
+                    thickness: 0.5,
                   ),
                 ],
               ),
