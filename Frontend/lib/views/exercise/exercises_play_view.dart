@@ -38,9 +38,11 @@ class _ExercisesPlayViewState extends State<ExercisesPlayView> {
       children: [
         for (final item in exercises)
           ExercisePlayView(
+            exercises: exercises,
             exercise: item,
             onlyOne: exercises.length == 1,
             updateStatus: updateStatus,
+            nextExercise: nextExercise,
           ),
       ],
       onPageChanged: (newPage) {
@@ -77,6 +79,21 @@ class _ExercisesPlayViewState extends State<ExercisesPlayView> {
     if (exerciseSet != null) setState(() => exerciseSet.status = newStatus);
   }
 
+  nextExercise() {
+    for (final exercise in exercises) {
+      if (exercise.status == Status.waiting) {
+        setState(() {
+          currentPage = exercises.indexOf(exercise);
+          exercise.status = Status.inProgress;
+          exercise.sets[0].status = Status.inProgress;
+        });
+        controller.animateToPage(currentPage,
+            duration: Duration(milliseconds: 200), curve: Curves.ease);
+        break;
+      }
+    }
+  }
+
   /// Réinitialise les status de tous les exercices et de toutes leurs séries à [Status.none].
   disposeStatus() {
     for (final exercise in exercises) {
@@ -94,7 +111,6 @@ class _ExercisesPlayViewState extends State<ExercisesPlayView> {
         if (_set.status == Status.done || _set.status == Status.skipped)
           doneOrSkippedSetCount++;
       }
-
     return double.parse(
         (doneOrSkippedSetCount / totalSetCount).toStringAsPrecision(2));
   }
@@ -154,7 +170,8 @@ class _ExercisesPlayViewState extends State<ExercisesPlayView> {
                               child: LinearProgressIndicator(
                                 value: calculateProgress(),
                                 valueColor: AlwaysStoppedAnimation<Color>(
-                                    StrongrColors.blue),
+                                  StrongrColors.blue,
+                                ),
                                 backgroundColor: StrongrColors.blue20,
                               ),
                             ),
@@ -163,7 +180,8 @@ class _ExercisesPlayViewState extends State<ExercisesPlayView> {
                         SizedBox(
                           width: 80,
                           child: StrongrText(
-                              (calculateProgress() * 100).toString() + " %"),
+                              (calculateProgress() * 100).toStringAsFixed(1) +
+                                  " %"),
                         ),
                       ],
                     ),

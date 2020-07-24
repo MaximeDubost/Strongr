@@ -9,6 +9,7 @@ import 'package:strongr/widgets/strongr_rounded_container.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
 class ExercisePlayView extends StatefulWidget {
+  final List<Exercise> exercises;
   final Exercise exercise;
   final bool onlyOne;
   final void Function({
@@ -16,11 +17,14 @@ class ExercisePlayView extends StatefulWidget {
     Set exerciseSet,
     Status newStatus,
   }) updateStatus;
+  final void Function() nextExercise;
 
   ExercisePlayView({
+    this.exercises,
     this.exercise,
     this.onlyOne = false,
     this.updateStatus,
+    this.nextExercise,
   });
 
   @override
@@ -176,8 +180,8 @@ class _ExercisePlayViewState extends State<ExercisePlayView> {
   buildRightPartOfExercise(Exercise exercise) {
     switch (exercise.status) {
       case Status.waiting:
-        return Padding(
-          padding: EdgeInsets.all(16),
+        return FlatButton(
+          onPressed: null,
           child: StrongrText(
             "En attente...",
             color: StrongrColors.black20,
@@ -188,9 +192,7 @@ class _ExercisePlayViewState extends State<ExercisePlayView> {
       case Status.atRest:
         return FlatButton(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(
-              Radius.circular(25),
-            ),
+            borderRadius: BorderRadius.all(Radius.circular(25)),
           ),
           child: StrongrText(
             "Passer",
@@ -200,12 +202,14 @@ class _ExercisePlayViewState extends State<ExercisePlayView> {
             widget.updateStatus(exercise: exercise, newStatus: Status.skipped);
             for (final _set in exercise.sets)
               widget.updateStatus(exerciseSet: _set, newStatus: Status.skipped);
+            if (widget.exercises.indexOf(exercise) !=
+                widget.exercises.length - 1) widget.nextExercise();
             setState(() {});
           },
         );
       case Status.skipped:
-        return Padding(
-          padding: EdgeInsets.all(16),
+        return FlatButton(
+          onPressed: null,
           child: StrongrText(
             "Passé",
             color: Colors.red[200],
@@ -213,8 +217,8 @@ class _ExercisePlayViewState extends State<ExercisePlayView> {
         );
         break;
       case Status.done:
-        return Padding(
-          padding: EdgeInsets.all(16),
+        return FlatButton(
+          onPressed: null,
           child: StrongrText(
             "Terminé",
             color: StrongrColors.blue,
@@ -225,6 +229,39 @@ class _ExercisePlayViewState extends State<ExercisePlayView> {
         return SizedBox();
     }
   }
+
+  // nextSet({Set exerciseSet, Status statusBeforeNext}) {
+  //   // VALIDER
+  //   widget.updateStatus(exerciseSet: exerciseSet, newStatus: Status.done);
+  //   if (exercise.sets.indexOf(exerciseSet) == exercise.sets.length - 1)
+  //     widget.updateStatus(exercise: exercise, newStatus: Status.done);
+  //   else {
+  //     widget.updateStatus(
+  //       exerciseSet: exercise.sets[exercise.sets.indexOf(exerciseSet) + 1],
+  //       newStatus: Status.inProgress,
+  //     );
+  //   }
+  //   setState(() {});
+
+  //   // PASSER
+  //   widget.updateStatus(exerciseSet: exerciseSet, newStatus: Status.skipped);
+  //   if (exercise.sets.indexOf(exerciseSet) == exercise.sets.length - 1) {
+  //     int skippedSetCount = 0;
+  //     for (final _set in exercise.sets)
+  //       if (_set.status == Status.skipped) skippedSetCount++;
+
+  //     if (skippedSetCount != exercise.sets.length)
+  //       widget.updateStatus(exercise: exercise, newStatus: Status.done);
+  //     else
+  //       widget.updateStatus(exercise: exercise, newStatus: Status.skipped);
+  //   } else {
+  //     widget.updateStatus(
+  //       exerciseSet: exercise.sets[exercise.sets.indexOf(exerciseSet) + 1],
+  //       newStatus: Status.inProgress,
+  //     );
+  //   }
+  //   setState(() {});
+  // }
 
   Widget buildRightPartOfSet(Set _set) {
     switch (_set.status) {
@@ -256,10 +293,12 @@ class _ExercisePlayViewState extends State<ExercisePlayView> {
               ),
               onTap: () {
                 widget.updateStatus(exerciseSet: _set, newStatus: Status.done);
-                if (exercise.sets.indexOf(_set) == exercise.sets.length - 1)
+                if (exercise.sets.indexOf(_set) == exercise.sets.length - 1) {
                   widget.updateStatus(
                       exercise: exercise, newStatus: Status.done);
-                else {
+                  if (widget.exercises.indexOf(exercise) !=
+                      widget.exercises.length - 1) widget.nextExercise();
+                } else {
                   widget.updateStatus(
                     exerciseSet: exercise.sets[exercise.sets.indexOf(_set) + 1],
                     newStatus: Status.inProgress,
@@ -290,13 +329,14 @@ class _ExercisePlayViewState extends State<ExercisePlayView> {
                   int skippedSetCount = 0;
                   for (final _set in exercise.sets)
                     if (_set.status == Status.skipped) skippedSetCount++;
-
                   if (skippedSetCount != exercise.sets.length)
                     widget.updateStatus(
                         exercise: exercise, newStatus: Status.done);
                   else
                     widget.updateStatus(
                         exercise: exercise, newStatus: Status.skipped);
+                  if (widget.exercises.indexOf(exercise) !=
+                      widget.exercises.length - 1) widget.nextExercise();
                 } else {
                   widget.updateStatus(
                     exerciseSet: exercise.sets[exercise.sets.indexOf(_set) + 1],
