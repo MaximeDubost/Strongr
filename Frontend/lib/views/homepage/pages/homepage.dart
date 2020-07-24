@@ -415,14 +415,15 @@ class _HomepageState extends State<Homepage> {
                                                   color: Colors.white,
                                                 ),
                                                 onPressed: () {
-                                                  // TODO
+                                                  // TODO : Exécution exercice
                                                   Navigator.pushNamed(
                                                     context,
                                                     EXERCISES_PLAY_ROUTE,
                                                     arguments:
                                                         ExercisesPlayView(
-                                                      exercises: MockData
-                                                          .exerciseList,
+                                                      name: "Dips",
+                                                      exercises:
+                                                          MockData.exercise,
                                                     ),
                                                   );
                                                 },
@@ -799,7 +800,19 @@ class _HomepageState extends State<Homepage> {
                                                   Icons.play_arrow,
                                                   color: Colors.white,
                                                 ),
-                                                onPressed: () {},
+                                                onPressed: () {
+                                                  // TODO : Exécution séance
+                                                  Navigator.pushNamed(
+                                                    context,
+                                                    EXERCISES_PLAY_ROUTE,
+                                                    arguments:
+                                                        ExercisesPlayView(
+                                                      name: "Ma séance",
+                                                      exercises:
+                                                          MockData.exerciseList,
+                                                    ),
+                                                  );
+                                                },
                                               ),
                                             ),
                                           ),

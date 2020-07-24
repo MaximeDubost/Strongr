@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:strongr/models/Exercise.dart';
+import 'package:strongr/models/Status.dart';
+import 'package:strongr/models/Set.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/widgets/strongr_text.dart';
@@ -7,9 +9,10 @@ import 'package:strongr/widgets/strongr_text.dart';
 import 'exercise_play_view.dart';
 
 class ExercisesPlayView extends StatefulWidget {
+  final String name;
   final List<Exercise> exercises;
 
-  ExercisesPlayView({this.exercises});
+  ExercisesPlayView({this.name, this.exercises});
 
   @override
   _ExercisesPlayViewState createState() => _ExercisesPlayViewState();
@@ -20,17 +23,25 @@ class _ExercisesPlayViewState extends State<ExercisesPlayView> {
   int currentPage;
   PageController controller;
   PageView pageView;
+  double progress;
 
   @override
   void initState() {
     exercises = widget.exercises;
+    initStatus(exercises);
+    progress = 0;
     currentPage = 0;
     controller = PageController(initialPage: currentPage);
     pageView = PageView(
       physics: BouncingScrollPhysics(),
       controller: controller,
       children: [
-        for (final item in exercises) ExercisePlayView(exercise: item),
+        for (final item in exercises)
+          ExercisePlayView(
+            exercise: item,
+            onlyOne: exercises.length == 1,
+            updateStatus: updateStatus,
+          ),
       ],
       onPageChanged: (newPage) {
         setState(() {
@@ -42,7 +53,51 @@ class _ExercisesPlayViewState extends State<ExercisesPlayView> {
     super.initState();
   }
 
-  refreshStatus() {}
+  /// Initialise le premier exercice et sa première série à [Status.inProgress]
+  /// et tous les autres exercices et autres séries à [Status.waiting].
+  initStatus(List<Exercise> exercises) {
+    for (final exercise in exercises) {
+      exercises.indexOf(exercise) == 0
+          ? exercise.status = Status.inProgress
+          : exercise.status = Status.waiting;
+      for (final _set in exercise.sets)
+        exercises.indexOf(exercise) == 0 && exercise.sets.indexOf(_set) == 0
+            ? _set.status = Status.inProgress
+            : _set.status = Status.waiting;
+    }
+  }
+
+  /// Met à jour le status d'un [exercise] ou d'un [exerciseSet] par [newStatus].
+  updateStatus({
+    Exercise exercise,
+    Set exerciseSet,
+    Status newStatus,
+  }) {
+    if (exercise != null) setState(() => exercise.status = newStatus);
+    if (exerciseSet != null) setState(() => exerciseSet.status = newStatus);
+  }
+
+  /// Réinitialise les status de tous les exercices et de toutes leurs séries à [Status.none].
+  disposeStatus() {
+    for (final exercise in exercises) {
+      exercise.status = Status.none;
+      for (final _set in exercise.sets) _set.status = Status.none;
+    }
+  }
+
+  double calculateProgress() {
+    int totalSetCount = 0;
+    int doneOrSkippedSetCount = 0;
+    for (final exercise in exercises)
+      for (final _set in exercise.sets) {
+        totalSetCount++;
+        if (_set.status == Status.done || _set.status == Status.skipped)
+          doneOrSkippedSetCount++;
+      }
+
+    return double.parse(
+        (doneOrSkippedSetCount / totalSetCount).toStringAsPrecision(2));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,101 +112,67 @@ class _ExercisesPlayViewState extends State<ExercisesPlayView> {
 
   Widget buildAppBar() {
     return PreferredSize(
-      preferredSize: Size.fromHeight(90),
+      preferredSize: Size.fromHeight(85),
       child: SafeArea(
         child: Container(
           // color: Colors.blue[200],
           child: AppBar(
+            title: StrongrText(widget.name, bold: true),
+            centerTitle: true,
             backgroundColor: Colors.transparent,
             elevation: 0,
             leading: IconButton(
-              icon: Icon(
-                Icons.close,
-                color: StrongrColors.black,
-              ),
-              onPressed: () => Navigator.pop(context),
-            ),
-            // title: Column(
-            //   children: <Widget>[
-            //     ClipRRect(
-            //       borderRadius: BorderRadius.circular(25),
-            //       child: Container(
-            //         height: 25,
-            //         child: LinearProgressIndicator(
-            //           value: 0.35,
-            //           valueColor:
-            //               AlwaysStoppedAnimation<Color>(StrongrColors.blue),
-            //           backgroundColor: StrongrColors.blue20,
-            //         ),
-            //       ),
-            //     ),
-            //   ],
-            // ),
-            title: StrongrText(
-              "Session name",
-              bold: true,
-            ),
-            centerTitle: true,
-            // bottom: PreferredSize(
-            //   preferredSize: null,
-            //   child: Column(
-            //     children: <Widget>[
-            //       Container(
-            //         padding: EdgeInsets.only(bottom: 8),
-            //         alignment: Alignment.center,
-            //         child: StrongrText(
-            //           "Progression : 35%",
-            //           size: 18,
-            //           color: Colors.grey,
-            //           textAlign: TextAlign.start,
-            //         ),
-            //       ),
-            //       Divider(
-            //         thickness: 0.5,
-            //         height: 0.5,
-            //       ),
-            //     ],
-            //   ),
-            // ),
+                icon: Icon(
+                  Icons.close,
+                  color: StrongrColors.black,
+                ),
+                onPressed: () {
+                  disposeStatus();
+                  Navigator.pop(context);
+                }),
             bottom: PreferredSize(
               preferredSize: null,
-              child: Column(
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      // Container(
-                      //   // color: Colors.red,
-                      //   height: 25,
-                      //   width: 50,
-                      // ),
-                      Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(25),
-                          child: Container(
-                            height: 25,
-                            width: ScreenSize.width(context) / 1.5,
-                            child: LinearProgressIndicator(
-                              value: 0.35,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                  StrongrColors.blue),
-                              backgroundColor: StrongrColors.blue20,
+              child: Container(
+                // color: Colors.red[200],
+                child: Column(
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        // Container(
+                        //   // color: Colors.red,
+                        //   height: 25,
+                        //   width: 50,
+                        // ),
+                        Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(25),
+                            child: Container(
+                              height: 25,
+                              width: ScreenSize.width(context) / 1.5,
+                              child: LinearProgressIndicator(
+                                value: calculateProgress(),
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    StrongrColors.blue),
+                                backgroundColor: StrongrColors.blue20,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      SizedBox(
-                        width: 60,
-                        child: StrongrText("35%"),
-                      ),
-                    ],
-                  ),
-                  Divider(
-                    height: 0.5,
-                    thickness: 0.5,
-                  ),
-                ],
+                        SizedBox(
+                          width: 80,
+                          child: StrongrText(
+                              (calculateProgress() * 100).toString() + " %"),
+                        ),
+                      ],
+                    ),
+                    Divider(
+                      height: 0.5,
+                      thickness: 0.5,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

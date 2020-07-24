@@ -141,6 +141,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       ExercisesPlayView args = settings.arguments;
       return CupertinoPageRoute(
         builder: (context) => ExercisesPlayView(
+          name: args.name,
           exercises: args.exercises
         ),
       );
