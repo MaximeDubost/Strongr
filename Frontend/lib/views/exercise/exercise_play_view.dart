@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:strongr/models/Exercise.dart';
 import 'package:strongr/models/Status.dart';
@@ -9,6 +11,7 @@ import 'package:strongr/widgets/strongr_rounded_container.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
 class ExercisePlayView extends StatefulWidget {
+  final GlobalKey<ExercisePlayViewState> key;
   final List<Exercise> exercises;
   final Exercise exercise;
   final bool onlyOne;
@@ -20,6 +23,7 @@ class ExercisePlayView extends StatefulWidget {
   final void Function() nextExercise;
 
   ExercisePlayView({
+    this.key,
     this.exercises,
     this.exercise,
     this.onlyOne = false,
@@ -28,29 +32,75 @@ class ExercisePlayView extends StatefulWidget {
   });
 
   @override
-  _ExercisePlayViewState createState() => _ExercisePlayViewState();
+  ExercisePlayViewState createState() => ExercisePlayViewState();
 }
 
-class _ExercisePlayViewState extends State<ExercisePlayView> {
+class ExercisePlayViewState extends State<ExercisePlayView> {
   Exercise exercise;
+  int dynamicRestTime;
+  Timer _timer;
+  bool isSkipped;
 
   @override
   initState() {
     super.initState();
     exercise = widget.exercise;
+    isSkipped = false;
+  }
+
+  @override
+  dispose() {
+    super.dispose();
+  }
+
+  /// Arrête le timer.
+  cancelTimer() {
+    _timer.cancel();
+  }
+
+  /// Démarre le timer.
+  startRestTime(Duration restTimeDuration) async {
+    setState(() => dynamicRestTime = restTimeDuration.inSeconds);
+    _timer = Timer.periodic(
+      Duration(seconds: 1),
+      (timer) async {
+        if (dynamicRestTime > 0) {
+          setState(() => dynamicRestTime--);
+          // debugPrint(dynamicRestTime.toString());
+          if (dynamicRestTime == 0) {
+            timer.cancel();
+            setState(() => dynamicRestTime == 0);
+          }
+        } else {
+          timer.cancel();
+          setState(() => dynamicRestTime == 0);
+        }
+      },
+    );
+    // await Future.delayed(restTimeDuration, () {});
+    await Future.delayed(Duration(seconds: restTimeDuration.inSeconds), () {});
   }
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      physics: BouncingScrollPhysics(),
-      children: <Widget>[
-        buildExerciseInfo(),
-        buildSetList(),
-      ],
+    // debugPrint("Key of the exercise " + widget.exercise.id.toString() + " : " + widget.key.toString());
+    return WillPopScope(
+      // key: widget.key,
+      onWillPop: () async {
+        _timer.cancel();
+        return true;
+      },
+      child: ListView(
+        physics: BouncingScrollPhysics(),
+        children: <Widget>[
+          buildExerciseInfo(),
+          buildSetList(),
+        ],
+      ),
     );
   }
 
+  /// Crée la partie description de l'exercice.
   Widget buildExerciseInfo() {
     return Container(
       padding: EdgeInsets.all(8),
@@ -95,6 +145,7 @@ class _ExercisePlayViewState extends State<ExercisePlayView> {
     );
   }
 
+  /// Crée la liste des séries de l'exercice.
   Widget buildSetList() {
     List<Widget> setList = List<Widget>();
     for (final _set in widget.exercise.sets)
@@ -103,10 +154,14 @@ class _ExercisePlayViewState extends State<ExercisePlayView> {
           padding: EdgeInsets.all(4),
           child: StrongrRoundedContainer(
             width: ScreenSize.width(context),
-            borderColor: _set.status == Status.inProgress
-                ? StrongrColors.blue80
-                : StrongrColors.greyD,
-            borderWidth: _set.status == Status.inProgress ? 2 : 1,
+            borderColor:
+                _set.status == Status.inProgress || _set.status == Status.atRest
+                    ? StrongrColors.blue80
+                    : StrongrColors.greyD,
+            borderWidth:
+                _set.status == Status.inProgress || _set.status == Status.atRest
+                    ? 2
+                    : 1,
             onPressed: null,
             content: Padding(
               padding: EdgeInsets.all(8),
@@ -120,7 +175,7 @@ class _ExercisePlayViewState extends State<ExercisePlayView> {
                         child: StrongrText(
                           _set.place.toString(),
                           color: placeColor(_set),
-                          bold: placeBold(_set),
+                          bold: true,
                           maxLines: 1,
                         ),
                       ),
@@ -139,7 +194,7 @@ class _ExercisePlayViewState extends State<ExercisePlayView> {
                               StrongrText(
                                 _set.repetitionCount.toString(),
                                 color: repetitionCountColor(_set),
-                                bold: repetitionCountBold(_set),
+                                bold: _set.status == Status.inProgress,
                                 maxLines: 1,
                               ),
                             ],
@@ -154,11 +209,15 @@ class _ExercisePlayViewState extends State<ExercisePlayView> {
                                 ),
                               ),
                               StrongrText(
-                                TimeFormater.getDuration(
-                                  Duration(seconds: _set.restTime),
-                                ).toString(),
+                                _set.status != Status.atRest
+                                    ? TimeFormater.getDuration(
+                                        Duration(seconds: _set.restTime),
+                                      ).toString()
+                                    : TimeFormater.getDuration(
+                                        Duration(seconds: dynamicRestTime),
+                                      ).toString(),
                                 color: restTimeColor(_set),
-                                bold: restTimeBold(_set),
+                                bold: _set.status == Status.atRest,
                                 maxLines: 1,
                               ),
                             ],
@@ -177,7 +236,8 @@ class _ExercisePlayViewState extends State<ExercisePlayView> {
     return Column(children: setList);
   }
 
-  buildRightPartOfExercise(Exercise exercise) {
+  /// Crée la partie droite de la description de l'exercice (action "Passer" ou status courant).
+  Widget buildRightPartOfExercise(Exercise exercise) {
     switch (exercise.status) {
       case Status.waiting:
         return FlatButton(
@@ -195,10 +255,11 @@ class _ExercisePlayViewState extends State<ExercisePlayView> {
             borderRadius: BorderRadius.all(Radius.circular(25)),
           ),
           child: StrongrText(
-            "Passer",
+            "Passer", // Exercice
             color: Colors.grey,
           ),
           onPressed: () {
+            _timer.cancel();
             widget.updateStatus(exercise: exercise, newStatus: Status.skipped);
             for (final _set in exercise.sets)
               widget.updateStatus(exerciseSet: _set, newStatus: Status.skipped);
@@ -221,7 +282,7 @@ class _ExercisePlayViewState extends State<ExercisePlayView> {
           onPressed: null,
           child: StrongrText(
             "Terminé",
-            color: StrongrColors.blue,
+            color: StrongrColors.blue80,
           ),
         );
         break;
@@ -230,39 +291,7 @@ class _ExercisePlayViewState extends State<ExercisePlayView> {
     }
   }
 
-  // nextSet({Set exerciseSet, Status statusBeforeNext}) {
-  //   // VALIDER
-  //   widget.updateStatus(exerciseSet: exerciseSet, newStatus: Status.done);
-  //   if (exercise.sets.indexOf(exerciseSet) == exercise.sets.length - 1)
-  //     widget.updateStatus(exercise: exercise, newStatus: Status.done);
-  //   else {
-  //     widget.updateStatus(
-  //       exerciseSet: exercise.sets[exercise.sets.indexOf(exerciseSet) + 1],
-  //       newStatus: Status.inProgress,
-  //     );
-  //   }
-  //   setState(() {});
-
-  //   // PASSER
-  //   widget.updateStatus(exerciseSet: exerciseSet, newStatus: Status.skipped);
-  //   if (exercise.sets.indexOf(exerciseSet) == exercise.sets.length - 1) {
-  //     int skippedSetCount = 0;
-  //     for (final _set in exercise.sets)
-  //       if (_set.status == Status.skipped) skippedSetCount++;
-
-  //     if (skippedSetCount != exercise.sets.length)
-  //       widget.updateStatus(exercise: exercise, newStatus: Status.done);
-  //     else
-  //       widget.updateStatus(exercise: exercise, newStatus: Status.skipped);
-  //   } else {
-  //     widget.updateStatus(
-  //       exerciseSet: exercise.sets[exercise.sets.indexOf(exerciseSet) + 1],
-  //       newStatus: Status.inProgress,
-  //     );
-  //   }
-  //   setState(() {});
-  // }
-
+  /// Crée la partie droite de la série (actions "Valider" et "Passer" ou status courant).
   Widget buildRightPartOfSet(Set _set) {
     switch (_set.status) {
       case Status.waiting:
@@ -288,23 +317,37 @@ class _ExercisePlayViewState extends State<ExercisePlayView> {
                   "Valider",
                   size: 16,
                   maxLines: 1,
-                  color: StrongrColors.blue80,
+                  color: StrongrColors.blue,
                 ),
               ),
-              onTap: () {
-                widget.updateStatus(exerciseSet: _set, newStatus: Status.done);
-                if (exercise.sets.indexOf(_set) == exercise.sets.length - 1) {
+              onTap: () async {
+                widget.updateStatus(
+                    exerciseSet: _set, newStatus: Status.atRest);
+                // Méthode asynchrone de gestion du temps de repos
+                await startRestTime(Duration(seconds: _set.restTime));
+                // Créer un booléen "isSkipped" qui vérifie si le temps de repos n'a pas été passé,
+                // et exécuter la suite du code seulement si ce cas est vrai (!isSkipped).
+                if (!isSkipped) {
                   widget.updateStatus(
-                      exercise: exercise, newStatus: Status.done);
-                  if (widget.exercises.indexOf(exercise) !=
-                      widget.exercises.length - 1) widget.nextExercise();
-                } else {
-                  widget.updateStatus(
-                    exerciseSet: exercise.sets[exercise.sets.indexOf(_set) + 1],
-                    newStatus: Status.inProgress,
-                  );
+                      exerciseSet: _set, newStatus: Status.done);
+                  if (exercise.sets.indexOf(_set) == exercise.sets.length - 1) {
+                    widget.updateStatus(
+                        exercise: exercise, newStatus: Status.done);
+                    if (widget.exercises.indexOf(exercise) !=
+                        widget.exercises.length - 1) widget.nextExercise();
+                  } else {
+                    if (exercise.sets[exercise.sets.indexOf(_set) + 1].status ==
+                        Status.waiting)
+                      widget.updateStatus(
+                        exerciseSet:
+                            exercise.sets[exercise.sets.indexOf(_set) + 1],
+                        newStatus: Status.inProgress,
+                      );
+                  }
                 }
-                setState(() {});
+                try {
+                  setState(() => isSkipped = false);
+                } catch (e) {}
               },
             ),
             InkWell(
@@ -316,7 +359,7 @@ class _ExercisePlayViewState extends State<ExercisePlayView> {
               child: Padding(
                 padding: const EdgeInsets.all(8),
                 child: StrongrText(
-                  "Passer",
+                  "Passer", // Série
                   size: 16,
                   maxLines: 1,
                   color: Colors.grey,
@@ -365,7 +408,21 @@ class _ExercisePlayViewState extends State<ExercisePlayView> {
               color: Colors.grey,
             ),
           ),
-          onTap: () {},
+          onTap: () => setState(() {
+            _timer.cancel();
+            isSkipped = true;
+            widget.updateStatus(exerciseSet: _set, newStatus: Status.done);
+            if (exercise.sets.indexOf(_set) == exercise.sets.length - 1) {
+              widget.updateStatus(exercise: exercise, newStatus: Status.done);
+              if (widget.exercises.indexOf(exercise) !=
+                  widget.exercises.length - 1) widget.nextExercise();
+            } else {
+              widget.updateStatus(
+                exerciseSet: exercise.sets[exercise.sets.indexOf(_set) + 1],
+                newStatus: Status.inProgress,
+              );
+            }
+          }),
         );
         break;
       case Status.skipped:
@@ -378,10 +435,10 @@ class _ExercisePlayViewState extends State<ExercisePlayView> {
         break;
       case Status.done:
         return StrongrText(
-          "Terminé",
+          "Terminée",
           size: 16,
           maxLines: 1,
-          color: StrongrColors.blue,
+          color: StrongrColors.blue80,
         );
         break;
       default:
@@ -390,6 +447,7 @@ class _ExercisePlayViewState extends State<ExercisePlayView> {
     }
   }
 
+  /// Détermine la couleur de la place de la série.
   Color placeColor(Set _set) {
     switch (_set.status) {
       case Status.inProgress:
@@ -401,6 +459,7 @@ class _ExercisePlayViewState extends State<ExercisePlayView> {
     }
   }
 
+  /// Détermine la couleur du nombre de répétitions de la série.
   Color repetitionCountColor(Set _set) {
     switch (_set.status) {
       case Status.inProgress:
@@ -415,6 +474,7 @@ class _ExercisePlayViewState extends State<ExercisePlayView> {
     }
   }
 
+  /// Détermine la couleur du temps de repos de la série.
   Color restTimeColor(Set _set) {
     switch (_set.status) {
       case Status.atRest:
@@ -428,11 +488,4 @@ class _ExercisePlayViewState extends State<ExercisePlayView> {
         return Colors.grey;
     }
   }
-
-  bool placeBold(Set _set) =>
-      _set.status == Status.inProgress || _set.status == Status.atRest;
-
-  bool repetitionCountBold(Set _set) => _set.status == Status.inProgress;
-
-  bool restTimeBold(Set _set) => _set.status == Status.atRest;
 }

@@ -223,6 +223,7 @@ class _LogInViewState extends State<LogInView> {
                                 ),
                               ),
                               FlatButton(
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                                 onPressed: () {
                                   FocusScope.of(context).unfocus();
                                   Navigator.pushNamed(

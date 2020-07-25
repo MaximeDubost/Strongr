@@ -20,26 +20,31 @@ class ExercisesPlayView extends StatefulWidget {
 
 class _ExercisesPlayViewState extends State<ExercisesPlayView> {
   List<Exercise> exercises;
+  List<GlobalKey<ExercisePlayViewState>> exerciseKeys;
   int currentPage;
   PageController controller;
   PageView pageView;
-  double progress;
 
   @override
   void initState() {
     exercises = widget.exercises;
     initStatus(exercises);
-    progress = 0;
     currentPage = 0;
     controller = PageController(initialPage: currentPage);
+    exerciseKeys = List<GlobalKey<ExercisePlayViewState>>();
+    for (final exercise in exercises)
+      exerciseKeys.add(
+          GlobalKey<ExercisePlayViewState>(debugLabel: exercise.id.toString()));
+
     pageView = PageView(
       physics: BouncingScrollPhysics(),
       controller: controller,
       children: [
-        for (final item in exercises)
+        for (final exercise in exercises)
           ExercisePlayView(
+            key: exerciseKeys[exercises.indexOf(exercise)],
             exercises: exercises,
-            exercise: item,
+            exercise: exercise,
             onlyOne: exercises.length == 1,
             updateStatus: updateStatus,
             nextExercise: nextExercise,
@@ -75,21 +80,26 @@ class _ExercisesPlayViewState extends State<ExercisesPlayView> {
     Set exerciseSet,
     Status newStatus,
   }) {
-    if (exercise != null) setState(() => exercise.status = newStatus);
-    if (exerciseSet != null) setState(() => exerciseSet.status = newStatus);
+    try {
+      if (exercise != null) setState(() => exercise.status = newStatus);
+      if (exerciseSet != null) setState(() => exerciseSet.status = newStatus);
+    } catch (e) {}
   }
 
+  /// Passe à l'exercice suivant s'il existe.
   nextExercise() {
     for (final exercise in exercises) {
       if (exercise.status == Status.waiting) {
-        setState(() {
-          currentPage = exercises.indexOf(exercise);
-          exercise.status = Status.inProgress;
-          exercise.sets[0].status = Status.inProgress;
-        });
-        controller.animateToPage(currentPage,
-            duration: Duration(milliseconds: 200), curve: Curves.ease);
-        break;
+        try {
+          setState(() {
+            currentPage = exercises.indexOf(exercise);
+            exercise.status = Status.inProgress;
+            exercise.sets[0].status = Status.inProgress;
+          });
+          controller.animateToPage(currentPage,
+              duration: Duration(milliseconds: 200), curve: Curves.ease);
+          break;
+        } catch (e) {}
       }
     }
   }
@@ -102,17 +112,27 @@ class _ExercisesPlayViewState extends State<ExercisesPlayView> {
     }
   }
 
+  /// Calcule la progression de l'exercice ou de la séance.
   double calculateProgress() {
     int totalSetCount = 0;
     int doneOrSkippedSetCount = 0;
     for (final exercise in exercises)
       for (final _set in exercise.sets) {
         totalSetCount++;
-        if (_set.status == Status.done || _set.status == Status.skipped)
+        if (_set.status == Status.atRest || _set.status == Status.done || _set.status == Status.skipped)
           doneOrSkippedSetCount++;
       }
     return double.parse(
         (doneOrSkippedSetCount / totalSetCount).toStringAsPrecision(2));
+  }
+
+  /// Arrête le timer.
+  cancelTimer() {
+    for (final key in exerciseKeys)
+      try {
+        key.currentState.cancelTimer();
+        break;
+      } catch (e) {}
   }
 
   @override
@@ -121,11 +141,12 @@ class _ExercisesPlayViewState extends State<ExercisesPlayView> {
       appBar: buildAppBar(),
       body: pageView,
       bottomNavigationBar: exercises.length > 1
-          ? buildBottomNavigationBar(itemCount: exercises.length)
+          ? buildBottomNavigationBar(exercises: exercises)
           : null,
     );
   }
 
+  /// Crée la barre supérieure.
   Widget buildAppBar() {
     return PreferredSize(
       preferredSize: Size.fromHeight(85),
@@ -137,15 +158,25 @@ class _ExercisesPlayViewState extends State<ExercisesPlayView> {
             centerTitle: true,
             backgroundColor: Colors.transparent,
             elevation: 0,
-            leading: IconButton(
-                icon: Icon(
-                  Icons.close,
-                  color: StrongrColors.black,
-                ),
-                onPressed: () {
-                  disposeStatus();
-                  Navigator.pop(context);
-                }),
+            leading: calculateProgress() == 1
+                ? BackButton(
+                    color: StrongrColors.black,
+                    onPressed: () {
+                      cancelTimer();
+                      disposeStatus();
+                      Navigator.pop(context);
+                    },
+                  )
+                : IconButton(
+                    icon: Icon(
+                      Icons.close,
+                      color: StrongrColors.black,
+                    ),
+                    onPressed: () {
+                      cancelTimer();
+                      disposeStatus();
+                      Navigator.pop(context);
+                    }),
             bottom: PreferredSize(
               preferredSize: null,
               child: Container(
@@ -199,7 +230,8 @@ class _ExercisesPlayViewState extends State<ExercisesPlayView> {
     );
   }
 
-  Widget buildBottomNavigationBar({@required int itemCount}) {
+  /// Crée la barre de navigation inférieure.
+  Widget buildBottomNavigationBar({@required List<Exercise> exercises}) {
     return BottomNavigationBar(
       showSelectedLabels: false,
       showUnselectedLabels: false,
@@ -212,30 +244,21 @@ class _ExercisesPlayViewState extends State<ExercisesPlayView> {
             duration: Duration(milliseconds: 200), curve: Curves.ease);
       },
       items: [
-        for (int i = 1; i <= itemCount; i++)
+        for (final exercise in exercises)
           BottomNavigationBarItem(
             icon: Container(
               width: 32,
               height: 32,
               decoration: BoxDecoration(
-                color: i == 1
-                    ? i == currentPage + 1
-                        ? StrongrColors.blue
-                        : StrongrColors.blue80
-                    : i == currentPage + 1
-                        ? StrongrColors.black80
-                        : Colors.grey,
-                border: Border.all(
-                  color: Colors.transparent,
-                  width: 1,
+                color: bnbItemColor(
+                  exercise: exercise,
+                  isCurrentPage: currentPage == exercises.indexOf(exercise),
                 ),
-                borderRadius: BorderRadius.all(
-                  Radius.circular(25.0),
-                ),
+                borderRadius: BorderRadius.all(Radius.circular(25.0)),
               ),
               child: Center(
                 child: StrongrText(
-                  i.toString(),
+                  (exercises.indexOf(exercise) + 1).toString(),
                   color: Colors.white,
                 ),
               ),
@@ -244,5 +267,23 @@ class _ExercisesPlayViewState extends State<ExercisesPlayView> {
           ),
       ],
     );
+  }
+
+  /// Crée les élément de la barre de navigation inférieure.
+  Color bnbItemColor({Exercise exercise, bool isCurrentPage}) {
+    switch (exercise.status) {
+      case Status.skipped:
+        return isCurrentPage
+            ? StrongrColors.red
+            : StrongrColors.red.withOpacity(0.7);
+        break;
+      case Status.done:
+        return isCurrentPage
+            ? StrongrColors.blue
+            : StrongrColors.blue.withOpacity(0.7);
+        break;
+      default:
+        return isCurrentPage ? StrongrColors.black : Colors.grey;
+    }
   }
 }
