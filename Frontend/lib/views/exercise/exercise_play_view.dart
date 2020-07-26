@@ -250,23 +250,28 @@ class ExercisePlayViewState extends State<ExercisePlayView> {
         break;
       case Status.inProgress:
       case Status.atRest:
-        return FlatButton(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(25)),
+        return Visibility(
+          visible: widget.exercises.length > 1,
+          child: FlatButton(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(25)),
+            ),
+            child: StrongrText(
+              "Passer", // Exercice
+              color: Colors.grey,
+            ),
+            onPressed: () {
+              try {
+                _timer.cancel();
+              } catch (e) {}
+              widget.updateStatus(exercise: exercise, newStatus: Status.skipped);
+              for (final _set in exercise.sets)
+                widget.updateStatus(exerciseSet: _set, newStatus: Status.skipped);
+              if (widget.exercises.indexOf(exercise) !=
+                  widget.exercises.length - 1) widget.nextExercise();
+              setState(() {});
+            },
           ),
-          child: StrongrText(
-            "Passer", // Exercice
-            color: Colors.grey,
-          ),
-          onPressed: () {
-            _timer.cancel();
-            widget.updateStatus(exercise: exercise, newStatus: Status.skipped);
-            for (final _set in exercise.sets)
-              widget.updateStatus(exerciseSet: _set, newStatus: Status.skipped);
-            if (widget.exercises.indexOf(exercise) !=
-                widget.exercises.length - 1) widget.nextExercise();
-            setState(() {});
-          },
         );
       case Status.skipped:
         return FlatButton(

@@ -17,6 +17,8 @@ import 'package:strongr/widgets/strongr_rounded_container.dart';
 import 'package:strongr/widgets/strongr_snackbar_content.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
+import 'exercises_loading_view.dart';
+
 class ExerciseView extends StatefulWidget {
   final int id;
   final String name;
@@ -412,10 +414,10 @@ class _ExerciseViewState extends State<ExerciseView> {
                               padding: EdgeInsets.only(left: 5, right: 5),
                               child: Icon(
                                 Icons.autorenew,
-                                color:
-                                    item.repetitionCount == null || item.repetitionCount == 0
-                                        ? Colors.grey
-                                        : StrongrColors.black,
+                                color: item.repetitionCount == null ||
+                                        item.repetitionCount == 0
+                                    ? Colors.grey
+                                    : StrongrColors.black,
                               ),
                             ),
                             Flexible(
@@ -963,7 +965,18 @@ class _ExerciseViewState extends State<ExerciseView> {
                     color: Colors.white,
                   ),
                   onPressed: editButtonsEnabled
-                      ? isEditMode ? () => showDeleteDialog() : () {}
+                      ? isEditMode
+                          ? () => showDeleteDialog()
+                          : () {
+                              Navigator.pushNamed(
+                                context,
+                                EXERCISES_LOADING_ROUTE,
+                                arguments: ExercisesLoadingView(
+                                  exerciseId: widget.id,
+                                  name: widget.name,
+                                ),
+                              );
+                            }
                       : null,
                 ),
               ),

@@ -10,6 +10,7 @@ import 'package:strongr/utils/session_type_definitor.dart';
 import 'package:strongr/utils/strings.dart';
 import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/views/exercise/exercise_view.dart';
+import 'package:strongr/views/exercise/exercises_loading_view.dart';
 import 'package:strongr/views/session_type/session_type_view.dart';
 import 'package:strongr/widgets/dialogs/delete_dialog.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
@@ -165,7 +166,8 @@ class _SessionViewState extends State<SessionView> {
       validateButtonEnabled = false;
       editButtonsEnabled = false;
     });
-    SessionType sessionType = await SessionTypeDefinitor.defineByExercises(exercisesOfSession);
+    SessionType sessionType =
+        await SessionTypeDefinitor.defineByExercises(exercisesOfSession);
     int statusCode = await SessionService.putSession(
       id: widget.id,
       name: sessionName,
@@ -574,7 +576,14 @@ class _SessionViewState extends State<SessionView> {
                         Icons.play_arrow,
                         color: Colors.white,
                       ),
-                      onPressed: () {},
+                      onPressed: () => Navigator.pushNamed(
+                        context,
+                        EXERCISES_LOADING_ROUTE,
+                        arguments: ExercisesLoadingView(
+                          exerciseId: item.id,
+                          name: item.name,
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -1061,7 +1070,16 @@ class _SessionViewState extends State<SessionView> {
                     color: Colors.white,
                   ),
                   onPressed: editButtonsEnabled
-                      ? isEditMode ? () => showDeleteDialog() : () {}
+                      ? isEditMode
+                          ? () => showDeleteDialog()
+                          : () => Navigator.pushNamed(
+                                context,
+                                EXERCISES_LOADING_ROUTE,
+                                arguments: ExercisesLoadingView(
+                                  sessionId: widget.id,
+                                  name: widget.name,
+                                ),
+                              )
                       : null,
                 ),
               ),
