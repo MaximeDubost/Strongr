@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:strongr/utils/no_animation_material_page_route.dart';
+import 'package:strongr/transitions/fade_page_route.dart';
 import 'package:strongr/views/connection/log_in_view.dart';
 import 'package:strongr/views/connection/new_password_view.dart';
 import 'package:strongr/views/connection/recovery_code_view.dart';
@@ -13,6 +14,7 @@ import 'package:strongr/views/equipment/equipments_view.dart';
 import 'package:strongr/views/exercise/exercise_add_view.dart';
 import 'package:strongr/views/exercise/exercise_create_view.dart';
 import 'package:strongr/views/exercise/exercise_view.dart';
+import 'package:strongr/views/exercise/exercises_loading_view.dart';
 import 'package:strongr/views/exercise/exercises_play_view.dart';
 import 'package:strongr/views/exercise/exercises_view.dart';
 import 'package:strongr/views/homepage/homepage_view.dart';
@@ -137,12 +139,22 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         ),
       );
 
+    case EXERCISES_LOADING_ROUTE:
+      ExercisesLoadingView args = settings.arguments;
+      return FadePageRoute(
+         ExercisesLoadingView(
+          exerciseId: args.exerciseId,
+          sessionId: args.sessionId,
+          name: args.name,
+        ),
+      );
+
     case EXERCISES_PLAY_ROUTE:
       ExercisesPlayView args = settings.arguments;
-      return CupertinoPageRoute(
-        builder: (context) => ExercisesPlayView(
+      return MaterialPageRoute( builder: (context) =>
+        ExercisesPlayView(
           name: args.name,
-          exercises: args.exercises
+          exercises: args.exercises,
         ),
       );
 

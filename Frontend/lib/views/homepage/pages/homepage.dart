@@ -13,6 +13,7 @@ import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strings.dart';
 import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/views/exercise/exercise_view.dart';
+import 'package:strongr/views/exercise/exercises_loading_view.dart';
 import 'package:strongr/views/exercise/exercises_play_view.dart';
 import 'package:strongr/views/program/program_view.dart';
 import 'package:strongr/views/session/session_view.dart';
@@ -418,14 +419,23 @@ class _HomepageState extends State<Homepage> {
                                                   // TODO : Exécution exercice
                                                   Navigator.pushNamed(
                                                     context,
-                                                    EXERCISES_PLAY_ROUTE,
+                                                    EXERCISES_LOADING_ROUTE,
                                                     arguments:
-                                                        ExercisesPlayView(
-                                                      name: "Dips",
-                                                      exercises:
-                                                          MockData.exercise,
+                                                        ExercisesLoadingView(
+                                                      exerciseId: item.id,
+                                                      name: item.name,
                                                     ),
                                                   );
+                                                  // Navigator.pushNamed(
+                                                  //   context,
+                                                  //   EXERCISES_PLAY_ROUTE,
+                                                  //   arguments:
+                                                  //       ExercisesPlayView(
+                                                  //     name: "Dips",
+                                                  //     exercises:
+                                                  //         MockData.exercise,
+                                                  //   ),
+                                                  // );
                                                 },
                                               ),
                                             ),
@@ -804,14 +814,23 @@ class _HomepageState extends State<Homepage> {
                                                   // TODO : Exécution séance
                                                   Navigator.pushNamed(
                                                     context,
-                                                    EXERCISES_PLAY_ROUTE,
+                                                    EXERCISES_LOADING_ROUTE,
                                                     arguments:
-                                                        ExercisesPlayView(
-                                                      name: "Ma séance",
-                                                      exercises:
-                                                          MockData.exerciseList,
+                                                        ExercisesLoadingView(
+                                                      sessionId: item.id,
+                                                      name: item.name,
                                                     ),
                                                   );
+                                                  // Navigator.pushNamed(
+                                                  //   context,
+                                                  //   EXERCISES_PLAY_ROUTE,
+                                                  //   arguments:
+                                                  //       ExercisesPlayView(
+                                                  //     name: "Ma séance",
+                                                  //     exercises:
+                                                  //         MockData.exerciseList,
+                                                  //   ),
+                                                  // );
                                                 },
                                               ),
                                             ),
