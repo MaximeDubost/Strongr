@@ -8,13 +8,11 @@ import 'package:strongr/services/ProgramService.dart';
 import 'package:strongr/services/SessionService.dart';
 import 'package:strongr/utils/app_exercises_filters.dart';
 import 'package:strongr/route/routing_constants.dart';
-import 'package:strongr/utils/mock_data.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strings.dart';
 import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/views/exercise/exercise_view.dart';
 import 'package:strongr/views/exercise/exercises_loading_view.dart';
-import 'package:strongr/views/exercise/exercises_play_view.dart';
 import 'package:strongr/views/program/program_view.dart';
 import 'package:strongr/views/session/session_view.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
@@ -416,7 +414,6 @@ class _HomepageState extends State<Homepage> {
                                                   color: Colors.white,
                                                 ),
                                                 onPressed: () {
-                                                  // TODO : Exécution exercice
                                                   Navigator.pushNamed(
                                                     context,
                                                     EXERCISES_LOADING_ROUTE,
@@ -811,7 +808,6 @@ class _HomepageState extends State<Homepage> {
                                                   color: Colors.white,
                                                 ),
                                                 onPressed: () {
-                                                  // TODO : Exécution séance
                                                   Navigator.pushNamed(
                                                     context,
                                                     EXERCISES_LOADING_ROUTE,

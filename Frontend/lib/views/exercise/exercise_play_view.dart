@@ -93,6 +93,7 @@ class ExercisePlayViewState extends State<ExercisePlayView> {
   @override
   Widget build(BuildContext context) {
     // debugPrint("Key of the exercise " + widget.exercise.id.toString() + " : " + widget.key.toString());
+    // debugPrint("WIDGET DynamicRestType : " + (widget.getDynamicRestTime()).toString());
     return ListView(
       physics: BouncingScrollPhysics(),
       children: <Widget>[
@@ -217,7 +218,9 @@ class ExercisePlayViewState extends State<ExercisePlayView> {
                                       ).toString()
                                     : TimeFormater.getDuration(
                                         // Duration(seconds: dynamicRestTime),
-                                        Duration(seconds: widget.getDynamicRestTime()),
+                                        Duration(
+                                            seconds:
+                                                widget.getDynamicRestTime()),
                                       ).toString(),
                                 color: restTimeColor(_set),
                                 bold: _set.status == Status.atRest,
@@ -262,7 +265,7 @@ class ExercisePlayViewState extends State<ExercisePlayView> {
             color: Colors.grey,
           ),
           onPressed: () {
-            // _timer.cancel(); // TODO : Parent -> cancelTimer()
+            // _timer.cancel();
             widget.cancelTimer();
             widget.updateStatus(exercise: exercise, newStatus: Status.skipped);
             for (final _set in exercise.sets)
@@ -327,9 +330,7 @@ class ExercisePlayViewState extends State<ExercisePlayView> {
               onTap: () async {
                 widget.updateStatus(
                     exerciseSet: _set, newStatus: Status.atRest);
-                setState(() {
-                  
-                });
+                setState(() {});
                 // Méthode asynchrone de gestion du temps de repos
                 await widget.startRestTime(Duration(seconds: _set.restTime));
                 // Créer un booléen "isSkipped" qui vérifie si le temps de repos n'a pas été passé,
@@ -416,7 +417,7 @@ class ExercisePlayViewState extends State<ExercisePlayView> {
             ),
           ),
           onTap: () => setState(() {
-            // _timer.cancel(); // TODO : Parent -> cancelTimer()
+            // _timer.cancel();
             widget.cancelTimer();
             isSkipped = true;
             widget.updateStatus(exerciseSet: _set, newStatus: Status.done);
@@ -495,5 +496,9 @@ class ExercisePlayViewState extends State<ExercisePlayView> {
       default:
         return Colors.grey;
     }
+  }
+
+  refresh() {
+    setState(() {});
   }
 }

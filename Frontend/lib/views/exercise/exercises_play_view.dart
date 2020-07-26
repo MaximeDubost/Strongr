@@ -54,6 +54,7 @@ class _ExercisesPlayViewState extends State<ExercisesPlayView> {
             nextExercise: nextExercise,
             startRestTime: startRestTime,
             cancelTimer: cancelTimer,
+            getDynamicRestTime: getDynamicRestTime,
           ),
       ],
       onPageChanged: (newPage) {
@@ -160,6 +161,19 @@ class _ExercisesPlayViewState extends State<ExercisesPlayView> {
       (timer) async {
         if (dynamicRestTime > 0) {
           setState(() => dynamicRestTime--);
+          for (final exercise in exercises) {
+            if (exercise.status == Status.inProgress) {
+              // debugPrint("Index : " + exercises.indexOf(exercise).toString());
+              try {
+                exerciseKeys[exercises.indexOf(exercise)]
+                    .currentState
+                    .refresh();
+              } catch (e) {}
+
+              break;
+            }
+          }
+
           // debugPrint(dynamicRestTime.toString());
           if (dynamicRestTime == 0) {
             timer.cancel();
@@ -175,9 +189,7 @@ class _ExercisesPlayViewState extends State<ExercisesPlayView> {
     await Future.delayed(Duration(seconds: restTimeDuration.inSeconds), () {});
   }
 
-  int getDynamicRestTime() {
-    return dynamicRestTime;
-  }
+  int getDynamicRestTime() => dynamicRestTime;
 
   @override
   Widget build(BuildContext context) {

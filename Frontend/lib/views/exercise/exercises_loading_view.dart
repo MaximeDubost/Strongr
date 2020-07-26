@@ -5,7 +5,6 @@ import 'package:strongr/route/routing_constants.dart';
 import 'package:strongr/services/ExerciseService.dart';
 import 'package:strongr/services/SessionService.dart';
 import 'package:strongr/utils/global_widgets.dart';
-import 'package:strongr/utils/strings.dart';
 import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/views/exercise/exercises_play_view.dart';
 import 'package:strongr/widgets/strongr_text.dart';
