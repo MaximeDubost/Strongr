@@ -267,12 +267,13 @@ class ExercisePlayViewState extends State<ExercisePlayView> {
               color: Colors.grey,
             ),
             onPressed: () {
-              try {
-                _timer.cancel();
-              } catch (e) {}
-              widget.updateStatus(exercise: exercise, newStatus: Status.skipped);
+              // _timer.cancel();
+              widget.cancelTimer();
+              widget.updateStatus(
+                  exercise: exercise, newStatus: Status.skipped);
               for (final _set in exercise.sets)
-                widget.updateStatus(exerciseSet: _set, newStatus: Status.skipped);
+                widget.updateStatus(
+                    exerciseSet: _set, newStatus: Status.skipped);
               if (widget.exercises.indexOf(exercise) !=
                   widget.exercises.length - 1) widget.nextExercise();
               setState(() {});
