@@ -21,6 +21,9 @@ class ExercisePlayView extends StatefulWidget {
     Status newStatus,
   }) updateStatus;
   final void Function() nextExercise;
+  final Future Function(Duration restTimeDuration) startRestTime;
+  final void Function() cancelTimer;
+  final int Function() getDynamicRestTime;
 
   ExercisePlayView({
     this.key,
@@ -29,6 +32,9 @@ class ExercisePlayView extends StatefulWidget {
     this.onlyOne = false,
     this.updateStatus,
     this.nextExercise,
+    this.startRestTime,
+    this.cancelTimer,
+    this.getDynamicRestTime,
   });
 
   @override
@@ -37,8 +43,8 @@ class ExercisePlayView extends StatefulWidget {
 
 class ExercisePlayViewState extends State<ExercisePlayView> {
   Exercise exercise;
-  int dynamicRestTime;
-  Timer _timer;
+  // int dynamicRestTime;
+  // Timer _timer;
   bool isSkipped;
 
   @override
@@ -51,52 +57,49 @@ class ExercisePlayViewState extends State<ExercisePlayView> {
   @override
   dispose() {
     super.dispose();
+    // try {
+    //   _timer.cancel();
+    // } catch (e) {}
   }
 
   /// Arrête le timer.
-  cancelTimer() {
-    _timer.cancel();
-  }
+  // cancelTimer() {
+  //   _timer.cancel();
+  // }
 
   /// Démarre le timer.
-  startRestTime(Duration restTimeDuration) async {
-    setState(() => dynamicRestTime = restTimeDuration.inSeconds);
-    _timer = Timer.periodic(
-      Duration(seconds: 1),
-      (timer) async {
-        if (dynamicRestTime > 0) {
-          setState(() => dynamicRestTime--);
-          // debugPrint(dynamicRestTime.toString());
-          if (dynamicRestTime == 0) {
-            timer.cancel();
-            setState(() => dynamicRestTime == 0);
-          }
-        } else {
-          timer.cancel();
-          setState(() => dynamicRestTime == 0);
-        }
-      },
-    );
-    // await Future.delayed(restTimeDuration, () {});
-    await Future.delayed(Duration(seconds: restTimeDuration.inSeconds), () {});
-  }
+  // startRestTime(Duration restTimeDuration) async {
+  //   setState(() => dynamicRestTime = restTimeDuration.inSeconds);
+  //   _timer = Timer.periodic(
+  //     Duration(seconds: 1),
+  //     (timer) async {
+  //       if (dynamicRestTime > 0) {
+  //         setState(() => dynamicRestTime--);
+  //         // debugPrint(dynamicRestTime.toString());
+  //         if (dynamicRestTime == 0) {
+  //           timer.cancel();
+  //           setState(() => dynamicRestTime == 0);
+  //         }
+  //       } else {
+  //         timer.cancel();
+  //         setState(() => dynamicRestTime == 0);
+  //       }
+  //     },
+  //   );
+  //   // await Future.delayed(restTimeDuration, () {});
+  //   await Future.delayed(Duration(seconds: restTimeDuration.inSeconds), () {});
+  // }
 
   @override
   Widget build(BuildContext context) {
     // debugPrint("Key of the exercise " + widget.exercise.id.toString() + " : " + widget.key.toString());
-    return WillPopScope(
-      // key: widget.key,
-      onWillPop: () async {
-        _timer.cancel();
-        return true;
-      },
-      child: ListView(
-        physics: BouncingScrollPhysics(),
-        children: <Widget>[
-          buildExerciseInfo(),
-          buildSetList(),
-        ],
-      ),
+    // debugPrint("WIDGET DynamicRestType : " + (widget.getDynamicRestTime()).toString());
+    return ListView(
+      physics: BouncingScrollPhysics(),
+      children: <Widget>[
+        buildExerciseInfo(),
+        buildSetList(),
+      ],
     );
   }
 
@@ -214,7 +217,10 @@ class ExercisePlayViewState extends State<ExercisePlayView> {
                                         Duration(seconds: _set.restTime),
                                       ).toString()
                                     : TimeFormater.getDuration(
-                                        Duration(seconds: dynamicRestTime),
+                                        // Duration(seconds: dynamicRestTime),
+                                        Duration(
+                                            seconds:
+                                                widget.getDynamicRestTime()),
                                       ).toString(),
                                 color: restTimeColor(_set),
                                 bold: _set.status == Status.atRest,
@@ -328,8 +334,9 @@ class ExercisePlayViewState extends State<ExercisePlayView> {
               onTap: () async {
                 widget.updateStatus(
                     exerciseSet: _set, newStatus: Status.atRest);
+                setState(() {});
                 // Méthode asynchrone de gestion du temps de repos
-                await startRestTime(Duration(seconds: _set.restTime));
+                await widget.startRestTime(Duration(seconds: _set.restTime));
                 // Créer un booléen "isSkipped" qui vérifie si le temps de repos n'a pas été passé,
                 // et exécuter la suite du code seulement si ce cas est vrai (!isSkipped).
                 if (!isSkipped) {
@@ -414,7 +421,8 @@ class ExercisePlayViewState extends State<ExercisePlayView> {
             ),
           ),
           onTap: () => setState(() {
-            _timer.cancel();
+            // _timer.cancel();
+            widget.cancelTimer();
             isSkipped = true;
             widget.updateStatus(exerciseSet: _set, newStatus: Status.done);
             if (exercise.sets.indexOf(_set) == exercise.sets.length - 1) {
@@ -492,5 +500,9 @@ class ExercisePlayViewState extends State<ExercisePlayView> {
       default:
         return Colors.grey;
     }
+  }
+
+  refresh() {
+    setState(() {});
   }
 }

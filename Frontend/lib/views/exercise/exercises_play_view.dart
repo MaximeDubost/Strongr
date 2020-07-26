@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:strongr/models/Exercise.dart';
 import 'package:strongr/models/Status.dart';
@@ -24,6 +26,8 @@ class _ExercisesPlayViewState extends State<ExercisesPlayView> {
   int currentPage;
   PageController controller;
   PageView pageView;
+  Timer _parentTimer;
+  int dynamicRestTime;
 
   @override
   void initState() {
@@ -48,6 +52,9 @@ class _ExercisesPlayViewState extends State<ExercisesPlayView> {
             onlyOne: exercises.length == 1,
             updateStatus: updateStatus,
             nextExercise: nextExercise,
+            startRestTime: startRestTime,
+            cancelTimer: cancelTimer,
+            getDynamicRestTime: getDynamicRestTime,
           ),
       ],
       onPageChanged: (newPage) {
@@ -56,8 +63,16 @@ class _ExercisesPlayViewState extends State<ExercisesPlayView> {
         });
       },
     );
-
     super.initState();
+  }
+
+  @override
+  dispose() {
+    super.dispose();
+    try {
+      _parentTimer.cancel();
+      cancelTimer();
+    } catch (e) {}
   }
 
   /// Initialise le premier exercice et sa première série à [Status.inProgress]
@@ -119,8 +134,9 @@ class _ExercisesPlayViewState extends State<ExercisesPlayView> {
     for (final exercise in exercises)
       for (final _set in exercise.sets) {
         totalSetCount++;
-        if (_set.status == Status.atRest || _set.status == Status.done || _set.status == Status.skipped)
-          doneOrSkippedSetCount++;
+        if (_set.status == Status.atRest ||
+            _set.status == Status.done ||
+            _set.status == Status.skipped) doneOrSkippedSetCount++;
       }
     return double.parse(
         (doneOrSkippedSetCount / totalSetCount).toStringAsPrecision(2));
@@ -128,21 +144,67 @@ class _ExercisesPlayViewState extends State<ExercisesPlayView> {
 
   /// Arrête le timer.
   cancelTimer() {
-    for (final key in exerciseKeys)
-      try {
-        key.currentState.cancelTimer();
-        break;
-      } catch (e) {}
+    try {
+      _parentTimer.cancel();
+      // for (final key in exerciseKeys) {
+      //   key.currentState.cancelTimer();
+      //   break;
+      // }
+    } catch (e) {}
   }
+
+  /// Démarre le timer.
+  Future startRestTime(Duration restTimeDuration) async {
+    setState(() => dynamicRestTime = restTimeDuration.inSeconds);
+    _parentTimer = Timer.periodic(
+      Duration(seconds: 1),
+      (timer) async {
+        if (dynamicRestTime > 0) {
+          setState(() => dynamicRestTime--);
+          for (final exercise in exercises) {
+            if (exercise.status == Status.inProgress) {
+              // debugPrint("Index : " + exercises.indexOf(exercise).toString());
+              try {
+                exerciseKeys[exercises.indexOf(exercise)]
+                    .currentState
+                    .refresh();
+              } catch (e) {}
+
+              break;
+            }
+          }
+
+          // debugPrint(dynamicRestTime.toString());
+          if (dynamicRestTime == 0) {
+            timer.cancel();
+            setState(() => dynamicRestTime == 0);
+          }
+        } else {
+          timer.cancel();
+          setState(() => dynamicRestTime == 0);
+        }
+      },
+    );
+    // await Future.delayed(restTimeDuration, () {});
+    await Future.delayed(Duration(seconds: restTimeDuration.inSeconds), () {});
+  }
+
+  int getDynamicRestTime() => dynamicRestTime;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: buildAppBar(),
-      body: pageView,
-      bottomNavigationBar: exercises.length > 1
-          ? buildBottomNavigationBar(exercises: exercises)
-          : null,
+    return WillPopScope(
+      onWillPop: () async {
+        _parentTimer.cancel();
+        return true;
+      },
+      child: Scaffold(
+        appBar: buildAppBar(),
+        body: pageView,
+        bottomNavigationBar: exercises.length > 1
+            ? buildBottomNavigationBar(exercises: exercises)
+            : null,
+      ),
     );
   }
 
