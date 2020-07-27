@@ -5,14 +5,14 @@ class ProgramPreview {
   String name;
   String programGoalName;
   String sessionCount;
-  double tonnage;
+  int volume;
 
   ProgramPreview({
     this.id,
     this.name,
     this.programGoalName,
     this.sessionCount,
-    this.tonnage,
+    this.volume,
   });
 
   ProgramPreview copyWith({
@@ -20,14 +20,14 @@ class ProgramPreview {
     String name,
     String programGoalName,
     String sessionCount,
-    double tonnage,
+    int volume,
   }) {
     return ProgramPreview(
       id: id ?? this.id,
       name: name ?? this.name,
       programGoalName: programGoalName ?? this.programGoalName,
       sessionCount: sessionCount ?? this.sessionCount,
-      tonnage: tonnage ?? this.tonnage,
+      volume: volume ?? this.volume,
     );
   }
 
@@ -37,7 +37,7 @@ class ProgramPreview {
       'name': name,
       'programGoalName': programGoalName,
       'sessionCount': sessionCount,
-      'tonnage': tonnage,
+      'volume': volume,
     };
   }
 
@@ -49,7 +49,7 @@ class ProgramPreview {
       name: map['name'],
       programGoalName: map['program_goal_name'],
       sessionCount: map['session_count'],
-      tonnage: map['tonnage'],
+      volume: map['volume'],
     );
   }
 
@@ -59,7 +59,7 @@ class ProgramPreview {
 
   @override
   String toString() {
-    return 'ProgramPreview(id: $id, name: $name, programGoalName: $programGoalName, sessionCount: $sessionCount, tonnage: $tonnage)';
+    return 'ProgramPreview(id: $id, name: $name, programGoalName: $programGoalName, sessionCount: $sessionCount, volume: $volume)';
   }
 
   @override
@@ -71,7 +71,7 @@ class ProgramPreview {
       o.name == name &&
       o.programGoalName == programGoalName &&
       o.sessionCount == sessionCount &&
-      o.tonnage == tonnage;
+      o.volume == volume;
   }
 
   @override
@@ -80,6 +80,6 @@ class ProgramPreview {
       name.hashCode ^
       programGoalName.hashCode ^
       sessionCount.hashCode ^
-      tonnage.hashCode;
+      volume.hashCode;
   }
 }

@@ -57,7 +57,7 @@ class ProgramService {
                 name: item.name,
                 sessionTypeName: item.sessionTypeName,
                 exerciseCount: item.exerciseCount,
-                tonnage: item.tonnage,
+                volume: item.volume,
               ),
             );
           }

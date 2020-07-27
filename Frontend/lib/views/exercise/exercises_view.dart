@@ -4,7 +4,7 @@ import 'package:strongr/models/ExercisePreview.dart';
 import 'package:strongr/services/ExerciseService.dart';
 import 'package:strongr/utils/app_exercises_filters.dart';
 import 'package:strongr/utils/diacritics.dart';
-import 'package:strongr/utils/routing_constants.dart';
+import 'package:strongr/route/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strings.dart';
 import 'package:strongr/utils/strongr_colors.dart';
@@ -181,19 +181,18 @@ class _ExercisesViewState extends State<ExercisesView> {
                               children: <Widget>[
                                 Icon(
                                   Icons.show_chart,
-                                  color: item.tonnage != null
+                                  color: item.volume != null
                                       ? StrongrColors.black
                                       : Colors.grey,
                                 ),
                                 Container(
                                   padding: EdgeInsets.only(left: 10),
                                   child: StrongrText(
-                                    item.tonnage != null
-                                        ? "Tonnage de " +
-                                            item.tonnage.toString() +
-                                            "kg"
-                                        : "Tonnage inconnu",
-                                    color: item.tonnage != null
+                                    item.volume != null
+                                        ? "Volume de " +
+                                            item.volume.toString()
+                                        : "Volume inconnu",
+                                    color: item.volume != null
                                         ? StrongrColors.black
                                         : Colors.grey,
                                   ),
@@ -309,7 +308,7 @@ class _ExercisesViewState extends State<ExercisesView> {
                             name: item.name,
                             appExerciseName: item.appExerciseName,
                             setCount: item.setCount,
-                            tonnage: item.tonnage,
+                            volume: item.volume,
                           ),
                         );
                 },

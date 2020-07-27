@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:strongr/services/UserService.dart';
-import 'package:strongr/utils/routing_constants.dart';
+import 'package:strongr/route/routing_constants.dart';
 import '../strongr_text.dart';
 
 class DeleteAccountDialog extends StatefulWidget {

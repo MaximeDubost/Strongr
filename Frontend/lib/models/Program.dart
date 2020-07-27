@@ -10,7 +10,7 @@ class Program {
   String name;
   ProgramGoal programGoal;
   List<SessionPreview> sessions;
-  double tonnage;
+  int volume;
   DateTime creationDate;
   DateTime lastUpdate;
 
@@ -19,7 +19,7 @@ class Program {
     this.name,
     this.programGoal,
     this.sessions,
-    this.tonnage,
+    this.volume,
     this.creationDate,
     this.lastUpdate,
   });
@@ -30,7 +30,7 @@ class Program {
     String name,
     String programGoalName,
     List<SessionPreview> sessions,
-    double tonnage,
+    int volume,
     DateTime creationDate,
     DateTime lastUpdate,
   }) {
@@ -39,7 +39,7 @@ class Program {
       name: name ?? this.name,
       programGoal: programGoal ?? this.programGoal,
       sessions: sessions ?? this.sessions,
-      tonnage: tonnage ?? this.tonnage,
+      volume: volume ?? this.volume,
       creationDate: creationDate ?? this.creationDate,
       lastUpdate: lastUpdate ?? this.lastUpdate,
     );
@@ -51,7 +51,7 @@ class Program {
       'name': name,
       'programGoal': programGoal?.toMap(),
       'sessions': sessions?.map((x) => x?.toMap())?.toList(),
-      'tonnage': tonnage,
+      'volume': volume,
       'creationDate': creationDate?.millisecondsSinceEpoch,
       'lastUpdate': lastUpdate?.millisecondsSinceEpoch,
     };
@@ -65,7 +65,7 @@ class Program {
       name: map['name'],
       programGoal: ProgramGoal.fromMap(map['program_goal']),
       sessions: List<SessionPreview>.from(map['sessions']?.map((x) => SessionPreview.fromMap(x))),
-      tonnage: map['tonnage'],
+      volume: map['volume'],
       creationDate: DateTime.parse(map['creation_date']),
       lastUpdate: DateTime.parse(map['last_update']),
     );
@@ -77,7 +77,7 @@ class Program {
 
   @override
   String toString() {
-    return 'Program(id: $id, name: $name, programGoal: $programGoal, sessions: $sessions, tonnage: $tonnage, creationDate: $creationDate, lastUpdate: $lastUpdate)';
+    return 'Program(id: $id, name: $name, programGoal: $programGoal, sessions: $sessions, volume: $volume, creationDate: $creationDate, lastUpdate: $lastUpdate)';
   }
 
   @override
@@ -90,7 +90,7 @@ class Program {
       o.name == name &&
       o.programGoal == programGoal &&
       listEquals(o.sessions, sessions) &&
-      o.tonnage == tonnage &&
+      o.volume == volume &&
       o.creationDate == creationDate &&
       o.lastUpdate == lastUpdate;
   }
@@ -101,7 +101,7 @@ class Program {
       name.hashCode ^
       programGoal.hashCode ^
       sessions.hashCode ^
-      tonnage.hashCode ^
+      volume.hashCode ^
       creationDate.hashCode ^
       lastUpdate.hashCode;
   }

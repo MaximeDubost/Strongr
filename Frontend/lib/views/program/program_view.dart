@@ -4,7 +4,7 @@ import 'package:strongr/models/ProgramGoal.dart';
 import 'package:strongr/models/SessionPreview.dart';
 import 'package:strongr/services/ProgramService.dart';
 import 'package:strongr/utils/date_formater.dart';
-import 'package:strongr/utils/routing_constants.dart';
+import 'package:strongr/route/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strings.dart';
 import 'package:strongr/utils/strongr_colors.dart';
@@ -570,7 +570,7 @@ class _ProgramViewState extends State<ProgramView> {
                                     padding: EdgeInsets.only(left: 5, right: 5),
                                     child: Icon(
                                       Icons.show_chart,
-                                      color: item.tonnage == null
+                                      color: item.volume == null
                                           ? Colors.grey
                                           : StrongrColors.black,
                                     ),
@@ -579,11 +579,11 @@ class _ProgramViewState extends State<ProgramView> {
                                     child: Container(
                                       // width: 185,
                                       child: StrongrText(
-                                        item.tonnage != null
-                                            ? "Tonnage de " +
-                                                item.tonnage.toString()
-                                            : "Tonnage inconnu",
-                                        color: item.tonnage == null
+                                        item.volume != null
+                                            ? "Volume de " +
+                                                item.volume.toString()
+                                            : "Volume inconnu",
+                                        color: item.volume == null
                                             ? Colors.grey
                                             : StrongrColors.black,
                                         textAlign: TextAlign.start,
@@ -911,8 +911,8 @@ class _ProgramViewState extends State<ProgramView> {
               ),
               Container(
                 width: ScreenSize.width(context),
-                height: 1,
-                color: Colors.grey[350],
+                height: 0.5,
+                color: StrongrColors.greyD,
               ),
               Flexible(
                 child: Container(
@@ -954,8 +954,8 @@ class _ProgramViewState extends State<ProgramView> {
             children: <Widget>[
               Container(
                 width: ScreenSize.width(context),
-                height: 1,
-                color: Colors.grey[350],
+                height: 0.5,
+                color: StrongrColors.greyD,
               ),
               Container(
                 height: 70,

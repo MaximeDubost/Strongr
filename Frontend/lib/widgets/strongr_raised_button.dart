@@ -28,15 +28,20 @@ class _StrongrRaisedButtonState extends State<StrongrRaisedButton> {
   Widget build(BuildContext context) {
     return Container(
       height: 45,
-      width: widget.width == null ? ScreenSize.width(context) / 2 : widget.width,
+      width:
+          widget.width == null ? ScreenSize.width(context) / 2 : widget.width,
       child: RaisedButton(
         color: widget.color == null ? StrongrColors.black : widget.color,
-        disabledColor: widget.disabledColor == null ? Colors.grey : widget.disabledColor,
+        disabledColor:
+            widget.disabledColor == null ? Colors.grey : widget.disabledColor,
         onPressed: widget.onPressed,
         child: Text(
           widget.content,
           style: TextStyle(
-              fontSize: 20, fontFamily: 'Futura', color: Colors.white),
+            fontSize: 20,
+            fontFamily: 'Futura',
+            color: Colors.white,
+          ),
         ),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),

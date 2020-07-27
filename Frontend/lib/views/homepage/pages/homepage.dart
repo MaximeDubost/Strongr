@@ -7,11 +7,12 @@ import 'package:strongr/services/ExerciseService.dart';
 import 'package:strongr/services/ProgramService.dart';
 import 'package:strongr/services/SessionService.dart';
 import 'package:strongr/utils/app_exercises_filters.dart';
-import 'package:strongr/utils/routing_constants.dart';
+import 'package:strongr/route/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strings.dart';
 import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/views/exercise/exercise_view.dart';
+import 'package:strongr/views/exercise/exercises_loading_view.dart';
 import 'package:strongr/views/program/program_view.dart';
 import 'package:strongr/views/session/session_view.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
@@ -349,7 +350,7 @@ class _HomepageState extends State<Homepage> {
                                                       Icon(
                                                         Icons.show_chart,
                                                         color:
-                                                            item.tonnage != null
+                                                            item.volume != null
                                                                 ? StrongrColors
                                                                     .black
                                                                 : Colors.grey,
@@ -361,14 +362,13 @@ class _HomepageState extends State<Homepage> {
                                                               EdgeInsets.only(
                                                                   left: 10),
                                                           child: StrongrText(
-                                                            item.tonnage != null
-                                                                ? "Tonnage : " +
-                                                                    item.tonnage
-                                                                        .toString() +
-                                                                    "kg"
-                                                                : "Tonnage inconnu",
+                                                            item.volume != null
+                                                                ? "Volume de " +
+                                                                    item.volume
+                                                                        .toString()
+                                                                : "Volume inconnu",
                                                             color: item
-                                                                        .tonnage !=
+                                                                        .volume !=
                                                                     null
                                                                 ? StrongrColors
                                                                     .black
@@ -413,7 +413,17 @@ class _HomepageState extends State<Homepage> {
                                                   Icons.play_arrow,
                                                   color: Colors.white,
                                                 ),
-                                                onPressed: () {},
+                                                onPressed: () {
+                                                  Navigator.pushNamed(
+                                                    context,
+                                                    EXERCISES_LOADING_ROUTE,
+                                                    arguments:
+                                                        ExercisesLoadingView(
+                                                      exerciseId: item.id,
+                                                      name: item.name,
+                                                    ),
+                                                  );
+                                                },
                                               ),
                                             ),
                                           ),
@@ -724,7 +734,7 @@ class _HomepageState extends State<Homepage> {
                                                       Icon(
                                                         Icons.show_chart,
                                                         color:
-                                                            item.tonnage != null
+                                                            item.volume != null
                                                                 ? StrongrColors
                                                                     .black
                                                                 : Colors.grey,
@@ -736,14 +746,13 @@ class _HomepageState extends State<Homepage> {
                                                               EdgeInsets.only(
                                                                   left: 10),
                                                           child: StrongrText(
-                                                            item.tonnage != null
-                                                                ? "Tonnage : " +
-                                                                    item.tonnage
-                                                                        .toString() +
-                                                                    "kg"
-                                                                : "Tonnage inconnu",
+                                                            item.volume != null
+                                                                ? "Volume de " +
+                                                                    item.volume
+                                                                        .toString()
+                                                                : "Volume inconnu",
                                                             color: item
-                                                                        .tonnage !=
+                                                                        .volume !=
                                                                     null
                                                                 ? StrongrColors
                                                                     .black
@@ -788,7 +797,17 @@ class _HomepageState extends State<Homepage> {
                                                   Icons.play_arrow,
                                                   color: Colors.white,
                                                 ),
-                                                onPressed: () {},
+                                                onPressed: () {
+                                                  Navigator.pushNamed(
+                                                    context,
+                                                    EXERCISES_LOADING_ROUTE,
+                                                    arguments:
+                                                        ExercisesLoadingView(
+                                                      sessionId: item.id,
+                                                      name: item.name,
+                                                    ),
+                                                  );
+                                                },
                                               ),
                                             ),
                                           ),
@@ -1095,7 +1114,7 @@ class _HomepageState extends State<Homepage> {
                                                       Icon(
                                                         Icons.show_chart,
                                                         color:
-                                                            item.tonnage != null
+                                                            item.volume != null
                                                                 ? StrongrColors
                                                                     .black
                                                                 : Colors.grey,
@@ -1107,14 +1126,13 @@ class _HomepageState extends State<Homepage> {
                                                               EdgeInsets.only(
                                                                   left: 10),
                                                           child: StrongrText(
-                                                            item.tonnage != null
-                                                                ? "Tonnage : " +
-                                                                    item.tonnage
-                                                                        .toString() +
-                                                                    "kg"
-                                                                : "Tonnage inconnu",
+                                                            item.volume != null
+                                                                ? "Volume de " +
+                                                                    item.volume
+                                                                        .toString()
+                                                                : "Volume inconnu",
                                                             color: item
-                                                                        .tonnage !=
+                                                                        .volume !=
                                                                     null
                                                                 ? StrongrColors
                                                                     .black

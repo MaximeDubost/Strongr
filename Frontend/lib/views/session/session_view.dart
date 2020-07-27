@@ -4,12 +4,13 @@ import 'package:strongr/models/Session.dart';
 import 'package:strongr/models/SessionType.dart';
 import 'package:strongr/services/SessionService.dart';
 import 'package:strongr/utils/date_formater.dart';
-import 'package:strongr/utils/routing_constants.dart';
+import 'package:strongr/route/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/session_type_definitor.dart';
 import 'package:strongr/utils/strings.dart';
 import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/views/exercise/exercise_view.dart';
+import 'package:strongr/views/exercise/exercises_loading_view.dart';
 import 'package:strongr/views/session_type/session_type_view.dart';
 import 'package:strongr/widgets/dialogs/delete_dialog.dart';
 import 'package:strongr/widgets/strongr_rounded_container.dart';
@@ -165,7 +166,8 @@ class _SessionViewState extends State<SessionView> {
       validateButtonEnabled = false;
       editButtonsEnabled = false;
     });
-    SessionType sessionType = await SessionTypeDefinitor.defineByExercises(exercisesOfSession);
+    SessionType sessionType =
+        await SessionTypeDefinitor.defineByExercises(exercisesOfSession);
     int statusCode = await SessionService.putSession(
       id: widget.id,
       name: sessionName,
@@ -513,7 +515,7 @@ class _SessionViewState extends State<SessionView> {
                               padding: EdgeInsets.only(left: 5, right: 5),
                               child: Icon(
                                 Icons.show_chart,
-                                color: item.tonnage == null
+                                color: item.volume == null
                                     ? Colors.grey
                                     : StrongrColors.black,
                               ),
@@ -522,10 +524,10 @@ class _SessionViewState extends State<SessionView> {
                               child: Container(
                                 // width: 185,
                                 child: StrongrText(
-                                  item.tonnage != null
-                                      ? "Tonnage de " + item.tonnage.toString()
-                                      : "Tonnage inconnu",
-                                  color: item.tonnage == null
+                                  item.volume != null
+                                      ? "Volume de " + item.volume.toString()
+                                      : "Volume inconnu",
+                                  color: item.volume == null
                                       ? Colors.grey
                                       : StrongrColors.black,
                                   textAlign: TextAlign.start,
@@ -574,7 +576,14 @@ class _SessionViewState extends State<SessionView> {
                         Icons.play_arrow,
                         color: Colors.white,
                       ),
-                      onPressed: () {},
+                      onPressed: () => Navigator.pushNamed(
+                        context,
+                        EXERCISES_LOADING_ROUTE,
+                        arguments: ExercisesLoadingView(
+                          exerciseId: item.id,
+                          name: item.name,
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -771,8 +780,8 @@ class _SessionViewState extends State<SessionView> {
               ),
               Container(
                 width: ScreenSize.width(context),
-                height: 1,
-                color: Colors.grey[350],
+                height: 0.5,
+                color: StrongrColors.greyD,
               ),
               Flexible(
                 child: Container(
@@ -937,8 +946,8 @@ class _SessionViewState extends State<SessionView> {
             children: <Widget>[
               Container(
                 width: ScreenSize.width(context),
-                height: 1,
-                color: Colors.grey[350],
+                height: 0.5,
+                color: StrongrColors.greyD,
               ),
               Container(
                 height: 70,
@@ -1061,7 +1070,16 @@ class _SessionViewState extends State<SessionView> {
                     color: Colors.white,
                   ),
                   onPressed: editButtonsEnabled
-                      ? isEditMode ? () => showDeleteDialog() : () {}
+                      ? isEditMode
+                          ? () => showDeleteDialog()
+                          : () => Navigator.pushNamed(
+                                context,
+                                EXERCISES_LOADING_ROUTE,
+                                arguments: ExercisesLoadingView(
+                                  sessionId: widget.id,
+                                  name: widget.name,
+                                ),
+                              )
                       : null,
                 ),
               ),

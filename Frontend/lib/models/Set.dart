@@ -1,18 +1,21 @@
 import 'dart:convert';
+import 'package:strongr/models/Status.dart';
 
 class Set {
   int id;
   int place;
   int repetitionCount;
   int restTime;
-  double tonnage;
+  int volume;
+  Status status;
 
   Set({
     this.id,
     this.place,
     this.repetitionCount,
     this.restTime,
-    this.tonnage,
+    this.volume,
+    this.status = Status.none,
   });
 
   Set copyWith({
@@ -20,24 +23,27 @@ class Set {
     int place,
     int repetitionCount,
     int restTime,
-    double tonnage,
+    int volume,
+    Status status,
   }) {
     return Set(
       id: id ?? this.id,
       place: place ?? this.place,
       repetitionCount: repetitionCount ?? this.repetitionCount,
       restTime: restTime ?? this.restTime,
-      tonnage: tonnage ?? this.tonnage,
+      volume: volume ?? this.volume,
+      status: status ?? this.status,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      //'id': id
+      // 'id': id,
       'place': place,
       'repetitions_count': repetitionCount,
       'rest_time': restTime,
-      //'tonnage': 'tonnage'
+      // 'volume': volume,
+      // 'status': status,
     };
   }
 
@@ -49,7 +55,8 @@ class Set {
       place: map['place'],
       repetitionCount: map['repetitions_count'],
       restTime: map['rest_time'],
-      tonnage: map['tonnage'],
+      volume: map['volume'],
+      status: map['status'],
     );
   }
 
@@ -59,11 +66,7 @@ class Set {
 
   @override
   String toString() {
-    if (id != null) {
-      return 'Set(id: $id, place: $place, repetitionCount: $repetitionCount, restTime: $restTime, tonnage: $tonnage)';
-    } else {
-      return 'Set(place: $place, repetitionCount: $repetitionCount, restTime: $restTime)';
-    }
+    return 'Set(id: $id, place: $place, repetitionCount: $repetitionCount, restTime: $restTime, volume: $volume, status: $status)';
   }
 
   @override
@@ -75,7 +78,8 @@ class Set {
         o.place == place &&
         o.repetitionCount == repetitionCount &&
         o.restTime == restTime &&
-        o.tonnage == tonnage;
+        o.volume == volume &&
+        o.status == status;
   }
 
   @override
@@ -84,6 +88,7 @@ class Set {
         place.hashCode ^
         repetitionCount.hashCode ^
         restTime.hashCode ^
-        tonnage.hashCode;
+        volume.hashCode ^
+        status.hashCode;
   }
 }

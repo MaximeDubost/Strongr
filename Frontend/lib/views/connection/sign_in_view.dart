@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:strongr/services/UserService.dart';
-import 'package:strongr/utils/routing_constants.dart';
+import 'package:strongr/route/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
 // import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/views/connection/sign_in_next_view.dart';
@@ -115,11 +115,10 @@ class _SignInViewState extends State<SignInView> {
           await UserService.postCheckEmail(email: email.toLowerCase());
       if (result == 200) {
         setState(() {
+          warning = null;
+          _passwordController.text = _confirmPasswordController.text = "";
           _validate = _isLoading = _isButtonEnabled =
               passwordVisibility = confirmPasswordVisibility = false;
-          warning = null;
-          _passwordController.text = "";
-          _confirmPasswordController.text = "";
         });
         Navigator.pushNamed(
           context,
@@ -134,14 +133,9 @@ class _SignInViewState extends State<SignInView> {
       else
         setState(() => warning =
             "Service indisponible. Veuillez réessayer ultérieurement.");
-      setState(() {
-        _isButtonEnabled = true;
-        _isLoading = false;
-      });
-    } else
-      setState(() {
-        _validate = true;
-      });
+      setState(() => _isButtonEnabled = _isLoading = false);
+    }
+    else setState(() => _validate = true);
   }
 
   @override
@@ -171,14 +165,14 @@ class _SignInViewState extends State<SignInView> {
                                 alignment: Alignment.center,
                                 child: StrongrText("Inscription", size: 30),
                               ),
-                              SizedBox(height: 30),
+                              SizedBox(height: 20),
                               Container(
                                   alignment: Alignment.centerLeft,
                                   child: StrongrText(
                                     "Adresse e-mail",
                                     size: 16,
                                   )),
-                              SizedBox(height: 10),
+                              SizedBox(height: 5),
                               StrongrRoundedTextFormField(
                                 controller: _emailController,
                                 validator: validateEmail,
@@ -201,7 +195,7 @@ class _SignInViewState extends State<SignInView> {
                                   size: 16,
                                 ),
                               ),
-                              SizedBox(height: 10),
+                              SizedBox(height: 5),
                               StrongrRoundedTextFormField(
                                 controller: _passwordController,
                                 validator: validatePassword,
@@ -232,7 +226,7 @@ class _SignInViewState extends State<SignInView> {
                                   size: 16,
                                 ),
                               ),
-                              SizedBox(height: 10),
+                              SizedBox(height: 5),
                               StrongrRoundedTextFormField(
                                 controller: _confirmPasswordController,
                                 validator: validateConfirmPassword,
@@ -252,7 +246,7 @@ class _SignInViewState extends State<SignInView> {
                                     confirmPasswordVisibility =
                                         !confirmPasswordVisibility),
                               ),
-                              SizedBox(height: 10),
+                              SizedBox(height: 5),
                               Visibility(
                                 visible: _isLoading == false && warning != null,
                                 child: StrongrText(

@@ -4,7 +4,7 @@ import 'package:strongr/models/ProgramGoal.dart';
 import 'package:strongr/models/SessionPreview.dart';
 import 'package:strongr/services/ProgramGoalService.dart';
 import 'package:strongr/services/ProgramService.dart';
-import 'package:strongr/utils/routing_constants.dart';
+import 'package:strongr/route/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/views/program_goal/program_goal_view.dart';
@@ -434,7 +434,7 @@ class _ProgramCreateViewState extends State<ProgramCreateView> {
                                     padding: EdgeInsets.only(left: 5, right: 5),
                                     child: Icon(
                                       Icons.show_chart,
-                                      color: item.tonnage == null
+                                      color: item.volume == null
                                           ? Colors.grey
                                           : StrongrColors.black,
                                     ),
@@ -443,11 +443,11 @@ class _ProgramCreateViewState extends State<ProgramCreateView> {
                                     child: Container(
                                       // width: 185,
                                       child: StrongrText(
-                                        item.tonnage != null
-                                            ? "Tonnage de " +
-                                                item.tonnage.toString()
-                                            : "Tonnage inconnu",
-                                        color: item.tonnage == null
+                                        item.volume != null
+                                            ? "Volume de " +
+                                                item.volume.toString()
+                                            : "Volume inconnu",
+                                        color: item.volume == null
                                             ? Colors.grey
                                             : StrongrColors.black,
                                         textAlign: TextAlign.start,

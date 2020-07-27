@@ -6,7 +6,7 @@ class SessionPreview {
   String name;
   String sessionTypeName;
   String exerciseCount;
-  double tonnage;
+  int volume;
 
   SessionPreview({
     this.id,
@@ -14,7 +14,7 @@ class SessionPreview {
     this.name,
     this.sessionTypeName,
     this.exerciseCount,
-    this.tonnage,
+    this.volume,
   });
 
   SessionPreview copyWith({
@@ -23,7 +23,7 @@ class SessionPreview {
     String name,
     String sessionTypeName,
     String exerciseCount,
-    double tonnage,
+    int volume,
   }) {
     return SessionPreview(
       id: id ?? this.id,
@@ -31,7 +31,7 @@ class SessionPreview {
       name: name ?? this.name,
       sessionTypeName: sessionTypeName ?? this.sessionTypeName,
       exerciseCount: exerciseCount ?? this.exerciseCount,
-      tonnage: tonnage ?? this.tonnage,
+      volume: volume ?? this.volume,
     );
   }
 
@@ -42,7 +42,7 @@ class SessionPreview {
       'name': name,
       'sessionTypeName': sessionTypeName,
       'exerciseCount': exerciseCount,
-      'tonnage': tonnage,
+      'volume': volume,
     };
   }
 
@@ -55,7 +55,7 @@ class SessionPreview {
       name: map['name'],
       sessionTypeName: map['session_type_name'],
       exerciseCount: map['exercise_count'],
-      tonnage: map['tonnage'],
+      volume: map['volume'],
     );
   }
 
@@ -65,7 +65,7 @@ class SessionPreview {
 
   @override
   String toString() {
-    return 'SessionPreview(id: $id, place: $place, name: $name, sessionTypeName: $sessionTypeName, exerciseCount: $exerciseCount, tonnage: $tonnage)';
+    return 'SessionPreview(id: $id, place: $place, name: $name, sessionTypeName: $sessionTypeName, exerciseCount: $exerciseCount, volume: $volume)';
   }
 
   @override
@@ -78,7 +78,7 @@ class SessionPreview {
       o.name == name &&
       o.sessionTypeName == sessionTypeName &&
       o.exerciseCount == exerciseCount &&
-      o.tonnage == tonnage;
+      o.volume == volume;
   }
 
   @override
@@ -88,6 +88,6 @@ class SessionPreview {
       name.hashCode ^
       sessionTypeName.hashCode ^
       exerciseCount.hashCode ^
-      tonnage.hashCode;
+      volume.hashCode;
   }
 }

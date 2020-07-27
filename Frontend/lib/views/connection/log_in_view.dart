@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:strongr/services/UserService.dart';
-import 'package:strongr/utils/routing_constants.dart';
+import 'package:strongr/route/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/widgets/strongr_raised_button.dart';
 import 'package:strongr/widgets/strongr_rounded_textformfield.dart';
@@ -103,8 +103,9 @@ class _LogInViewState extends State<LogInView> {
         password: password,
       );
       if (result == 200) {
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        print("TOKEN : " + prefs.getString("token"));
+        // SharedPreferences prefs = 
+        await SharedPreferences.getInstance();
+        // print("TOKEN : " + prefs.getString("token"));
         setState(() {
           _validate = false;
           warning = null;
@@ -222,6 +223,7 @@ class _LogInViewState extends State<LogInView> {
                                 ),
                               ),
                               FlatButton(
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                                 onPressed: () {
                                   FocusScope.of(context).unfocus();
                                   Navigator.pushNamed(

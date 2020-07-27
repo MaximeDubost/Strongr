@@ -5,7 +5,7 @@ import 'package:strongr/models/AppExercise.dart';
 import 'package:strongr/services/AppExerciseService.dart';
 import 'package:strongr/utils/app_exercises_filters.dart';
 import 'package:strongr/utils/diacritics.dart';
-import 'package:strongr/utils/routing_constants.dart';
+import 'package:strongr/route/routing_constants.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/views/exercise/exercise_create_view.dart';

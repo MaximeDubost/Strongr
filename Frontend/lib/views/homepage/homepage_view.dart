@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:strongr/utils/routing_constants.dart';
+import 'package:strongr/route/routing_constants.dart';
 import 'package:strongr/utils/strongr_colors.dart';
 import 'package:strongr/views/homepage/pages/app_exercises_page.dart';
 import 'package:strongr/views/homepage/pages/homepage.dart';
@@ -31,8 +31,7 @@ class _HomepageViewState extends State<HomepageView> {
       StatisticsPage(),
     ];
     // homepagePopupMenuItems = ["Profil", "Paramètres"];
-    appExercisesPopupMenuItems 
-    = ["Filtres", "Paramètres"];
+    appExercisesPopupMenuItems = ["Filtres", "Paramètres"];
     // = ["Profil", "Paramètres", "Filtres"];
     popupMenuItems =
         // currentPage != 0 ? homepagePopupMenuItems :
@@ -125,9 +124,9 @@ class _HomepageViewState extends State<HomepageView> {
       onTap: (index) {
         setState(() {
           currentPage = index;
-          popupMenuItems = 
-          // currentPage != 0 ? homepagePopupMenuItems : 
-          appExercisesPopupMenuItems;
+          popupMenuItems =
+              // currentPage != 0 ? homepagePopupMenuItems :
+              appExercisesPopupMenuItems;
         });
       },
       items: <BottomNavigationBarItem>[
