@@ -73,12 +73,7 @@ repository.readExercises = async (req) => {
       Select SUM(s.repetitions_count)
       From _set s
       WHERE s.id_exercise = $2
-      ) * 
-      (
-      Select MAX(s.place)
-      From _set s
-      WHERE s.id_exercise = $2
-      ) as volume
+    ) as volume
     FROM _exercise e
     JOIN _app_exercise ae ON ae.id_app_exercise = e.id_app_exercise
     JOIN _set s ON s.id_exercise = e.id_exercise
@@ -441,13 +436,7 @@ repository.getVolume = async (id_exercise, id_user) => {
      Select SUM(s.repetitions_count)
      From _set s
      WHERE s.id_exercise = $1::int
-   ) 
-  * 
-  (
-     Select MAX(s.place)
-     From _set s
-     WHERE s.id_exercise = $1::int
-  )as volume
+   ) as volume
  FROM _exercise
  WHERE id_exercise = $1::int AND id_user = $2::int
  

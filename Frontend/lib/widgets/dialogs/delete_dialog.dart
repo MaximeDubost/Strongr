@@ -24,9 +24,9 @@ class _DeleteDialogState extends State<DeleteDialog> {
     return AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
       content: Container(
-        height: widget.height,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             StrongrText(
               widget.title,
