@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:strongr/utils/no_animation_material_page_route.dart';
-import 'package:strongr/transitions/fade_page_route.dart';
+import 'package:strongr/utils/transitions/no_animation_material_page_route.dart';
+import 'package:strongr/utils/transitions/fade_page_route.dart';
 import 'package:strongr/views/connection/log_in_view.dart';
 import 'package:strongr/views/connection/new_password_view.dart';
 import 'package:strongr/views/connection/recovery_code_view.dart';

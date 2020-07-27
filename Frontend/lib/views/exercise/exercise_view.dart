@@ -293,21 +293,21 @@ class _ExerciseViewState extends State<ExerciseView> {
           margin: setList.indexOf(item) == 0 ? EdgeInsets.only(top: 5) : null,
           key: ValueKey(item.place),
           padding: EdgeInsets.all(5),
-          height: 110,
+          height: 90,
           child: StrongrRoundedContainer(
             width: ScreenSize.width(context),
             content: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 Container(
-                  // color: Colors.red,
+                  // color: Colors.green[100],
                   width: 35,
-                  height: 110,
+                  height: 90,
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
                       Container(
-                        height: 30,
+                        height: 20,
                         // color: Colors.blue,
                         child: isEditMode
                             ? RawMaterialButton(
@@ -357,7 +357,7 @@ class _ExerciseViewState extends State<ExerciseView> {
                         ),
                       ),
                       Container(
-                        height: 30,
+                        height: 20,
                         // color: Colors.blue,
                         child: isEditMode
                             ? RawMaterialButton(
@@ -403,7 +403,7 @@ class _ExerciseViewState extends State<ExerciseView> {
                 ),
                 Flexible(
                   child: Container(
-                    // color: Colors.red,
+                    // color: Colors.red[100],
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -471,33 +471,34 @@ class _ExerciseViewState extends State<ExerciseView> {
                             ),
                           ],
                         ),
-                        Row(
-                          children: <Widget>[
-                            Container(
-                              padding: EdgeInsets.only(left: 5, right: 5),
-                              child: Icon(
-                                Icons.show_chart,
-                                color: Colors.grey,
-                              ),
-                            ),
-                            Flexible(
-                              child: Container(
-                                // width: 185,
-                                child: StrongrText(
-                                  "Volume inconnu",
-                                  color: Colors.grey,
-                                  textAlign: TextAlign.start,
-                                  maxLines: 1,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                        // Row(
+                        //   children: <Widget>[
+                        //     Container(
+                        //       padding: EdgeInsets.only(left: 5, right: 5),
+                        //       child: Icon(
+                        //         Icons.show_chart,
+                        //         color: Colors.grey,
+                        //       ),
+                        //     ),
+                        //     Flexible(
+                        //       child: Container(
+                        //         // width: 185,
+                        //         child: StrongrText(
+                        //           "Volume inconnu",
+                        //           color: Colors.grey,
+                        //           textAlign: TextAlign.start,
+                        //           maxLines: 1,
+                        //         ),
+                        //       ),
+                        //     ),
+                        //   ],
+                        // ),
                       ],
                     ),
                   ),
                 ),
                 Container(
+                  // color: Colors.blue[100],
                   width: 35,
                   height: 35,
                   child: isEditMode
@@ -804,8 +805,8 @@ class _ExerciseViewState extends State<ExerciseView> {
             ),
             Container(
               width: ScreenSize.width(context),
-              height: 1,
-              color: Colors.grey[350],
+              height: 0.5,
+              color: StrongrColors.greyD,
             ),
             Flexible(
               child: Container(
@@ -847,7 +848,7 @@ class _ExerciseViewState extends State<ExerciseView> {
             children: <Widget>[
               Container(
                 width: ScreenSize.width(context),
-                height: 1,
+                height: 0.5,
                 color: Colors.grey[350],
               ),
               Container(

@@ -780,8 +780,8 @@ class _SessionViewState extends State<SessionView> {
               ),
               Container(
                 width: ScreenSize.width(context),
-                height: 1,
-                color: Colors.grey[350],
+                height: 0.5,
+                color: StrongrColors.greyD,
               ),
               Flexible(
                 child: Container(
@@ -946,8 +946,8 @@ class _SessionViewState extends State<SessionView> {
             children: <Widget>[
               Container(
                 width: ScreenSize.width(context),
-                height: 1,
-                color: Colors.grey[350],
+                height: 0.5,
+                color: StrongrColors.greyD,
               ),
               Container(
                 height: 70,

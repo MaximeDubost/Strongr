@@ -911,8 +911,8 @@ class _ProgramViewState extends State<ProgramView> {
               ),
               Container(
                 width: ScreenSize.width(context),
-                height: 1,
-                color: Colors.grey[350],
+                height: 0.5,
+                color: StrongrColors.greyD,
               ),
               Flexible(
                 child: Container(
@@ -954,8 +954,8 @@ class _ProgramViewState extends State<ProgramView> {
             children: <Widget>[
               Container(
                 width: ScreenSize.width(context),
-                height: 1,
-                color: Colors.grey[350],
+                height: 0.5,
+                color: StrongrColors.greyD,
               ),
               Container(
                 height: 70,
