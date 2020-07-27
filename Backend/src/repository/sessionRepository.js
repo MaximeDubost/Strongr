@@ -44,6 +44,7 @@ repository.getSessions = async (req) => {
 }
 
 repository.getSessionDetail = async (req) => {
+    let volume = 0
     let exercises_list = []
     let sql = `
     SELECT s.id_session, st.id_session_type, se.place as place, s.name as session_name, st.name as session_type_name, s.creation_date, s.last_update
@@ -53,11 +54,19 @@ repository.getSessionDetail = async (req) => {
     WHERE s.id_user = $1 AND s.id_session = $2
     `
     try {
+        let idExercises = (await clt.query(`
+            SELECT e.id_exercise
+                FROM _session s
+                JOIN _session_exercise se on s.id_session = se.id_session 
+                JOIN _exercise e on se.id_exercise = e.id_exercise 
+                WHERE s.id_user = $1 and s.id_session = $2
+                ORDER BY se.place;`
+            , [req.user.id, req.params.id_session])).rows
         let resultSessionType = await clt.query(sql, [req.user.id, req.params.id_session])
 
         let sessionType = new SessionType(resultSessionType.rows[0].id_session_type, resultSessionType.rows[0].session_type_name)
         sql = `
-        SELECT e.id_exercise, se.place, e.name as name_exercise, ae.name as app_exercise_name, COUNT(sett.id_set) as set_count, null as tonnage 
+        SELECT e.id_exercise, se.place, e.name as name_exercise, ae.name as app_exercise_name, COUNT(sett.id_set) as set_count
         FROM _session s
         JOIN _session_exercise se on s.id_session = se.id_session 
         JOIN _exercise e on se.id_exercise = e.id_exercise 
@@ -67,13 +76,15 @@ repository.getSessionDetail = async (req) => {
         GROUP BY e.id_exercise, se.place, ae.name, e.name
         ORDER BY se.place;
         `
+        console.log(idExercises)
         let resultExercises = await clt.query(sql, [req.user.id, req.params.id_session])
         if (resultExercises.rowCount > 0) {
-            resultExercises.rows.map(row => {
-                console.log("ROW : " + row)
-                let exercise = new ExerciseSession(row.id_exercise, row.place, row.name_exercise, row.app_exercise_name, row.set_count, row.tonnage)
-                exercises_list.push(exercise)
-            })
+            for (let index = 0; index < idExercises.length; index++) {
+                volume = await repository.getVolume(idExercises[index].id_exercise, req.user.id)
+                if (resultExercises.rowCount != 0)
+                    exercises_list.push(new ExerciseSession(resultExercises.rows[index].id_exercise, resultExercises.rows[index].place, resultExercises.rows[index].name_exercise, resultExercises.rows[index].app_exercise_name, resultExercises.rows[index].set_count, volume))
+            }
+            console.log("EXERCISES LIST : ", exercises_list)
         }
         let data = new SessionDetail(resultSessionType.rows[0].id_session, resultSessionType.rows[0].session_name, sessionType, exercises_list, resultSessionType.rows[0].creation_date, resultSessionType.rows[0].last_update)
         console.log(data)
@@ -85,7 +96,6 @@ repository.getSessionDetail = async (req) => {
 }
 
 repository.addSession = async (req) => {
-    // console.log(req.body)
     let sqlAddSession = "INSERT INTO _session (id_user, id_session_type, name, creation_date, last_update) VALUES ($1, $2, $3, $4, $5)"
     try {
         await clt.query(sqlAddSession, [req.user.id, req.body.id_session_type, req.body.name, new Date(), new Date()])

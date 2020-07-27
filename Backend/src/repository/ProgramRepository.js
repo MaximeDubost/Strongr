@@ -1,9 +1,11 @@
 import Program from "../models/Program";
 import clt from "../core/config/database";
+import SessionRepository from "../repository/SessionRepository"
 
 const repository = {};
 
 repository.readProgram = async (req) => {
+  let volume = 0
   let program_list = [];
   let sql = `
         SELECT p.id_program, p.name, pg.name as program_goal_name, COUNT(ps.id_program) as session_count, null as tonnage
@@ -14,21 +16,25 @@ repository.readProgram = async (req) => {
         GROUP BY p.id_program, p.name, pg.name, p.last_update
         ORDER BY p.last_update DESC
     `;
+
   try {
-    var result = await clt.query(sql, [req.user.id]);
-    if (result.rowCount > 0) {
-      result.rows.forEach((row) => {
-        program_list.push(
-          new Program(
-            row.id_program,
-            row.name,
-            row.program_goal_name,
-            row.session_count,
-            row.tonnage
-          )
-        );
-      });
+
+    let idPrograms = (await clt.query(`
+      SELECT id_program
+      FROM _program 
+      WHERE id_user = $1
+      ORDER BY last_update DESC`
+      , [req.user.id])).rows
+
+    for (let index = 0; index < idPrograms.length; index++) {
+      volume = await repository.getVolume(idPrograms[index].id_session, req.user.id)
+      console.log("Volume =>, \n", volume)
+      var result = await clt.query(sql, [req.user.id])
+      //console.log("RESULT ROWS : ", result.rows)
+      if (result.rowCount != 0)
+        program_list.push(new Program(result.rows[index].id_session, result.rows[index].name, result.rows[index].program_goal_name, result.rows[index].session_count, volume))
     }
+
     //console.log(program_list);
     return program_list;
   } catch (error) {
@@ -37,8 +43,6 @@ repository.readProgram = async (req) => {
 };
 
 repository.readDetailProgram = async (req) => {
-  //console.log('req user id = '+req.user.id)
-  //console.log('id_program = '+req.params.id_program)
 
   let sql = `
     SELECT p.id_program as id, p.name, p.creation_date, p.last_update
@@ -76,9 +80,9 @@ repository.readSessionDetailProgram = async (req) => {
         SELECT COUNT(se.id_session) as exercise_count  
         FROM _session s
         JOIN _session_exercise se ON se.id_session = s.id_session
-		JOIN _program_session ps ON ps.id_session = s.id_session
+		    JOIN _program_session ps ON ps.id_session = s.id_session
         WHERE s.id_user = $1 AND ps.id_program = $2
-    ),  null as tonnage
+    ), null as tonnage
     FROM _session s
     JOIN _session_type st ON st.id_session_type = s.id_session_type
 	JOIN _program_session ps ON ps.id_session = s.id_session
@@ -87,6 +91,7 @@ repository.readSessionDetailProgram = async (req) => {
     `;
   try {
     var result = await clt.query(sql, [req.user.id, req.params.id_program]);
+    console.log(result.rows)
     return result.rows;
   } catch (error) {
     console.log(error);
@@ -171,5 +176,31 @@ repository.updateProgram = async (req) => {
     return 501;
   }
 };
+
+repository.getVolume = async (id_program, id_user) => {
+
+  try {
+    let res = 0
+    let id_session_list = await clt.query(
+      `
+          SELECT ps.id_session
+          FROM _program p
+          JOIN _program_session ps on p.id_program = ps.id_program
+          WHERE ps.id_program = $1 AND p.id_user = $2 
+          ORDER BY last_update DESC
+      `,
+      [id_program, id_user])
+    for (let idx = 0; idx < id_session_list.rows.length; idx++) {
+      const elemt = id_session_list.rows[idx]["id_program"];
+      console.log("ELEMNT SSN", elemt)
+      let exercisesVolumes = await SessionRepository.getVolume(elemt, id_user)
+
+      res += parseInt(exercisesVolumes.volume)
+
+    }
+    return res
+  } catch (error) { console.log(error) }
+
+}
 
 export default repository;
