@@ -110,37 +110,39 @@ class ExercisePlayViewState extends State<ExercisePlayView> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Visibility(
-                visible: !widget.onlyOne,
-                child: StrongrText(
-                  widget.exercise.name,
-                  textAlign: TextAlign.start,
-                  bold: true,
+          Flexible(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Visibility(
+                  visible: !widget.onlyOne,
+                  child: StrongrText(
+                    widget.exercise.name,
+                    textAlign: TextAlign.start,
+                    bold: true,
+                  ),
                 ),
-              ),
-              Visibility(
-                visible: widget.onlyOne ||
-                    widget.exercise.appExercise.name != widget.exercise.name,
-                child: StrongrText(
-                  widget.exercise.appExercise.name,
+                Visibility(
+                  visible: widget.onlyOne ||
+                      widget.exercise.appExercise.name != widget.exercise.name,
+                  child: StrongrText(
+                    widget.exercise.appExercise.name,
+                    textAlign: TextAlign.start,
+                    size: 18,
+                  ),
+                ),
+                StrongrText(
+                  widget.exercise.equipment != null
+                      ? widget.exercise.equipment.name
+                      : "Aucun équipement",
                   textAlign: TextAlign.start,
+                  color: widget.exercise.equipment != null
+                      ? StrongrColors.black
+                      : Colors.grey,
                   size: 18,
                 ),
-              ),
-              StrongrText(
-                widget.exercise.equipment != null
-                    ? widget.exercise.equipment.name
-                    : "Aucun équipement",
-                textAlign: TextAlign.start,
-                color: widget.exercise.equipment != null
-                    ? StrongrColors.black
-                    : Colors.grey,
-                size: 18,
-              ),
-            ],
+              ],
+            ),
           ),
           buildRightPartOfExercise(exercise),
         ],
