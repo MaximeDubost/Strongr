@@ -1086,7 +1086,7 @@ class _HomepageState extends State<Homepage> {
                                                                   ? item.sessionCount +
                                                                       " séance"
                                                                   : item.sessionCount +
-                                                                      " séance"
+                                                                      " séances"
                                                               : "Aucune séance",
                                                           color: int.parse(item
                                                                           .sessionCount) >
