@@ -102,7 +102,6 @@ repository.readExercises = async (req) => {
         );
       }
     }
-    console.log("EXERCISE LIST : ", exercise_list)
     return exercise_list;
   } catch (error) {
     console.log(error);
@@ -429,16 +428,15 @@ repository.deleteCibleSessionExercise = async (id_session, id_exercise) => {
 };
 
 repository.getVolume = async (id_exercise, id_user) => {
-  console.log(id_exercise, id_user)
   let sql = `
   SELECT
   (
      Select SUM(s.repetitions_count)
      From _set s
      WHERE s.id_exercise = $1::int
-   ) as volume
- FROM _exercise
- WHERE id_exercise = $1::int AND id_user = $2::int
+  ) as volume
+  FROM _exercise
+  WHERE id_exercise = $1::int AND id_user = $2::int
  
   `
   try {

@@ -15,6 +15,7 @@ repository.readProgram = async (req) => {
         JOIN _program_session ps ON ps.id_program = p.id_program
         WHERE p.id_user = $1 
         GROUP BY p.id_program, p.name, pg.name, p.last_update
+        ORDER BY last_update DESC
     `;
 
   try {
@@ -22,8 +23,9 @@ repository.readProgram = async (req) => {
     var result = await clt.query(sql, [req.user.id]);
     if (result.rowCount > 0) {
       for (let index = 0; index < programId.length; index++) {
-        volume = 0
+        console.log("readProgram => ", programId[index])
         volume = await repository.getVolume(programId[index].id_program, req.user.id)
+
         var result = await clt.query(sql, [req.user.id])
         if (result.rowCount != 0) {
           program_list.push(
@@ -51,6 +53,7 @@ repository.readDetailProgram = async (req) => {
     JOIN _program_session ps ON ps.id_program = p.id_program
     WHERE p.id_user = $1 AND p.id_program = $2
     GROUP BY p.id_program, p.name, p.creation_date, p.last_update
+    ORDER BY p.last_update DESC
     `;
 
   let program_sql = `
@@ -59,7 +62,7 @@ repository.readDetailProgram = async (req) => {
     JOIN _program_goal pg ON pg.id_program_goal = p.id_program_goal
     JOIN _program_session ps ON ps.id_program = p.id_program
     WHERE p.id_user = $1 AND p.id_program = $2
-    GROUP BY pg.name, pg.id_program_goal
+    ORDER BY p.last_update DESC
     `;
   try {
     var result = await clt.query(sql, [req.user.id, req.params.id_program]);
@@ -91,7 +94,6 @@ repository.readSessionDetailProgram = async (req) => {
     ORDER BY place
     `;
   try {
-
     var result = await clt.query(sql, [req.user.id, req.params.id_program]);
     for (let index = 0; index < result.rows.length; index++) {
       const element = result.rows[index];
@@ -186,16 +188,18 @@ repository.updateProgram = async (req) => {
 repository.getVolume = async (id_program, id_user) => {
   try {
     let res = 0
-    let id_session_list = await clt.query(`SELECT ps.id_session
-                                              FROM _program p 
-                                              JOIN _program_session ps ON p.id_program = ps.id_session
-                                              WHERE ps.id_program = $1::int AND p.id_user = $2::int`, [id_program, id_user])
+    let id_session_list = await clt.query(`SELECT id_session
+    FROM _program p 
+    JOIN _program_session ps ON p.id_program = ps.id_program
+    WHERE p.id_user = $1 AND ps.id_program = $2`, [id_user, id_program])
     for (let idx = 0; idx < id_session_list.rows.length; idx++) {
       const elemt = id_session_list.rows[idx]["id_session"];
       //let volume = (await SessionRepository.getVolume(elemt, id_user)).volume;
       //let exercisesVolumes = await SessionRepository.getVolume(elemt, id_user)
+
       res += await SessionRepository.getVolume(elemt, id_user)
     }
+
     return res
   } catch (error) {
     console.log(error)
