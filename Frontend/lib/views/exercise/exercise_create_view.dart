@@ -310,7 +310,10 @@ class _ExerciseCreateViewState extends State<ExerciseCreateView> {
         title: Text(widget.name),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.info_outline),
+            icon: Icon(
+              Icons.info_outline,
+              color: editButtonsEnabled ? Colors.white : Colors.grey,
+            ),
             onPressed: editButtonsEnabled
                 ? () {
                     Navigator.pushNamed(

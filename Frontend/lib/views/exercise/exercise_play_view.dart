@@ -24,6 +24,7 @@ class ExercisePlayView extends StatefulWidget {
   final Future Function(Duration restTimeDuration) startRestTime;
   final void Function() cancelTimer;
   final int Function() getDynamicRestTime;
+  final void Function(String message) showMessage;
 
   ExercisePlayView({
     this.key,
@@ -35,6 +36,7 @@ class ExercisePlayView extends StatefulWidget {
     this.startRestTime,
     this.cancelTimer,
     this.getDynamicRestTime,
+    this.showMessage,
   });
 
   @override
@@ -277,7 +279,14 @@ class ExercisePlayViewState extends State<ExercisePlayView> {
                 widget.updateStatus(
                     exerciseSet: _set, newStatus: Status.skipped);
               if (widget.exercises.indexOf(exercise) !=
-                  widget.exercises.length - 1) widget.nextExercise();
+                  widget.exercises.length - 1)
+                widget.nextExercise();
+              else
+                widget.showMessage(
+                  widget.exercises.length > 1
+                      ? "Séance terminée !"
+                      : "Exercice terminé",
+                );
               setState(() {});
             },
           ),
@@ -394,7 +403,14 @@ class ExercisePlayViewState extends State<ExercisePlayView> {
                     widget.updateStatus(
                         exercise: exercise, newStatus: Status.skipped);
                   if (widget.exercises.indexOf(exercise) !=
-                      widget.exercises.length - 1) widget.nextExercise();
+                      widget.exercises.length - 1)
+                    widget.nextExercise();
+                  else
+                    widget.showMessage(
+                      widget.exercises.length > 1
+                          ? "Séance terminée !"
+                          : "Exercice terminé",
+                    );
                 } else {
                   widget.updateStatus(
                     exerciseSet: exercise.sets[exercise.sets.indexOf(_set) + 1],

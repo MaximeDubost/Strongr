@@ -6,6 +6,7 @@ import 'package:strongr/models/Status.dart';
 import 'package:strongr/models/Set.dart';
 import 'package:strongr/utils/screen_size.dart';
 import 'package:strongr/utils/strongr_colors.dart';
+import 'package:strongr/widgets/strongr_snackbar_content.dart';
 import 'package:strongr/widgets/strongr_text.dart';
 
 import 'exercise_play_view.dart';
@@ -21,6 +22,7 @@ class ExercisesPlayView extends StatefulWidget {
 }
 
 class _ExercisesPlayViewState extends State<ExercisesPlayView> {
+  final globalKey = GlobalKey<ScaffoldState>();
   List<Exercise> exercises;
   List<GlobalKey<ExercisePlayViewState>> exerciseKeys;
   int currentPage;
@@ -55,6 +57,7 @@ class _ExercisesPlayViewState extends State<ExercisesPlayView> {
             startRestTime: startRestTime,
             cancelTimer: cancelTimer,
             getDynamicRestTime: getDynamicRestTime,
+            showMessage: showMessage,
           ),
       ],
       onPageChanged: (newPage) {
@@ -99,6 +102,29 @@ class _ExercisesPlayViewState extends State<ExercisesPlayView> {
       if (exercise != null) setState(() => exercise.status = newStatus);
       if (exerciseSet != null) setState(() => exerciseSet.status = newStatus);
     } catch (e) {}
+  }
+
+  showMessage(String message) {
+    globalKey.currentState.showSnackBar(
+      SnackBar(
+        behavior: SnackBarBehavior.floating,
+        content: GestureDetector(
+          onVerticalDragStart: (_) => null,
+          child: InkWell(
+            onTap: () => globalKey.currentState.hideCurrentSnackBar(),
+            child: StrongrSnackBarContent(
+              message: message,
+            ),
+          ),
+        ),
+        backgroundColor: StrongrColors.blue80,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(15),
+          ),
+        ),
+      ),
+    );
   }
 
   /// Passe à l'exercice suivant s'il existe.
@@ -199,6 +225,7 @@ class _ExercisesPlayViewState extends State<ExercisesPlayView> {
         return true;
       },
       child: Scaffold(
+        key: globalKey,
         appBar: buildAppBar(),
         body: pageView,
         bottomNavigationBar: exercises.length > 1

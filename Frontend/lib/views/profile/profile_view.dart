@@ -27,12 +27,12 @@ class _ProfileViewState extends State<ProfileView> {
       appBar: AppBar(
         centerTitle: true,
         title: Text("Profil"),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.edit),
-            onPressed: () {},
-          )
-        ],
+        // actions: <Widget>[
+        //   IconButton(
+        //     icon: Icon(Icons.edit),
+        //     onPressed: () {},
+        //   )
+        // ],
       ),
       body: FutureBuilder(
         future: futureUser,
@@ -50,6 +50,32 @@ class _ProfileViewState extends State<ProfileView> {
               break;
             default:
               return buildLoading();
+          }
+        },
+      ),
+      bottomNavigationBar: FutureBuilder(
+        future: futureUser,
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.done:
+              if (snapshot.hasData)
+                return Container(
+                  height: 40,
+                  alignment: Alignment.bottomLeft,
+                  padding: EdgeInsets.all(8),
+                  child: StrongrText(
+                    "Inscrit depuis le " +
+                        DateFormater.format(snapshot.data.signedDate),
+                    size: 16,
+                    color: Colors.grey,
+                    textAlign: TextAlign.start,
+                  ),
+                );
+              else
+                return SizedBox();
+              break;
+            default:
+              return SizedBox();
           }
         },
       ),
@@ -81,57 +107,51 @@ class _ProfileViewState extends State<ProfileView> {
           Container(
             child: Padding(
               padding: EdgeInsets.all(8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
+              child:
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //   children: <Widget>[
                   Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      StrongrText(
-                        data.firstName + " " + data.lastName,
-                        size: 22,
-                        textAlign: TextAlign.start,
-                        bold: true,
-                      ),
-                      StrongrText(
-                        data.username,
-                        size: 16,
-                        color: StrongrColors.black,
-                        textAlign: TextAlign.start,
-                      ),
-                      StrongrText(
-                        DateFormater.age(data.birthdate).toString() +
-                            (DateFormater.age(data.birthdate) < 2
-                                ? " an"
-                                : " ans"),
-                        size: 16,
-                        color: Colors.grey,
-                        textAlign: TextAlign.start,
-                      ),
-                      StrongrText(
-                        "Inscrit depuis le " +
-                            DateFormater.format(data.signedDate),
-                        size: 16,
-                        color: Colors.grey,
-                        textAlign: TextAlign.start,
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 80,
-                    width: 80,
-                    child: CircleAvatar(
-                      /// https://avatars.dicebear.com/
-                      backgroundColor: StrongrColors.black,
-                      foregroundColor: Colors.white,
-                      child: Icon(
-                        Icons.image,
-                        size: 50,
-                      ),
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Center(
+                    child: StrongrText(
+                      data.firstName + " " + data.lastName,
+                      size: 22,
+                      textAlign: TextAlign.center,
+                      // bold: true,
                     ),
+                  ),
+                  StrongrText(
+                    data.username,
+                    size: 16,
+                    color: StrongrColors.black,
+                    textAlign: TextAlign.start,
+                  ),
+                  StrongrText(
+                    DateFormater.age(data.birthdate).toString() +
+                        (DateFormater.age(data.birthdate) < 2 ? " an" : " ans"),
+                    size: 16,
+                    color: StrongrColors.black,
+                    textAlign: TextAlign.start,
                   ),
                 ],
               ),
+              // SizedBox(
+              //   height: 80,
+              //   width: 80,
+              //   child: CircleAvatar(
+              //     /// https://avatars.dicebear.com/
+              //     backgroundColor: StrongrColors.black,
+              //     foregroundColor: Colors.white,
+              //     child: Icon(
+              //       Icons.image,
+              //       size: 50,
+              //     ),
+              //   ),
+              // ),
+              //   ],
+              // ),
             ),
           ),
           Container(
@@ -267,7 +287,7 @@ class _ProfileViewState extends State<ProfileView> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 StrongrText(
-                                  data.weight ?? "Inconnu",
+                                  data.weight ?? "73.1 kg",
                                   color: Colors.white,
                                 ),
                                 data.weight != null
@@ -305,11 +325,12 @@ class _ProfileViewState extends State<ProfileView> {
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: <Widget>[
                             StrongrText(
-                              "Volume moyen :",
+                              "Volume moyen exercices :",
+                              size: 16,
                               color: Colors.white,
                             ),
                             StrongrText(
-                              "Inconnu",
+                              "0",
                               color: Colors.white,
                             ),
                           ],
@@ -320,7 +341,96 @@ class _ProfileViewState extends State<ProfileView> {
                 ],
               ),
             ),
-          )
+          ),
+          Container(
+            child: Padding(
+              padding: EdgeInsets.only(top: 16, bottom: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Expanded(
+                    child: Container(
+                      padding: EdgeInsets.all(8),
+                      height: 120,
+                      margin: EdgeInsets.only(left: 5, right: 5),
+                      decoration: BoxDecoration(
+                        color: StrongrColors.black,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(25.0),
+                        ),
+                      ),
+                      child: FlatButton(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(25.0),
+                        ),
+                        onPressed: () {},
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: <Widget>[
+                            StrongrText(
+                              "Volume moyen séances :",
+                              size: 16,
+                              color: Colors.white,
+                            ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                StrongrText(
+                                  data.weight ?? "0",
+                                  color: Colors.white,
+                                ),
+                                data.weight != null
+                                    ? StrongrText(
+                                        "(" +
+                                            data.weight.toStringAsFixed(1) +
+                                            ")",
+                                        color: Colors.white,
+                                      )
+                                    : SizedBox(),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Container(
+                      padding: EdgeInsets.all(8),
+                      height: 120,
+                      margin: EdgeInsets.only(left: 5, right: 5),
+                      decoration: BoxDecoration(
+                        color: StrongrColors.black,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(25.0),
+                        ),
+                      ),
+                      child: FlatButton(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(25.0),
+                        ),
+                        onPressed: () {},
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: <Widget>[
+                            StrongrText(
+                              "Volume moyen programmes :",
+                              size: 16,
+                              color: Colors.white,
+                            ),
+                            StrongrText(
+                              "0",
+                              color: Colors.white,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
