@@ -358,7 +358,14 @@ class ExercisePlayViewState extends State<ExercisePlayView> {
                     widget.updateStatus(
                         exercise: exercise, newStatus: Status.done);
                     if (widget.exercises.indexOf(exercise) !=
-                        widget.exercises.length - 1) widget.nextExercise();
+                        widget.exercises.length - 1)
+                      widget.nextExercise();
+                    else
+                      widget.showMessage(
+                        widget.exercises.length > 1
+                            ? "Séance terminée !"
+                            : "Exercice terminé",
+                      );
                   } else {
                     if (exercise.sets[exercise.sets.indexOf(_set) + 1].status ==
                         Status.waiting)
@@ -447,7 +454,14 @@ class ExercisePlayViewState extends State<ExercisePlayView> {
             if (exercise.sets.indexOf(_set) == exercise.sets.length - 1) {
               widget.updateStatus(exercise: exercise, newStatus: Status.done);
               if (widget.exercises.indexOf(exercise) !=
-                  widget.exercises.length - 1) widget.nextExercise();
+                  widget.exercises.length - 1)
+                widget.nextExercise();
+              else
+                widget.showMessage(
+                  widget.exercises.length > 1
+                      ? "Séance terminée !"
+                      : "Exercice terminé",
+                );
             } else {
               widget.updateStatus(
                 exerciseSet: exercise.sets[exercise.sets.indexOf(_set) + 1],
