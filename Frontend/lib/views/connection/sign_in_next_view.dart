@@ -144,8 +144,7 @@ class _SignInNextViewState extends State<SignInNextView> {
         setState(() {
           warning = "OK";
         });
-      }
-      else // 503
+      } else // 503
       {
         setState(() {
           warning = "Service indisponible. Veuillez réessayer ultérieurement.";
@@ -155,8 +154,8 @@ class _SignInNextViewState extends State<SignInNextView> {
         _isButtonEnabled = true;
         _isLoading = false;
       });
-    } 
-    else setState(() => _validate = true);
+    } else
+      setState(() => _validate = true);
   }
 
   @override
@@ -313,6 +312,7 @@ class _SignInNextViewState extends State<SignInNextView> {
           },
           maxLength: 30,
           hint: "Prénom",
+          fontSize: 16,
           textInputType: TextInputType.text,
         ),
       ],
@@ -347,6 +347,7 @@ class _SignInNextViewState extends State<SignInNextView> {
           },
           maxLength: 30,
           hint: "Nom",
+          fontSize: 16,
           textInputType: TextInputType.text,
         ),
       ],
@@ -400,7 +401,9 @@ class _SignInNextViewState extends State<SignInNextView> {
               showDialog(
                 context: context,
                 builder: (context) => BodyweightDialog(
-                  bodyweight: bodyweight.value != null ? bodyweight : Bodyweight(value: 62.0, isLb: isLb),
+                  bodyweight: bodyweight.value != null
+                      ? bodyweight
+                      : Bodyweight(value: 62.0, isLb: isLb),
                 ),
               ).then((newBodyweight) {
                 if (newBodyweight != null) {
@@ -420,7 +423,9 @@ class _SignInNextViewState extends State<SignInNextView> {
                     : "(Facultatif)",
                 textAlign: TextAlign.start,
                 style: TextStyle(
-                  color: bodyweight.value != null ? StrongrColors.black : Colors.grey,
+                  color: bodyweight.value != null
+                      ? StrongrColors.black
+                      : Colors.grey,
                   fontSize: 16,
                 ),
               ),
@@ -460,6 +465,7 @@ class _SignInNextViewState extends State<SignInNextView> {
           },
           maxLength: 15,
           hint: "(Facultatif)",
+          fontSize: 16,
           textInputType: TextInputType.number,
         ),
       ],
@@ -556,7 +562,8 @@ class _SignInNextViewState extends State<SignInNextView> {
             isEmpty();
           },
           maxLength: 30,
-          hint: 'Autorisé : (.) & (_)',
+          hint: 'Autorisés (.) & (_)',
+          fontSize: 16,
           textInputType: TextInputType.text,
         ),
       ],
